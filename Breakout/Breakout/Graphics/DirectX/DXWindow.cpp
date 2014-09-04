@@ -20,7 +20,7 @@ bool DXWindow::InitWindow(int width, int height)
 {
 	m_Width = width;
 	m_Height = height;
-	return InitWnd(, NULL, GetCommandLine(), SW_SHOW);
+	return InitWnd(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOW);
 }
 
 
