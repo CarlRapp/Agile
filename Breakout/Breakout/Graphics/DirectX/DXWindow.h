@@ -14,7 +14,6 @@ private:
 
 	bool				InitWnd(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nShowCmd);
 	bool				InitWndApp(HINSTANCE hInstanceHandle, int show);
-	LRESULT CALLBACK	WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	int					Run();
 	HRESULT				Render(float deltaTime);
 	HRESULT				Update(float deltaTime);
