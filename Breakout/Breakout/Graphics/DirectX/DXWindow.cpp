@@ -20,7 +20,7 @@ bool DXWindow::InitWindow(int width, int height)
 {
 	m_Width = width;
 	m_Height = height;
-	return InitWnd(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOW);
+	return InitWnd(GetModuleHandle(0), NULL, GetCommandLine(), SW_SHOW);
 }
 
 
@@ -50,12 +50,28 @@ bool DXWindow::InitWnd(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLi
 	return 1;
 }
 
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hwnd);
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		break;
+	default:
+		return DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+	return 0;
+}
+
 bool DXWindow::InitWndApp(HINSTANCE hInstanceHandle, int show)
 {
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	//wc.lpfnWndProc = WndProc;
-	wc.lpfnWndProc = NULL;
+	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = hInstanceHandle;
@@ -101,22 +117,4 @@ bool DXWindow::InitWndApp(HINSTANCE hInstanceHandle, int show)
 	return true;
 }
 
-LRESULT CALLBACK DXWindow::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	switch (msg)
-	{
-	case WM_DESTROY:
-		::PostQuitMessage(0);
-		return 0;
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-			//case VK_ESCAPE:					//Avslutar programmet om man trycker på escape.
-			//CloseApplication();
-			//::DestroyWindow(hWnd);
-		}
-		return 0;
-	}
 
-	return ::DefWindowProc(hWnd, msg, wParam, lParam);
-}
