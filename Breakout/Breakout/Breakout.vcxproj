@@ -64,7 +64,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
+    <ClCompile Include="Graphics\GraphicsManager.cpp" />
+    <ClCompile Include="Graphics\IGraphics.cpp" />
     <ClCompile Include="Program.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
+    <ClInclude Include="Graphics\DirectX\DXWindow.h" />
+    <ClInclude Include="Graphics\GraphicsManager.h" />
+    <ClInclude Include="Graphics\IGraphics.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
