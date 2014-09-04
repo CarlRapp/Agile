@@ -1,15 +1,24 @@
 #pragma once
 #ifndef GRAPHICSMANAGER_H
 #define GRAPHICSMANAGER_H
+#include <windows.h>
+#include <D3D11.h>
+#include <d3dCompiler.h>
 
+#include "IGraphics.h"
 
 class GraphicsManager
 {
+private:
+
+	IGraphics *m_IGraphics;
 
 public:
 
-	//GraphicsManager(ID3D11Device *device, ID3D11DeviceContext *deviceContext, ID3D11RenderTargetView *renderTargetView, int width, int height);
+	GraphicsManager();
+	~GraphicsManager(void);
 
+	bool  InitWindow(int width, int height);
 };
 
 
