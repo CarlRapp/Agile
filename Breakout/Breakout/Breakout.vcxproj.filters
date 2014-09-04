@@ -11,6 +11,9 @@
     <Filter Include="Source Files\Graphics\DirectX">
       <UniqueIdentifier>{9c444d02-efcb-476b-83d5-0801c3be8b77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{58471cb0-741f-4c17-978c-43163cdf8554}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
@@ -28,6 +31,9 @@
     <ClCompile Include="Program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputManager.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
@@ -41,6 +47,12 @@
     </ClInclude>
     <ClInclude Include="Graphics\IGraphics.h">
       <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputManager.h">
+      <Filter>Source Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\IInput.h">
+      <Filter>Source Files\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
