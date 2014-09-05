@@ -110,7 +110,7 @@ void Mouse::Update()
 	//	relative to the window of the game
 	GetCursorPos(&A);
 	ScreenToClient(
-		((DXGraphics*)(GraphicsManager::getInstance()->getIGraphics()))->GetWindow()->GetHandle(),
+		((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle(),
 		&A
 		);
 

@@ -7,7 +7,7 @@ GraphicsManager::GraphicsManager(void)
 	m_IGraphics = IGraphics::GetIGraphics();
 }
 
-GraphicsManager* GraphicsManager::getInstance()
+GraphicsManager* GraphicsManager::GetInstance()
 {
 	if (m_gmInstance)
 		return m_gmInstance;

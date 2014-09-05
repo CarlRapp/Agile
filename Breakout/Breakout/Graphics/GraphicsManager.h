@@ -23,11 +23,11 @@ private:
 
 public:
 	~GraphicsManager(void);
-	static GraphicsManager* getInstance();
+	static GraphicsManager* GetInstance();
 
 
 	bool  InitWindow(int width, int height);
-	IGraphics* getIGraphics() { return m_IGraphics; }
+	IGraphics* GetIGraphics() { return m_IGraphics; }
 };
 
 
