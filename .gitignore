@@ -202,3 +202,4 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+/Breakout/Breakout/dist/
