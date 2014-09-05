@@ -1,5 +1,5 @@
 #include "IGraphics.h"
-
+#define DIRECTX
 #ifdef DIRECTX
 #include "DirectX\DXGraphics.h"
 #else

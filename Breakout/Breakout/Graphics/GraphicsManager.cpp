@@ -1,9 +1,20 @@
 #include "GraphicsManager.h"
 
+GraphicsManager* GraphicsManager::m_gmInstance = 0;
 
 GraphicsManager::GraphicsManager(void)
 {
 	m_IGraphics = IGraphics::GetIGraphics();
+}
+
+GraphicsManager* GraphicsManager::getInstance()
+{
+	if (m_gmInstance)
+		return m_gmInstance;
+
+	m_gmInstance = new GraphicsManager();
+
+	return m_gmInstance;
 }
 
 GraphicsManager::~GraphicsManager(void)

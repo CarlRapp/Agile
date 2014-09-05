@@ -16,15 +16,18 @@
 class GraphicsManager
 {
 private:
+	GraphicsManager();
+	static GraphicsManager* m_gmInstance;
 
 	IGraphics *m_IGraphics;
 
 public:
-
-	GraphicsManager();
 	~GraphicsManager(void);
+	static GraphicsManager* getInstance();
+
 
 	bool  InitWindow(int width, int height);
+	IGraphics* getIGraphics() { return m_IGraphics; }
 };
 
 

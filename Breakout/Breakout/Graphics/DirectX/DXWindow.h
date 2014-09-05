@@ -30,7 +30,7 @@ public:
 
 	bool  InitWindow(int width, int height);
 
-	
+	HWND GetHandle(){ return g_hWndMain; }
 };
 
 

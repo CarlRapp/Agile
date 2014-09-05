@@ -21,7 +21,7 @@ public:
 	~DXGraphics(void);
 
 	bool  InitWindow(int width, int height);
-
+	DXWindow* GetWindow(){ return m_Window; }
 };
 
 
