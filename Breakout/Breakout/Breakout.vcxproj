@@ -40,8 +40,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)/../External/include;$(SolutionDir)/../External/include/SDL2;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/../External/lib/SDL2/x86;$(LibraryPath)</LibraryPath>
     <ExcludePath>$(ExcludePath)</ExcludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -52,6 +52,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,6 +71,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Audio\AudioManager.cpp" />
+    <ClCompile Include="Audio\IAudio.cpp" />
+    <ClCompile Include="Audio\LinAudio.cpp" />
+    <ClCompile Include="Audio\WinAudio.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Entities\Entity.cpp" />
     <ClCompile Include="Game\Entities\GameEntity.cpp" />
@@ -88,6 +94,10 @@
     <ClCompile Include="SystemComponents.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Audio\AudioManager.h" />
+    <ClInclude Include="Audio\IAudio.h" />
+    <ClInclude Include="Audio\LinAudio.h" />
+    <ClInclude Include="Audio\WinAudio.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Entities\Entity.h" />
     <ClInclude Include="Game\Entities\GameEntity.h" />

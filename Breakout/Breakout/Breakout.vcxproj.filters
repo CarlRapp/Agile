@@ -20,6 +20,15 @@
     <Filter Include="Source Files\Game\Entities">
       <UniqueIdentifier>{239d6402-bc30-489a-a8c1-aad571bbfeca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{bdded954-a5bd-46c0-ba2f-1415222f688a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Windows">
+      <UniqueIdentifier>{3e1e3498-f4d5-4109-bf0c-05a85c54b1db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Linux">
+      <UniqueIdentifier>{bb1142bb-d6b6-4744-a34b-d76ebc064970}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
@@ -73,6 +82,18 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Audio\AudioManager.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\IAudio.cpp">
+      <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\WinAudio.cpp">
+      <Filter>Source Files\Audio\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\LinAudio.cpp">
+      <Filter>Source Files\Audio\Linux</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
@@ -122,6 +143,18 @@
     </ClInclude>
     <ClInclude Include="SystemComponents.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\AudioManager.h">
+      <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\IAudio.h">
+      <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\WinAudio.h">
+      <Filter>Source Files\Audio\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\LinAudio.h">
+      <Filter>Source Files\Audio\Linux</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
