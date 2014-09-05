@@ -8,7 +8,7 @@ AudioManager* m_AudioManager;
 int main(int argc, char** argv)
 {
 
-	m_GraphicsManager = new GraphicsManager();
+	m_GraphicsManager = GraphicsManager::GetInstance();
 	m_GraphicsManager->InitWindow(600, 400);
 
 

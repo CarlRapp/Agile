@@ -72,7 +72,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioManager.cpp" />
-    <ClCompile Include="Audio\IAudio.cpp" />
     <ClCompile Include="Audio\LinAudio.cpp" />
     <ClCompile Include="Audio\WinAudio.cpp" />
     <ClCompile Include="Game.cpp" />
