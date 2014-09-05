@@ -1,12 +1,10 @@
-#pragma once
 #ifndef IGRAPHICS_H
 #define IGRAPHICS_H
-
 
 class IGraphics
 {
 private:
-
+        IGraphics* m_graphics;
 
 public:
 
@@ -14,8 +12,8 @@ public:
 
 	virtual bool InitWindow(int width, int height) = 0;
 
-	static IGraphics* GetIGraphics();
-
+	IGraphics* GetIGraphics();
+        virtual void Render();
 };
 
 

@@ -2,6 +2,9 @@
 #ifndef GLWINDOW_H
 #define GLWINDOW_H
 
+#include <SDL/SDL.h>
+#include <GL/glew.h>
+
 class GLWindow
 {
 private:
@@ -18,15 +21,15 @@ private:
 	char*				FeatureLevelToString();
 
 
-	int m_Width, m_Height;
+	int m_width, m_height;
 
 public:
 
 	GLWindow(void);
 	~GLWindow(void);
 
-	bool  InitWindow(int width, int height);
-
+	bool InitWindow(int width, int height);
+        bool InitGL();
 	
 };
 

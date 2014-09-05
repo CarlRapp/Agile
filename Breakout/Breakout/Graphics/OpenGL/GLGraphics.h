@@ -18,7 +18,7 @@ public:
 	~GLGraphics(void);
 
 	bool  InitWindow(int width, int height);
-
+        void Render();
 };
 
 

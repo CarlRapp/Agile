@@ -1,4 +1,3 @@
-#pragma once
 #ifndef GRAPHICSMANAGER_H
 #define GRAPHICSMANAGER_H
 
@@ -12,12 +11,13 @@
 #endif
 
 #include "IGraphics.h"
+#include "OpenGL/GLGraphics.h"
 
 class GraphicsManager
 {
 private:
 
-	IGraphics *m_IGraphics;
+	IGraphics* m_IGraphics;
 
 public:
 
@@ -25,6 +25,8 @@ public:
 	~GraphicsManager(void);
 
 	bool  InitWindow(int width, int height);
+        IGraphics* GetInstance();
+        void Render();
 };
 
 

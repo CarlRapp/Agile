@@ -3,7 +3,11 @@
 
 GraphicsManager::GraphicsManager(void)
 {
-	m_IGraphics = IGraphics::GetIGraphics();
+#ifdef WINDOWS
+    m_IGraphics = new WinGraphics();
+#else 
+    m_IGraphics = new GLGraphics();
+#endif
 }
 
 GraphicsManager::~GraphicsManager(void)
@@ -13,5 +17,15 @@ GraphicsManager::~GraphicsManager(void)
 
 bool GraphicsManager::InitWindow(int width, int height)
 {
-	return m_IGraphics->InitWindow(width, height);
+    return m_IGraphics->InitWindow(width, height);
+}
+
+IGraphics* GraphicsManager::GetInstance()
+{
+    return m_IGraphics;
+}
+
+void GraphicsManager::Render()
+{
+    m_IGraphics->Render();
 }
