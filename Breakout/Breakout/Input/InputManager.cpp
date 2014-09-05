@@ -8,16 +8,18 @@ InputManager* InputManager::GetInstance()
 		return m_imInstance;
 
 	m_imInstance = new InputManager();
+
+	return m_imInstance;
 }
 
 InputManager::InputManager()
 {
 	/*	TODO add #ifndef Linux / windows	*/
-	m_inputHandle = new WindowsInput();
+	m_inputDevices = new WindowsInput();
 }
 
 void InputManager::Update()
 {
-	if (m_inputHandle)
-		m_inputHandle->Update();
+	if (m_inputDevices)
+		m_inputDevices->Update();
 }

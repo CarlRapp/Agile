@@ -5,15 +5,13 @@
 
 class WindowsInput : public IInput
 {
-private:
-
 public:
 	WindowsInput();
 	~WindowsInput();
 
 	void Update();
-	Mouse* getMouse();
-	Keyboard* getKeyboard();
+	Mouse* GetMouse();
+	Keyboard* GetKeyboard();
 };
 
 

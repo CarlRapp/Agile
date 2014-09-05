@@ -25,11 +25,19 @@ struct Mouse
 private:
 	bool*	m_lastFrameButtons = new bool[MOUSEBUTTONS];
 	bool*	m_thisFrameButtons = new bool[MOUSEBUTTONS];
+
+	int m_positionX, m_positionY;
+	int m_dX, m_dY;
 public:
 	Mouse();
 	void Update();
-	int absoluteX, absoluteY;
-	int relativeX, relativeY;
+
+	InputState GetButtonState(char _button);
+	int getX();
+	int getY();
+	int getdX();
+	int getdY();
+
 };
 
 #define KEYBOARDKEYS 256
@@ -41,7 +49,7 @@ private:
 public:
 	Keyboard();
 	void Update();
-	InputState getKeyState(char _key);
+	InputState GetKeyState(char _key);
 };
 #pragma endregion
 
@@ -55,8 +63,8 @@ public:
 
 	virtual void Update() = 0;
 
-	virtual Mouse* getMouse() = 0;
-	virtual Keyboard* getKeyboard() = 0;
+	virtual Mouse* GetMouse() = 0;
+	virtual Keyboard* GetKeyboard() = 0;
 };
 
 #endif

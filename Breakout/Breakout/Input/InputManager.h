@@ -9,16 +9,16 @@ private:
 	InputManager();
 
 	static InputManager* m_imInstance;
-	IInput* m_inputHandle;
+	IInput* m_inputDevices;
 
 public:
 	~InputManager();
 
 	static InputManager* GetInstance();
 	
-	IInput* getInputHandle()
+	IInput* getInputDevices()
 	{
-		return m_inputHandle;
+		return m_inputDevices;
 	}
 	void Update();
 };
