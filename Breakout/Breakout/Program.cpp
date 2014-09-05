@@ -2,27 +2,33 @@
 #include <SDL.h>
 #include <Windows.h>
 #include "Input/Windows/WindowsInput.h"
-
+#include "Input/InputManager.h"
 
 int main(int argc, char** argv)
 {
-	WindowsInput* INPUT = new WindowsInput();
+	InputManager* IM = InputManager::GetInstance();
+	IInput* INPUT = IM->getInputHandle();
 
 	Keyboard* KEYBOARD = INPUT->getKeyboard();
 	while (true)
 	{
-		INPUT->Update();
+		IM->Update();
 		if (KEYBOARD)
 		{
 			char i = VK_SHIFT;
-			if (KEYBOARD->getKeyState((char)i) == InputState::Pressed)
+			if (KEYBOARD->getKeyState(5) == InputState::Pressed)
 				printf("%c was just pressed!\n", (char)i);
-			if (KEYBOARD->getKeyState((char)i) == InputState::Down)
+			if (KEYBOARD->getKeyState(5) == InputState::Down)
 				printf("%c is down!\n", (char)i);
-			if (KEYBOARD->getKeyState((char)i) == InputState::Released)
+			if (KEYBOARD->getKeyState(5) == InputState::Released)
 				printf("%c is released!\n", (char)i);
 
 		}
+
+		POINT p;
+		GetCursorPos(&p);
+
+		printf("X: %d\nY:%d\n", p.x, p.y);
 
 
 

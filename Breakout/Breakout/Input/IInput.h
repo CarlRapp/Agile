@@ -19,13 +19,17 @@ enum MouseButton
 #pragma endregion
 
 #pragma region Mouse and Keyboard struct
+#define MOUSEBUTTONS 4
 struct Mouse
 {
+private:
+	bool*	m_lastFrameButtons = new bool[MOUSEBUTTONS];
+	bool*	m_thisFrameButtons = new bool[MOUSEBUTTONS];
 public:
 	Mouse();
 	void Update();
-	int PositionX;
-	int PositionY;
+	int absoluteX, absoluteY;
+	int relativeX, relativeY;
 };
 
 #define KEYBOARDKEYS 256
@@ -40,9 +44,6 @@ public:
 	InputState getKeyState(char _key);
 };
 #pragma endregion
-
-
-
 
 class IInput
 {

@@ -42,12 +42,24 @@ InputState Keyboard::getKeyState(char _key)
 #pragma region Mouse implementation
 Mouse::Mouse()
 {
-	PositionX = 0;
-	PositionY = 0;
+	for (int n = 0; n < MOUSEBUTTONS; ++n)
+	{
+		m_lastFrameButtons[n] = 0;
+		m_thisFrameButtons[n] = 0;
+	}
+
+	absoluteX = 0;
+	absoluteY = 0;
+	relativeX = 0;
+	relativeY = 0;
 }
 void Mouse::Update()
 {
-
+	for (int n = 0; n < MOUSEBUTTONS; ++n)
+	{
+		m_lastFrameButtons[n] = m_thisFrameButtons[n];
+		m_thisFrameButtons[n] = GetAsyncKeyState(n) ? true : false;
+	}
 }
 #pragma endregion
 
