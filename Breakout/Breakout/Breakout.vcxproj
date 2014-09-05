@@ -91,7 +91,6 @@
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Storage\FileManager.cpp" />
-    <ClCompile Include="SystemComponents.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h" />
@@ -113,7 +112,6 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Storage\FileManager.h" />
-    <ClInclude Include="SystemComponents.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

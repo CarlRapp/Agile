@@ -7,6 +7,21 @@ WinAudio::WinAudio()
 
 WinAudio::~WinAudio()
 {
+	for (std::map<std::string, Mix_Music*>::iterator iter = m_music.begin(); iter != m_music.end(); ++iter)
+	{
+		Mix_FreeMusic(iter->second);
+		iter->second = NULL;
+	}
+
+	for (std::map<std::string, Mix_Chunk*>::iterator iter = m_soundEffects.begin(); iter != m_soundEffects.end(); ++iter)
+	{
+		Mix_FreeChunk(iter->second);
+		iter->second = NULL;
+	}
+
+	Mix_Quit();
+	SDL_Quit();
+
 }
 
 bool WinAudio::Initialize()
@@ -14,13 +29,13 @@ bool WinAudio::Initialize()
 
 	if(SDL_Init(SDL_INIT_AUDIO) < 0)
 	{
-		printf("[Windows] SDL_Audio Error: %s\n", SDL_GetError());
+		Log(MSG_ERROR, "SDL_Audio:", SDL_GetError());
 		return false;
 	}
 
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	{
-		printf("[Windows] SDL_Audio Error: %s\n", SDL_GetError());
+		Log(MSG_ERROR, "SDL_Audio:", SDL_GetError());
 		return false;
 	}
 
@@ -31,10 +46,10 @@ bool WinAudio::Initialize()
 
 bool WinAudio::LoadMusic(const char* _filePath, const char* _fileName, Mix_Music* _music)
 {
-	std::map<std::string, Mix_Music*>::iterator it = m_music.find(_fileName);
-	if (it != m_music.end())
+	std::map<std::string, Mix_Music*>::iterator iter = m_music.find(_fileName);
+	if (iter != m_music.end())
 	{
-		// Log warning, music already exist
+		Log(MSG_WARNING, "SDL_Audio, Music already exist:", _fileName);
 		return true;
 	}
 
@@ -43,7 +58,7 @@ bool WinAudio::LoadMusic(const char* _filePath, const char* _fileName, Mix_Music
 	music = Mix_LoadMUS(_filePath);
 	if (music == NULL)
 	{
-		printf("[Windows] SDL_Audio Error: %s\n", Mix_GetError());
+		Log(MSG_ERROR, "SDL_Audio:", Mix_GetError());
 		return false;
 	}
 
@@ -51,16 +66,18 @@ bool WinAudio::LoadMusic(const char* _filePath, const char* _fileName, Mix_Music
 
 	// Temp for testing
 	m_music.insert(std::pair<std::string, Mix_Music*>(_fileName, music));
+	Log(MSG_NORMAL, "SDL_Audio, added music file:", _fileName);
 
 	return true;
 }
 
 bool WinAudio::LoadSoundEffect(const char* _filePath, const char* _fileName, Mix_Chunk* _soundEffect)
 {
-	std::map<std::string, Mix_Chunk*>::iterator it = m_soundEffects.find(_fileName);
-	if (it != m_soundEffects.end())
+
+	std::map<std::string, Mix_Chunk*>::iterator iter = m_soundEffects.find(_fileName);
+	if (iter != m_soundEffects.end())
 	{
-		// Log warning, soundEffect already exist
+		Log(MSG_WARNING, "SDL_Audio, SoundEffect already exist:", _fileName);
 		return true;
 	}
 
@@ -69,7 +86,7 @@ bool WinAudio::LoadSoundEffect(const char* _filePath, const char* _fileName, Mix
 	soundEffect = Mix_LoadWAV(_filePath);
 	if (soundEffect == NULL)
 	{
-		printf("[Windows] SDL_Audio Error: %s\n", Mix_GetError());
+		Log(MSG_ERROR, "SDL_Audio:", Mix_GetError());
 		return false;
 	}
 
@@ -77,46 +94,51 @@ bool WinAudio::LoadSoundEffect(const char* _filePath, const char* _fileName, Mix
 
 	// Temp for testing
 	m_soundEffects.insert(std::pair<std::string, Mix_Chunk*>(_fileName, soundEffect));
+	Log(MSG_NORMAL, "SDL_Audio, added sound effect:", _fileName);
 
 	return true;
 }
 
-bool WinAudio::PlayAudio(const char* _fileName)
+bool WinAudio::PlayMusic(const char* _fileName, int _loop)
 {
-	/*
-	Access AudioData
-	Find if _fileName exist
-	Get the Mix_Music* / Mix_Chunk*
-	Play the sound
-	(Probably split this into two (PlayMusic & PlaySoundEffect)
-	*/
-
-
-
-	std::map<std::string, Mix_Music*>::iterator musicIter = m_music.find(_fileName);
-	if (musicIter != m_music.end())
+	// Music not found, return false
+	std::map<std::string, Mix_Music*>::iterator iter = m_music.find(_fileName);
+	if (iter == m_music.end())
 	{
-		// Log warning, music already exist
-		return true;
+		Log(MSG_ERROR, "SDL_Audio, Music not found:", _fileName);
+		return false;
 	}
 
+	// Another music already playing, switching
+	if (Mix_PlayingMusic() != 0)
+		Log(MSG_WARNING, "SDL_Audio: Already playing track. Changing to new."); // Could possible be removed
 
-
-
-
-	std::map<std::string, Mix_Chunk*>::iterator soundEffectIter = m_soundEffects.find(_fileName);
-
-	// SoundEffect found
-	if (soundEffectIter != m_soundEffects.end())
+	// Play the music track
+	if(Mix_PlayMusic(iter->second, _loop) == -1)
 	{
-		
-		return true;
+		Log(MSG_ERROR, "SDL_Audio:", Mix_GetError());
+		return false;
 	}
 
+	return true;
+}
 
+bool WinAudio::PlaySoundEffect(const char* _fileName, int _loop)
+{
+	// Sound not found, return false
+	std::map<std::string, Mix_Chunk*>::iterator iter = m_soundEffects.find(_fileName);
+	if (iter == m_soundEffects.end())
+	{
+		Log(MSG_ERROR, "SDL_Audio, Music not found:", _fileName);
+		return false;
+	}
 
-
-
+	// Play the sound
+	if (Mix_PlayChannel(-1, iter->second, _loop) == -1)
+	{
+		Log(MSG_ERROR, "SDL_Audio:", Mix_GetError());
+		return false;
+	}
 
 	return true;
 }

@@ -15,8 +15,11 @@ public:
 
 	bool Initialize();
 
-	bool PlayAudio(const char* _fileName);
-	bool LoadAudio(const char* _fileName);
+	bool PlayMusic(const char* _fileName, int _loop);
+	bool PlaySoundEffect(const char* _fileName, int _loop);
+
+	bool LoadMusic(const char* _filePath, const char* _fileName, Mix_Music* _music);
+	bool LoadSoundEffect(const char* _filePath, const char* _fileName, Mix_Chunk* _soundEffect);
 
 
 };
