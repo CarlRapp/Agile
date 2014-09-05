@@ -1,53 +1,32 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <Windows.h>
-#include "Input/IInput.h"
+#include "Input/Windows/WindowsInput.h"
 
-
-#define KEYBOARDKEYS 256
-bool*	m_lastFrameKeys = new bool[KEYBOARDKEYS];
-bool*	m_thisFrameKeys = new bool[KEYBOARDKEYS];
-
-InputState getKeyState(char Key)
-{
-	bool	tLastFrame = m_lastFrameKeys[Key];
-	bool	tThisFrame = m_thisFrameKeys[Key];
-
-	if (!tLastFrame && tThisFrame)
-		return InputState::Pressed;
-
-	else if (tLastFrame && tThisFrame)
-		return InputState::Down;
-
-	else if (tLastFrame && !tThisFrame)
-		return InputState::Released;
-
-
-	return InputState::Up;
-}
 
 int main(int argc, char** argv)
 {
+	WindowsInput* INPUT = new WindowsInput();
 
-
+	Keyboard* KEYBOARD = INPUT->getKeyboard();
 	while (true)
 	{
-		for (int n = 0; n < KEYBOARDKEYS; ++n)
+		INPUT->Update();
+		if (KEYBOARD)
 		{
-			m_lastFrameKeys[n] = m_thisFrameKeys[n];
-			m_thisFrameKeys[n] = GetAsyncKeyState(n) ? true : false;
+			char i = VK_SHIFT;
+			if (KEYBOARD->getKeyState((char)i) == InputState::Pressed)
+				printf("%c was just pressed!\n", (char)i);
+			if (KEYBOARD->getKeyState((char)i) == InputState::Down)
+				printf("%c is down!\n", (char)i);
+			if (KEYBOARD->getKeyState((char)i) == InputState::Released)
+				printf("%c is released!\n", (char)i);
+
 		}
 
 
-		if (getKeyState('A') == InputState::Pressed)
-			printf("First click\n");
-		if (getKeyState('A') == InputState::Down)
-			printf("Still down\n");
-		if (getKeyState('A') == InputState::Released)
-			printf("Released\n");
 
-
-		//SDL_Delay(100);
+		SDL_Delay(100);
 	}
 
 	return 0;

@@ -14,6 +14,9 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{58471cb0-741f-4c17-978c-43163cdf8554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Input\Windows">
+      <UniqueIdentifier>{2f097a91-fb9e-40d8-b5df-c66ee68f2259}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
@@ -34,6 +37,9 @@
     <ClCompile Include="Input\InputManager.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Input\Windows\WindowsInput.cpp">
+      <Filter>Source Files\Input\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
@@ -53,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="Input\IInput.h">
       <Filter>Source Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Windows\WindowsInput.h">
+      <Filter>Source Files\Input\Windows</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

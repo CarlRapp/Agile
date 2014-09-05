@@ -74,6 +74,7 @@
     <ClCompile Include="Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Graphics\IGraphics.cpp" />
     <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="Program.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +84,7 @@
     <ClInclude Include="Graphics\IGraphics.h" />
     <ClInclude Include="Input\IInput.h" />
     <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\Windows\WindowsInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
