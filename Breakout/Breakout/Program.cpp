@@ -1,8 +1,11 @@
 #include "Graphics/GraphicsManager.h"
 #include "Audio/AudioManager.h"
+#include "Input/InputManager.h"
+#include <SDL.h>
 
 GraphicsManager *m_GraphicsManager;
 AudioManager* m_AudioManager;
+InputManager* m_InputManager;
 
 
 int main(int argc, char** argv)
@@ -10,6 +13,8 @@ int main(int argc, char** argv)
 
 	m_GraphicsManager = GraphicsManager::GetInstance();
 	m_GraphicsManager->InitWindow(600, 400);
+
+	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
 
 	m_AudioManager = AudioManager::getInstance();
@@ -35,21 +40,23 @@ int main(int argc, char** argv)
 	}
 
 	m_AudioManager->PlayMusic("Sound1",-1);
-	m_AudioManager->PlaySoundEffect("Effect1",4);
-	Sleep(3000);
-	m_AudioManager->PlayMusic("Sound2", -1);
+	
 
-	if (!m_AudioManager->LoadMusic("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Yamaha-SY-35-Clarinet-C5.wav", "Sound1", 0))
+	while (true)
 	{
-		system("pause");
-		return false;
+		m_InputManager->GetInstance()->Update();
+
+		if (mouse->GetButtonState(VK_LBUTTON) == InputState::Pressed)
+			m_AudioManager->PlaySoundEffect("Effect1");
+
+		SDL_Delay(100);
+
 	}
 
-	if (!m_AudioManager->LoadMusic("C:/Users/Kvagga/Drthrtv", "ergerg", 0))
-	{
-		system("pause");
-		return false;
-	}
+
+
+
+
 
 	system("pause");
 

@@ -86,6 +86,8 @@
     <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
     <ClCompile Include="Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Graphics\IGraphics.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Screen.cpp" />
@@ -108,6 +110,9 @@
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />
     <ClInclude Include="Graphics\GraphicsManager.h" />
     <ClInclude Include="Graphics\IGraphics.h" />
+    <ClInclude Include="Input\IInput.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\Windows\WindowsInput.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Storage\FileManager.h" />
