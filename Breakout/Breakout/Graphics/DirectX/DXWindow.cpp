@@ -48,10 +48,10 @@ bool DXWindow::InitWnd(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, PSTR _pCm
 	if (!InitWndApp(_hInstance, _nShowCmd))
 	{
 		::MessageBox(0, "Initalaization Failed", "Error", MB_OK);
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -74,7 +74,6 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
 {
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
-	//wc.lpfnWndProc = WndProc;
 	wc.lpfnWndProc = WndProc;
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
@@ -88,7 +87,7 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
 	if (!RegisterClass(&wc))
 	{
 		::MessageBox(0, "Failed to register WNDCLASS", 0, MB_OK);
-		return 0;
+		return false;
 	}
 
 	DWORD	wStyle = WS_POPUP;
@@ -111,7 +110,7 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
 	if (m_hWndMain == 0)
 	{
 		::MessageBox(0, "Failed to create WNDCLASS", 0, MB_OK);
-		return 0;
+		return false;
 	}
 
 
