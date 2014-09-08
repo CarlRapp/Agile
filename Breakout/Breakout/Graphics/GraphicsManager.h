@@ -19,6 +19,7 @@ private:
 
 	IGraphics *m_IGraphics;
 
+	//lista på objekt
 public:
 
 	GraphicsManager();
@@ -26,6 +27,10 @@ public:
 
 	bool	InitWindow(int x, int y, int width, int height);
 	void	Render();
+
+	//AddObject()
+	//RemoveObject()
+
 };
 
 
