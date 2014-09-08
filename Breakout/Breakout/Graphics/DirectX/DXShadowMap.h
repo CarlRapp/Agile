@@ -33,7 +33,7 @@ public:
 	DXGraphics(void);
 	~DXGraphics(void);
 
-	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+	bool  InitWindow(int x, int y, int width, int height);
 
 	void	Render();
 

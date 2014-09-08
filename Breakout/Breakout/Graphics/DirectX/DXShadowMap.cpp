@@ -15,10 +15,10 @@ DXGraphics::~DXGraphics(void)
 
 }
 
-bool DXGraphics::InitWindow(int _X, int _Y, int _Width, int _Height)
+bool DXGraphics::InitWindow(int x, int y, int width, int height)
 {
 	m_Window = new DXWindow();
-	if (!m_Window->InitWindow(_X, _Y, _Width, _Height))
+	if (!m_Window->InitWindow(x, y, width, height))
 		return false;
 
 	if (FAILED(InitDirect3D()))
