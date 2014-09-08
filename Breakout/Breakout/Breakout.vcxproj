@@ -92,6 +92,8 @@
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="Storage\ModelData.cpp" />
+    <ClCompile Include="Storage\ObjLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h" />
@@ -110,12 +112,16 @@
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />
     <ClInclude Include="Graphics\GraphicsManager.h" />
     <ClInclude Include="Graphics\IGraphics.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Input\IInput.h" />
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Input\Windows\WindowsInput.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="Storage\ModelData.h" />
+    <ClInclude Include="Storage\ObjLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

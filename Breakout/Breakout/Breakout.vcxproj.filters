@@ -56,6 +56,12 @@
     <ClCompile Include="Input\Windows\WindowsInput.cpp">
       <Filter>Source Files\Input\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="Storage\ObjLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\ModelData.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -117,6 +123,16 @@
     </ClInclude>
     <ClInclude Include="Input\Windows\WindowsInput.h">
       <Filter>Source Files\Input\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Storage\ObjLoader.h">
+      <Filter>Source Files\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Vertex.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage\ModelData.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
