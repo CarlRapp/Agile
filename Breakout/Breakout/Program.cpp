@@ -7,7 +7,7 @@ GraphicsManager *m_GraphicsManager;
 int main(int argc, char** argv)
 {
 	m_GraphicsManager = new GraphicsManager();
-	m_GraphicsManager->InitWindow(600, 400);
+	m_GraphicsManager->InitWindow(100, 100, 400, 100);
 
         char f;
         std::string hay;
