@@ -9,7 +9,8 @@ class DXWindow
 {
 private:
 
-	HWND					g_hWndMain = NULL;
+	HWND				m_hWndMain = NULL;
+	int					m_X, m_Y, m_Width, m_Height;
 
 
 	bool				InitWnd(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nShowCmd);
@@ -21,14 +22,20 @@ private:
 	char*				FeatureLevelToString(D3D_FEATURE_LEVEL featureLevel);
 
 
-	int m_Width, m_Height;
-
 public:
 
 	DXWindow(void);
 	~DXWindow(void);
 
-	bool  InitWindow(int width, int height);
+	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+
+	int GetWidth() { return m_Width; }
+	int GetHeight() { return m_Height; }
+
+
+
+	HWND GetHWND() { return  m_hWndMain; }
+
 
 	
 };

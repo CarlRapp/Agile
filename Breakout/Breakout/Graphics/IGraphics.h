@@ -12,7 +12,9 @@ public:
 
 	virtual ~IGraphics(void) {};
 
-	virtual bool InitWindow(int width, int height) = 0;
+	virtual bool InitWindow(int x, int y, int width, int height) = 0;
+
+	virtual void Render() = 0;
 
 	static IGraphics* GetIGraphics();
 

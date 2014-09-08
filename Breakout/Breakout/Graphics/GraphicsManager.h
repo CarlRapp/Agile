@@ -24,7 +24,8 @@ public:
 	GraphicsManager();
 	~GraphicsManager(void);
 
-	bool  InitWindow(int width, int height);
+	bool	InitWindow(int x, int y, int width, int height);
+	void	Render();
 };
 
 
