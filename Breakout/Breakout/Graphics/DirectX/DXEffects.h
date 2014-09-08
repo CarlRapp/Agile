@@ -1,6 +1,6 @@
 #pragma once
-#ifndef EFFECTS_H
-#define EFFECTS_H
+#ifndef DXEFFECTS_H
+#define DXEFFECTS_H
 
 
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
@@ -21,16 +21,16 @@
 
 #pragma comment(lib, "Effects11D.lib")
 
-#pragma region Effect
-class Effect
+#pragma region DXEffect
+class DXEffect
 {
 public:
-	Effect(ID3D11Device* device, const std::wstring& filename);
-	virtual ~Effect();
+	DXEffect(ID3D11Device* device, const std::wstring& filename);
+	virtual ~DXEffect();
 
 private:
-	Effect(const Effect& rhs);
-	Effect& operator=(const Effect& rhs);
+	DXEffect(const DXEffect& rhs);
+	DXEffect& operator=(const DXEffect& rhs);
 
 protected:
 	ID3DX11Effect* mFX;
@@ -42,7 +42,7 @@ protected:
 
 
 #pragma region ObjectDeferredEffect
-class ObjectDeferredEffect : public Effect
+class ObjectDeferredEffect : public DXEffect
 {
 public:
 	ObjectDeferredEffect(ID3D11Device* device, const std::wstring& filename);
@@ -88,7 +88,7 @@ public:
 
 
 #pragma region TiledLightningEffect
-class TiledLightningEffect : public Effect
+class TiledLightningEffect : public DXEffect
 {
 public:
 	TiledLightningEffect(ID3D11Device* device, const std::wstring& filename);
@@ -148,7 +148,7 @@ public:
 
 
 #pragma region BuildShadowMapEffect
-class BuildShadowMapEffect : public Effect
+class BuildShadowMapEffect : public DXEffect
 {
 public:
 	BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename);
@@ -200,7 +200,7 @@ public:
 
 
 #pragma region ClearGBufferEffect
-class ClearGBufferEffect : public Effect
+class ClearGBufferEffect : public DXEffect
 {
 public:
 	ClearGBufferEffect(ID3D11Device* device, const std::wstring& filename);
@@ -211,7 +211,7 @@ public:
 #pragma endregion
 
 #pragma region ShadowMapEffect
-class ShadowMapEffect : public Effect
+class ShadowMapEffect : public DXEffect
 {
 public:
 	ShadowMapEffect(ID3D11Device* device, const std::wstring& filename);
@@ -250,7 +250,7 @@ public:
 #pragma endregion
 
 #pragma region CombineFinalEffect
-class CombineFinalEffect : public Effect
+class CombineFinalEffect : public DXEffect
 {
 public:
 	CombineFinalEffect(ID3D11Device* device, const std::wstring& filename);

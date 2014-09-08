@@ -1,8 +1,8 @@
 #include "DXEffects.h"
 
 
-#pragma region Effect
-Effect::Effect(ID3D11Device* device, const std::wstring& filename)
+#pragma region DXEffect
+DXEffect::DXEffect(ID3D11Device* device, const std::wstring& filename)
 	: mFX(0)
 {
 	std::ifstream fin(filename.c_str(), std::ios::binary);
@@ -19,7 +19,7 @@ Effect::Effect(ID3D11Device* device, const std::wstring& filename)
 		0, device, &mFX));
 }
 
-Effect::~Effect()
+DXEffect::~DXEffect()
 {
 	ReleaseCOM(mFX);
 }
@@ -31,7 +31,7 @@ Effect::~Effect()
 
 #pragma region ObjectDeferredEffect
 ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	BasicTech				= mFX->GetTechniqueByName("BasicTech");
 	TexTech					= mFX->GetTechniqueByName("TexTech");
@@ -68,7 +68,7 @@ ObjectDeferredEffect::~ObjectDeferredEffect()
 
 #pragma region TiledLightningEffect
 TiledLightningEffect::TiledLightningEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	Viewport1		= mFX->GetTechniqueByName("Viewport1");
 	Viewport2		= mFX->GetTechniqueByName("Viewport2");
@@ -108,7 +108,7 @@ TiledLightningEffect::~TiledLightningEffect()
 
 #pragma region BuildShadowMapEffect
 BuildShadowMapEffect::BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	BuildShadowMapTech           = mFX->GetTechniqueByName("BuildShadowMapTech");
 	BuildShadowMapAlphaClipTech  = mFX->GetTechniqueByName("BuildShadowMapAlphaClipTech");
@@ -151,7 +151,7 @@ BuildShadowMapEffect::~BuildShadowMapEffect()
 
 #pragma region ClearGBufferEffect
 ClearGBufferEffect::ClearGBufferEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	ClearTech  = mFX->GetTechniqueByName("ClearTech");
 }
@@ -163,7 +163,7 @@ ClearGBufferEffect::~ClearGBufferEffect()
 
 #pragma region ShadowMapEffect
 ShadowMapEffect::ShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	BasicShadowDirTech		= mFX->GetTechniqueByName("BasicShadowDir");
 	BasicShadowPointTech	= mFX->GetTechniqueByName("BasicShadowPoint");
@@ -193,7 +193,7 @@ ShadowMapEffect::~ShadowMapEffect()
 
 #pragma region CombineFinalEffect
 CombineFinalEffect::CombineFinalEffect(ID3D11Device* device, const std::wstring& filename)
-	: Effect(device, filename)
+: DXEffect(device, filename)
 {
 	MonoTech  = mFX->GetTechniqueByName("Mono");
 	ColorTech  = mFX->GetTechniqueByName("Color");
