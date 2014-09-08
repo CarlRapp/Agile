@@ -6,7 +6,7 @@
 
 #include <typeinfo>
 
-#include "../Graphics/ModelData.h"
+#include "../Storage/ModelData.h"
 
 class FileManager
 {

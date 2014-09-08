@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "../stdafx.h"
-#include "Vertex.h"
+#include "../Graphics/Vertex.h"
 
 class ModelData
 {
