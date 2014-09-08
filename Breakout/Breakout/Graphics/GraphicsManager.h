@@ -16,6 +16,8 @@
 class GraphicsManager
 {
 private:
+	GraphicsManager();
+	static GraphicsManager* m_gmInstance;
 
 	IGraphics *m_IGraphics;
 
@@ -24,8 +26,11 @@ public:
 
 	GraphicsManager();
 	~GraphicsManager(void);
+	static GraphicsManager* GetInstance();
+
 
 	bool	InitWindow(int x, int y, int width, int height);
+	IGraphics* GetIGraphics() { return m_IGraphics; }
 	void	Render();
 
 	//AddObject()

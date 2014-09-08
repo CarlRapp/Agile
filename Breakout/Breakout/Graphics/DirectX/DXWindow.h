@@ -37,7 +37,7 @@ public:
 	HWND GetHWND() { return  m_hWndMain; }
 
 
-	
+	HWND GetHandle(){ return g_hWndMain; }
 };
 
 

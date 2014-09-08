@@ -34,9 +34,8 @@ public:
 	~DXGraphics(void);
 
 	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
-
+	DXWindow* GetWindow(){ return m_Window; }
 	void	Render();
-
 };
 
 

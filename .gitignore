@@ -7,7 +7,7 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
+##*.dll
 
 # Compiled Static libraries
 *.lai
@@ -33,7 +33,7 @@
 [Rr]elease/
 [Rr]eleases/
 x64/
-x86/
+##x86/
 build/
 bld/
 [Bb]in/
