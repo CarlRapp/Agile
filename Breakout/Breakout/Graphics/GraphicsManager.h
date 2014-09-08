@@ -24,7 +24,6 @@ private:
 	//lista på objekt
 public:
 
-	GraphicsManager();
 	~GraphicsManager(void);
 	static GraphicsManager* GetInstance();
 
