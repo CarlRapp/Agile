@@ -117,8 +117,6 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
 	::ShowWindow(m_hWndMain, _show);
 	::UpdateWindow(m_hWndMain);
 
-	MoveWindow(m_hWndMain, 900, 200, rc.right - rc.left, rc.bottom - rc.top, true);
-
 	return true;
 }
 
