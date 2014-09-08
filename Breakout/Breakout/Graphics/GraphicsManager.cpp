@@ -4,7 +4,7 @@
 GraphicsManager::GraphicsManager(void)
 {
 #ifdef WINDOWS
-    m_IGraphics = new WinGraphics();
+    m_IGraphics = new DXGraphics();
 #else 
     m_IGraphics = new GLGraphics();
 #endif
