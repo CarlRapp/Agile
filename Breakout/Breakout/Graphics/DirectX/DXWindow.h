@@ -33,11 +33,7 @@ public:
 	int GetHeight() { return m_Height; }
 
 
-
-	HWND GetHWND() { return  m_hWndMain; }
-
-
-	HWND GetHandle(){ return g_hWndMain; }
+	HWND GetHandle(){ return m_hWndMain; }
 };
 
 
