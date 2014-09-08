@@ -69,17 +69,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\Entities\Entity.cpp" />
+    <ClCompile Include="Game\Entities\GameEntity.cpp" />
+    <ClCompile Include="Game\GameplayManager.cpp" />
+    <ClCompile Include="Game\PhysicsManager.cpp" />
+    <ClCompile Include="Game\Simulation.cpp" />
+    <ClCompile Include="Game\UserInterface.cpp" />
+    <ClCompile Include="Game\World.cpp" />
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
     <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
     <ClCompile Include="Graphics\GraphicsManager.cpp" />
     <ClCompile Include="Graphics\IGraphics.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="SystemComponents.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\Entities\Entity.h" />
+    <ClInclude Include="Game\Entities\GameEntity.h" />
+    <ClInclude Include="Game\GameplayManager.h" />
+    <ClInclude Include="Game\PhysicsManager.h" />
+    <ClInclude Include="Game\Simulation.h" />
+    <ClInclude Include="Game\UserInterface.h" />
+    <ClInclude Include="Game\World.h" />
     <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />
     <ClInclude Include="Graphics\GraphicsManager.h" />
     <ClInclude Include="Graphics\IGraphics.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="SystemComponents.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
