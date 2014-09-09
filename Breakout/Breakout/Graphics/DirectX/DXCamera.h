@@ -44,7 +44,7 @@ public:
 
 	//BoundingFrustum GetFrustum() = 0;
 
-	//D3D11_VIEWPORT GetViewPort() = 0;
+	void* GetViewPort() { return &m_ViewPort; }
 #pragma endregion
 
 #pragma region Set Functions
@@ -62,7 +62,13 @@ public:
 
 	//void SetLookAt(float x, float y, float z) = 0;
 
-	//void SetViewPort(int X, int Y, int Width, int Height) = 0;
+	void SetViewPort(int X, int Y, int Width, int Height)
+	{
+		m_ViewPort.TopLeftX = (float)X;
+		m_ViewPort.TopLeftY = (float)Y;
+		m_ViewPort.Width = (float)Width;
+		m_ViewPort.Height = (float)Height;
+	}
 
 #pragma endregion
 

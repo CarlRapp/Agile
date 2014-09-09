@@ -32,7 +32,7 @@ public:
 
 	//virtual BoundingFrustum GetFrustum() = 0;
 
-	//virtual D3D11_VIEWPORT GetViewPort() = 0;
+	virtual void* GetViewPort() = 0;
 #pragma endregion
 
 #pragma region Set Functions
@@ -50,7 +50,7 @@ public:
 
 	//virtual void SetLookAt(float x, float y, float z) = 0;
 
-	//virtual void SetViewPort(int X, int Y, int Width, int Height) = 0;
+	virtual void SetViewPort(int X, int Y, int Width, int Height) = 0;
 
 #pragma endregion
 
