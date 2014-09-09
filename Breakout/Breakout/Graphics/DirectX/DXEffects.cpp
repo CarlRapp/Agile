@@ -211,16 +211,16 @@ CombineFinalEffect::~CombineFinalEffect()
 }
 #pragma endregion
 
-#pragma region Effects
+#pragma region DXEffects
 
-BuildShadowMapEffect*  Effects::BuildShadowMapFX  = 0;
-ClearGBufferEffect*    Effects::ClearGBufferFX    = 0;
-CombineFinalEffect*	   Effects::CombineFinalFX    = 0;
-ObjectDeferredEffect*  Effects::ObjectDeferredFX  = 0;
-TiledLightningEffect*  Effects::TiledLightningFX  = 0;
-ShadowMapEffect*	   Effects::ShadowMapFX		  = 0;
+BuildShadowMapEffect*  DXEffects::BuildShadowMapFX = 0;
+ClearGBufferEffect*    DXEffects::ClearGBufferFX = 0;
+CombineFinalEffect*	   DXEffects::CombineFinalFX = 0;
+ObjectDeferredEffect*  DXEffects::ObjectDeferredFX = 0;
+TiledLightningEffect*  DXEffects::TiledLightningFX = 0;
+ShadowMapEffect*	   DXEffects::ShadowMapFX = 0;
 
-void Effects::InitAll(ID3D11Device* device)
+void DXEffects::InitAll(ID3D11Device* device)
 {
 	BuildShadowMapFX  = new BuildShadowMapEffect(device, L"Graphics/DirectX/Shaders/BuildShadowMap.fxo");
 	ClearGBufferFX    = new ClearGBufferEffect(device, L"Graphics/DirectX/Shaders/ClearGBuffer.fxo");
@@ -230,7 +230,7 @@ void Effects::InitAll(ID3D11Device* device)
 	ShadowMapFX		  = new ShadowMapEffect(device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
 }
 
-void Effects::DestroyAll()
+void DXEffects::DestroyAll()
 {
 	SafeDelete(BuildShadowMapFX);
 	SafeDelete(ClearGBufferFX);

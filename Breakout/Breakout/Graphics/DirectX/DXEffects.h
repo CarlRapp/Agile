@@ -272,7 +272,7 @@ public:
 #pragma endregion
 
 #pragma region Effects
-class Effects
+class DXEffects
 {
 public:
 	static void InitAll(ID3D11Device* device);
