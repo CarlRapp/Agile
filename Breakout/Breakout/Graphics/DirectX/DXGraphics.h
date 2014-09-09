@@ -7,6 +7,7 @@
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
+#include "DXDeferred.h"
 
 class DXGraphics : public IGraphics
 {
@@ -22,6 +23,8 @@ private:
 	ID3D11DepthStencilView	*m_DepthStencilView = NULL;
 	ID3D11Device			*m_Device = NULL;
 	ID3D11DeviceContext		*m_DeviceContext = NULL;
+
+	DXDeferred				*m_DXDeferred = NULL;
 
 
 	HRESULT					InitDirect3D();

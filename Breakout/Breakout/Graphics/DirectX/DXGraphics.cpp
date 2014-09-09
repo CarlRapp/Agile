@@ -27,12 +27,12 @@ bool DXGraphics::InitWindow(int _X, int _Y, int _Width, int _Height)
 		return false;
 	}
 
+	m_DXDeferred = new DXDeferred();
+	m_DXDeferred->Init(m_Device, m_DeviceContext, m_RenderTargetView, _Width, _Height);
+
 
 	float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 0.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
-
-	if (FAILED(m_SwapChain->Present(0, 0)))
-		return E_FAIL;
 
 	return true;
 }
@@ -159,5 +159,11 @@ HRESULT DXGraphics::InitDirect3D()
 
 void DXGraphics::Render()
 {
+	float ClearColor[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
+	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+	m_DXDeferred->Render(m_RenderTargetView);
 
+
+
+	m_SwapChain->Present(0, 0);
 }
