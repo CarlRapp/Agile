@@ -38,8 +38,11 @@ private:
 	void					InitBuffers();
 
 	void					ClearBuffers();
-	void					FillGBuffer();
+	void					FillGBuffer(ICamera* _Camera);
 	void					CombineFinal();
+
+	void					InitTestTriangle();
+	void					RenderTestTriangle(ICamera* _Camera);
 
 
 public:

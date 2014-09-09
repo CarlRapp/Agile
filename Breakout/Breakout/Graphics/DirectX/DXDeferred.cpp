@@ -36,8 +36,9 @@ void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext
 	m_ViewPort.Height = (float)m_Height;
 
 	DXRenderStates::InitAll(m_Device);
+	DXEffects::InitAll(m_Device);
 
-	//InitTestTriangle();
+	InitTestTriangle();
 
 	InitBuffers();
 
@@ -146,12 +147,65 @@ void DXDeferred::ClearBuffers()
 
 }
 
+void DXDeferred::FillGBuffer(ICamera* _Camera)
+{
+	m_DeviceContext->OMSetRenderTargets(2, GBuffer, m_DepthStencilView);
+
+
+	m_DeviceContext->OMSetDepthStencilState(DXRenderStates::LessDSS, 0);
+
+	m_DeviceContext->RSSetState(DXRenderStates::NoCullRS);
+	//m_DeviceContext->RSSetState(RenderStates::WireframeRS);
+	RenderTestTriangle(_Camera);
+
+	m_DeviceContext->OMSetRenderTargets(0, 0, 0);
+}
+
+void DXDeferred::InitTestTriangle()
+{
+
+}
+
+void DXDeferred::RenderTestTriangle(ICamera* _Camera)
+{
+	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_Camera->GetViewPort();
+	m_DeviceContext->RSSetViewports(1, vp);
+
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX proj;
+
+	DirectX::XMFLOAT4X4 view4x4, proj4x4;
+	memcpy(&view4x4, &_Camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&proj4x4, &_Camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
+
+	view = DirectX::XMLoadFloat4x4(&view4x4);
+	proj = DirectX::XMLoadFloat4x4(&proj4x4);
+
+	ID3DX11EffectTechnique* tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+
+	//Static
+
+	tech = DXEffects::ObjectDeferredFX->BasicTech;
+	tech->GetDesc(&techDesc);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		
+		//rendera triangel
+
+	}
+
+	//reset textures
+	DXEffects::ObjectDeferredFX->SetDiffuseMap(NULL);
+	DXEffects::ObjectDeferredFX->SetNormalMap(NULL);
+}
+
 
 void DXDeferred::Render(ID3D11RenderTargetView *_RenderTargetView, ICamera* _Camera)
 {
 	m_DeviceContext->OMSetBlendState(DXRenderStates::OpaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
-	//FillGBuffer();
+	FillGBuffer(_Camera);
 	//shadowmap->Render();
 	//CombineFinal();
 }
