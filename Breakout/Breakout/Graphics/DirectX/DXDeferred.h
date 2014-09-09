@@ -7,6 +7,7 @@
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
+#include "../ICamera.h"
 
 
 class DXDeferred
@@ -48,7 +49,7 @@ public:
 
 	void Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, ID3D11RenderTargetView *_RenderTargetView, int _Width, int _Height);
 
-	void	Render(ID3D11RenderTargetView *_RenderTargetView);
+	void	Render(ID3D11RenderTargetView *_RenderTargetView, ICamera* _Camera);
 
 };
 

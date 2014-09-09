@@ -8,6 +8,7 @@
 #include "../IGraphics.h"
 #include "DXWindow.h"
 #include "DXDeferred.h"
+#include "../ICamera.h"
 
 class DXGraphics : public IGraphics
 {
@@ -38,7 +39,7 @@ public:
 
 	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
 	DXWindow* GetWindow(){ return m_Window; }
-	void	Render();
+	void	Render(ICamera* _Camera);
 };
 
 

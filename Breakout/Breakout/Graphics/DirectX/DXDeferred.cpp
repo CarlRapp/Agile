@@ -147,7 +147,7 @@ void DXDeferred::ClearBuffers()
 }
 
 
-void DXDeferred::Render(ID3D11RenderTargetView *_RenderTargetView)
+void DXDeferred::Render(ID3D11RenderTargetView *_RenderTargetView, ICamera* _Camera)
 {
 	m_DeviceContext->OMSetBlendState(DXRenderStates::OpaqueBS, NULL, 0xffffffff);
 	ClearBuffers();

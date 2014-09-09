@@ -157,11 +157,11 @@ HRESULT DXGraphics::InitDirect3D()
 }
 
 
-void DXGraphics::Render()
+void DXGraphics::Render(ICamera* _Camera)
 {
-	float ClearColor[4] = { 0.0f, 1.0f, 0.0f, 0.0f };
+	float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
-	m_DXDeferred->Render(m_RenderTargetView);
+	m_DXDeferred->Render(m_RenderTargetView, _Camera);
 
 
 

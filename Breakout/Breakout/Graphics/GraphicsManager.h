@@ -7,6 +7,7 @@
 #endif
 
 #include "IGraphics.h"
+#include "ICamera.h"
 
 class GraphicsManager
 {
@@ -15,6 +16,7 @@ private:
 	static GraphicsManager* m_gmInstance;
 
 	IGraphics *m_IGraphics;
+	ICamera	*m_ICamera;
 
 	//lista på objekt
 public:
