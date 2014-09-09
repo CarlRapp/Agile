@@ -4,6 +4,11 @@
 #include <string>
 
 #define PI (3.14159265358979323846f)
+#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
+#define SafeDelete(x) { delete x; x = 0; }
+
+
+typedef unsigned int        UINT;
 
 struct Vector2;
 struct Vector3;
