@@ -2,9 +2,7 @@
 #ifndef DXEFFECTS_H
 #define DXEFFECTS_H
 
-
-#define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-#define SafeDelete(x) { delete x; x = 0; }
+#include "../../stdafx.h"
 
 #include <D3D11.h>
 #include <d3dCompiler.h>
