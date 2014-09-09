@@ -28,10 +28,10 @@ bool DXGraphics::InitWindow(int _X, int _Y, int _Width, int _Height)
 	}
 
 	m_DXDeferred = new DXDeferred();
-	m_DXDeferred->Init(m_Device, m_DeviceContext, m_RenderTargetView, _Width, _Height);
+	m_DXDeferred->Init(m_Device, m_DeviceContext, _Width, _Height);
 
 
-	float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 0.0f };
+	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
 
 	return true;
@@ -159,8 +159,15 @@ HRESULT DXGraphics::InitDirect3D()
 
 void DXGraphics::Render(ICamera* _Camera)
 {
-	float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
-	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
+	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+
+
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+
+
 	m_DXDeferred->Render(m_RenderTargetView, _Camera);
 
 
