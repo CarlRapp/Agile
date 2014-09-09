@@ -6,11 +6,6 @@
 #include <windows.h>
 #endif
 
-#ifdef DIRECTX
-#include <D3D11.h>
-#include <d3dCompiler.h>
-#endif
-
 #include "IGraphics.h"
 
 class GraphicsManager
