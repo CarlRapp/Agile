@@ -3,8 +3,9 @@
 #include <ctime> 
 #include <iostream>
 #include <stdio.h>
-//#include <io.h>
-//#include <fcntl.h>
+
+#include <SDL/SDL.h>
+#include <GL/glew.h>
 
 
 GLWindow::GLWindow(void)
@@ -34,10 +35,10 @@ bool GLWindow::InitWnd()
     //Create Window 
     if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL ) == NULL ) 
     { return false; } 
-    //Initialize OpenGL if( initGL() == false ) 
-    { return false; } 
     //Set caption 
     SDL_WM_SetCaption( "OpenGL Test", NULL ); 
+    
+    std::cout << "SDL Window Success\n";
     
     return true; 
 }
@@ -66,7 +67,7 @@ bool GLWindow::InitGL()
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     glOrtho( 0.0, m_width, m_height, 0.0, 1.0, -1.0 );
-
+    //glFrustum();
     //Initialize Modelview Matrix
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
@@ -79,29 +80,18 @@ bool GLWindow::InitGL()
 
     //Set blending
     glEnable( GL_BLEND );
-    glDisable( GL_DEPTH_TEST );
+    glEnable( GL_DEPTH_TEST );
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     //Check for error
     GLenum error = glGetError();
     if( error != GL_NO_ERROR )
     {
-        printf( "Error initializing OpenGL! %s\n", int( error ) );
+        printf( "Error initializing OpenGL!");
         return false;
     }
-
-//    //Initialize DevIL and DevILU
-//    ilInit();
-//    iluInit();
-//    ilClearColour( 255, 255, 255, 000 );
-//
-//    //Check for error
-//    ILenum ilError = ilGetError();
-//    if( ilError != IL_NO_ERROR )
-//    {
-//        printf( "Error initializing DevIL! %s", iluErrorString( ilError ) );
-//        return false;
-//    }
+    
+    std::cout << "OGL Window Success\n";
 
     return true;
 }

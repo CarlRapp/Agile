@@ -11,7 +11,7 @@ public:
 	virtual ~IGraphics(void) {};
 
 	virtual bool InitWindow(int width, int height) = 0;
-
+        virtual bool Init3D()=0;
 	IGraphics* GetIGraphics();
         virtual void Render();
 };

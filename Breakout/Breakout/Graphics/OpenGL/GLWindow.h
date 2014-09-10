@@ -2,9 +2,6 @@
 #ifndef GLWINDOW_H
 #define GLWINDOW_H
 
-#include <SDL/SDL.h>
-#include <GL/glew.h>
-
 class GLWindow
 {
 private:
@@ -17,7 +14,6 @@ private:
 	int				Run();
 	int				Render(float deltaTime);
 	int				Update(float deltaTime);
-	int				InitDirect3D();
 	char*				FeatureLevelToString();
 
 

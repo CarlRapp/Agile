@@ -29,3 +29,8 @@ void GraphicsManager::Render()
 {
     m_IGraphics->Render();
 }
+
+bool GraphicsManager::Init3D()
+{
+    m_IGraphics->Init3D();
+}

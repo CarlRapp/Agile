@@ -10,8 +10,11 @@
 #include <d3dCompiler.h>
 #endif
 
-#include "IGraphics.h"
+//#ifdef OPENGL
 #include "OpenGL/GLGraphics.h"
+//#endif
+
+#include "IGraphics.h"
 
 class GraphicsManager
 {
@@ -24,9 +27,10 @@ public:
 	GraphicsManager();
 	~GraphicsManager(void);
 
-	bool  InitWindow(int width, int height);
-        IGraphics* GetInstance();
-        void Render();
+	bool        InitWindow(int width, int height);
+        bool        Init3D();
+        IGraphics*  GetInstance();
+        void        Render();
 };
 
 
