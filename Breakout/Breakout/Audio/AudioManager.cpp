@@ -1,14 +1,5 @@
 #include "AudioManager.h"
 
-AudioManager* AudioManager::m_audioManager = 0;
-AudioManager* AudioManager::getInstance()
-{
-	if (m_audioManager)
-		return m_audioManager;
-
-	return m_audioManager = new AudioManager();
-}
-
 AudioManager::AudioManager()
 :m_initialized(false)
 {
@@ -33,22 +24,6 @@ bool AudioManager::Initialize()
 		return false;
 
 	m_initialized = true;
-
-	return true;
-}
-
-bool AudioManager::LoadMusic(const char* _filePath, const char* _fileName, Mix_Music* _music)
-{
-	if (!m_audio->LoadMusic(_filePath, _fileName, _music))
-		return false;
-
-	return true;
-}
-
-bool AudioManager::LoadSoundEffect(const char* _filePath, const char* _fileName, Mix_Chunk* _soundEffect)
-{
-	if (!m_audio->LoadSoundEffect(_filePath, _fileName, _soundEffect))
-		return false;
 
 	return true;
 }
