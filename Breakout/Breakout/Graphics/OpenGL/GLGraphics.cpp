@@ -69,20 +69,10 @@ bool GLGraphics::Init3D()
     return true; 
 } 
 
-void GLGraphics::LoadModel()
+void GLGraphics::LoadModel(std::string _path)
 {
-    float points[] =
-    {
-            0.0f, 0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f
-    };
-    float points_c[] =
-    {
-            1.0f, 0, 0,
-            0, 0, 1.0f,
-            0, 1.0f, 0
-    };
+
+    FileManager::GetInstance().LoadModel(_path);
         
     glGenBuffers(1, &ibo_cube_elements);
     glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
@@ -125,13 +115,15 @@ void GLGraphics::Render()
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glBindVertexArray(ibo_cube_elements);
+    
     glDrawArrays(GL_TRIANGLES, 0, 9);
 
     glBindVertexArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glUseProgram(NULL);
+    glUseProgram(0);
     
     SDL_GL_SwapBuffers( );
     
