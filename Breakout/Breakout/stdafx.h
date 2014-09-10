@@ -42,9 +42,6 @@ static std::string GetFile(std::string _path, std::string _root)
 
     std::string temp = _root;
     
-	
-	GetModuleFileName(NULL, m_cwd, sizeof(m_cwd));
-
     if (!getcwd(m_cwd, sizeof(m_cwd)))
         {
             printf ("Unable to find current working directory!\n");
@@ -103,7 +100,7 @@ public:
 		float m10, float m11, float m12, float m13,
 		float m20, float m21, float m22, float m23,
 		float m30, float m31, float m32, float m33);
-	explicit Float4x4(_In_reads_(16) const float *pArray);
+	//explicit Float4x4(_In_reads_(16) const float *pArray);
 
 	float       operator() (size_t Row, size_t Column) const { return m[Row][Column]; }
 	float&      operator() (size_t Row, size_t Column) { return m[Row][Column]; }

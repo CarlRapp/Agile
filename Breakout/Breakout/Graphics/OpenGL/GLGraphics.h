@@ -46,9 +46,9 @@ public:
 	GLGraphics(void);
 	~GLGraphics(void);
 
-	bool  InitWindow(int x, int y, int width, int height);
-        void Render();
-        bool Init3D();
+	bool  InitWindow(int x, int y, int width, int height, DisplayMode _displayMode);
+        void Render(ICamera* _Camera);
+        bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
         void Free();
         void Update();

@@ -25,19 +25,18 @@ int main(int argc, char** argv)
 
         time_t startTime = time(0);
 
-		DisplayMode displayMode = DisplayMode::BorderlessWindow;
+	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 
-		
-        
+
         double secondsElapsed;
 
         m_GraphicsManager = GraphicsManager::GetInstance();
-		m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
-
-		m_GraphicsManager->Init3D(displayMode);
-
         
-	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
+	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
+
+	m_GraphicsManager->Init3D(displayMode);
+        
+	//Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
 	m_AudioManager = &AudioManager::GetInstance();
 

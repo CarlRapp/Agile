@@ -14,7 +14,7 @@ GLGraphics::~GLGraphics(void)
         m_shaders.pop_back();
 }
 
-bool GLGraphics::InitWindow(int x, int y, int width, int height)
+bool GLGraphics::InitWindow(int x, int y, int width, int height, DisplayMode _displayMode)
 {
     
     m_screenHeight = height;
@@ -25,7 +25,7 @@ bool GLGraphics::InitWindow(int x, int y, int width, int height)
 
 
 
-bool GLGraphics::Init3D() 
+bool GLGraphics::Init3D(DisplayMode _displayMode) 
 { 
     m_window->InitGL();
 
@@ -64,7 +64,7 @@ bool GLGraphics::Init3D()
     }
   
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
-    LoadModel("sphere.obj");
+    LoadModel("triangle.obj");
     return true; 
 } 
 
@@ -120,7 +120,7 @@ void GLGraphics::Free()
 //    glDeleteBuffers(1, &ibo_cube_elements);
 }
 
-void GLGraphics::Render() 
+void GLGraphics::Render(ICamera* _camera) 
 { 
     glClearColor(1.0, 0.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
