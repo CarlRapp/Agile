@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 {
 
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 100, 400, 100);
+	m_GraphicsManager->InitWindow(100, 100, 1000, 800, DisplayMode::BorderlessWindow);
 
 	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
