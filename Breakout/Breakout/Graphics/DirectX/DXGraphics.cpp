@@ -161,7 +161,7 @@ void DXGraphics::Render(ICamera* _Camera)
 {
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	//m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 
 
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
@@ -171,6 +171,8 @@ void DXGraphics::Render(ICamera* _Camera)
 	m_DXDeferred->Render(m_RenderTargetView, _Camera);
 
 
-
-	m_SwapChain->Present(0, 0);
+	if (FAILED(m_SwapChain->Present(0, 0)))
+	{
+		int a = 2;
+	}
 }
