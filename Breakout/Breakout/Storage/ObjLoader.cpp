@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "ObjLoader.h"
 
 
@@ -170,38 +169,40 @@ ModelData* ObjLoader::LoadObjFile(std::string filePath)
 	std::vector<Vector3> vertexNormals = std::vector<Vector3>();
 	std::vector<Vertex> vertices = std::vector<Vertex>();
 
-	std::ifstream myFile;
-	myFile.open(filePath);
+	std::ifstream myFile(filePath);
 	std::string currentLine;
 	ObjToken currentToken;
-
-	while (!myFile.eof())
+	
+	if (!myFile.bad())
 	{
-		getline(myFile, currentLine);
-
-		if (currentLine.length() > 0)
+		while (getline(myFile, currentLine))
 		{
-			currentToken = GetToken(currentLine);
-			switch (currentToken)
+			int a = 2;
+			if (currentLine.length() > 0)
 			{
-			case VERTEX_POSITION:
-				vertexPositions.push_back(ConvertToPosition(currentLine, currentToken));
-				break;
+				currentToken = GetToken(currentLine);
+				switch (currentToken)
+				{
+				case VERTEX_POSITION:
+					vertexPositions.push_back(ConvertToPosition(currentLine, currentToken));
+					break;
 
-			case VERTEX_TEXPOS:
-				texturePositions.push_back(ConvertToPosition(currentLine, currentToken).ToVector2());
-				break;
+				case VERTEX_TEXPOS:
+					texturePositions.push_back(ConvertToPosition(currentLine, currentToken).ToVector2());
+					break;
 
-			case VERTEX_NORMAL:
-				vertexNormals.push_back(ConvertToPosition(currentLine, currentToken));
-				break;
+				case VERTEX_NORMAL:
+					vertexNormals.push_back(ConvertToPosition(currentLine, currentToken));
+					break;
 
-			case FACE_DATA:
-				GetVertices(currentLine, vertexPositions, texturePositions, vertexNormals, vertices);
-				break;
+				case FACE_DATA:
+					GetVertices(currentLine, vertexPositions, texturePositions, vertexNormals, vertices);
+					break;
+				}
 			}
 		}
 	}
+
 	myFile.close();
 
 	return new ModelData(vertices);
