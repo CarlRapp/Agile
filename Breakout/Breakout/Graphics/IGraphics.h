@@ -4,6 +4,12 @@
 
 #include "ICamera.h"
 
+
+enum DisplayMode
+{
+	Fullscreen, Windowed, BorderlessWindow
+};
+
 class IGraphics
 {
 private:
@@ -11,9 +17,10 @@ private:
 
 public:
 
+
 	virtual ~IGraphics(void) {};
 
-	virtual bool InitWindow(int x, int y, int width, int height) = 0;
+	virtual bool InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode) = 0;
 
 	virtual void Render(ICamera* _Camera) = 0;
 

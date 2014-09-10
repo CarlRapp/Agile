@@ -28,7 +28,7 @@ private:
 	DXDeferred				*m_DXDeferred = NULL;
 
 
-	HRESULT					InitDirect3D();
+	HRESULT					InitDirect3D(DisplayMode _displayMode);
 
 
 
@@ -37,7 +37,7 @@ public:
 	DXGraphics(void);
 	~DXGraphics(void);
 
-	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_Window; }
 	void	Render(ICamera* _Camera);
 };

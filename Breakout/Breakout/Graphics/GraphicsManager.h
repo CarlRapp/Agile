@@ -25,7 +25,7 @@ public:
 	static GraphicsManager* GetInstance();
 
 
-	bool	InitWindow(int x, int y, int width, int height);
+	bool	InitWindow(int x, int y, int width, int height, DisplayMode _displayMode);
 	IGraphics* GetIGraphics() { return m_IGraphics; }
 	void	Render();
 
