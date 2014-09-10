@@ -14,19 +14,18 @@ private:
 	int				Run();
 	int				Render(float deltaTime);
 	int				Update(float deltaTime);
-	int				InitDirect3D();
 	char*				FeatureLevelToString();
 
 
-	int m_Width, m_Height;
+	int m_width, m_height;
 
 public:
 
 	GLWindow(void);
 	~GLWindow(void);
 
-	bool  InitWindow(int width, int height);
-
+	bool InitWindow(int x, int y, int width, int height);
+        bool InitGL();
 	
 };
 

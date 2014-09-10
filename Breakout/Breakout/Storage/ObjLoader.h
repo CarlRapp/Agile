@@ -4,8 +4,9 @@
 #include <vector>
 #include <fstream>
 
+#include "../stdafx.h"
 #include "../Graphics/Vertex.h"
-#include "../Graphics/ModelData.h"
+#include "ModelData.h"
 
 //	Define here what the string values
 //	for each token
@@ -36,23 +37,14 @@ enum ObjToken
 
 class ObjLoader
 {
-
-	/*std::vector<Position>	vertexPositions;
-	std::vector<Position>	vertexTexturePos;
-	std::vector<Position>	vertexNormals;
-	std::vector<VERTEX>		objVertices;
-	*/
-	
-	
-	
-	ObjToken GetToken(std::string objLine);
-	Vector3 ConvertToPosition(std::string line, ObjToken token);
-	void GetVertices(std::string line, std::vector<Vector3>& positions, std::vector<Vector2>& texCoords, std::vector<Vector3>& normals, std::vector<Vertex>& vertices);
-
-public:
 	ObjLoader();
 	~ObjLoader(void);
+	
+	static ObjToken GetToken(std::string objLine);
+	static Vector3 ConvertToPosition(std::string line, ObjToken token);
+	static void GetVertices(std::string line, std::vector<Vector3>& positions, std::vector<Vector2>& texCoords, std::vector<Vector3>& normals, std::vector<Vertex>& vertices);
 
-	ModelData* LoadObjFile(std::string filePath);
+public:
+	static ModelData* LoadObjFile(std::string filePath);
 };
 #endif

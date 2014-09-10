@@ -3,13 +3,15 @@
 #include <ctime> 
 #include <iostream>
 #include <stdio.h>
-//#include <io.h>
-#include <fcntl.h>
+
+#include <SDL/SDL.h>
+#include <GL/glew.h>
+
 
 GLWindow::GLWindow(void)
 {
-	m_Width = 0;
-	m_Height = 0;
+	m_width = 0;
+	m_height = 0;
 }
 
 GLWindow::~GLWindow(void)
@@ -17,104 +19,85 @@ GLWindow::~GLWindow(void)
 
 }
 
-
-bool GLWindow::InitWindow(int width, int height)
+bool GLWindow::InitWindow(int x, int y, int width, int height)
 {
-	m_Width = width;
-	m_Height = height;
+	m_width = width;
+	m_height = height;
+        
 	return InitWnd();
 }
 
-
-
 bool GLWindow::InitWnd()
 {
-//	AllocConsole();
-//
-//	HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-//	int hCrt = _open_osfhandle((long)handle_out, _O_TEXT);
-//	FILE* hf_out = _fdopen(hCrt, "w");
-//	setvbuf(hf_out, NULL, _IONBF, 1);
-//	*stdout = *hf_out;
-//
-//	HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
-//	hCrt = _open_osfhandle((long)handle_in, _O_TEXT);
-//	FILE* hf_in = _fdopen(hCrt, "r");
-//	setvbuf(hf_in, NULL, _IONBF, 128);
-//	*stdin = *hf_in;
-//
-//	if (!InitWndApp(hInstance, nShowCmd))
-//	{
-//		::MessageBox(0, "Initalaization Failed", "Error", MB_OK);
-//		return 0;
-//	}
-
-	return 1;
+ //Initialize SDL 
+    if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) 
+    { return false; } 
+    //Create Window 
+    if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL ) == NULL ) 
+    { return false; } 
+    //Set caption 
+    SDL_WM_SetCaption( "OpenGL Test", NULL ); 
+    
+    std::cout << "SDL Window Success\n";
+    
+    return true; 
 }
 
-int WndProc()
+bool GLWindow::InitGL()
 {
-//	switch (msg)
-//	{
-//	case WM_CLOSE:
-//		DestroyWindow(hwnd);
-//		break;
-//	case WM_DESTROY:
-//		PostQuitMessage(0);
-//		break;
-//	default:
-//		return DefWindowProc(hwnd, msg, wParam, lParam);
-//	}
-	return 0;
+    //Initialize GLEW
+    GLenum glewError = glewInit();
+    if( glewError != GLEW_OK )
+    {
+        printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+        return false;
+    }
+
+    //Make sure OpenGL 2.1 is supported
+    if( !GLEW_VERSION_2_1 )
+    {
+        printf( "OpenGL 2.1 not supported!\n" );
+        return false;
+    }
+
+    //Set the viewport
+    glViewport( 0.f, 0.f, m_width, m_height );
+
+    //Initialize Projection Matrix
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, m_width, m_height, 0.0, 1.0, -1.0 );
+    //glFrustum();
+    //Initialize Modelview Matrix
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    //Initialize clear color
+    glClearColor( 0.f, 0.f, 0.f, 1.f );
+
+    //Enable texturing
+    glEnable( GL_TEXTURE_2D );
+
+    //Set blending
+    glEnable( GL_BLEND );
+    glEnable( GL_DEPTH_TEST );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    //Check for error
+    GLenum error = glGetError();
+    if( error != GL_NO_ERROR )
+    {
+        printf( "Error initializing OpenGL!");
+        return false;
+    }
+    
+    std::cout << "OGL Window Success\n";
+
+    return true;
 }
 
 bool GLWindow::InitWndApp()
 {
-//	WNDCLASS wc;
-//	wc.style = CS_HREDRAW | CS_VREDRAW;
-//	//wc.lpfnWndProc = WndProc;
-//	wc.lpfnWndProc = WndProc;
-//	wc.cbClsExtra = 0;
-//	wc.cbWndExtra = 0;
-//	wc.hInstance = hInstanceHandle;
-//	wc.hIcon = ::LoadIconA(0, IDI_APPLICATION);
-//	wc.hCursor = ::LoadCursor(0, IDC_ARROW);
-//	wc.hbrBackground = static_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH));
-//	wc.lpszMenuName = 0;
-//	wc.lpszClassName = "Window";
-//
-//	if (!RegisterClass(&wc))
-//	{
-//		::MessageBox(0, "Failed to register WNDCLASS", 0, MB_OK);
-//		return 0;
-//	}
-//
-//	DWORD	wStyle = WS_POPUP;
-//
-//	RECT rc = { 0, 0, m_Width, m_Height };
-//	AdjustWindowRect(&rc, wStyle, FALSE);
-//
-//	g_hWndMain = ::CreateWindow("Window",
-//		"Breakout",
-//		wStyle,
-//		CW_USEDEFAULT,
-//		CW_USEDEFAULT,
-//		rc.right - rc.left,
-//		rc.bottom - rc.top,
-//		0,
-//		0,
-//		hInstanceHandle,
-//		0);
-//
-//	if (g_hWndMain == 0)
-//	{
-//		::MessageBox(0, "Failed to create WNDCLASS", 0, MB_OK);
-//		return 0;
-//	}
-//
-//
-//	::ShowWindow(g_hWndMain, show);
-//	::UpdateWindow(g_hWndMain);
 
 	return true;
 }

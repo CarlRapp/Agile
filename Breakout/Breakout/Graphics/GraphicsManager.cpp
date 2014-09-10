@@ -4,7 +4,11 @@ GraphicsManager* GraphicsManager::m_gmInstance = 0;
 
 GraphicsManager::GraphicsManager(void)
 {
-	m_IGraphics = IGraphics::GetIGraphics();
+#ifdef WINDOWS
+    m_IGraphics = new DXGraphics();
+#else 
+    m_IGraphics = new GLGraphics();
+#endif
 }
 
 GraphicsManager* GraphicsManager::GetInstance()
@@ -30,7 +34,13 @@ bool GraphicsManager::InitWindow(int x, int y, int width, int height, DisplayMod
 	return m_IGraphics->InitWindow(x, y, width, height, _displayMode);
 }
 
+
 void GraphicsManager::Render()
 {
 	return m_IGraphics->Render(m_ICamera);
+}
+
+bool GraphicsManager::Init3D()
+{
+    m_IGraphics->Init3D();
 }

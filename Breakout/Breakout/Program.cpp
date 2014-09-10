@@ -1,6 +1,11 @@
-#include "Graphics/GraphicsManager.h"
+#include "./Graphics/GraphicsManager.h"
+#include <iostream>
+#include <string>
+#include <time.h>
+
 #include "Audio/AudioManager.h"
 #include "Input/InputManager.h"
+#include "Storage/FileManager.h"
 #include <SDL.h>
 
 GraphicsManager *m_GraphicsManager;
@@ -11,54 +16,43 @@ InputManager* m_InputManager;
 int main(int argc, char** argv)
 {
 
-	m_GraphicsManager = GraphicsManager::GetInstance();
+        time_t startTime = time(0);
 	m_GraphicsManager->InitWindow(100, 100, 1000, 800, DisplayMode::BorderlessWindow);
+        
+        double secondsElapsed;
 
-	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
+        m_GraphicsManager = GraphicsManager::GetInstance();
 
+	m_GraphicsManager->InitWindow(100, 100, 400, 400);
 
-	m_AudioManager = AudioManager::getInstance();
+        m_GraphicsManager->Init3D();
+
+        
+	//Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
+
+	m_AudioManager = &AudioManager::GetInstance();
+
 	if (!m_AudioManager->Initialize())
 		return false;
 
-	if (!m_AudioManager->LoadMusic("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Yamaha-SY-35-Clarinet-C5.wav", "Sound1", 0))
-	{
-		system("pause");
-		return false;
-	}
+	//m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", -1);
 
-	if (!m_AudioManager->LoadMusic("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Kettle-Drum-1.wav", "Sound2", 0))
-	{
-		system("pause");
-		return false;
-	}
+	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 
-	if (!m_AudioManager->LoadSoundEffect("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Electric-Bass-Low-C-Staccato.wav", "Effect1", 0))
-	{
-		system("pause");
-		return false;
-	}
-
-	m_AudioManager->PlayMusic("Sound1",-1);
-	
-
-	while (true)
-	{
-		m_InputManager->GetInstance()->Update();
-
-		if (mouse->GetButtonState(VK_LBUTTON) == InputState::Pressed)
-			m_AudioManager->PlaySoundEffect("Effect1");
-
-		SDL_Delay(100);
-
-	}
-
-
-
-
-
-
-	system("pause");
+        while(difftime(time(0),startTime)<5)
+            m_GraphicsManager->Render();
 
 	return 0;
 }
+//
+//int LinuxInit()
+//{
+//    
+//    return 0;
+//}
+//
+//int WindowsInit()
+//{
+//    
+//    return 0;
+//}

@@ -1,13 +1,23 @@
-#pragma once
 #ifndef GRAPHICSMANAGER_H
 #define GRAPHICSMANAGER_H
+#include "IGraphics.h"
+#include "ICamera.h"
+
 
 #ifdef WINDOWS
 #include <windows.h>
 #endif
 
-#include "IGraphics.h"
-#include "ICamera.h"
+#ifdef DIRECTX
+#include <D3D11.h>
+#include <d3dCompiler.h>
+#endif
+
+#ifdef OPENGL
+#include "OpenGL/GLGraphics.h"
+#endif
+
+
 
 class GraphicsManager
 {
@@ -18,7 +28,6 @@ private:
 	IGraphics *m_IGraphics;
 	ICamera	*m_ICamera;
 
-	//lista på objekt
 public:
 
 	~GraphicsManager(void);
@@ -32,6 +41,7 @@ public:
 	//AddObject()
 	//RemoveObject()
 
+        bool        Init3D();
 };
 
 
