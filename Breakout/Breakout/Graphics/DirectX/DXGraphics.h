@@ -12,7 +12,20 @@ class DXGraphics : public IGraphics
 {
 
 private:
-	DXWindow *m_Window;
+	DXWindow				*m_Window;
+
+
+	IDXGISwapChain			*m_SwapChain = NULL;
+	ID3D11RenderTargetView	*m_RenderTargetView = NULL;
+
+	ID3D11Texture2D			*m_DepthStencil = NULL;
+	ID3D11DepthStencilView	*m_DepthStencilView = NULL;
+	ID3D11Device			*m_Device = NULL;
+	ID3D11DeviceContext		*m_DeviceContext = NULL;
+
+
+	HRESULT					InitDirect3D();
+
 
 
 public:
@@ -20,8 +33,9 @@ public:
 	DXGraphics(void);
 	~DXGraphics(void);
 
-	bool  InitWindow(int width, int height);
-
+	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+	DXWindow* GetWindow(){ return m_Window; }
+	void	Render();
 };
 
 

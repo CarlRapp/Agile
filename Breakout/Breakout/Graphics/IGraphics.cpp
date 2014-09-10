@@ -1,11 +1,8 @@
-#include "IGraphics.h"
+//#include "IGraphics.h"
+//
+//#ifdef DIRECTX
+//#include "DirectX\DXGraphics.h"
+//#else
+//#include "OpenGL/GLGraphics.h"
+//#endif
 
-IGraphics* IGraphics::GetIGraphics()
-{
-
-}
-
-void IGraphics::Render()
-{
-    
-}

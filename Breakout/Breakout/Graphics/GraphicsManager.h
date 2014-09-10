@@ -1,5 +1,6 @@
 #ifndef GRAPHICSMANAGER_H
 #define GRAPHICSMANAGER_H
+#include "IGraphics.h"
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -10,27 +11,34 @@
 #include <d3dCompiler.h>
 #endif
 
-//#ifdef OPENGL
+#ifdef OPENGL
 #include "OpenGL/GLGraphics.h"
-//#endif
+#endif
 
-#include "IGraphics.h"
+
 
 class GraphicsManager
 {
 private:
+	GraphicsManager();
+	static GraphicsManager* m_gmInstance;
 
 	IGraphics* m_IGraphics;
 
 public:
 
-	GraphicsManager();
 	~GraphicsManager(void);
+	static GraphicsManager* GetInstance();
 
-	bool        InitWindow(int width, int height);
+
+	bool	InitWindow(int x, int y, int width, int height);
+	IGraphics* GetIGraphics() { return m_IGraphics; }
+	void	Render();
+
+	//AddObject()
+	//RemoveObject()
+
         bool        Init3D();
-        IGraphics*  GetInstance();
-        void        Render();
 };
 
 

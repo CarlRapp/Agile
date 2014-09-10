@@ -1,50 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Source Files\Graphics">
-      <UniqueIdentifier>{c67ad75a-32cd-4280-bd16-1983213cfdd1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Graphics\DirectX">
-      <UniqueIdentifier>{9c444d02-efcb-476b-83d5-0801c3be8b77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Storage">
-      <UniqueIdentifier>{555b4ef2-a9f5-4764-b54b-2d29b1b5b28a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game">
-      <UniqueIdentifier>{adcd67dd-c929-45bc-9603-a85229ca7e02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Game\Entities">
-      <UniqueIdentifier>{239d6402-bc30-489a-a8c1-aad571bbfeca}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
-      <Filter>Source Files\Graphics\DirectX</Filter>
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Audio\AudioManager.cpp">
+      <Filter>Source Files\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\DirectX\DXWindow.cpp">
-      <Filter>Source Files\Graphics\DirectX</Filter>
+    <ClCompile Include="Audio\WinAudio.cpp">
+      <Filter>Source Files\Audio\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\GraphicsManager.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\IGraphics.cpp">
-      <Filter>Source Files\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Entities\GameEntity.cpp">
-      <Filter>Source Files\Game\Entities</Filter>
+    <ClCompile Include="Audio\LinAudio.cpp">
+      <Filter>Source Files\Audio\Linux</Filter>
     </ClCompile>
     <ClCompile Include="Game\Entities\Entity.cpp">
       <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Storage\FileManager.cpp">
-      <Filter>Source Files\Storage</Filter>
+    <ClCompile Include="Game\Entities\GameEntity.cpp">
+      <Filter>Source Files\Game\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameplayManager.cpp">
       <Filter>Source Files\Game</Filter>
@@ -61,20 +35,77 @@
     <ClCompile Include="Game\World.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="SystemComponents.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="Screen.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Graphics\DirectX\DXWindow.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenu.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Graphics\GraphicsManager.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Graphics\IGraphics.cpp">
+      <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\FileManager.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputManager.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Windows\WindowsInput.cpp">
+      <Filter>Source Files\Input\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\ObjLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\ModelData.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\WavLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\MusicLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="Audio\AudioManager.h">
+      <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\IAudio.h">
+      <Filter>Source Files\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\WinAudio.h">
+      <Filter>Source Files\Audio\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\LinAudio.h">
+      <Filter>Source Files\Audio\Linux</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entities\Entity.h">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Entities\GameEntity.h">
+      <Filter>Source Files\Game\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameplayManager.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PhysicsManager.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Simulation.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UserInterface.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\World.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClInclude>
@@ -87,41 +118,71 @@
     <ClInclude Include="Graphics\IGraphics.h">
       <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Entities\GameEntity.h">
-      <Filter>Source Files\Game\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Entities\Entity.h">
-      <Filter>Source Files\Game\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Storage\FileManager.h">
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
-    <ClInclude Include="Game\PhysicsManager.h">
-      <Filter>Source Files\Game</Filter>
+    <ClInclude Include="Input\InputManager.h">
+      <Filter>Source Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameplayManager.h">
-      <Filter>Source Files\Game</Filter>
+    <ClInclude Include="Input\IInput.h">
+      <Filter>Source Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Simulation.h">
-      <Filter>Source Files\Game</Filter>
+    <ClInclude Include="Input\Windows\WindowsInput.h">
+      <Filter>Source Files\Input\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UserInterface.h">
-      <Filter>Source Files\Game</Filter>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Storage\ObjLoader.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
-    <ClInclude Include="Game\World.h">
-      <Filter>Source Files\Game</Filter>
+    <ClInclude Include="Graphics\Vertex.h">
+      <Filter>Source Files\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Screen.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Storage\ModelData.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenu.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Storage\WavLoader.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Storage\MusicLoader.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
-    <ClInclude Include="SystemComponents.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{29f1f3b8-01fb-4096-a44f-c7076fd87a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio">
+      <UniqueIdentifier>{e70582a2-3c3e-45cd-804b-e3c44e48a020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Linux">
+      <UniqueIdentifier>{cf0453d8-bbe5-4014-9862-dabf92d21555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Audio\Windows">
+      <UniqueIdentifier>{f807db90-b816-42f5-8385-6609e29ead17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{e6372f4d-d69e-4db1-9633-9080782067b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game\Entities">
+      <UniqueIdentifier>{69b01392-494d-4de5-8963-0fae97592e36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{8e003e7d-8054-411d-8e5b-dde4f0773134}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\DirectX">
+      <UniqueIdentifier>{f62acfaa-d53d-43b7-817e-8734ee8c8b41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics\OpenGL">
+      <UniqueIdentifier>{a5f213e9-6a9e-4ddd-92db-86f2d089911e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Storage">
+      <UniqueIdentifier>{402e1569-90c0-4490-88c7-9edb047a6fdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{89928c40-3d2f-4dd7-bc58-3cdc25b0f254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input\Windows">
+      <UniqueIdentifier>{66dafcf5-262f-4722-9cf4-eeb358570465}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #ifndef IGRAPHICS_H
 #define IGRAPHICS_H
+#include "../stdafx.h"
 
 class IGraphics
 {
@@ -8,12 +9,16 @@ private:
 
 public:
 
-	virtual ~IGraphics(void) {};
+	virtual ~IGraphics(void){};
 
-	virtual bool InitWindow(int width, int height) = 0;
         virtual bool Init3D()=0;
-	IGraphics* GetIGraphics();
-        virtual void Render();
+	//IGraphics* GetIGraphics();
+
+	virtual bool InitWindow(int x, int y, int width, int height)=0;
+
+	virtual void Render()=0;
+
+	static IGraphics* GetIGraphics();
 };
 
 

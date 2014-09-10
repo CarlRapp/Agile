@@ -1,5 +1,6 @@
 #include "GLGraphics.h"
 #include <iostream>
+#include "../../Storage/FileManager.h"
 
 GLGraphics::GLGraphics(void)
 {
@@ -13,13 +14,13 @@ GLGraphics::~GLGraphics(void)
         m_shaders.pop_back();
 }
 
-bool GLGraphics::InitWindow(int width, int height)
+bool GLGraphics::InitWindow(int x, int y, int width, int height)
 {
     
     m_screenHeight = height;
     m_screenWidth = width;
     m_window = new GLWindow();
-    return m_window->InitWindow(width, height);
+    return m_window->InitWindow(x,y,width, height);
 }
 
 
@@ -61,27 +62,41 @@ bool GLGraphics::Init3D()
         //print_log(m_program);
         return 0;
     }
-    
-    LoadModel();
   
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
-  
+    LoadModel("sphere.obj");
     return true; 
 } 
 
 void GLGraphics::LoadModel(std::string _path)
 {
+    ModelData* data = FileManager::GetInstance().LoadModel(_path);
+    
+    printf("NVertx: %d\n", data->GetVertices().size());
+    float* vertexArray = new float[data->GetVertices().size()*3];
+    float* colorArray = new float[data->GetVertices().size()*3];
+    
+    for(int i = 0; i < data->GetVertices().size(); ++i)
+    {
+        //Dest,Source,Size
+        memcpy(&vertexArray[3*i], &data->GetVertices()[i].Position, sizeof(Vector3));
 
-    FileManager::GetInstance().LoadModel(_path);
+        colorArray[3*i] = data->GetVertices()[i].Normal.X;
+        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
+        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
         
+        //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
+    }
+    
+
     glGenBuffers(1, &ibo_cube_elements);
     glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 3 * data->GetVertices().size() * sizeof(float), vertexArray, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     
     glGenBuffers(1, &vbo_cube_colors);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points_c, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, 3 * data->GetVertices().size() * sizeof(float), colorArray, GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 }
 

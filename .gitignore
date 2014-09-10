@@ -3,17 +3,18 @@
 *.lo
 *.o
 *.obj
+*.fxo
 
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
+##*.dll
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-*.lib
+##*.lib
 
 # Executables
 *.exe
@@ -33,7 +34,7 @@
 [Rr]elease/
 [Rr]eleases/
 x64/
-x86/
+##x86/
 build/
 bld/
 [Bb]in/
@@ -203,3 +204,6 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 /Breakout/Breakout/dist/
+
+Breakout/Breakout/Breakout.vcxproj
+Breakout/Breakout/Breakout.vcxproj.filters

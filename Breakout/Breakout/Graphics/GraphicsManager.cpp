@@ -1,5 +1,6 @@
 #include "GraphicsManager.h"
 
+GraphicsManager* GraphicsManager::m_gmInstance = 0;
 
 GraphicsManager::GraphicsManager(void)
 {
@@ -10,20 +11,26 @@ GraphicsManager::GraphicsManager(void)
 #endif
 }
 
+GraphicsManager* GraphicsManager::GetInstance()
+{
+	if (m_gmInstance)
+		return m_gmInstance;
+
+	m_gmInstance = new GraphicsManager();
+
+	return m_gmInstance;
+}
+
 GraphicsManager::~GraphicsManager(void)
 {
 
 }
 
-bool GraphicsManager::InitWindow(int width, int height)
+bool GraphicsManager::InitWindow(int x, int y, int width, int height)
 {
-    return m_IGraphics->InitWindow(width, height);
+	return m_IGraphics->InitWindow(x, y, width, height);
 }
 
-IGraphics* GraphicsManager::GetInstance()
-{
-    return m_IGraphics;
-}
 
 void GraphicsManager::Render()
 {

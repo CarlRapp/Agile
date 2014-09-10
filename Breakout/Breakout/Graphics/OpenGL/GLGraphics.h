@@ -1,4 +1,3 @@
-#pragma once
 #ifndef GLGRAPHICS_H
 #define GLGRAPHICS_H
 
@@ -17,6 +16,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+//#include <string>
 
 class GLGraphics : public IGraphics
 {
@@ -46,13 +46,13 @@ public:
 	GLGraphics(void);
 	~GLGraphics(void);
 
-	bool  InitWindow(int width, int height);
+	bool  InitWindow(int x, int y, int width, int height);
         void Render();
         bool Init3D();
         void Resize(int width, int height);
         void Free();
         void Update();
-        void LoadModel();
+        void LoadModel(std::string _path);
 };
 
 

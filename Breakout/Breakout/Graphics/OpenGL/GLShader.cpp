@@ -1,10 +1,9 @@
 #include "GLShader.h"
+#include "../../stdafx.h"
 #include <fstream>
-#include <unistd.h>
+
 #include <stdio.h>
 
-#define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
-char    m_cwd[FILENAME_MAX];
 
 Shader::Shader(std::string _path, GLenum _shaderType)
 {
@@ -20,21 +19,21 @@ bool Shader::LoadShader(std::string _path, GLenum _shaderType)
 {
     std::ifstream fileStream;
     
-    if (!getcwd(m_cwd, sizeof(m_cwd)))
-    {
-        printf ("Unable to find current working directory!\n");
-        return false;
-    }
+//    if (!getcwd(m_cwd, sizeof(m_cwd)))
+//    {
+//        printf ("Unable to find current working directory!\n");
+//        return false;
+//    }
+//    
+//	//	Open the file
+//    std::string	finalString = SHADER_ROOT;
+//    std::string	workingDir = m_cwd;
+//    
+//    workingDir = workingDir.append(finalString);
+//    _path = workingDir.append(_path);
+    std::string finalString = "";
     
-	//	Open the file
-    std::string	finalString = SHADER_ROOT;
-    std::string	workingDir = m_cwd;
-    
-    workingDir = workingDir.append(finalString);
-    _path = workingDir.append(_path);
-    finalString = "";
-    
-    fileStream.open(_path.c_str(),std::ifstream::in);
+    fileStream.open(GetFile(_path.c_str(),SHADER_ROOT),std::ifstream::in);
 
     //	Check if the file is good
     if (fileStream.is_open())
