@@ -2,7 +2,7 @@
 #define GRAPHICSMANAGER_H
 #include "IGraphics.h"
 #include "ICamera.h"
-
+#include "../stdafx.h"
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -11,10 +11,6 @@
 #ifdef DIRECTX
 #include <D3D11.h>
 #include <d3dCompiler.h>
-#endif
-
-#ifdef OPENGL
-#include "OpenGL/GLGraphics.h"
 #endif
 
 
@@ -41,7 +37,7 @@ public:
 	//AddObject()
 	//RemoveObject()
 
-        bool        Init3D();
+	bool        Init3D(DisplayMode _displayMode);
 };
 
 

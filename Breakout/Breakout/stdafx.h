@@ -2,14 +2,17 @@
 #define _STDAFX_H_
 
 #include <string>
-#include <unistd.h>
 
 #ifdef __linux__
 #define LINUX
 #define OPENGL
+#include <unistd.h>
 #else
 #define WINDOWS
 #define DIRECTX
+
+#include <Windows.h>
+
 #endif
 
 #define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
@@ -26,10 +29,22 @@ typedef unsigned int        UINT;
 struct Vector2;
 struct Vector3;
 
+
 static std::string GetFile(std::string _path, std::string _root)
 {
+#ifdef WINDOWS
+
+	return _root + _path;
+
+#else
+
+
+
     std::string temp = _root;
     
+	
+	GetModuleFileName(NULL, m_cwd, sizeof(m_cwd));
+
     if (!getcwd(m_cwd, sizeof(m_cwd)))
         {
             printf ("Unable to find current working directory!\n");
@@ -43,6 +58,8 @@ static std::string GetFile(std::string _path, std::string _root)
     workingDir = workingDir.append(temp);
     _path = workingDir.append(_path);
     return _path;
+
+#endif
 }
 
 struct Vector2

@@ -1,5 +1,5 @@
 #include "ICamera.h"
-#define DIRECTX
+
 #ifdef DIRECTX
 #include "DirectX\DXCamera.h"
 #else
@@ -12,6 +12,6 @@ ICamera* ICamera::GetICamera()
 #ifdef DIRECTX
 	return new DXCamera();
 #else
-        return new GLGraphics();
+        return new GLCamera();
 #endif
 }

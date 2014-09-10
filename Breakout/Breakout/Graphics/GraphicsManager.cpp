@@ -4,11 +4,7 @@ GraphicsManager* GraphicsManager::m_gmInstance = 0;
 
 GraphicsManager::GraphicsManager(void)
 {
-#ifdef WINDOWS
-    m_IGraphics = new DXGraphics();
-#else 
-    m_IGraphics = new GLGraphics();
-#endif
+	m_IGraphics = IGraphics::GetIGraphics();
 }
 
 GraphicsManager* GraphicsManager::GetInstance()
@@ -40,7 +36,7 @@ void GraphicsManager::Render()
 	return m_IGraphics->Render(m_ICamera);
 }
 
-bool GraphicsManager::Init3D()
+bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
-    m_IGraphics->Init3D();
+	return m_IGraphics->Init3D(_displayMode);
 }

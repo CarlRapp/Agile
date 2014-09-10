@@ -20,7 +20,7 @@ public:
 	virtual ~IGraphics(void){};
 
 	virtual bool InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode) = 0;
-        virtual bool Init3D()=0;
+	virtual bool Init3D(DisplayMode _displayMode) = 0;
 	//IGraphics* GetIGraphics();
 
 

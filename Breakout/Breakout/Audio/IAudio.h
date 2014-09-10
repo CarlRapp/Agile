@@ -1,6 +1,8 @@
 #ifndef IAUDIO_H
 #define IAUDIO_H
 
+#include "../stdafx.h"
+
 #ifdef WINDOWS
 #include <SDL.h>
 #include <SDL_mixer.h>

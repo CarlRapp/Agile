@@ -30,6 +30,8 @@ private:
 
 	HRESULT					InitDirect3D(DisplayMode _displayMode);
 
+	int m_Width, m_Height;
+
 
 
 public:
@@ -38,6 +40,7 @@ public:
 	~DXGraphics(void);
 
 	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
+	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_Window; }
 	void	Render(ICamera* _Camera);
 };

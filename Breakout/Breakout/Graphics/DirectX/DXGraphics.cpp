@@ -17,10 +17,18 @@ DXGraphics::~DXGraphics(void)
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
+	m_Width = _width;
+	m_Height = _height;
+
 	m_Window = new DXWindow();
 	if (!m_Window->InitWindow(_x, _y, _width, _height, _displayMode))
 		return false;
+	return true;
+	
+}
 
+bool DXGraphics::Init3D(DisplayMode _displayMode)
+{
 	if (FAILED(InitDirect3D(_displayMode)))
 	{
 		::MessageBox(0, "Failed to initalize Direct3D", "Error", MB_OK);
@@ -28,7 +36,7 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	}
 
 	m_DXDeferred = new DXDeferred();
-	m_DXDeferred->Init(m_Device, m_DeviceContext, _width, _height);
+	m_DXDeferred->Init(m_Device, m_DeviceContext, m_Width, m_Height);
 
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
@@ -36,7 +44,6 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 
 	return true;
 }
-
 
 HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 {
