@@ -1,5 +1,9 @@
 #include "InputManager.h"
+#ifdef WINDOWS
 #include "Windows/WindowsInput.h"
+#else
+
+#endif
 
 InputManager* InputManager::m_imInstance = 0;
 InputManager* InputManager::GetInstance()
@@ -14,8 +18,11 @@ InputManager* InputManager::GetInstance()
 
 InputManager::InputManager()
 {
-	/*	TODO add #ifndef Linux / windows	*/
+#ifdef WINDOWS
 	m_inputDevices = new WindowsInput();
+#else
+        
+#endif
 }
 
 void InputManager::Update()

@@ -80,10 +80,10 @@ void GLGraphics::LoadModel(std::string _path)
     {
         //Dest,Source,Size
         memcpy(&vertexArray[3*i], &data->GetVertices()[i].Position, sizeof(Vector3));
-
-        colorArray[3*i] = data->GetVertices()[i].Normal.X;
-        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
-        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
+        memcpy(&colorArray[3*i], &data->GetVertices()[i].Normal, sizeof(Vector3));
+//        colorArray[3*i] = data->GetVertices()[i].Normal.X;
+//        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
+//        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
         
         //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
     }
@@ -115,8 +115,8 @@ void GLGraphics::Resize(int width, int height)
 void GLGraphics::Free()
 {
     glDeleteProgram(m_program);
-//    glDeleteBuffers(1, &vbo_cube_vertices);
-//    glDeleteBuffers(1, &vbo_cube_colors);
+    glDeleteBuffers(1, &vbo_cube_vertices);
+    glDeleteBuffers(1, &vbo_cube_colors);
 //    glDeleteBuffers(1, &ibo_cube_elements);
 }
 

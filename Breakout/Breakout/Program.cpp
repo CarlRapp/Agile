@@ -26,7 +26,7 @@ int main(int argc, char** argv)
         m_GraphicsManager->Init3D();
 
         
-	//Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
+	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
 	m_AudioManager = &AudioManager::GetInstance();
 
