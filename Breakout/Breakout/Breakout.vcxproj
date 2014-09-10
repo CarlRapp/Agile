@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{45C90DB7-5B2B-4AEE-AC5F-C7BE5A1C1E61}</ProjectGuid>
+    <RootNamespace>Breakout</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)/../External/include;$(SolutionDir)/../External/include/SDL2;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/../External/lib/SDL2/x86;$(LibraryPath)</LibraryPath>
+    <ExcludePath>$(ExcludePath)</ExcludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Audio\AudioManager.cpp" />
+    <ClCompile Include="Audio\LinAudio.cpp" />
+    <ClCompile Include="Audio\WinAudio.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\Entities\Entity.cpp" />
+    <ClCompile Include="Game\Entities\GameEntity.cpp" />
+    <ClCompile Include="Game\GameplayManager.cpp" />
+    <ClCompile Include="Game\PhysicsManager.cpp" />
+    <ClCompile Include="Game\Simulation.cpp" />
+    <ClCompile Include="Game\UserInterface.cpp" />
+    <ClCompile Include="Game\World.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
+    <ClCompile Include="Graphics\GraphicsManager.cpp" />
+    <ClCompile Include="Graphics\IGraphics.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\Windows\WindowsInput.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="Storage\ModelData.cpp" />
+    <ClCompile Include="Storage\MusicLoader.cpp" />
+    <ClCompile Include="Storage\ObjLoader.cpp" />
+    <ClCompile Include="Storage\WavLoader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Audio\AudioManager.h" />
+    <ClInclude Include="Audio\IAudio.h" />
+    <ClInclude Include="Audio\LinAudio.h" />
+    <ClInclude Include="Audio\WinAudio.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\Entities\Entity.h" />
+    <ClInclude Include="Game\Entities\GameEntity.h" />
+    <ClInclude Include="Game\GameplayManager.h" />
+    <ClInclude Include="Game\PhysicsManager.h" />
+    <ClInclude Include="Game\Simulation.h" />
+    <ClInclude Include="Game\UserInterface.h" />
+    <ClInclude Include="Game\World.h" />
+    <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
+    <ClInclude Include="Graphics\DirectX\DXWindow.h" />
+    <ClInclude Include="Graphics\GraphicsManager.h" />
+    <ClInclude Include="Graphics\IGraphics.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
+    <ClInclude Include="Input\IInput.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\Windows\WindowsInput.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="Storage\ModelData.h" />
+    <ClInclude Include="Storage\MusicLoader.h" />
+    <ClInclude Include="Storage\ObjLoader.h" />
+    <ClInclude Include="Storage\WavLoader.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

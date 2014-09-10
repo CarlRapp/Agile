@@ -10,8 +10,8 @@ class AudioManager
 private:
 
 	AudioManager();
+	~AudioManager();
 
-	static AudioManager* m_audioManager;
 	bool m_initialized;
 
 	IAudio* m_audio;
@@ -19,9 +19,13 @@ private:
 public:
 
 	// Returns an AudioManager instance.
-	static AudioManager* getInstance();
+	static AudioManager& GetInstance()
+	{
+		static AudioManager* instance = new AudioManager();
+		return *instance;
+	}
 	
-	~AudioManager();
+	
 
 	// Initialize the AudioManager, only needed to do once.
 	// Returns true on success.
@@ -43,24 +47,6 @@ public:
 	Returns true on success.
 	*/
 	bool PlaySoundEffect(const char* _fileName, int _loop = 0);
-
-	/*
-	Load a wave file or a music (.mod .s3m .it .xm) file.
-	_filePath defines the location of the file.
-	_fileName is the desired name for said file.
-	_music will return a pointer to the loaded file.
-	Returns true on success.
-	*/
-	bool LoadMusic(const char* _filePath, const char* _fileName, Mix_Music* _music);
-
-	/*
-	Load a wave file or a music (.mod .s3m .it .xm) file.
-	_filePath defines the location of the file.
-	_fileName is the desired name for said file.
-	_music will return a pointer to the loaded file.
-	Returns true on success.
-	*/
-	bool LoadSoundEffect(const char* _filePath, const char* _fileName, Mix_Chunk* _soundEffect);
 
 };
 
