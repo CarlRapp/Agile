@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <D3D11.h>
 #include <d3dCompiler.h>
+#include "../IGraphics.h"
 
 class DXWindow
 {
@@ -13,8 +14,8 @@ private:
 	int					m_X, m_Y, m_Width, m_Height;
 
 
-	bool				InitWnd(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nShowCmd);
-	bool				InitWndApp(HINSTANCE hInstanceHandle, int show);
+	bool				InitWnd(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nShowCmd, DisplayMode _displayMode);
+	bool				InitWndApp(HINSTANCE hInstanceHandle, int show, DisplayMode _displayMode);
 	int					Run();
 	HRESULT				Render(float deltaTime);
 	HRESULT				Update(float deltaTime);
@@ -27,7 +28,7 @@ public:
 	DXWindow(void);
 	~DXWindow(void);
 
-	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 
 	int GetWidth() { return m_Width; }
 	int GetHeight() { return m_Height; }

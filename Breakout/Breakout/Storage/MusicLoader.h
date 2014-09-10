@@ -1,6 +1,8 @@
 #ifndef MUSICLOADER_H
 #define MUSICLOADER_H
 
+#include "../stdafx.h"
+
 #ifdef WINDOWS
 #include <SDL.h>
 #include <SDL_mixer.h>

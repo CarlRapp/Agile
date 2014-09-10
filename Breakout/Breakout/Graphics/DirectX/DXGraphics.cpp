@@ -15,30 +15,37 @@ DXGraphics::~DXGraphics(void)
 
 }
 
-bool DXGraphics::InitWindow(int _X, int _Y, int _Width, int _Height)
+bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
-	m_Window = new DXWindow();
-	if (!m_Window->InitWindow(_X, _Y, _Width, _Height))
-		return false;
+	m_Width = _width;
+	m_Height = _height;
 
-	if (FAILED(InitDirect3D()))
+	m_Window = new DXWindow();
+	if (!m_Window->InitWindow(_x, _y, _width, _height, _displayMode))
+		return false;
+	return true;
+	
+}
+
+bool DXGraphics::Init3D(DisplayMode _displayMode)
+{
+	if (FAILED(InitDirect3D(_displayMode)))
 	{
 		::MessageBox(0, "Failed to initalize Direct3D", "Error", MB_OK);
 		return false;
 	}
 
+	m_DXDeferred = new DXDeferred();
+	m_DXDeferred->Init(m_Device, m_DeviceContext, m_Width, m_Height);
 
-	float ClearColor[4] = { 0.1f, 0.1f, 0.1f, 0.0f };
+
+	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
-
-	if (FAILED(m_SwapChain->Present(0, 0)))
-		return E_FAIL;
 
 	return true;
 }
 
-
-HRESULT DXGraphics::InitDirect3D()
+HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 {
 	HRESULT hr = S_OK;;
 
@@ -71,7 +78,11 @@ HRESULT DXGraphics::InitDirect3D()
 	sd.OutputWindow = m_Window->GetHandle();
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
-	sd.Windowed = true;
+
+	if (_displayMode == DisplayMode::Fullscreen)
+		sd.Windowed = false;
+	else
+		sd.Windowed = true;
 
 	D3D_FEATURE_LEVEL featureLevelsToTry[] = {
 		D3D_FEATURE_LEVEL_11_0,
@@ -157,7 +168,22 @@ HRESULT DXGraphics::InitDirect3D()
 }
 
 
-void DXGraphics::Render()
+void DXGraphics::Render(ICamera* _Camera)
 {
+	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
+	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
 
+
+	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+
+
+	m_DXDeferred->Render(m_RenderTargetView, _Camera);
+
+
+	if (FAILED(m_SwapChain->Present(0, 0)))
+	{
+		int a = 2;
+	}
 }

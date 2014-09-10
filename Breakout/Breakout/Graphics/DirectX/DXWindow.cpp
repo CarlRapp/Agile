@@ -18,18 +18,18 @@ DXWindow::~DXWindow(void)
 }
 
 
-bool DXWindow::InitWindow(int _X, int _Y, int _Width, int _Height)
+bool DXWindow::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
-	m_X = _X;
-	m_Y = _Y;
-	m_Width = _Width;
-	m_Height = _Height;
-	return InitWnd(GetModuleHandle(0), NULL, GetCommandLine(), SW_SHOW);
+	m_X = _x;
+	m_Y = _y;
+	m_Width = _width;
+	m_Height = _height;
+	return InitWnd(GetModuleHandle(0), NULL, GetCommandLine(), SW_SHOW, _displayMode);
 }
 
 
 
-bool DXWindow::InitWnd(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, PSTR _pCmdLine, int _nShowCmd)
+bool DXWindow::InitWnd(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, PSTR _pCmdLine, int _nShowCmd, DisplayMode _displayMode)
 {
 	AllocConsole();
 
@@ -45,7 +45,7 @@ bool DXWindow::InitWnd(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, PSTR _pCm
 	setvbuf(hf_in, NULL, _IONBF, 128);
 	*stdin = *hf_in;
 
-	if (!InitWndApp(_hInstance, _nShowCmd))
+	if (!InitWndApp(_hInstance, _nShowCmd, _displayMode))
 	{
 		::MessageBox(0, "Initalaization Failed", "Error", MB_OK);
 		return false;
@@ -70,7 +70,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
+bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _displayMode)
 {
 	WNDCLASS wc;
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -90,7 +90,13 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show)
 		return false;
 	}
 
-	DWORD	wStyle = WS_POPUP;
+	DWORD	wStyle;
+	if (_displayMode == DisplayMode::Windowed)
+		wStyle = WS_BORDER;
+	else
+	{
+		wStyle = WS_POPUP;
+	}
 
 	RECT rc = { 0, 0, m_Width, m_Height };
 	AdjustWindowRect(&rc, wStyle, FALSE);

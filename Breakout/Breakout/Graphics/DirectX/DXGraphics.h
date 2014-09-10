@@ -7,6 +7,8 @@
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
+#include "DXDeferred.h"
+#include "../ICamera.h"
 
 class DXGraphics : public IGraphics
 {
@@ -23,8 +25,12 @@ private:
 	ID3D11Device			*m_Device = NULL;
 	ID3D11DeviceContext		*m_DeviceContext = NULL;
 
+	DXDeferred				*m_DXDeferred = NULL;
 
-	HRESULT					InitDirect3D();
+
+	HRESULT					InitDirect3D(DisplayMode _displayMode);
+
+	int m_Width, m_Height;
 
 
 
@@ -33,9 +39,10 @@ public:
 	DXGraphics(void);
 	~DXGraphics(void);
 
-	bool  InitWindow(int _X, int _Y, int _Width, int _Height);
+	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
+	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_Window; }
-	void	Render();
+	void	Render(ICamera* _Camera);
 };
 
 

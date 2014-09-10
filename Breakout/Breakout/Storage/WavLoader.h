@@ -1,5 +1,7 @@
 #ifndef WAVLOADER_H
 #define WAVLOADER_H
+  
+#include "../stdafx.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
