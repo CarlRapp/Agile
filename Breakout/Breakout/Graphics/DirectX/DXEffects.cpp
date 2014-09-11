@@ -304,7 +304,7 @@ ShadowMapEffect*	   DXEffects::ShadowMapFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* device)
 {
-	BasicFX			  = new BasicEffect(device, L"Graphics/DirectX/Shaders/Basic.fxo");
+	//BasicFX			  = new BasicEffect(device, L"Graphics/DirectX/Shaders/Basic.fxo");
 	BuildShadowMapFX  = new BuildShadowMapEffect(device, L"Graphics/DirectX/Shaders/BuildShadowMap.fxo");
 	ClearGBufferFX    = new ClearGBufferEffect(device, L"Graphics/DirectX/Shaders/ClearGBuffer.fxo");
 	CombineFinalFX    = new CombineFinalEffect(device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
