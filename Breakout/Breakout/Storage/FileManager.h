@@ -1,21 +1,15 @@
 #ifndef _FILEMANAGER_H_
 #define _FILEMANAGER_H_
-#include "../stdafx.h"
+
 #include <string>
 #include <unordered_map>
-
-#ifdef WINDOWS
 #include <SDL.h>
 #include <SDL_mixer.h>
-#else
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
-#endif
-
 #include <typeinfo>
 
+
 #include "../Storage/ModelData.h"
-#include "ObjLoader.h"
+#include "ModelLoader.h"
 #include "WavLoader.h"
 #include "MusicLoader.h"
 
@@ -37,6 +31,7 @@ public:
 		return *instance;
 	}
 
+	// Don't include an extension at the end of the file, eg. .obj
 	ModelData* LoadModel(std::string filePath);
 
 	// AudioManager needs to be initialized
