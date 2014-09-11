@@ -14,13 +14,13 @@ GLGraphics::~GLGraphics(void)
         m_shaders.pop_back();
 }
 
-bool GLGraphics::InitWindow(int x, int y, int width, int height, DisplayMode _displayMode)
+bool GLGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
     
-    m_screenHeight = height;
-    m_screenWidth = width;
+    m_screenHeight = _height;
+    m_screenWidth = _width;
     m_window = new GLWindow();
-    return m_window->InitWindow(x,y,width, height);
+    return m_window->InitWindow(_width, _height);
 }
 
 
@@ -105,10 +105,10 @@ void GLGraphics::Update()
 
 }
 
-void GLGraphics::Resize(int width, int height) 
+void GLGraphics::Resize(int _width, int _height) 
 {
-    m_screenWidth = width;
-    m_screenHeight = height;
+    m_screenWidth = _width;
+    m_screenHeight = _height;
     glViewport(0, 0, m_screenWidth, m_screenHeight);
 }
 
@@ -144,90 +144,90 @@ void GLGraphics::Render(ICamera* _camera)
     
 }
 
-int GLGraphics::SetUniformV(const char* variable, float value)
+int GLGraphics::SetUniformV(const char* _variable, float _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniform1fv(location, 1, &value);
+		glUniform1fv(location, 1, &_value);
 	else
 		return 1;
 
 	return 0;
 }
 
-int GLGraphics::SetUniformV(const char* variable, glm::vec3 value)
+int GLGraphics::SetUniformV(const char* _variable, glm::vec3 _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniform3fv(location, 1, &value[0]);
+		glUniform3fv(location, 1, &_value[0]);
 	else
 		return 1;
 
 	return 0;
 }
 
-int GLGraphics::SetUniformV(const char* variable, glm::vec4 value)
+int GLGraphics::SetUniformV(const char* _variable, glm::vec4 _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniform4fv(location, 1, &value[0]);
+		glUniform4fv(location, 1, &_value[0]);
 	else
 		return 1;
 
 	return 0;
 }
 
-int GLGraphics::SetUniformV(const char* variable, glm::mat3 value)
+int GLGraphics::SetUniformV(const char* _variable, glm::mat3 _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniformMatrix3fv(location, 1, GL_FALSE, &value[0][0]);
+		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
 	else 
 		return 1;
 
 	return 0;
 }
 
-int GLGraphics::SetUniformV(const char* variable, glm::mat4 value)
+int GLGraphics::SetUniformV(const char* _variable, glm::mat4 _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
+		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
 	else
 		return 1;
 
 	return 0;
 }
 
-int GLGraphics::SetUniformV(const char* variable, int value)
+int GLGraphics::SetUniformV(const char* _variable, int _value)
 {
 	//	Set as current program
 	glUseProgram(m_program);
 
 	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, variable);
+	int location = glGetUniformLocation(m_program, _variable);
 	if (location >= 0)
-		glUniform1i(location, value);
+		glUniform1i(location, _value);
 	else return 1;
 
 	return 0;

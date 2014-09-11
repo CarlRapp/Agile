@@ -4,6 +4,7 @@
 #else
 #include "LinAudio.h"
 #endif
+#include "../stdafx.h"
 
 AudioManager::AudioManager()
 :m_initialized(false)
@@ -36,7 +37,7 @@ bool AudioManager::Initialize()
 bool AudioManager::PlayMusic(const char* _fileName, int _loop)
 {
 
-	if (!m_audio->PlayMusic(_fileName,_loop))
+	if (!m_audio->PlayMusic(GetFile(_fileName,AUDIO_ROOT).c_str(),_loop))
 		return false;
 
 	return true;
@@ -45,7 +46,7 @@ bool AudioManager::PlayMusic(const char* _fileName, int _loop)
 bool AudioManager::PlaySoundEffect(const char* _fileName, int _loop)
 {
 
-	if (!m_audio->PlaySoundEffect(_fileName, _loop))
+	if (!m_audio->PlaySoundEffect(GetFile(_fileName,AUDIO_ROOT).c_str(), _loop))
 		return false;
 
 	return true;
