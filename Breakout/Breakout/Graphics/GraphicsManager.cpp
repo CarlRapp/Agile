@@ -19,7 +19,7 @@ GraphicsManager* GraphicsManager::GetInstance()
 
 GraphicsManager::~GraphicsManager(void)
 {
-
+	SafeDelete(m_IGraphics);
 }
 
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)

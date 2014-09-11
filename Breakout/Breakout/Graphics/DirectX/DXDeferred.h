@@ -23,7 +23,6 @@ class DXDeferred
 {
 
 private:
-	DXWindow				*m_window;
 
 
 	//ID3D11Texture2D			*m_depthStencil = NULL;

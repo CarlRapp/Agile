@@ -16,7 +16,17 @@ DXDeferred::DXDeferred(void)
 
 DXDeferred::~DXDeferred(void)
 {
-
+	ReleaseCOM(m_depthStencilView);
+	ReleaseCOM(m_shadowMapDSV);
+	ReleaseCOM(m_albedoRTV);
+	ReleaseCOM(m_normalSpecRTV);
+	ReleaseCOM(m_albedoSRV);
+	ReleaseCOM(m_normalSpecSRV);
+	ReleaseCOM(m_depthSRV);
+	ReleaseCOM(m_finalSRV);
+	ReleaseCOM(m_finalUAV);
+	ReleaseCOM(m_fullSceenQuad);
+	SafeDelete(m_testTriangle);
 }
 
 void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, int _Width, int _Height)
@@ -34,10 +44,6 @@ void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext
 	m_viewPort.TopLeftY = (float)0;
 	m_viewPort.Width = (float)m_width;
 	m_viewPort.Height = (float)m_height;
-
-	DXRenderStates::InitAll(m_device);
-	DXEffects::InitAll(m_device);
-	DXInputLayouts::InitAll(m_device);
 
 	InitTestTriangle();
 	InitFullScreenQuad();

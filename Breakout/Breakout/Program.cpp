@@ -50,6 +50,7 @@ int main(int argc, char** argv)
         while(difftime(time(0),startTime)<5)
             m_GraphicsManager->Render();
 
+		delete m_GraphicsManager;
 	return 0;
 }
 //

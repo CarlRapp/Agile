@@ -12,7 +12,18 @@ DXGraphics::DXGraphics(void)
 
 DXGraphics::~DXGraphics(void)
 {
+	DXRenderStates::DestroyAll();
+	DXEffects::DestroyAll();
+	DXInputLayouts::DestroyAll();
 
+	SafeDelete(m_DXDeferred);
+	SafeDelete(m_window);
+	ReleaseCOM(m_swapChain);
+	ReleaseCOM(m_renderTargetView);
+	ReleaseCOM(m_depthStencil);
+	ReleaseCOM(m_depthStencilView);
+	ReleaseCOM(m_device);
+	ReleaseCOM(m_deviceContext);
 }
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -35,8 +46,13 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 		return false;
 	}
 
+	DXRenderStates::InitAll(m_device);
+	DXEffects::InitAll(m_device);
+	DXInputLayouts::InitAll(m_device);
+
 	m_DXDeferred = new DXDeferred();
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
+
 
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
