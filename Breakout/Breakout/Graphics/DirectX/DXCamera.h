@@ -10,11 +10,11 @@ class DXCamera : public ICamera
 {
 private:
 
-	D3D11_VIEWPORT m_ViewPort;
+	D3D11_VIEWPORT m_viewPort;
 
-	float				m_Fovy, m_AspectRatio, m_NearZ, m_FarZ;
-	Vector3				m_Position, m_Forward, m_Right, m_Up;
-	Float4x4			m_View, m_Projection;
+	float				m_fovy, m_aspectRatio, m_nearZ, m_farZ;
+	Vector3				m_position, m_forward, m_right, m_up;
+	Float4x4			m_view, m_projection;
 
 	void UpdateView();
 	void UpdateProjection();
@@ -23,7 +23,7 @@ private:
 public:
 
 	DXCamera(void);
-	DXCamera(float fovy, float aspectRatio, float nearZ, float farZ);
+	DXCamera(float _fovy, float _aspectRatio, float _nearZ, float _farZ);
 	~DXCamera(void);
 
 
@@ -34,17 +34,17 @@ public:
 	//void RotateY(float angle) = 0;
 
 #pragma region Get Functions
-	Float4x4 GetView()		{ return m_View; }
-	Float4x4 GetProjection()	{ return m_Projection; }
+	Float4x4 GetView()		{ return m_view; }
+	Float4x4 GetProjection()	{ return m_projection; }
 
-	Vector3 GetPosition()		{ return m_Position; }
-	Vector3 GetForward()		{ return m_Forward; }
-	Vector3 GetRight()			{ return m_Right; }
-	Vector3 GetUp()				{ return m_Up; }
+	Vector3 GetPosition()		{ return m_position; }
+	Vector3 GetForward()		{ return m_forward; }
+	Vector3 GetRight()			{ return m_right; }
+	Vector3 GetUp()				{ return m_up; }
 
 	//BoundingFrustum GetFrustum() = 0;
 
-	void* GetViewPort() { return &m_ViewPort; }
+	void* GetViewPort() { return &m_viewPort; }
 #pragma endregion
 
 #pragma region Set Functions
@@ -53,7 +53,7 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-	void SetPosition(Vector3 position)			{ m_Position = position; UpdateView(); }
+	void SetPosition(Vector3 position)			{ m_position = position; UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
 	void SetForward(Vector3 forward);
 	//void SetForward(float x, float y, float z) = 0;
@@ -62,12 +62,12 @@ public:
 
 	//void SetLookAt(float x, float y, float z) = 0;
 
-	void SetViewPort(int X, int Y, int Width, int Height)
+	void SetViewPort(int _x, int _y, int _width, int _height)
 	{
-		m_ViewPort.TopLeftX = (float)X;
-		m_ViewPort.TopLeftY = (float)Y;
-		m_ViewPort.Width = (float)Width;
-		m_ViewPort.Height = (float)Height;
+		m_viewPort.TopLeftX = (float)_x;
+		m_viewPort.TopLeftY = (float)_y;
+		m_viewPort.Width = (float)_width;
+		m_viewPort.Height = (float)_height;
 	}
 
 #pragma endregion

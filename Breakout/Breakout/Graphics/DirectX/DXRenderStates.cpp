@@ -1,18 +1,18 @@
 
 #include "DXRenderStates.h"
 
-ID3D11RasterizerState*   DXRenderStates::WireframeRS       = 0;
-ID3D11RasterizerState*   DXRenderStates::NoCullRS = 0;
+ID3D11RasterizerState*   DXRenderStates::m_wireframeRS       = 0;
+ID3D11RasterizerState*   DXRenderStates::m_noCullRS = 0;
 	 
-ID3D11DepthStencilState* DXRenderStates::EqualsDSS = 0;
-ID3D11DepthStencilState* DXRenderStates::LessDSS = 0;
-ID3D11DepthStencilState* DXRenderStates::NoDSS = 0;
+ID3D11DepthStencilState* DXRenderStates::m_equalsDSS = 0;
+ID3D11DepthStencilState* DXRenderStates::m_lessDSS = 0;
+ID3D11DepthStencilState* DXRenderStates::m_noDSS = 0;
 
-ID3D11BlendState*        DXRenderStates::OpaqueBS = 0;
-ID3D11BlendState*        DXRenderStates::AlphaToCoverageBS = 0;
-ID3D11BlendState*        DXRenderStates::TransparentBS = 0;
+ID3D11BlendState*        DXRenderStates::m_opaqueBS = 0;
+ID3D11BlendState*        DXRenderStates::m_alphaToCoverageBS = 0;
+ID3D11BlendState*        DXRenderStates::m_transparentBS = 0;
 
-void DXRenderStates::InitAll(ID3D11Device* device)
+void DXRenderStates::InitAll(ID3D11Device* _device)
 {
 	//
 	// WireframeRS
@@ -24,7 +24,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	wireframeDesc.FrontCounterClockwise = false;
 	wireframeDesc.DepthClipEnable = true;
 
-	device->CreateRasterizerState(&wireframeDesc, &WireframeRS);
+	_device->CreateRasterizerState(&wireframeDesc, &m_wireframeRS);
 
 	//
 	// NoCullRS
@@ -36,7 +36,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	noCullDesc.FrontCounterClockwise = false;
 	noCullDesc.DepthClipEnable = true;
 
-	device->CreateRasterizerState(&noCullDesc, &NoCullRS);
+	_device->CreateRasterizerState(&noCullDesc, &m_noCullRS);
 
 	//
 	// EqualsDSS
@@ -47,7 +47,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	equalsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	equalsDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
 
-	device->CreateDepthStencilState(&equalsDesc, &EqualsDSS);
+	_device->CreateDepthStencilState(&equalsDesc, &m_equalsDSS);
 
 	//
 	// LessDSS
@@ -58,7 +58,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	lessDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	lessDesc.DepthFunc = D3D11_COMPARISON_LESS;
 
-	device->CreateDepthStencilState(&lessDesc, &LessDSS);
+	_device->CreateDepthStencilState(&lessDesc, &m_lessDSS);
 
 	//
 	// NoDSS
@@ -69,7 +69,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	noDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	noDesc.DepthFunc = D3D11_COMPARISON_ALWAYS;
 
-	device->CreateDepthStencilState(&noDesc, &NoDSS);
+	_device->CreateDepthStencilState(&noDesc, &m_noDSS);
 
 
 
@@ -83,7 +83,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	opaqueDesc.RenderTarget[0].BlendEnable = false;
 	opaqueDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	device->CreateBlendState(&opaqueDesc, &OpaqueBS);
+	_device->CreateBlendState(&opaqueDesc, &m_opaqueBS);
 
 
 
@@ -97,7 +97,7 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	alphaToCoverageDesc.RenderTarget[0].BlendEnable = false;
 	alphaToCoverageDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	device->CreateBlendState(&alphaToCoverageDesc, &AlphaToCoverageBS);
+	_device->CreateBlendState(&alphaToCoverageDesc, &m_alphaToCoverageBS);
 
 	//
 	// TransparentBS
@@ -116,17 +116,17 @@ void DXRenderStates::InitAll(ID3D11Device* device)
 	transparentDesc.RenderTarget[0].BlendOpAlpha   = D3D11_BLEND_OP_ADD;
 	transparentDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	device->CreateBlendState(&transparentDesc, &TransparentBS);
+	_device->CreateBlendState(&transparentDesc, &m_transparentBS);
 }
 
 void DXRenderStates::DestroyAll()
 {
-	ReleaseCOM(WireframeRS);
-	ReleaseCOM(NoCullRS);
-	ReleaseCOM(EqualsDSS);
-	ReleaseCOM(LessDSS);
-	ReleaseCOM(NoDSS);
-	ReleaseCOM(OpaqueBS);
-	ReleaseCOM(AlphaToCoverageBS);
-	ReleaseCOM(TransparentBS);
+	ReleaseCOM(m_wireframeRS);
+	ReleaseCOM(m_noCullRS);
+	ReleaseCOM(m_equalsDSS);
+	ReleaseCOM(m_lessDSS);
+	ReleaseCOM(m_noDSS);
+	ReleaseCOM(m_opaqueBS);
+	ReleaseCOM(m_alphaToCoverageBS);
+	ReleaseCOM(m_transparentBS);
 }

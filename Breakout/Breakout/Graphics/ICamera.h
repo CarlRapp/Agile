@@ -41,16 +41,16 @@ public:
 	//virtual void SetNearZ(float nearZ) = 0;
 	//virtual void SetFarZ(float farZ) = 0;
 
-	virtual void SetPosition(Vector3 position) = 0;
+	virtual void SetPosition(Vector3 _position) = 0;
 	//virtual void SetPosition(float x, float y, float z) = 0;
-	virtual void SetForward(Vector3 forward) = 0;
+	virtual void SetForward(Vector3 _forward) = 0;
 	//virtual void SetForward(float x, float y, float z) = 0;
 
 	//virtual void SetLookAt(Vector3 target) = 0;
 
 	//virtual void SetLookAt(float x, float y, float z) = 0;
 
-	virtual void SetViewPort(int X, int Y, int Width, int Height) = 0;
+	virtual void SetViewPort(int _x, int _y, int _width, int _height) = 0;
 
 #pragma endregion
 

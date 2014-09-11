@@ -1,6 +1,6 @@
 #include "GraphicsManager.h"
 
-GraphicsManager* GraphicsManager::m_gmInstance = 0;
+GraphicsManager* GraphicsManager::m_GMInstance = 0;
 
 GraphicsManager::GraphicsManager(void)
 {
@@ -9,12 +9,12 @@ GraphicsManager::GraphicsManager(void)
 
 GraphicsManager* GraphicsManager::GetInstance()
 {
-	if (m_gmInstance)
-		return m_gmInstance;
+	if (m_GMInstance)
+		return m_GMInstance;
 
-	m_gmInstance = new GraphicsManager();
+	m_GMInstance = new GraphicsManager();
 
-	return m_gmInstance;
+	return m_GMInstance;
 }
 
 GraphicsManager::~GraphicsManager(void)
@@ -22,12 +22,12 @@ GraphicsManager::~GraphicsManager(void)
 
 }
 
-bool GraphicsManager::InitWindow(int x, int y, int width, int height, DisplayMode _displayMode)
+bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 	m_ICamera = ICamera::GetICamera();
 	m_ICamera->SetPosition(Vector3(0, 0, -20));
-	m_ICamera->SetViewPort(0, 0, width, height);
-	return m_IGraphics->InitWindow(x, y, width, height, _displayMode);
+	m_ICamera->SetViewPort(0, 0, _width, _height);
+	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
 }
 
 

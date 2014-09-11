@@ -17,11 +17,11 @@ DXGraphics::~DXGraphics(void)
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
-	m_Width = _width;
-	m_Height = _height;
+	m_width = _width;
+	m_height = _height;
 
-	m_Window = new DXWindow();
-	if (!m_Window->InitWindow(_x, _y, _width, _height, _displayMode))
+	m_window = new DXWindow();
+	if (!m_window->InitWindow(_x, _y, _width, _height, _displayMode))
 		return false;
 	return true;
 	
@@ -36,11 +36,11 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	}
 
 	m_DXDeferred = new DXDeferred();
-	m_DXDeferred->Init(m_Device, m_DeviceContext, m_Width, m_Height);
+	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
-	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView, ClearColor);
+	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
 	return true;
 }
@@ -49,8 +49,8 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 {
 	HRESULT hr = S_OK;;
 
-	int screenWidth = m_Window->GetWidth();
-	int screenHeight = m_Window->GetHeight();
+	int screenWidth = m_window->GetWidth();
+	int screenHeight = m_window->GetHeight();
 
 	UINT createDeviceFlags = 0;
 #ifdef _DEBUG
@@ -75,7 +75,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	sd.OutputWindow = m_Window->GetHandle();
+	sd.OutputWindow = m_window->GetHandle();
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 
@@ -103,10 +103,10 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 			ARRAYSIZE(featureLevelsToTry),
 			D3D11_SDK_VERSION,
 			&sd,
-			&m_SwapChain,
-			&m_Device,
+			&m_swapChain,
+			&m_device,
 			&initiatedFeatureLevel,
-			&m_DeviceContext);
+			&m_deviceContext);
 
 		if (SUCCEEDED(hr))
 			break;
@@ -116,11 +116,11 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 		return hr;
 
 	ID3D11Texture2D* pBackBuffer;
-	hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
+	hr = m_swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
 	if (FAILED(hr))
 		return hr;
 
-	hr = m_Device->CreateRenderTargetView(pBackBuffer, NULL, &m_RenderTargetView);
+	hr = m_device->CreateRenderTargetView(pBackBuffer, NULL, &m_renderTargetView);
 	pBackBuffer->Release();
 	if (FAILED(hr))
 		return hr;
@@ -138,7 +138,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
-	hr = m_Device->CreateTexture2D(&descDepth, NULL, &m_DepthStencil);
+	hr = m_device->CreateTexture2D(&descDepth, NULL, &m_depthStencil);
 	if (FAILED(hr))
 		return hr;
 
@@ -149,7 +149,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	descDSV.Format = descDepth.Format;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0;
-	hr = m_Device->CreateDepthStencilView(m_DepthStencil, &descDSV, &m_DepthStencilView);
+	hr = m_device->CreateDepthStencilView(m_depthStencil, &descDSV, &m_depthStencilView);
 	if (FAILED(hr))
 		return hr;
 
@@ -162,27 +162,31 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	m_DeviceContext->RSSetViewports(1, &vp);
+	m_deviceContext->RSSetViewports(1, &vp);
 
 	return S_OK;
 }
 
+void DXGraphics::LoadModel(std::string _path)
+{
+}
 
-void DXGraphics::Render(ICamera* _Camera)
+
+void DXGraphics::Render(ICamera* _camera)
 {
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+	m_deviceContext->ClearRenderTargetView( m_renderTargetView, ClearColor );
 
 
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	m_DeviceContext->OMSetRenderTargets(1, &m_RenderTargetView, m_DepthStencilView);
+	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_RenderTargetView, _Camera);
+	m_DXDeferred->Render(m_renderTargetView, _camera);
 
 
-	if (FAILED(m_SwapChain->Present(0, 0)))
+	if (FAILED(m_swapChain->Present(0, 0)))
 	{
 		int a = 2;
 	}

@@ -21,23 +21,23 @@ DXDeferred::~DXDeferred(void)
 
 void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, int _Width, int _Height)
 {
-	m_Device = _Device;
-	m_DeviceContext = _DeviceContext;
+	m_device = _Device;
+	m_deviceContext = _DeviceContext;
 
-	m_Width = _Width;
-	m_Height = _Height;
+	m_width = _Width;
+	m_height = _Height;
 
 
-	m_ViewPort.MinDepth = 0.0f;
-	m_ViewPort.MaxDepth = 1.0f;
-	m_ViewPort.TopLeftX = (float)0;
-	m_ViewPort.TopLeftY = (float)0;
-	m_ViewPort.Width = (float)m_Width;
-	m_ViewPort.Height = (float)m_Height;
+	m_viewPort.MinDepth = 0.0f;
+	m_viewPort.MaxDepth = 1.0f;
+	m_viewPort.TopLeftX = (float)0;
+	m_viewPort.TopLeftY = (float)0;
+	m_viewPort.Width = (float)m_width;
+	m_viewPort.Height = (float)m_height;
 
-	DXRenderStates::InitAll(m_Device);
-	DXEffects::InitAll(m_Device);
-	DXInputLayouts::InitAll(m_Device);
+	DXRenderStates::InitAll(m_device);
+	DXEffects::InitAll(m_device);
+	DXInputLayouts::InitAll(m_device);
 
 	InitTestTriangle();
 	InitFullScreenQuad();
@@ -49,8 +49,8 @@ void DXDeferred::InitBuffers()
 {
 	D3D11_TEXTURE2D_DESC texDesc;
 	ZeroMemory(&texDesc, sizeof(texDesc));
-	texDesc.Width = m_Width;
-	texDesc.Height = m_Height;
+	texDesc.Width = m_width;
+	texDesc.Height = m_height;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -69,30 +69,30 @@ void DXDeferred::InitBuffers()
 
 	//R16G16B16A16_UNORM
 	//texDesc.Format = DXGI_FORMAT_R16G16B16A16_UNORM;
-	m_Device->CreateTexture2D(&texDesc, NULL, &normalSpecTex);
+	m_device->CreateTexture2D(&texDesc, NULL, &normalSpecTex);
 
 	//R8G8B8A8_UNORM
 	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	m_Device->CreateTexture2D(&texDesc, NULL, &albedoTex);
+	m_device->CreateTexture2D(&texDesc, NULL, &albedoTex);
 
 	//D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	m_Device->CreateTexture2D(&texDesc, NULL, &finalTex);
+	m_device->CreateTexture2D(&texDesc, NULL, &finalTex);
 
 	//R24G8_TYPELESS & D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE
 	texDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	m_Device->CreateTexture2D(&texDesc, NULL, &depthTex);
+	m_device->CreateTexture2D(&texDesc, NULL, &depthTex);
 
 
 	//RENDER TARGETS
-	m_Device->CreateRenderTargetView(albedoTex, NULL, &m_AlbedoRTV);
-	m_Device->CreateRenderTargetView(normalSpecTex, NULL, &m_NormalSpecRTV);
+	m_device->CreateRenderTargetView(albedoTex, NULL, &m_albedoRTV);
+	m_device->CreateRenderTargetView(normalSpecTex, NULL, &m_normalSpecRTV);
 
 	//GBUFFER
-	GBuffer[0] = m_AlbedoRTV;
-	GBuffer[1] = m_NormalSpecRTV;
+	m_GBuffer[0] = m_albedoRTV;
+	m_GBuffer[1] = m_normalSpecRTV;
 
 	//SHADERRESOURCEVIEWS
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
@@ -102,16 +102,16 @@ void DXDeferred::InitBuffers()
 	SRVDesc.Texture2D.MipLevels = 1;
 
 	//R8G8B8A8_UNORM
-	m_Device->CreateShaderResourceView(albedoTex, &SRVDesc, &m_AlbedoSRV);
-	m_Device->CreateShaderResourceView(finalTex, 0, &m_FinalSRV);
+	m_device->CreateShaderResourceView(albedoTex, &SRVDesc, &m_albedoSRV);
+	m_device->CreateShaderResourceView(finalTex, 0, &m_finalSRV);
 
 	//DXGI_FORMAT_R24_UNORM_X8_TYPELESS
 	SRVDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	m_Device->CreateShaderResourceView(depthTex, &SRVDesc, &m_DepthSRV);
+	m_device->CreateShaderResourceView(depthTex, &SRVDesc, &m_depthSRV);
 
 	//DXGI_FORMAT_R16G16B16A16_UNORM
 	SRVDesc.Format = DXGI_FORMAT_R16G16B16A16_UNORM;
-	m_Device->CreateShaderResourceView(normalSpecTex, 0, &m_NormalSpecSRV);
+	m_device->CreateShaderResourceView(normalSpecTex, 0, &m_normalSpecSRV);
 
 	// Create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
@@ -119,13 +119,13 @@ void DXDeferred::InitBuffers()
 	descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0;
-	m_Device->CreateDepthStencilView(depthTex, &descDSV, &m_DepthStencilView);
+	m_device->CreateDepthStencilView(depthTex, &descDSV, &m_depthStencilView);
 
 	//Create the UnorderedAccessView
 	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
 	UAVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-	m_Device->CreateUnorderedAccessView(finalTex, 0, &m_FinalUAV);
+	m_device->CreateUnorderedAccessView(finalTex, 0, &m_finalUAV);
 
 
 	//RELEASE
@@ -137,79 +137,79 @@ void DXDeferred::InitBuffers()
 
 void DXDeferred::ClearBuffers()
 {
-	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	float AlbedoClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	//m_DeviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
-	m_DeviceContext->ClearRenderTargetView(m_AlbedoRTV, AlbedoClearColor);
-	m_DeviceContext->ClearRenderTargetView(m_NormalSpecRTV, ClearColor);
-	m_DeviceContext->ClearUnorderedAccessViewFloat(m_FinalUAV, ClearColor);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
+	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	float albedoClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//m_deviceContext->ClearRenderTargetView( m_RenderTargetView, ClearColor );
+	m_deviceContext->ClearRenderTargetView(m_albedoRTV, albedoClearColor);
+	m_deviceContext->ClearRenderTargetView(m_normalSpecRTV, clearColor);
+	m_deviceContext->ClearUnorderedAccessViewFloat(m_finalUAV, clearColor);
 
 }
 
-void DXDeferred::FillGBuffer(ICamera* _Camera)
+void DXDeferred::FillGBuffer(ICamera* _camera)
 {
-	m_DeviceContext->OMSetRenderTargets(2, GBuffer, m_DepthStencilView);
+	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
 
-	m_DeviceContext->OMSetDepthStencilState(DXRenderStates::LessDSS, 0);
+	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_lessDSS, 0);
 
-	m_DeviceContext->RSSetState(DXRenderStates::NoCullRS);
-	//m_DeviceContext->RSSetState(DXRenderStates::WireframeRS);
-	RenderTestTriangle(_Camera);
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
+	RenderTestTriangle(_camera);
 
-	m_DeviceContext->OMSetRenderTargets(0, 0, 0);
+	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
 
-void DXDeferred::CombineFinal(ID3D11RenderTargetView *_RenderTargetView)
+void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 {
-	m_DeviceContext->RSSetState(DXRenderStates::NoCullRS);
-	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
-	m_DeviceContext->OMSetRenderTargets(1, &_RenderTargetView, NULL);
-	m_DeviceContext->OMSetDepthStencilState(DXRenderStates::NoDSS, 0);
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_noDSS, 0);
 
 	//DXEffects::CombineFinalFX->SetTexture(m_FinalSRV);
 	//Effects::CombineFinalFX->SetTexture(m_ShadowMapSRV0);
 
 
-	RenderQuad(m_ViewPort, m_AlbedoSRV, DXEffects::CombineFinalFX->ColorTech);
+	RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
 	//RenderQuad(m_ViewPort, m_NormalSpecSRV, Effects::CombineFinalFX->ColorTech);
 	//Effects::CombineFinalFX->SetOpacity(0.8f);
 	//RenderQuad(shadowVP, m_ShadowMapSRV, Effects::CombineFinalFX->BlendMonoTech);
 
 
-	m_DeviceContext->RSSetViewports(1, &m_ViewPort);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
 }
 
-void DXDeferred::RenderQuad(D3D11_VIEWPORT &vp, ID3D11ShaderResourceView* SRV, ID3DX11EffectTechnique* tech)
+void DXDeferred::RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech)
 {
-	m_DeviceContext->RSSetViewports(1, &vp);
-	m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	m_DeviceContext->IASetInputLayout(DXInputLayouts::Quad);
+	m_deviceContext->RSSetViewports(1, &_vp);
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_quad);
 
 	D3DX11_TECHNIQUE_DESC techDesc;
-	tech->GetDesc(&techDesc);
+	_tech->GetDesc(&techDesc);
 
-	DXEffects::CombineFinalFX->SetTexture(SRV);
+	DXEffects::m_combineFinalFX->SetTexture(_SRV);
 
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		tech->GetPassByIndex(p)->Apply(0, m_DeviceContext);
+		_tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
 
 		UINT offset = 0;
 		UINT vertexStride = sizeof(DXVertex::Quad);
-		m_DeviceContext->IASetVertexBuffers(0, 1, &m_FullSceenQuad, &vertexStride, &offset);
-		m_DeviceContext->Draw(4, 0);
+		m_deviceContext->IASetVertexBuffers(0, 1, &m_fullSceenQuad, &vertexStride, &offset);
+		m_deviceContext->Draw(4, 0);
 	}
 
-	DXEffects::CombineFinalFX->SetTexture(NULL);
-	tech->GetPassByIndex(0)->Apply(0, m_DeviceContext);
+	DXEffects::m_combineFinalFX->SetTexture(NULL);
+	_tech->GetPassByIndex(0)->Apply(0, m_deviceContext);
 }
 
 void DXDeferred::InitTestTriangle()
 {
-	m_TestTriangle = new DXMesh();
+	m_testTriangle = new DXMesh();
 
 	std::vector<DXVertex::PosNormalTexTan> Vertices;
 	std::vector<UINT> Indices;
@@ -217,45 +217,45 @@ void DXDeferred::InitTestTriangle()
 	DXVertex::PosNormalTexTan a, b, c;
 
 	//a
-	a.Pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 0.0f);
-	a.Normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	a.Tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	a.TangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 0.0f);
+	a.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	a.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	a.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//b
-	b.Pos = DirectX::XMFLOAT3(5.0f, -5.0f, 0.0f);
-	b.Normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	b.Tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	b.TangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, 0.0f);
+	b.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	b.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	b.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//c
-	c.Pos = DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f);
-	c.Normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	c.Tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	c.TangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	c.pos = DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f);
+	c.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	c.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
+	c.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	Vertices.push_back(a);
 	Vertices.push_back(b);
 	Vertices.push_back(c);
 
-	m_TestTriangle->SetVertices(m_Device, &Vertices[0], Vertices.size());
+	m_testTriangle->SetVertices(m_device, &Vertices[0], Vertices.size());
 
 	Indices.push_back(0);
 	Indices.push_back(1);
 	Indices.push_back(2);
 
-	m_TestTriangle->SetIndices(m_Device, &Indices[0], Indices.size());
+	m_testTriangle->SetIndices(m_device, &Indices[0], Indices.size());
 
 	DXMesh::Subset subset;
-	subset.FaceCount = 1;
-	subset.FaceStart = 0;
-	subset.Id = 0;
-	subset.VertexCount = 3;
-	subset.VertexStart = 0;
+	subset.m_faceCount = 1;
+	subset.m_faceStart = 0;
+	subset.m_id = 0;
+	subset.m_vertexCount = 3;
+	subset.m_vertexStart = 0;
 
 	Subsets.push_back(subset);
 
-	m_TestTriangle->SetSubsetTable(Subsets);
+	m_testTriangle->SetSubsetTable(Subsets);
 
 
 }
@@ -269,17 +269,17 @@ void DXDeferred::InitFullScreenQuad()
 	DXVertex::Quad v1, v2, v3, v4;
 
 	//upper left
-	v1.Pos = DirectX::XMFLOAT2(-1, 1);
-	v1.Tex = DirectX::XMFLOAT2(0, 0);
+	v1.pos = DirectX::XMFLOAT2(-1, 1);
+	v1.tex = DirectX::XMFLOAT2(0, 0);
 	//upper right
-	v2.Pos = DirectX::XMFLOAT2(1, 1);
-	v2.Tex = DirectX::XMFLOAT2(1, 0);
+	v2.pos = DirectX::XMFLOAT2(1, 1);
+	v2.tex = DirectX::XMFLOAT2(1, 0);
 	//lower left
-	v3.Pos = DirectX::XMFLOAT2(-1, -1);
-	v3.Tex = DirectX::XMFLOAT2(0, 1);
+	v3.pos = DirectX::XMFLOAT2(-1, -1);
+	v3.tex = DirectX::XMFLOAT2(0, 1);
 	//lower right
-	v4.Pos = DirectX::XMFLOAT2(1, -1);
-	v4.Tex = DirectX::XMFLOAT2(1, 1);
+	v4.pos = DirectX::XMFLOAT2(1, -1);
+	v4.tex = DirectX::XMFLOAT2(1, 1);
 
 	vertices[0] = v1;
 	vertices[1] = v2;
@@ -313,20 +313,20 @@ void DXDeferred::InitFullScreenQuad()
 	D3D11_SUBRESOURCE_DATA vinitData;
 	vinitData.pSysMem = &vertices[0];
 
-	m_Device->CreateBuffer(&vbd, &vinitData, &m_FullSceenQuad);
+	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderTestTriangle(ICamera* _Camera)
+void DXDeferred::RenderTestTriangle(ICamera* _camera)
 {
-	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_Camera->GetViewPort();
-	m_DeviceContext->RSSetViewports(1, vp);
+	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
+	m_deviceContext->RSSetViewports(1, vp);
 
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX proj;
 
 	DirectX::XMFLOAT4X4 view4x4, proj4x4;
-	memcpy(&view4x4, &_Camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
-	memcpy(&proj4x4, &_Camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&view4x4, &_camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&proj4x4, &_camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
 
 	view = DirectX::XMLoadFloat4x4(&view4x4);
 	proj = DirectX::XMLoadFloat4x4(&proj4x4);
@@ -336,15 +336,15 @@ void DXDeferred::RenderTestTriangle(ICamera* _Camera)
 
 	//Static
 
-	tech = DXEffects::ObjectDeferredFX->BasicTech;
+	tech = DXEffects::m_objectDeferredFX->m_basicTech;
 	tech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
 		
-		m_DeviceContext->RSSetState(DXRenderStates::NoCullRS);
-		//m_DeviceContext->RSSetState(RenderStates::WireframeRS);
-		m_DeviceContext->IASetInputLayout(DXInputLayouts::PosNormalTexTan);
-		m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+		//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
+		m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
+		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(0, 0, 0);;
 		DirectX::XMMATRIX worldInvTranspose;
 		DirectX::XMMATRIX worldView;
@@ -362,29 +362,29 @@ void DXDeferred::RenderTestTriangle(ICamera* _Camera)
 		//worldInvTransposeView = worldInvTranspose*view;
 		worldViewProj = XMMatrixMultiply(worldView, proj);
 
-		DXEffects::ObjectDeferredFX->SetWorld(world);
-		DXEffects::ObjectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
-		DXEffects::ObjectDeferredFX->SetTexTransform(tex);
-		DXEffects::ObjectDeferredFX->SetWorldViewProj(worldViewProj);
+		DXEffects::m_objectDeferredFX->SetWorld(world);
+		DXEffects::m_objectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
+		DXEffects::m_objectDeferredFX->SetTexTransform(tex);
+		DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
 
 
-		tech->GetPassByIndex(p)->Apply(0, m_DeviceContext);
+		tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
 
-		m_TestTriangle->Draw(m_DeviceContext, 0);
+		m_testTriangle->Draw(m_deviceContext, 0);
 
 	}
 
 	//reset textures
-	DXEffects::ObjectDeferredFX->SetDiffuseMap(NULL);
-	DXEffects::ObjectDeferredFX->SetNormalMap(NULL);
+	DXEffects::m_objectDeferredFX->SetDiffuseMap(NULL);
+	DXEffects::m_objectDeferredFX->SetNormalMap(NULL);
 }
 
 
-void DXDeferred::Render(ID3D11RenderTargetView *_RenderTargetView, ICamera* _Camera)
+void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, ICamera* _camera)
 {
-	m_DeviceContext->OMSetBlendState(DXRenderStates::OpaqueBS, NULL, 0xffffffff);
+	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
-	FillGBuffer(_Camera);
+	FillGBuffer(_camera);
 	//shadowmap->Render();
-	CombineFinal(_RenderTargetView);
+	CombineFinal(_renderTargetView);
 }

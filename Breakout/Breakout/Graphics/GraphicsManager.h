@@ -19,7 +19,7 @@ class GraphicsManager
 {
 private:
 	GraphicsManager();
-	static GraphicsManager* m_gmInstance;
+	static GraphicsManager* m_GMInstance;
 
 	IGraphics *m_IGraphics;
 	ICamera	*m_ICamera;
@@ -30,7 +30,7 @@ public:
 	static GraphicsManager* GetInstance();
 
 
-	bool	InitWindow(int x, int y, int width, int height, DisplayMode _displayMode);
+	bool	InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	IGraphics* GetIGraphics() { return m_IGraphics; }
 	void	Render();
 

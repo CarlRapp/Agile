@@ -23,6 +23,8 @@ public:
 	virtual bool Init3D(DisplayMode _displayMode) = 0;
 	//IGraphics* GetIGraphics();
 
+	virtual void LoadModel(std::string _path) = 0;
+
 
 	virtual void Render(ICamera* _Camera) = 0;
 

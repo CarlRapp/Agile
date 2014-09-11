@@ -12,17 +12,17 @@ public:
 	struct Subset
 	{
 		Subset() : 
-	      Id(-1), 
-			VertexStart(0), VertexCount(0),
-			FaceStart(0), FaceCount(0)
+	      m_id(-1), 
+			m_vertexStart(0), m_vertexCount(0),
+			m_faceStart(0), m_faceCount(0)
 		{
 		}
 
-		UINT Id;
-		UINT VertexStart;
-		UINT VertexCount;
-		UINT FaceStart;
-		UINT FaceCount;
+		UINT m_id;
+		UINT m_vertexStart;
+		UINT m_vertexCount;
+		UINT m_faceStart;
+		UINT m_faceCount;
 	};
 
 public:
@@ -30,48 +30,48 @@ public:
 	~DXMesh(void);
 
 	template <typename VertexType>
-	void SetVertices(ID3D11Device* device, const VertexType* vertices, UINT count);
+	void SetVertices(ID3D11Device* _device, const VertexType* _vertices, UINT _count);
 
-	void SetIndices(ID3D11Device* device, const UINT* indices, UINT count);
+	void SetIndices(ID3D11Device* _device, const UINT* _indices, UINT _count);
 
-	void SetSubsetTable(std::vector<Subset>& subsetTable);
+	void SetSubsetTable(std::vector<Subset>& _subsetTable);
 
-	void Draw(ID3D11DeviceContext* dc, UINT subsetId);
-
-private:
-	DXMesh(const DXMesh& rhs);
-	DXMesh& operator=(const DXMesh& rhs);
+	void Draw(ID3D11DeviceContext* _dc, UINT _subsetId);
 
 private:
-	ID3D11Buffer* mVB;
-	ID3D11Buffer* mIB;
+	DXMesh(const DXMesh& _rhs);
+	DXMesh& operator=(const DXMesh& _rhs);
 
-	DXGI_FORMAT mIndexBufferFormat; // Always 16-bit
-	UINT mVertexStride;
+private:
+	ID3D11Buffer* m_VB;
+	ID3D11Buffer* m_IB;
 
-	std::vector<Subset> mSubsetTable;
+	DXGI_FORMAT m_indexBufferFormat; // Always 16-bit
+	UINT m_vertexStride;
+
+	std::vector<Subset> m_subsetTable;
 };
 
 
 template <typename VertexType>
-void DXMesh::SetVertices(ID3D11Device* device, const VertexType* vertices, UINT count)
+void DXMesh::SetVertices(ID3D11Device* _device, const VertexType* _vertices, UINT _count)
 {
-	ReleaseCOM(mVB);
+	ReleaseCOM(m_VB);
 
-	mVertexStride = sizeof(VertexType);
+	m_vertexStride = sizeof(VertexType);
 
 	D3D11_BUFFER_DESC vbd;
     vbd.Usage = D3D11_USAGE_IMMUTABLE;
-	vbd.ByteWidth = sizeof(VertexType) * count;
+	vbd.ByteWidth = sizeof(VertexType) * _count;
     vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     vbd.CPUAccessFlags = 0;
     vbd.MiscFlags = 0;
 	vbd.StructureByteStride = 0;
 
     D3D11_SUBRESOURCE_DATA vinitData;
-    vinitData.pSysMem = vertices;
+	vinitData.pSysMem = _vertices;
 
-    device->CreateBuffer(&vbd, &vinitData, &mVB);
+	_device->CreateBuffer(&vbd, &vinitData, &m_VB);
 }
 
 #endif

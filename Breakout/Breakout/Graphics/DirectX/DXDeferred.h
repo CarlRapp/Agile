@@ -23,41 +23,41 @@ class DXDeferred
 {
 
 private:
-	DXWindow				*m_Window;
+	DXWindow				*m_window;
 
 
-	//ID3D11Texture2D			*m_DepthStencil = NULL;
-	//ID3D11DepthStencilView	*m_DepthStencilView = NULL;
-	ID3D11Device			*m_Device = NULL;
-	ID3D11DeviceContext		*m_DeviceContext = NULL;
+	//ID3D11Texture2D			*m_depthStencil = NULL;
+	//ID3D11DepthStencilView	*m_depthStencilView = NULL;
+	ID3D11Device			*m_device = NULL;
+	ID3D11DeviceContext		*m_deviceContext = NULL;
 
-	D3D11_VIEWPORT			m_ViewPort;
+	D3D11_VIEWPORT			m_viewPort;
 
-	int						m_Width, m_Height;
+	int						m_width, m_height;
 
-	ID3D11DepthStencilView		*m_DepthStencilView, *m_ShadowMapDSV;
-	ID3D11RenderTargetView		*m_AlbedoRTV, *m_NormalSpecRTV;
-	ID3D11ShaderResourceView	*m_AlbedoSRV, *m_NormalSpecSRV, *m_DepthSRV, *m_FinalSRV;
+	ID3D11DepthStencilView		*m_depthStencilView, *m_shadowMapDSV;
+	ID3D11RenderTargetView		*m_albedoRTV, *m_normalSpecRTV;
+	ID3D11ShaderResourceView	*m_albedoSRV, *m_normalSpecSRV, *m_depthSRV, *m_finalSRV;
 
-	ID3D11UnorderedAccessView	*m_FinalUAV;
+	ID3D11UnorderedAccessView	*m_finalUAV;
 
-	ID3D11RenderTargetView* GBuffer[2];
+	ID3D11RenderTargetView* m_GBuffer[2];
 
 	//TEST
-	DXMesh					*m_TestTriangle;
-	void					RenderQuad(D3D11_VIEWPORT &vp, ID3D11ShaderResourceView* SRV, ID3DX11EffectTechnique* tech);
-	ID3D11Buffer			*m_FullSceenQuad;
+	DXMesh					*m_testTriangle;
+	void					RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech);
+	ID3D11Buffer			*m_fullSceenQuad;
 	void					InitFullScreenQuad();
 
 
 	void					InitBuffers();
 
 	void					ClearBuffers();
-	void					FillGBuffer(ICamera* _Camera);
-	void					CombineFinal(ID3D11RenderTargetView *_RenderTargetView);
+	void					FillGBuffer(ICamera* _camera);
+	void					CombineFinal(ID3D11RenderTargetView *_renderTargetView);
 
 	void					InitTestTriangle();
-	void					RenderTestTriangle(ICamera* _Camera);
+	void					RenderTestTriangle(ICamera* _camera);
 
 
 public:
@@ -65,9 +65,9 @@ public:
 	DXDeferred(void);
 	~DXDeferred(void);
 
-	void Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, int _Width, int _Height);
+	void Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height);
 
-	void	Render(ID3D11RenderTargetView *_RenderTargetView, ICamera* _Camera);
+	void	Render(ID3D11RenderTargetView *_renderTargetView, ICamera* _camera);
 
 };
 

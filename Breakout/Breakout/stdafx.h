@@ -62,21 +62,21 @@ static std::string GetFile(std::string _path, std::string _root)
 struct Vector2
 {
 public:
-	float X, Y;
+	float x, y;
 
-	Vector2(float x, float y) : X(x), Y(y) {}
+	Vector2(float _x, float _y) : x(_x), y(_y) {}
 };
 
 struct Vector3
 {
 public:
-	float X, Y, Z;
+	float x, y, z;
 
-	Vector3() : X(0), Y(0), Z(0) {};
-	Vector3(float x, float y, float z) : X(x), Y(y), Z(z) {}
-	Vector3(Vector2 vector, float z) : X(vector.X), Y(vector.Y), Z(z) {}
+	Vector3() : x(0), y(0), z(0) {};
+	Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
+	Vector3(Vector2 _vector, float _z) : x(_vector.x), y(_vector.y), z(_z) {}
 
-	Vector2 ToVector2() { return Vector2(X, Y); }
+	Vector2 ToVector2() { return Vector2(x, y); }
 };
 
 

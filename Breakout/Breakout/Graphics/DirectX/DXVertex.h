@@ -27,14 +27,14 @@ namespace DXVertex
 
 	struct Quad
 	{
-		DirectX::XMFLOAT2 Pos;
-		DirectX::XMFLOAT2 Tex;
+		DirectX::XMFLOAT2 pos;
+		DirectX::XMFLOAT2 tex;
 	};
 
 	struct PosTex
 	{
-		DirectX::XMFLOAT3 Pos;
-		DirectX::XMFLOAT2 Tex;
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT2 tex;
 	};
 	/*
 	// Basic 32-byte vertex structure.
@@ -47,10 +47,10 @@ namespace DXVertex
 	*/
 	struct PosNormalTexTan
 	{
-		DirectX::XMFLOAT3 Pos;
-		DirectX::XMFLOAT3 Normal;
-		DirectX::XMFLOAT2 Tex;
-		DirectX::XMFLOAT4 TangentU;
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 tex;
+		DirectX::XMFLOAT4 tangentU;
 	};
 
 };
@@ -59,23 +59,23 @@ class DXInputLayoutDesc
 {
 public:
 	// Init like const int A::a[4] = {0, 1, 2, 3}; in .cpp file.
-	static const D3D11_INPUT_ELEMENT_DESC Quad[2];
-	static const D3D11_INPUT_ELEMENT_DESC PosTex[2];
-	//static const D3D11_INPUT_ELEMENT_DESC Basic32[3];
-	static const D3D11_INPUT_ELEMENT_DESC PosNormalTexTan[4];
+	static const D3D11_INPUT_ELEMENT_DESC m_quad[2];
+	static const D3D11_INPUT_ELEMENT_DESC m_posTex[2];
+	//static const D3D11_INPUT_ELEMENT_DESC m_basic32[3];
+	static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTan[4];
 };
 
 class DXInputLayouts
 {
 public:
-	static void InitAll(ID3D11Device* device);
+	static void InitAll(ID3D11Device* _device);
 	static void DestroyAll();
 
-	static ID3D11InputLayout* Pos;
-	static ID3D11InputLayout* Quad;
-	static ID3D11InputLayout* PosTex;
+	static ID3D11InputLayout* m_pos;
+	static ID3D11InputLayout* m_quad;
+	static ID3D11InputLayout* m_posTex;
 	//static ID3D11InputLayout* Basic32;
-	static ID3D11InputLayout* PosNormalTexTan;
+	static ID3D11InputLayout* m_posNormalTexTan;
 };
 
 #endif
