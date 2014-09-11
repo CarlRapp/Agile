@@ -6,7 +6,7 @@ ModelData* FileManager::LoadModel(std::string filePath)
 	auto modelIt = m_modelMap.find(filePath);
 	if (modelIt == m_modelMap.end())
 	{
-		ModelData* data = ObjLoader::LoadObjFile(filePath);
+		ModelData* data = ModelLoader().LoadModelFile(filePath);
 		if (data)
 			m_modelMap.insert(std::pair<std::string, ModelData*>(filePath, data));
 		return data;

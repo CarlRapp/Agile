@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 	
-	
+	ModelData* model = FileManager::GetInstance().LoadModel("sphere");
 
 	system("pause");
 

@@ -9,7 +9,7 @@
 
 
 #include "../Storage/ModelData.h"
-#include "ObjLoader.h"
+#include "ModelLoader.h"
 #include "WavLoader.h"
 #include "MusicLoader.h"
 
@@ -31,6 +31,7 @@ public:
 		return *instance;
 	}
 
+	// Don't include an extension at the end of the file, eg. .obj
 	ModelData* LoadModel(std::string filePath);
 
 	// AudioManager needs to be initialized

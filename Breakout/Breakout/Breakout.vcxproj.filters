@@ -56,9 +56,6 @@
     <ClCompile Include="Input\Windows\WindowsInput.cpp">
       <Filter>Source Files\Input\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Storage\ObjLoader.cpp">
-      <Filter>Source Files\Storage</Filter>
-    </ClCompile>
     <ClCompile Include="Storage\ModelData.cpp">
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
@@ -66,6 +63,9 @@
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
     <ClCompile Include="Storage\MusicLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\ModelLoader.cpp">
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,12 +131,6 @@
       <Filter>Source Files\Input\Windows</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Storage\ObjLoader.h">
-      <Filter>Source Files\Storage</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Vertex.h">
-      <Filter>Source Files\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Storage\ModelData.h">
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
@@ -144,6 +138,12 @@
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
     <ClInclude Include="Storage\MusicLoader.h">
+      <Filter>Source Files\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ModelHelper.h">
+      <Filter>Source Files\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage\ModelLoader.h">
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
   </ItemGroup>
