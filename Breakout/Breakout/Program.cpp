@@ -60,11 +60,11 @@ int main(int argc, char** argv)
 
 	m_FileManager = FileManager::GetInstance();
 	//m_FileManager->LoadSoundEffect("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Kettle-Drum-1.wav");
-	m_FileManager->LoadMusic("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Yamaha-SY-35-Clarinet-C5.wav");
+
 	m_AudioManager->PlayMusic("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Yamaha-SY-35-Clarinet-C5.wav", -1);
 
 	Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
-
+	Keyboard* keyboard = m_InputManager->GetInstance()->getInputDevices()->GetKeyboard();
 	
 
 	
@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	{
 		m_InputManager->GetInstance()->Update();
 
-		if(mouse->GetButtonState(VK_LBUTTON ) == InputState::Pressed)
+		if (keyboard->GetKeyState('A') == InputState::Pressed)
 			m_AudioManager->PlaySoundEffect("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Kettle-Drum-1.wav", 0);
 		if(mouse->GetButtonState(VK_RBUTTON) == InputState::Down)
 			m_AudioManager->PlaySoundEffect("C:/Users/Kvagga/Desktop/Agile/Data/Audio/Electric-Bass-Low-C-Staccato.wav", 0);
