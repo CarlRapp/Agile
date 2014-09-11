@@ -7,10 +7,10 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
-#include "ComponentsSystem\Entity\Entity.h"
-#include "ComponentsSystem\Systems\MovementSystem.h"
-#include "ComponentsSystem\Components\PositionComponent.h"
-#include "ComponentsSystem\Components\VelocityComponent.h"
+#include "ComponentsSystem/Entity/Entity.h"
+#include "ComponentsSystem/Systems/MovementSystem.h"
+#include "ComponentsSystem/Components/PositionComponent.h"
+#include "ComponentsSystem/Components/VelocityComponent.h"
 
 #ifdef WINDOWS
 #include <SDL.h>

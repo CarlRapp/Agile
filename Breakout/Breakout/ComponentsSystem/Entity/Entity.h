@@ -85,7 +85,7 @@ T& Entity::AddComponent(Args&&... args)
 template <typename T>
 void Entity::RemoveComponent()
 {
-	if (std::is_base_of<BaseComponent, T>())
+	if (std::is_base_of<IComponent, T>())
 		RemoveComponent(T::GetTypeId());
 	else
 		printf("ERROR -> removeComponent\n");
@@ -105,7 +105,7 @@ T* Entity::GetComponent()
 template <typename T>
 bool Entity::HasComponent()
 {
-	if (std::is_base_of<BaseComponent, T >())
+	if (std::is_base_of<IComponent, T >())
 		return HasComponent(T::GetTypeId());
 
 	printf("ERROR -> hasComponent\n");

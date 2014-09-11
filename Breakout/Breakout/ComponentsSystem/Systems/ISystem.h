@@ -55,7 +55,7 @@ public:
 
 	static TypeID GetTypeID()
 	{
-		return ClassTypeID<BaseSystem>::GetTypeId<T>();
+		return ClassTypeID<ISystem>::GetTypeId<T>();
 	}
 };
 
