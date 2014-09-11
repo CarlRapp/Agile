@@ -25,10 +25,10 @@ private:
 	std::unordered_map<std::string, Mix_Music*> m_mixMusicMap;
 
 public:
-	static FileManager& GetInstance()
+	static FileManager* GetInstance()
 	{ 
 		static FileManager* instance = new FileManager();
-		return *instance;
+		return instance;
 	}
 
 	// Don't include an extension at the end of the file, eg. .obj

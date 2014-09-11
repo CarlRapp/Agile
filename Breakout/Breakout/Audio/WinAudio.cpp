@@ -35,7 +35,7 @@ bool WinAudio::Initialize()
 
 bool WinAudio::PlayMusic(const char* _fileName, int _loop)
 {
-	Mix_Music* music = FileManager::GetInstance().LoadMusic(_fileName);
+	Mix_Music* music = FileManager::GetInstance()->LoadMusic(_fileName);
 	if (!music)
 	{
 		Log(MSG_ERROR, "SDL_Audio, Music not found:", _fileName);
@@ -60,7 +60,7 @@ bool WinAudio::PlayMusic(const char* _fileName, int _loop)
 bool WinAudio::PlaySoundEffect(const char* _fileName, int _loop)
 {
 	// Sound not found, return false
-	Mix_Chunk* soundEffect = FileManager::GetInstance().LoadSoundEffect(_fileName);
+	Mix_Chunk* soundEffect = FileManager::GetInstance()->LoadSoundEffect(_fileName);
 	if (!soundEffect)
 	{
 		Log(MSG_ERROR, "SDL_Audio, Sound effect not found:", _fileName);
