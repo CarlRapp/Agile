@@ -1,11 +1,11 @@
 #include "ModelData.h"
 
-ModelData::ModelData(std::vector<Vertex> vertices)
+ModelData::ModelData()
 {
-	m_vertices = vertices;
+	Groups = vector<Group*>();
 }
 
 ModelData::~ModelData()
 {
-	m_vertices.erase(m_vertices.begin(), m_vertices.end());
+	
 }
