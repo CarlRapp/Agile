@@ -47,8 +47,13 @@ int main(int argc, char** argv)
 
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 
-        while(difftime(time(0),startTime)<5)
-            m_GraphicsManager->Render();
+
+	while (difftime(time(0), startTime) < 1000)
+	{
+		m_GraphicsManager->Update(0.001f);
+		m_GraphicsManager->Render();
+	}
+            
 
 		delete m_GraphicsManager;
 	return 0;

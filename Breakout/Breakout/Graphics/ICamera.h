@@ -25,7 +25,7 @@ public:
 	virtual Float4x4 GetView() = 0;
 	virtual Float4x4 GetProjection() = 0;
 
-	//virtual Vector3 GetPosition() = 0;
+	virtual Vector3 GetPosition() = 0;
 	//virtual Vector3 GetForward() = 0;
 	//virtual Vector3 GetRight() = 0;
 	//virtual Vector3 GetUp() = 0;
@@ -46,7 +46,7 @@ public:
 	virtual void SetForward(Vector3 _forward) = 0;
 	//virtual void SetForward(float x, float y, float z) = 0;
 
-	//virtual void SetLookAt(Vector3 target) = 0;
+	virtual void SetLookAt(Vector3 _target) = 0;
 
 	//virtual void SetLookAt(float x, float y, float z) = 0;
 

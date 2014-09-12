@@ -58,7 +58,7 @@ public:
 	void SetForward(Vector3 forward);
 	//void SetForward(float x, float y, float z) = 0;
 
-	//void SetLookAt(Vector3 target) = 0;
+	void SetLookAt(Vector3 _target);
 
 	//void SetLookAt(float x, float y, float z) = 0;
 
