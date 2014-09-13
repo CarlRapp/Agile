@@ -114,7 +114,7 @@ int main(int argc, char** argv)
 
 
 
-	while (difftime(time(0), startTime) < 1000)
+	while (difftime(time(0), startTime) < 5)
 	{
 		m_GraphicsManager->Update(0.001f);
 		m_GraphicsManager->Render();
