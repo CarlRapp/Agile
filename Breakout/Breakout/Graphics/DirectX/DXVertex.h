@@ -44,13 +44,22 @@ namespace DXVertex
 		DirectX::XMFLOAT3 Normal;
 		DirectX::XMFLOAT2 Tex;
 	};
-	*/
+	
 	struct PosNormalTexTan
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT2 tex;
 		DirectX::XMFLOAT4 tangentU;
+	};*/
+
+	struct PosNormalTexTanCol
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT2 tex;
+		DirectX::XMFLOAT4 tangentU;
+		DirectX::XMFLOAT3 color;
 	};
 
 };
@@ -62,7 +71,8 @@ public:
 	static const D3D11_INPUT_ELEMENT_DESC m_quad[2];
 	static const D3D11_INPUT_ELEMENT_DESC m_posTex[2];
 	//static const D3D11_INPUT_ELEMENT_DESC m_basic32[3];
-	static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTan[4];
+	//static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTan[4];
+	static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTanCol[5];
 };
 
 class DXInputLayouts
@@ -75,7 +85,8 @@ public:
 	static ID3D11InputLayout* m_quad;
 	static ID3D11InputLayout* m_posTex;
 	//static ID3D11InputLayout* Basic32;
-	static ID3D11InputLayout* m_posNormalTexTan;
+	//static ID3D11InputLayout* m_posNormalTexTan;
+	static ID3D11InputLayout* m_posNormalTexTanCol;
 };
 
 #endif

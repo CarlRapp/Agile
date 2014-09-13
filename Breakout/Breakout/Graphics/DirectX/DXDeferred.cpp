@@ -217,32 +217,62 @@ void DXDeferred::InitTestTriangle()
 {
 	m_testTriangle = new DXMesh();
 
-	std::vector<DXVertex::PosNormalTexTan> Vertices;
+	std::vector<DXVertex::PosNormalTexTanCol> Vertices;
 	std::vector<UINT> Indices;
 	std::vector<DXMesh::Subset> Subsets;
-	DXVertex::PosNormalTexTan a, b, c;
+	DXVertex::PosNormalTexTanCol a, b, c, d, e, f;
 
 	//a
-	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 0.0f);
+	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, -5.0f);
 	a.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	a.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
 	a.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	a.color = DirectX::XMFLOAT3(0.8f, 0.0f, 1.0f);
 
 	//b
-	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, 0.0f);
+	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -5.0f);
 	b.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	b.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 	b.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	b.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 	//c
-	c.pos = DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f);
+	c.pos = DirectX::XMFLOAT3(0.0f, 5.0f, -5.0f);
 	c.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	c.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
 	c.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	c.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+
+
+	//d
+	d.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 5.0f);
+	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	d.color = DirectX::XMFLOAT3(0.8f, 0.0f, 1.0f);
+
+	//e
+	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, 5.0f);
+	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	e.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	//f
+	f.pos = DirectX::XMFLOAT3(0.0f, 5.0f, 5.0f);
+	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
+	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	f.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+
 
 	Vertices.push_back(a);
 	Vertices.push_back(b);
 	Vertices.push_back(c);
+
+	Vertices.push_back(d);
+	Vertices.push_back(e);
+	Vertices.push_back(f);
 
 	m_testTriangle->SetVertices(m_device, &Vertices[0], Vertices.size());
 
@@ -250,13 +280,17 @@ void DXDeferred::InitTestTriangle()
 	Indices.push_back(1);
 	Indices.push_back(2);
 
+	Indices.push_back(3);
+	Indices.push_back(4);
+	Indices.push_back(5);
+
 	m_testTriangle->SetIndices(m_device, &Indices[0], Indices.size());
 
 	DXMesh::Subset subset;
-	subset.m_faceCount = 1;
+	subset.m_faceCount = 2;
 	subset.m_faceStart = 0;
 	subset.m_id = 0;
-	subset.m_vertexCount = 3;
+	subset.m_vertexCount = 6;
 	subset.m_vertexStart = 0;
 
 	Subsets.push_back(subset);
@@ -349,7 +383,7 @@ void DXDeferred::RenderTestTriangle(ICamera* _camera)
 		
 		m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 		//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
-		m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
+		m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTanCol);
 		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(0, 0, 0);;
 		DirectX::XMMATRIX worldInvTranspose;

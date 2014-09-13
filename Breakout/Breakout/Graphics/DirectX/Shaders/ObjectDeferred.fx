@@ -40,6 +40,15 @@ struct VertexIn
 	float4 TangentL : TANGENT;
 };
 
+struct VertexInC
+{
+	float3 PosL     : POSITION;
+	float3 NormalL  : NORMAL;
+	float2 Tex      : TEXCOORD;
+	float4 TangentL : TANGENT;
+	float4 ColorL   : COLOR;
+};
+
 struct SkinnedVertexIn
 {
 	float3 PosL       : POSITION;
@@ -56,6 +65,7 @@ struct VertexOut
     float3 NormalW    : NORMAL;
 	float4 TangentW   : TANGENT;
 	float2 Tex        : TEXCOORD0;
+	float3 Color      : COLOR;
 };
 
 struct PsOut
@@ -64,7 +74,7 @@ struct PsOut
 	float4 NormalSpec	: COLOR1;
 };
 
-VertexOut VS(VertexIn vin)
+VertexOut VS(VertexInC vin)
 {
 	VertexOut vout;
 	
@@ -77,6 +87,8 @@ VertexOut VS(VertexIn vin)
 	
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	vout.Color = vin.ColorL;
 
 	return vout;
 }
@@ -116,6 +128,8 @@ VertexOut SkinnedVS(SkinnedVertexIn vin)
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
+	vout.Color = float4(1, 1, 1, 1);
+
 	return vout;
 }
 
@@ -131,7 +145,8 @@ PsOut PS(VertexOut pin,
 	pin.NormalW = normalize(pin.NormalW);
 
     // Default to multiplicative identity.
-    pout.Albedo = float4(1, 1, 1, 1);
+    //pout.Albedo = float4(1, 1, 1, 1);
+	pout.Albedo = float4(pin.Color, 1);
     if(gUseTexure)
 	{
 		// Sample texture.
