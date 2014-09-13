@@ -24,11 +24,11 @@ GraphicsManager::~GraphicsManager(void)
 
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
+#ifdef WINDOWS
 	m_ICamera = ICamera::GetICamera();
 	m_ICamera->SetPosition(Vector3(0, 0, -20));
-
 	m_ICamera->SetLookAt(Vector3(0,0,0));
-
+#endif
 	m_ICamera->SetViewPort(0, 0, _width, _height);
 	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
 }
