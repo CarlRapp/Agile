@@ -58,6 +58,8 @@ int main(int argc, char** argv)
 	//Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
 	m_AudioManager = &AudioManager::GetInstance();
+	m_InputManager = InputManager::GetInstance();
+	Keyboard* KB = m_InputManager->getInputDevices()->GetKeyboard();
 
 	if (!m_AudioManager->Initialize())
 		return false;
@@ -116,6 +118,7 @@ int main(int argc, char** argv)
 
 	while (difftime(time(0), startTime) < 5)
 	{
+		m_InputManager->Update();
 		m_GraphicsManager->Update(0.001f);
 		m_GraphicsManager->Render();
 	}
