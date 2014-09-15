@@ -14,23 +14,23 @@ class DXGraphics : public IGraphics
 {
 
 private:
-	DXWindow				*m_Window;
+	DXWindow				*m_window;
 
 
-	IDXGISwapChain			*m_SwapChain = NULL;
-	ID3D11RenderTargetView	*m_RenderTargetView = NULL;
+	IDXGISwapChain			*m_swapChain = NULL;
+	ID3D11RenderTargetView	*m_renderTargetView = NULL;
 
-	ID3D11Texture2D			*m_DepthStencil = NULL;
-	ID3D11DepthStencilView	*m_DepthStencilView = NULL;
-	ID3D11Device			*m_Device = NULL;
-	ID3D11DeviceContext		*m_DeviceContext = NULL;
+	ID3D11Texture2D			*m_depthStencil = NULL;
+	ID3D11DepthStencilView	*m_depthStencilView = NULL;
+	ID3D11Device			*m_device = NULL;
+	ID3D11DeviceContext		*m_deviceContext = NULL;
 
 	DXDeferred				*m_DXDeferred = NULL;
 
 
 	HRESULT					InitDirect3D(DisplayMode _displayMode);
 
-	int m_Width, m_Height;
+	int m_width, m_height;
 
 
 
@@ -41,8 +41,10 @@ public:
 
 	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	bool  Init3D(DisplayMode _displayMode);
-	DXWindow* GetWindow(){ return m_Window; }
-	void	Render(ICamera* _Camera);
+	DXWindow* GetWindow(){ return m_window; }
+	void	Render(ICamera* _camera);
+	void LoadModel(std::string _path);
+
 };
 
 

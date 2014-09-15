@@ -9,19 +9,19 @@
 class DXRenderStates
 {
 public:
-	static void InitAll(ID3D11Device* device);
+	static void InitAll(ID3D11Device* _device);
 	static void DestroyAll();
 
-	static ID3D11RasterizerState* WireframeRS;
-	static ID3D11RasterizerState* NoCullRS;
+	static ID3D11RasterizerState* m_wireframeRS;
+	static ID3D11RasterizerState* m_noCullRS;
 
-	static ID3D11DepthStencilState* EqualsDSS;
-	static ID3D11DepthStencilState* LessDSS;
-	static ID3D11DepthStencilState* NoDSS;
+	static ID3D11DepthStencilState* m_equalsDSS;
+	static ID3D11DepthStencilState* m_lessDSS;
+	static ID3D11DepthStencilState* m_noDSS;
 	 
-	static ID3D11BlendState* OpaqueBS;
-	static ID3D11BlendState* AlphaToCoverageBS;
-	static ID3D11BlendState* TransparentBS;
+	static ID3D11BlendState* m_opaqueBS;
+	static ID3D11BlendState* m_alphaToCoverageBS;
+	static ID3D11BlendState* m_transparentBS;
 };
 
 #endif

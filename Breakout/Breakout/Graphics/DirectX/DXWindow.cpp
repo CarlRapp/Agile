@@ -6,10 +6,10 @@
 #include <fcntl.h>
 DXWindow::DXWindow(void)
 {
-	m_X = 0;
-	m_Y = 0;
-	m_Width = 0;
-	m_Height = 0;
+	m_x = 0;
+	m_y = 0;
+	m_width = 0;
+	m_height = 0;
 }
 
 DXWindow::~DXWindow(void)
@@ -20,10 +20,10 @@ DXWindow::~DXWindow(void)
 
 bool DXWindow::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
-	m_X = _x;
-	m_Y = _y;
-	m_Width = _width;
-	m_Height = _height;
+	m_x = _x;
+	m_y = _y;
+	m_width = _width;
+	m_height = _height;
 	return InitWnd(GetModuleHandle(0), NULL, GetCommandLine(), SW_SHOW, _displayMode);
 }
 
@@ -54,18 +54,18 @@ bool DXWindow::InitWnd(HINSTANCE _hInstance, HINSTANCE _hPrevInstance, PSTR _pCm
 	return true;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 {
-	switch (msg)
+	switch (_msg)
 	{
 	case WM_CLOSE:
-		DestroyWindow(hwnd);
+		DestroyWindow(_hwnd);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	default:
-		return DefWindowProc(hwnd, msg, wParam, lParam);
+		return DefWindowProc(_hwnd, _msg, _wParam, _lParam);
 	}
 	return 0;
 }
@@ -98,14 +98,14 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 		wStyle = WS_POPUP;
 	}
 
-	RECT rc = { 0, 0, m_Width, m_Height };
+	RECT rc = { 0, 0, m_width, m_height };
 	AdjustWindowRect(&rc, wStyle, FALSE);
 
 	m_hWndMain = ::CreateWindow("Window",
 		"Breakout",
 		wStyle,
-		m_X,
-		m_Y,
+		m_x,
+		m_y,
 		rc.right - rc.left,
 		rc.bottom - rc.top,
 		0,

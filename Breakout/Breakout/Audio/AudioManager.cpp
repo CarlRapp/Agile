@@ -19,6 +19,7 @@ bool AudioManager::Initialize()
 	if (m_initialized)
 		return true;
 
+
 #ifdef WINDOWS
 	m_audio = new WinAudio();
 #else
