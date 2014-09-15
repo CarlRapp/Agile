@@ -365,8 +365,8 @@ void DXDeferred::RenderTestTriangle(ICamera* _camera)
 	DirectX::XMMATRIX proj;
 
 	DirectX::XMFLOAT4X4 view4x4, proj4x4;
-	memcpy(&view4x4, &_camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
-	memcpy(&proj4x4, &_camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&view4x4, _camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&proj4x4, _camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
 
 	view = DirectX::XMLoadFloat4x4(&view4x4);
 	proj = DirectX::XMLoadFloat4x4(&proj4x4);
