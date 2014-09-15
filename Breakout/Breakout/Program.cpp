@@ -62,8 +62,8 @@ int main(int argc, char** argv)
 	if (!m_AudioManager->Initialize())
 		return false;
 
-	m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", 0);
-        m_AudioManager->PlayMusic("Electric-Bass-Low-C-Staccato.wav",-1);
+	//m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", 0);
+        //m_AudioManager->PlayMusic("Electric-Bass-Low-C-Staccato.wav",-1);
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 
 

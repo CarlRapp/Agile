@@ -19,13 +19,11 @@ ModelLoader::~ModelLoader()
 
 ModelData* ModelLoader::LoadModelFile(std::string filePath)
 {
-
 	ifstream file;
 	file.open(filePath + ".obj");
-
+        
 	if (!file)
 		return 0;
-
 	string str;
 
 	while (!file.eof())
@@ -44,18 +42,15 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 		{
 			ParseMaterialFile(file, filePath);
 		}
-		str = "";
+                str = "";
 	}
-
 	//ParseFace2(file);
-
-	Material* m = m_materials["lambert2SG"];
 
 	ModelData* model = new ModelData();
 	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
 		model->Groups.push_back(it->second);
-	
-
+        
+        
 	return model;
 }
 
@@ -74,7 +69,7 @@ void ModelLoader::ParseGroup(std::ifstream& file)
 	if (mIter == m_groups.end())
 	{
 		m_currentGroup = new Group;
-		m_currentGroup->Name = str;
+		m_currentGroup->name = str;
 		m_groups[str] = m_currentGroup;
 	}
 	else
@@ -94,7 +89,11 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 		do
 		{
 			char tmpGName[20];
+#ifdef WINDOWS
 			sprintf_s(tmpGName, sizeof(tmpGName), "%d", m_newGroupNameCounter++);
+#else
+                        snprintf(tmpGName, sizeof(tmpGName), "%d", m_newGroupNameCounter++);
+#endif
 			std::string groupName = tmpGName;
 			mIter = m_groups.find(groupName);
 
@@ -102,7 +101,7 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 			if (mIter == m_groups.end())
 			{
 				m_currentGroup = new Group;
-				m_currentGroup->Name = groupName;
+				m_currentGroup->name = groupName;
 				m_groups[groupName] = m_currentGroup;
 			}
 		} while (mIter != m_groups.end());
@@ -115,7 +114,7 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 	std::getline(file, str);
 	Btrim(str);
 
-	m_currentGroup->Material = m_materials[str];
+	m_currentGroup->material = m_materials[str];
 }
 
 void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
@@ -319,7 +318,7 @@ void ModelLoader::ParseFace(std::ifstream& file)
 
 		triangle.Vertices[t] = vertex;
 	}
-	m_currentGroup->Triangles.push_back(triangle);
+	m_currentGroup->triangles.push_back(triangle);
 }
 
 void ModelLoader::ParseFace2(std::ifstream& file)

@@ -11,7 +11,7 @@ ICamera* ICamera::GetICamera()
     
 #ifdef DIRECTX
 	return new DXCamera();
-#else
-        return new GLCamera(1,1,1,1,1);
+#else   //0.5f, 300.0f, 16 / 9.0f, 90
+        return new GLCamera(90,16,9,0.1f,100);
 #endif
 }

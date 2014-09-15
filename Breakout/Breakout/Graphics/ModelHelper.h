@@ -68,10 +68,10 @@ struct Triangle
 
 struct Group
 {
-	string			Name;
-	Material*		Material;
+	string			name;
+	Material*		material;
 
-	vector<Triangle>	Triangles;
+	vector<Triangle>	triangles;
 };
 
 

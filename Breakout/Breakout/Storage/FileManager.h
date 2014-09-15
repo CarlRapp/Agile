@@ -1,10 +1,17 @@
 #ifndef _FILEMANAGER_H_
 #define _FILEMANAGER_H_
 
+
 #include <string>
+#include "../stdafx.h"
 #include <unordered_map>
+#ifdef WINDOWS
 #include <SDL.h>
 #include <SDL_mixer.h>
+#else
+#include <SDL/SDL.h>
+#include <SDL/SDL_mixer.h>
+#endif
 #include <typeinfo>
 
 
