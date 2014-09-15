@@ -63,6 +63,7 @@ void Keyboard::Update()
 
 InputState Keyboard::GetKeyState(char _key)
 {
+	_key = toupper(_key);
 	if (_key < KEYBOARDKEYS)
 	{
 		bool	tLastFrame = m_lastFrameKeys[_key];
