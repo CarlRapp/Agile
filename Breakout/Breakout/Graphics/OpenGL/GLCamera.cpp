@@ -76,40 +76,49 @@ void GLCamera::UpdateView()
 	up      = U;
 	forward = L;
 
-	m_view(0, 0) = R.x;
-	m_view(1, 0) = R.y;
-	m_view(2, 0) = R.z;
-	m_view(3, 0) = x;
+	m_view[0][0] = R.x;
+	m_view[1][0] = R.y;
+	m_view[2][0] = R.z;
+	m_view[3][0] = x;
 
-	m_view(0, 1) = U.x;
-	m_view(1, 1) = U.y;
-	m_view(2, 1) = U.z;
-	m_view(3, 1) = y;
+	m_view[0][1] = U.x;
+	m_view[1][1] = U.y;
+	m_view[2][1] = U.z;
+	m_view[3][1] = y;
 
-	m_view(0, 2) = L.x;
-	m_view(1, 2) = L.y;
-	m_view(2, 2) = L.z;
-	m_view(3, 2) = z;
+	m_view[0][2] = L.x;
+	m_view[1][2] = L.y;
+	m_view[2][2] = L.z;
+	m_view[3][2] = z;
 
-	m_view(0, 3) = 0.0f;
-	m_view(1, 3) = 0.0f;
-	m_view(2, 3) = 0.0f;
-	m_view(3, 3) = 1.0f;
+	m_view[0][3] = 0.0f;
+	m_view[1][3] = 0.0f;
+	m_view[2][3] = 0.0f;
+	m_view[3][3] = 1.0f;
+        
+        //m_view = m_identityMatrix;
+            for(int i=0;i< 4;i++)
+    {
+        for(int j=0; j < 4;j++)
+            printf("%f ",m_view[i][j]);
+        printf("\n");
+    }
+    printf("VIEW SECOND\n");
 }
 
 void GLCamera::UpdateProjection()
 {
 
     printf("FOV: %f | AspectRatio: %f | nearZ: %f | farZ: %f\n",m_FOVy,m_aspectRatio,m_nearZ,m_farZ);
-    
-    glm::mat4 proj =glm::perspective(45.0f,m_aspectRatio,m_nearZ,m_farZ);
+    glm::mat4 proj;
+    //proj =glm::perspective(45.0f,m_aspectRatio,m_nearZ,m_farZ);
     //glm::mat4x4 proj4x4;
-
+    //proj = m_identityMatrix;
     //DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(m_FOVy, m_aspectRatio, m_nearZ, m_farZ);
     //DirectX::XMFLOAT4X4 proj4x4;
     //DirectX::XMStoreFloat4x4(&proj4x4, proj);
     
-    //proj = glm::mat4 {2,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
+    proj = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
         
     memcpy(&m_projection, &proj, sizeof(glm::mat4));
     
@@ -186,11 +195,10 @@ void GLCamera::SetForward(Vector3 forward)
 		up2 = glm::vec3(0, 0, -1);
 
         
-	glm::mat4x4 view = glm::lookAt(pos,direction,up2);
+	m_view = glm::lookAt(pos,direction,up2);
 
-	glm::mat4x4 view4x4;
 	//DirectX::XMStoreFloat4x4(&view4x4, view);
-	memcpy(&m_view, &view4x4, sizeof(Float4x4));
+	//memcpy(&m_view, &view, sizeof(glm::mat4));
         
 //        DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(pos, direction, up2);
 //
@@ -198,11 +206,17 @@ void GLCamera::SetForward(Vector3 forward)
 //	DirectX::XMStoreFloat4x4(&view4x4, view);
 //	memcpy(&m_view, &view4x4, sizeof(Float4x4));
 
-	m_right = Vector3(m_view._11, m_view._21, m_view._31);
-	m_up = Vector3(m_view._12, m_view._22, m_view._32);
-	m_forward = Vector3(m_view._13, m_view._23, m_view._33);
-
-
+	m_right = Vector3(m_view[0][0], m_view[1][0], m_view[2][0]);
+	m_up = Vector3(m_view[0][1], m_view[1][1], m_view[2][1]);
+	m_forward = Vector3(m_view[0][2], m_view[1][2], m_view[2][2]);
     
+            for(int i=0;i< 4;i++)
+    {
+        for(int j=0; j < 4;j++)
+            printf("%f ",m_view[i][j]);
+        printf("\n");
+    }
+    printf("VIEW FIRST\n");
+        
 	UpdateView();
 }

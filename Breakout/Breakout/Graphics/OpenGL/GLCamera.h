@@ -20,13 +20,13 @@ private:
 
 	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ;
 	Vector3				m_position, m_forward, m_right, m_up;
-	Float4x4			m_view;
-        glm::mat4                       m_projection;
+        glm::mat4                       m_projection,m_view;
         void*                           m_vpProjection;
         void*                           m_vpView;
 	void UpdateView();
 	void UpdateProjection();
 	void UpdateFrustum();
+        glm::mat4 m_identityMatrix = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
 
 public:
 

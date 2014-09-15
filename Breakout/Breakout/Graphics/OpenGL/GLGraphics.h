@@ -35,7 +35,7 @@ private:
         
         std::vector<Shader*> m_shaders;
         
-        glm::mat4 m_identityMatrix = glm::mat4 {2,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
+        glm::mat4 m_identityMatrix = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
         
         int SetUniformV(const char* variable,float value);
         int SetUniformV(const char* variable,glm::vec3 value);
