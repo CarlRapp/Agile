@@ -42,41 +42,13 @@ int main(int argc, char** argv)
 
 	if (!m_AudioManager->Initialize())
 		return false;
-        
-        /*  INPUT MANAGER   */
-        m_InputManager = InputManager::GetInstance();
-        Keyboard* kb = m_InputManager->getInputDevices()->GetKeyboard();
-        Mouse* mus = m_InputManager->getInputDevices()->GetMouse();
 
 	//m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", -1);
 
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
-        //m_AudioManager->PlayMusic(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), -1);
-        int a = 0, b = 0, c = 0;
-        while(difftime(time(0),startTime)<10)
-        {
-            m_InputManager->Update();
-            if(kb->GetKeyState('1') == InputState::Pressed)
-            {
-                printf("a clicked %d\n", ++a);
-                //m_AudioManager->PlaySoundEffect(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), 0);
-            }
-            
-            //if(a==10)
-            //    break;
-               
-            
-            //if(mus->GetButtonState(MouseButton::RightMB)== InputState::Pressed)
-               //m_AudioManager->PlaySoundEffect(GetFile("Electric-Bass-Low-C-Staccato.wav", AUDIO_ROOT).c_str(), 0);
-            
-            if(mus->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
-            {
-                printf("X: %d\nY: %d\n", mus->getX(), mus->getY());
-                printf("dX: %d\ndY: %d\n", mus->getdX(), mus->getdY());
-            }
-            
+
+        while(difftime(time(0),startTime)<5)
             m_GraphicsManager->Render();
-        }
 
 	return 0;
 }

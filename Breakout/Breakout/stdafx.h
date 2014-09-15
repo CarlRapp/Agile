@@ -17,7 +17,6 @@
 
 #define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
 #define MODEL_ROOT "/../../Data/Models/"
-#define AUDIO_ROOT "/../../Data/Audio/"
 static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
