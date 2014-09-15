@@ -168,15 +168,15 @@ void GLGraphics::Render(ICamera* _camera)
     GLint model = glGetUniformLocation(m_program, "m_matModel" );
     glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_identityMatrix));
     
-    glm::mat4* temp = (glm::mat4*)_camera->GetProjection();
+    glm::mat4* temp1 = (glm::mat4*)_camera->GetProjection();
     
     GLint projection = glGetUniformLocation(m_program, "m_matProj" );
-    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp));
+    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
     
-    temp = (glm::mat4*)_camera->GetView();
-    
+    glm::mat4* temp2 = (glm::mat4*)_camera->GetView();
+
     GLint view = glGetUniformLocation(m_program, "m_matView" );
-    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp));
+    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp2));
 
 
     

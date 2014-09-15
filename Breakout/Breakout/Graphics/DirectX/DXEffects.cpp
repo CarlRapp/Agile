@@ -2,10 +2,10 @@
 
 
 #pragma region DXEffect
-DXEffect::DXEffect(ID3D11Device* device, const std::wstring& filename)
-	: mFX(0)
+DXEffect::DXEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: m_FX(0)
 {
-	std::ifstream fin(filename.c_str(), std::ios::binary);
+	std::ifstream fin(_filename.c_str(), std::ios::binary);
 
 	fin.seekg(0, std::ios_base::end);
 	int size = (int)fin.tellg();
@@ -16,128 +16,44 @@ DXEffect::DXEffect(ID3D11Device* device, const std::wstring& filename)
 	fin.close();
 
 	HRESULT(D3DX11CreateEffectFromMemory(&compiledShader[0], size, 
-		0, device, &mFX));
+		0, _device, &m_FX));
 }
 
 DXEffect::~DXEffect()
 {
-	ReleaseCOM(mFX);
-}
-#pragma endregion
-
-
-#pragma region BasicEffect
-BasicEffect::BasicEffect(ID3D11Device* device, const std::wstring& filename)
-	: DXEffect(device, filename)
-{
-	Light1Tech = mFX->GetTechniqueByName("Light1");
-	Light2Tech = mFX->GetTechniqueByName("Light2");
-	Light3Tech = mFX->GetTechniqueByName("Light3");
-
-	Light0TexTech = mFX->GetTechniqueByName("Light0Tex");
-	Light1TexTech = mFX->GetTechniqueByName("Light1Tex");
-	Light2TexTech = mFX->GetTechniqueByName("Light2Tex");
-	Light3TexTech = mFX->GetTechniqueByName("Light3Tex");
-
-	Light0TexAlphaClipTech = mFX->GetTechniqueByName("Light0TexAlphaClip");
-	Light1TexAlphaClipTech = mFX->GetTechniqueByName("Light1TexAlphaClip");
-	Light2TexAlphaClipTech = mFX->GetTechniqueByName("Light2TexAlphaClip");
-	Light3TexAlphaClipTech = mFX->GetTechniqueByName("Light3TexAlphaClip");
-
-	Light1FogTech = mFX->GetTechniqueByName("Light1Fog");
-	Light2FogTech = mFX->GetTechniqueByName("Light2Fog");
-	Light3FogTech = mFX->GetTechniqueByName("Light3Fog");
-
-	Light0TexFogTech = mFX->GetTechniqueByName("Light0TexFog");
-	Light1TexFogTech = mFX->GetTechniqueByName("Light1TexFog");
-	Light2TexFogTech = mFX->GetTechniqueByName("Light2TexFog");
-	Light3TexFogTech = mFX->GetTechniqueByName("Light3TexFog");
-
-	Light0TexAlphaClipFogTech = mFX->GetTechniqueByName("Light0TexAlphaClipFog");
-	Light1TexAlphaClipFogTech = mFX->GetTechniqueByName("Light1TexAlphaClipFog");
-	Light2TexAlphaClipFogTech = mFX->GetTechniqueByName("Light2TexAlphaClipFog");
-	Light3TexAlphaClipFogTech = mFX->GetTechniqueByName("Light3TexAlphaClipFog");
-
-	Light1ReflectTech = mFX->GetTechniqueByName("Light1Reflect");
-	Light2ReflectTech = mFX->GetTechniqueByName("Light2Reflect");
-	Light3ReflectTech = mFX->GetTechniqueByName("Light3Reflect");
-
-	Light0TexReflectTech = mFX->GetTechniqueByName("Light0TexReflect");
-	Light1TexReflectTech = mFX->GetTechniqueByName("Light1TexReflect");
-	Light2TexReflectTech = mFX->GetTechniqueByName("Light2TexReflect");
-	Light3TexReflectTech = mFX->GetTechniqueByName("Light3TexReflect");
-
-	Light0TexAlphaClipReflectTech = mFX->GetTechniqueByName("Light0TexAlphaClipReflect");
-	Light1TexAlphaClipReflectTech = mFX->GetTechniqueByName("Light1TexAlphaClipReflect");
-	Light2TexAlphaClipReflectTech = mFX->GetTechniqueByName("Light2TexAlphaClipReflect");
-	Light3TexAlphaClipReflectTech = mFX->GetTechniqueByName("Light3TexAlphaClipReflect");
-
-	Light1FogReflectTech = mFX->GetTechniqueByName("Light1FogReflect");
-	Light2FogReflectTech = mFX->GetTechniqueByName("Light2FogReflect");
-	Light3FogReflectTech = mFX->GetTechniqueByName("Light3FogReflect");
-
-	Light0TexFogReflectTech = mFX->GetTechniqueByName("Light0TexFogReflect");
-	Light1TexFogReflectTech = mFX->GetTechniqueByName("Light1TexFogReflect");
-	Light2TexFogReflectTech = mFX->GetTechniqueByName("Light2TexFogReflect");
-	Light3TexFogReflectTech = mFX->GetTechniqueByName("Light3TexFogReflect");
-
-	Light0TexAlphaClipFogReflectTech = mFX->GetTechniqueByName("Light0TexAlphaClipFogReflect");
-	Light1TexAlphaClipFogReflectTech = mFX->GetTechniqueByName("Light1TexAlphaClipFogReflect");
-	Light2TexAlphaClipFogReflectTech = mFX->GetTechniqueByName("Light2TexAlphaClipFogReflect");
-	Light3TexAlphaClipFogReflectTech = mFX->GetTechniqueByName("Light3TexAlphaClipFogReflect");
-
-	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-	WorldViewProjTex = mFX->GetVariableByName("gWorldViewProjTex")->AsMatrix();
-	World = mFX->GetVariableByName("gWorld")->AsMatrix();
-	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-	TexTransform = mFX->GetVariableByName("gTexTransform")->AsMatrix();
-	ShadowTransform = mFX->GetVariableByName("gShadowTransform")->AsMatrix();
-	EyePosW = mFX->GetVariableByName("gEyePosW")->AsVector();
-	FogColor = mFX->GetVariableByName("gFogColor")->AsVector();
-	FogStart = mFX->GetVariableByName("gFogStart")->AsScalar();
-	FogRange = mFX->GetVariableByName("gFogRange")->AsScalar();
-	DirLights = mFX->GetVariableByName("gDirLights");
-	Mat = mFX->GetVariableByName("gMaterial");
-	DiffuseMap = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	CubeMap = mFX->GetVariableByName("gCubeMap")->AsShaderResource();
-	ShadowMap = mFX->GetVariableByName("gShadowMap")->AsShaderResource();
-	SsaoMap = mFX->GetVariableByName("gSsaoMap")->AsShaderResource();
-}
-
-BasicEffect::~BasicEffect()
-{
+	ReleaseCOM(m_FX);
 }
 #pragma endregion
 
 
 #pragma region ObjectDeferredEffect
-ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	BasicTech				= mFX->GetTechniqueByName("BasicTech");
-	TexTech					= mFX->GetTechniqueByName("TexTech");
-	TexNormalTech			= mFX->GetTechniqueByName("TexNormalTech");
-	TexAlphaClipTech		= mFX->GetTechniqueByName("TexAlphaClipTech");
-	TexNormalAlphaClipTech	= mFX->GetTechniqueByName("TexNormalAlphaClipTech");
-	NormalTech				= mFX->GetTechniqueByName("NormalTech");
+	m_basicTech = m_FX->GetTechniqueByName("BasicTech");
+	m_texTech = m_FX->GetTechniqueByName("TexTech");
+	m_texNormalTech = m_FX->GetTechniqueByName("TexNormalTech");
+	m_texAlphaClipTech = m_FX->GetTechniqueByName("TexAlphaClipTech");
+	m_texNormalAlphaClipTech = m_FX->GetTechniqueByName("TexNormalAlphaClipTech");
+	m_normalTech = m_FX->GetTechniqueByName("NormalTech");
 
-	BasicSkinnedTech				= mFX->GetTechniqueByName("BasicSkinnedTech");
-	TexSkinnedTech					= mFX->GetTechniqueByName("TexSkinnedTech");
-	TexNormalSkinnedTech			= mFX->GetTechniqueByName("TexNormalSkinnedTech");
-	TexAlphaClipSkinnedTech			= mFX->GetTechniqueByName("TexAlphaClipSkinnedTech");
-	TexNormalAlphaClipSkinnedTech	= mFX->GetTechniqueByName("TexNormalAlphaClipSkinnedTech");
-	NormalSkinnedTech				= mFX->GetTechniqueByName("NormalSkinnedTech");
+	m_basicSkinnedTech = m_FX->GetTechniqueByName("BasicSkinnedTech");
+	m_texSkinnedTech = m_FX->GetTechniqueByName("TexSkinnedTech");
+	m_texNormalSkinnedTech = m_FX->GetTechniqueByName("TexNormalSkinnedTech");
+	m_texAlphaClipSkinnedTech = m_FX->GetTechniqueByName("TexAlphaClipSkinnedTech");
+	m_texNormalAlphaClipSkinnedTech = m_FX->GetTechniqueByName("TexNormalAlphaClipSkinnedTech");
+	m_normalSkinnedTech = m_FX->GetTechniqueByName("NormalSkinnedTech");
 
-	WorldViewProj			= mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-	World					= mFX->GetVariableByName("gWorld")->AsMatrix();
-	WorldInvTranspose		= mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-	TexTransform			= mFX->GetVariableByName("gTexTransform")->AsMatrix();
-	BoneTransforms			= mFX->GetVariableByName("gBoneTransforms")->AsMatrix();
+	m_worldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	m_world = m_FX->GetVariableByName("gWorld")->AsMatrix();
+	m_worldInvTranspose = m_FX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
+	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();
 
-	Mat						= mFX->GetVariableByName("gMaterial");
+	m_mat = m_FX->GetVariableByName("gMaterial");
 
-	DiffuseMap				= mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	NormalMap				= mFX->GetVariableByName("gNormalMap")->AsShaderResource();
+	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	m_normalMap = m_FX->GetVariableByName("gNormalMap")->AsShaderResource();
 }
 
 ObjectDeferredEffect::~ObjectDeferredEffect()
@@ -148,36 +64,36 @@ ObjectDeferredEffect::~ObjectDeferredEffect()
 
 
 #pragma region TiledLightningEffect
-TiledLightningEffect::TiledLightningEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+TiledLightningEffect::TiledLightningEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	Viewport1		= mFX->GetTechniqueByName("Viewport1");
-	Viewport2		= mFX->GetTechniqueByName("Viewport2");
-	Viewport3		= mFX->GetTechniqueByName("Viewport3");
-	Viewport4		= mFX->GetTechniqueByName("Viewport4");
+	m_viewport1 = m_FX->GetTechniqueByName("Viewport1");
+	m_viewport2 = m_FX->GetTechniqueByName("Viewport2");
+	m_viewport3 = m_FX->GetTechniqueByName("Viewport3");
+	m_viewport4 = m_FX->GetTechniqueByName("Viewport4");
 
-	ViewProjTexs		= mFX->GetVariableByName("gLightViewProjTex")->AsMatrix();
-	ViewProj			= mFX->GetVariableByName("gLightViewProj")->AsMatrix();
-	Texs				= mFX->GetVariableByName("gLightTex")->AsMatrix();
-	InvViewProjs		= mFX->GetVariableByName("gInvViewProjs")->AsMatrix();
-	CamPositions		= mFX->GetVariableByName("gCamPositions")->AsVector();
-	Resolution			= mFX->GetVariableByName("gResolution")->AsVector();
-	ShadowMapSwitches	= mFX->GetVariableByName("gShadowMapSwitches")->AsVector();
-	ShadowMapResolution	= mFX->GetVariableByName("gShadowMapResolution")->AsVector();
-	GlobalLight			= mFX->GetVariableByName("gGlobalLight")->AsVector();
+	m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
+	m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
+	m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
+	m_invViewProjs = m_FX->GetVariableByName("gInvViewProjs")->AsMatrix();
+	m_camPositions = m_FX->GetVariableByName("gCamPositions")->AsVector();
+	m_resolution = m_FX->GetVariableByName("gResolution")->AsVector();
+	m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
+	m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
+	m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
 
-	AlbedoMap		= mFX->GetVariableByName("gAlbedoMap")->AsShaderResource();
-	NormalSpecMap   = mFX->GetVariableByName("gNormalSpecMap")->AsShaderResource();
-	DepthMap		= mFX->GetVariableByName("gDepthMap")->AsShaderResource();
-	ShadowMap0		= mFX->GetVariableByName("gShadowMap0")->AsShaderResource();
-	ShadowMap1		= mFX->GetVariableByName("gShadowMap1")->AsShaderResource();
-	ShadowMap2		= mFX->GetVariableByName("gShadowMap2")->AsShaderResource();
-	ShadowMap3		= mFX->GetVariableByName("gShadowMap3")->AsShaderResource();
-	OutputMap		= mFX->GetVariableByName("gOutput")->AsUnorderedAccessView();
+	m_albedoMap = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
+	m_normalSpecMap = m_FX->GetVariableByName("gNormalSpecMap")->AsShaderResource();
+	m_depthMap = m_FX->GetVariableByName("gDepthMap")->AsShaderResource();
+	m_shadowMap0 = m_FX->GetVariableByName("gShadowMap0")->AsShaderResource();
+	m_shadowMap1 = m_FX->GetVariableByName("gShadowMap1")->AsShaderResource();
+	m_shadowMap2 = m_FX->GetVariableByName("gShadowMap2")->AsShaderResource();
+	m_shadowMap3 = m_FX->GetVariableByName("gShadowMap3")->AsShaderResource();
+	m_outputMap = m_FX->GetVariableByName("gOutput")->AsUnorderedAccessView();
 
-	DirLightMap     = mFX->GetVariableByName("gDirLightBuffer")->AsShaderResource();
-	PointLightMap   = mFX->GetVariableByName("gPointLightBuffer")->AsShaderResource();
-	SpotLightMap    = mFX->GetVariableByName("gSpotLightBuffer")->AsShaderResource();
+	m_dirLightMap = m_FX->GetVariableByName("gDirLightBuffer")->AsShaderResource();
+	m_pointLightMap = m_FX->GetVariableByName("gPointLightBuffer")->AsShaderResource();
+	m_spotLightMap = m_FX->GetVariableByName("gSpotLightBuffer")->AsShaderResource();
 }
 
 TiledLightningEffect::~TiledLightningEffect()
@@ -188,32 +104,32 @@ TiledLightningEffect::~TiledLightningEffect()
 
 
 #pragma region BuildShadowMapEffect
-BuildShadowMapEffect::BuildShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+BuildShadowMapEffect::BuildShadowMapEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	BuildShadowMapTech           = mFX->GetTechniqueByName("BuildShadowMapTech");
-	BuildShadowMapAlphaClipTech  = mFX->GetTechniqueByName("BuildShadowMapAlphaClipTech");
+	m_buildShadowMapTech = m_FX->GetTechniqueByName("BuildShadowMapTech");
+	m_buildShadowMapAlphaClipTech = m_FX->GetTechniqueByName("BuildShadowMapAlphaClipTech");
 
-	BuildShadowMapSkinnedTech          = mFX->GetTechniqueByName("BuildShadowMapSkinnedTech");
-	BuildShadowMapAlphaClipSkinnedTech = mFX->GetTechniqueByName("BuildShadowMapAlphaClipSkinnedTech");
+	m_buildShadowMapSkinnedTech = m_FX->GetTechniqueByName("BuildShadowMapSkinnedTech");
+	m_buildShadowMapAlphaClipSkinnedTech = m_FX->GetTechniqueByName("BuildShadowMapAlphaClipSkinnedTech");
 
-	TessBuildShadowMapTech           = mFX->GetTechniqueByName("TessBuildShadowMapTech");
-	TessBuildShadowMapAlphaClipTech  = mFX->GetTechniqueByName("TessBuildShadowMapAlphaClipTech");
+	m_tessBuildShadowMapTech = m_FX->GetTechniqueByName("TessBuildShadowMapTech");
+	m_tessBuildShadowMapAlphaClipTech = m_FX->GetTechniqueByName("TessBuildShadowMapAlphaClipTech");
 	
-	ViewProj          = mFX->GetVariableByName("gViewProj")->AsMatrix();
-	WorldViewProj     = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-	World             = mFX->GetVariableByName("gWorld")->AsMatrix();
-	WorldInvTranspose = mFX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
-	BoneTransforms    = mFX->GetVariableByName("gBoneTransforms")->AsMatrix();
-	TexTransform      = mFX->GetVariableByName("gTexTransform")->AsMatrix();
-	EyePosW           = mFX->GetVariableByName("gEyePosW")->AsVector();
-	HeightScale       = mFX->GetVariableByName("gHeightScale")->AsScalar();
-	MaxTessDistance   = mFX->GetVariableByName("gMaxTessDistance")->AsScalar();
-	MinTessDistance   = mFX->GetVariableByName("gMinTessDistance")->AsScalar();
-	MinTessFactor     = mFX->GetVariableByName("gMinTessFactor")->AsScalar();
-	MaxTessFactor     = mFX->GetVariableByName("gMaxTessFactor")->AsScalar();
-	DiffuseMap        = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	NormalMap         = mFX->GetVariableByName("gNormalMap")->AsShaderResource();
+	m_viewProj = m_FX->GetVariableByName("gViewProj")->AsMatrix();
+	m_worldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	m_world = m_FX->GetVariableByName("gWorld")->AsMatrix();
+	m_worldInvTranspose = m_FX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
+	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();
+	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
+	m_eyePosW = m_FX->GetVariableByName("gEyePosW")->AsVector();
+	m_heightScale = m_FX->GetVariableByName("gHeightScale")->AsScalar();
+	m_maxTessDistance = m_FX->GetVariableByName("gMaxTessDistance")->AsScalar();
+	m_minTessDistance = m_FX->GetVariableByName("gMinTessDistance")->AsScalar();
+	m_minTessFactor = m_FX->GetVariableByName("gMinTessFactor")->AsScalar();
+	m_maxTessFactor = m_FX->GetVariableByName("gMaxTessFactor")->AsScalar();
+	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	m_normalMap = m_FX->GetVariableByName("gNormalMap")->AsShaderResource();
 }
 
 BuildShadowMapEffect::~BuildShadowMapEffect()
@@ -231,10 +147,10 @@ BuildShadowMapEffect::~BuildShadowMapEffect()
 
 
 #pragma region ClearGBufferEffect
-ClearGBufferEffect::ClearGBufferEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+ClearGBufferEffect::ClearGBufferEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	ClearTech  = mFX->GetTechniqueByName("ClearTech");
+	ClearTech = m_FX->GetTechniqueByName("ClearTech");
 }
 
 ClearGBufferEffect::~ClearGBufferEffect()
@@ -243,28 +159,28 @@ ClearGBufferEffect::~ClearGBufferEffect()
 #pragma endregion
 
 #pragma region ShadowMapEffect
-ShadowMapEffect::ShadowMapEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+ShadowMapEffect::ShadowMapEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	BasicShadowDirTech		= mFX->GetTechniqueByName("BasicShadowDir");
-	BasicShadowPointTech	= mFX->GetTechniqueByName("BasicShadowPoint");
-	BasicShadowSpotTech		= mFX->GetTechniqueByName("BasicShadowSpot");
-	AlphaClipShadowDirTech	= mFX->GetTechniqueByName("AlphaClipShadowDir");
-	AlphaClipShadowPointTech= mFX->GetTechniqueByName("AlphaClipShadowPoint");
-	AlphaClipShadowSpotTech	= mFX->GetTechniqueByName("AlphaClipShadowSpot");
+	m_basicShadowDirTech = m_FX->GetTechniqueByName("BasicShadowDir");
+	m_basicShadowPointTech = m_FX->GetTechniqueByName("BasicShadowPoint");
+	m_basicShadowSpotTech = m_FX->GetTechniqueByName("BasicShadowSpot");
+	m_alphaClipShadowDirTech = m_FX->GetTechniqueByName("AlphaClipShadowDir");
+	m_alphaClipShadowPointTech = m_FX->GetTechniqueByName("AlphaClipShadowPoint");
+	m_alphaClipShadowSpotTech = m_FX->GetTechniqueByName("AlphaClipShadowSpot");
 
-	SkinnedBasicShadowDirTech		= mFX->GetTechniqueByName("SkinnedBasicShadowDir");
-	SkinnedBasicShadowPointTech		= mFX->GetTechniqueByName("SkinnedBasicShadowPoint");
-	SkinnedBasicShadowSpotTech		= mFX->GetTechniqueByName("SkinnedBasicShadowSpot");
-	SkinnedAlphaClipShadowDirTech	= mFX->GetTechniqueByName("SkinnedAlphaClipShadowDir");
-	SkinnedAlphaClipShadowPointTech	= mFX->GetTechniqueByName("SkinnedAlphaClipShadowPoint");
-	SkinnedAlphaClipShadowSpotTech	= mFX->GetTechniqueByName("SkinnedAlphaClipShadowSpot");
+	m_skinnedBasicShadowDirTech = m_FX->GetTechniqueByName("SkinnedBasicShadowDir");
+	m_skinnedBasicShadowPointTech = m_FX->GetTechniqueByName("SkinnedBasicShadowPoint");
+	m_skinnedBasicShadowSpotTech = m_FX->GetTechniqueByName("SkinnedBasicShadowSpot");
+	m_skinnedAlphaClipShadowDirTech = m_FX->GetTechniqueByName("SkinnedAlphaClipShadowDir");
+	m_skinnedAlphaClipShadowPointTech = m_FX->GetTechniqueByName("SkinnedAlphaClipShadowPoint");
+	m_skinnedAlphaClipShadowSpotTech = m_FX->GetTechniqueByName("SkinnedAlphaClipShadowSpot");
 
-	DiffuseMap  = mFX->GetVariableByName("gDiffuseMap")->AsShaderResource();
+	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
 
-	TexTransform	= mFX->GetVariableByName("gTexTransform")->AsMatrix();
-	WorldViewProj	= mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
-	BoneTransforms	= mFX->GetVariableByName("gBoneTransforms")->AsMatrix();
+	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
+	m_worldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();
 }
 
 ShadowMapEffect::~ShadowMapEffect()
@@ -273,18 +189,18 @@ ShadowMapEffect::~ShadowMapEffect()
 #pragma endregion
 
 #pragma region CombineFinalEffect
-CombineFinalEffect::CombineFinalEffect(ID3D11Device* device, const std::wstring& filename)
-: DXEffect(device, filename)
+CombineFinalEffect::CombineFinalEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
 {
-	MonoTech  = mFX->GetTechniqueByName("Mono");
-	ColorTech  = mFX->GetTechniqueByName("Color");
-	TransparencyColorTech  = mFX->GetTechniqueByName("TransparencyColor");
-	AlphaTransparencyColorTech  = mFX->GetTechniqueByName("AlphaTransparencyColor");
-	AlphaClipColorTech  = mFX->GetTechniqueByName("AlphaClipColor");
+	m_monoTech = m_FX->GetTechniqueByName("Mono");
+	m_colorTech = m_FX->GetTechniqueByName("Color");
+	m_transparencyColorTech = m_FX->GetTechniqueByName("TransparencyColor");
+	m_alphaTransparencyColorTech = m_FX->GetTechniqueByName("AlphaTransparencyColor");
+	m_alphaClipColorTech = m_FX->GetTechniqueByName("AlphaClipColor");
 
-	Opacity = mFX->GetVariableByName("g_Opacity")->AsScalar();
+	m_opacity = m_FX->GetVariableByName("g_Opacity")->AsScalar();
 
-	Texture = mFX->GetVariableByName("g_Texture")->AsShaderResource();
+	m_texture = m_FX->GetVariableByName("g_Texture")->AsShaderResource();
 }
 
 CombineFinalEffect::~CombineFinalEffect()
@@ -294,34 +210,31 @@ CombineFinalEffect::~CombineFinalEffect()
 
 #pragma region DXEffects
 
-BasicEffect*		   DXEffects::BasicFX = 0;
-BuildShadowMapEffect*  DXEffects::BuildShadowMapFX = 0;
-ClearGBufferEffect*    DXEffects::ClearGBufferFX = 0;
-CombineFinalEffect*	   DXEffects::CombineFinalFX = 0;
-ObjectDeferredEffect*  DXEffects::ObjectDeferredFX = 0;
-TiledLightningEffect*  DXEffects::TiledLightningFX = 0;
-ShadowMapEffect*	   DXEffects::ShadowMapFX = 0;
+BuildShadowMapEffect*  DXEffects::m_buildShadowMapFX = 0;
+ClearGBufferEffect*    DXEffects::m_clearGBufferFX = 0;
+CombineFinalEffect*	   DXEffects::m_combineFinalFX = 0;
+ObjectDeferredEffect*  DXEffects::m_objectDeferredFX = 0;
+TiledLightningEffect*  DXEffects::m_tiledLightningFX = 0;
+ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
 
-void DXEffects::InitAll(ID3D11Device* device)
+void DXEffects::InitAll(ID3D11Device* _device)
 {
-	//BasicFX			  = new BasicEffect(device, L"Graphics/DirectX/Shaders/Basic.fxo");
-	BuildShadowMapFX  = new BuildShadowMapEffect(device, L"Graphics/DirectX/Shaders/BuildShadowMap.fxo");
-	ClearGBufferFX    = new ClearGBufferEffect(device, L"Graphics/DirectX/Shaders/ClearGBuffer.fxo");
-	CombineFinalFX    = new CombineFinalEffect(device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
-	ObjectDeferredFX  = new ObjectDeferredEffect(device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
-	TiledLightningFX  = new TiledLightningEffect(device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
-	ShadowMapFX		  = new ShadowMapEffect(device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
+	m_buildShadowMapFX = new BuildShadowMapEffect(_device, L"Graphics/DirectX/Shaders/BuildShadowMap.fxo");
+	m_clearGBufferFX = new ClearGBufferEffect(_device, L"Graphics/DirectX/Shaders/ClearGBuffer.fxo");
+	m_combineFinalFX = new CombineFinalEffect(_device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
+	m_objectDeferredFX = new ObjectDeferredEffect(_device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
+	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
+	m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
 }
 
 void DXEffects::DestroyAll()
 {
-	SafeDelete(BasicFX);
-	SafeDelete(BuildShadowMapFX);
-	SafeDelete(ClearGBufferFX);
-	SafeDelete(CombineFinalFX);
-	SafeDelete(ObjectDeferredFX);
-	SafeDelete(TiledLightningFX);
-	SafeDelete(ShadowMapFX);
+	SafeDelete(m_buildShadowMapFX);
+	SafeDelete(m_clearGBufferFX);
+	SafeDelete(m_combineFinalFX);
+	SafeDelete(m_objectDeferredFX);
+	SafeDelete(m_tiledLightningFX);
+	SafeDelete(m_shadowMapFX);
 }
 
 #pragma endregion

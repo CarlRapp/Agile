@@ -14,7 +14,7 @@ enum MouseButton
 {
 	LeftMB,
 	RightMB,
-	MiddleMB
+	MiddleMB = 3
 };
 #pragma endregion
 
