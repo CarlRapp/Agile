@@ -31,6 +31,7 @@ struct Vector2;
 struct Vector3;
 
 
+
 static std::string GetFile(std::string _path, std::string _root)
 {
 #ifdef WINDOWS
@@ -109,5 +110,33 @@ public:
 	Float4x4& operator= (const Float4x4& Float4x4);
 
 };
+
+
+
+#ifdef LINUX
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#define MATRIX4 glm::mat4
+#define VECTOR3 glm::vec3
+
+    static glm::mat4 MacroTranslate(glm::mat4 matrix,glm::vec3 vector,int dx1,int dx2)
+    {
+        return glm::translate(matrix,vector);
+    }
+
+    static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
+    {
+        return glm::rotate(matrix,angle,axis);
+    }
+
+#endif
+
+#define TRANSLATE(matrix,vector,dx1,dx2) MacroTranslate(matrix,vector,dx1,dx2)
+#define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
+
+
 
 #endif

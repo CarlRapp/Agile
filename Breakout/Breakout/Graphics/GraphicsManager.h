@@ -30,10 +30,11 @@ public:
 	static GraphicsManager* GetInstance();
 
 
-	bool	InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
-	IGraphics* GetIGraphics() { return m_IGraphics; }
-	void	Render();
-	void	Update(double dt);
+	bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
+	IGraphics*  GetIGraphics() { return m_IGraphics; }
+	void        Render();
+	void        Update(double dt);
+        ICamera*    GetICamera();
 
 	//AddObject()
 	//RemoveObject()

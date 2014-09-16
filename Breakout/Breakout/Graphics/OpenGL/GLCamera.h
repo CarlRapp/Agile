@@ -61,7 +61,9 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-	void SetPosition(Vector3 position)			{ m_position = position; UpdateView(); }
+        void Move(Vector3 _move);
+        void Move(float _move);
+	void SetPosition(Vector3 position) { m_position = position; UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
 	void SetForward(Vector3 forward);
 	//void SetForward(float x, float y, float z) = 0;
