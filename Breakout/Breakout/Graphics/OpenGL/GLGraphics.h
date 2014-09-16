@@ -20,19 +20,34 @@
 
 class GLGraphics : public IGraphics
 {
-
+    struct ModelRenderInfo
+    {
+        public:
+            
+        int vertices;
+        GLuint bufferNormalID;
+        GLuint bufferVertexID;
+        std::string name;
+        
+        ModelRenderInfo(){}
+        ModelRenderInfo(GLuint _bufferNormalID, GLuint _bufferVertexID, int _vertices, std::string _name):
+        bufferNormalID(_bufferNormalID),
+        bufferVertexID(_bufferVertexID),
+        vertices(_vertices),
+        name(_name)
+        {}
+    };
+    
 private:
 	GLWindow *m_window;
         int m_screenWidth;
         int m_screenHeight;
         
-        GLuint vbo_cube_vertices, vbo_cube_colors;
-        GLuint ibo_cube_elements;
         GLuint m_program;
         
-        GLint uniform_mvp;
-        GLint attribute_coord3d, attribute_v_color;
+        GLint m_attributePosition, m_attributeNormal;
         
+        std::vector<ModelRenderInfo*> m_models;
         std::vector<Shader*> m_shaders;
         
         glm::vec3 m_testLightPos = glm::vec3(0,3,0);

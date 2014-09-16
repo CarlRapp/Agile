@@ -97,13 +97,13 @@ void GLCamera::UpdateView()
 	m_view[3][3] = 1.0f;
         
         //m_view = m_identityMatrix;
-            for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_view[i][j]);
-        printf("\n");
-    }
-    printf("VIEW SECOND\n");
+//            for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_view[i][j]);
+//        printf("\n");
+//    }
+//    printf("VIEW SECOND\n");
 }
 
 void GLCamera::UpdateProjection()
@@ -121,14 +121,14 @@ void GLCamera::UpdateProjection()
     //proj = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
         
     memcpy(&m_projection, &proj, sizeof(glm::mat4));
-    
-    for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_projection[i][j]);
-        printf("\n");
-    }
-    printf("PROJECTION END\n");
+//    
+//    for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_projection[i][j]);
+//        printf("\n");
+//    }
+//    printf("PROJECTION END\n");
 }
 
 void* GLCamera::GetProjection()
@@ -212,13 +212,13 @@ void GLCamera::SetForward(Vector3 forward)
         
 	UpdateView();
         
-    for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_view[i][j]);
-        printf("\n");
-    }
-    printf("VIEW FIRST\n");
+//    for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_view[i][j]);
+//        printf("\n");
+//    }
+//    printf("VIEW FIRST\n");
 }
 
 void GLCamera::Move(Vector3 _move)

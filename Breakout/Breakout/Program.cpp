@@ -45,7 +45,7 @@ int main(int argc, char** argv)
         time_t startTime = time(0);
 
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
-
+        
 
         double secondsElapsed;
 
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
 
         //m_AudioManager->PlayMusic(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), -1);
         int a = 0, b = 0, c = 0;
-        while(difftime(time(0),startTime)<10)
+        while(difftime(time(0),startTime)<2)
         {
             m_InputManager->Update();
             if(kb->GetKeyState('w') == InputState::Pressed)

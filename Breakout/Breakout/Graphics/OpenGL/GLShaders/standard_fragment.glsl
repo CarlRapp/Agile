@@ -10,6 +10,6 @@ void main(void)
 
     b = pow(b,2);
     
-    gl_FragColor = vec4(f_normal.x, f_normal.y, f_normal.z, 1.0);
+    gl_FragColor = vec4(b, b, b, 1.0);
     
 }
