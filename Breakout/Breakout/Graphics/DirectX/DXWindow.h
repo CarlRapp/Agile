@@ -33,6 +33,7 @@ public:
 	int GetWidth() { return m_width; }
 	int GetHeight() { return m_height; }
 
+	void Update();
 
 	HWND GetHandle(){ return m_hWndMain; }
 };
