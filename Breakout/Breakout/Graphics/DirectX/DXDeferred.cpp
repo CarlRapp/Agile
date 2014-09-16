@@ -223,21 +223,21 @@ void DXDeferred::InitTestTriangle()
 	DXVertex::PosNormalTexTanCol a, b, c, d, e, f;
 
 	//a
-	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, -5.0f);
+	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, -0.0f);
 	a.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	a.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
 	a.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	a.color = DirectX::XMFLOAT3(0.8f, 0.0f, 1.0f);
+	a.color = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	//b
-	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -5.0f);
+	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
 	b.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	b.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 	b.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	b.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 	//c
-	c.pos = DirectX::XMFLOAT3(0.0f, 5.0f, -5.0f);
+	c.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
 	c.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	c.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
 	c.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -245,25 +245,47 @@ void DXDeferred::InitTestTriangle()
 
 
 	//d
-	d.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 5.0f);
+	d.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
 	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
 	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	d.color = DirectX::XMFLOAT3(0.8f, 0.0f, 1.0f);
+	d.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
 
 	//e
-	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, 5.0f);
+	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
 	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
 	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	e.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 
 	//f
-	f.pos = DirectX::XMFLOAT3(0.0f, 5.0f, 5.0f);
+	f.pos = DirectX::XMFLOAT3(5.0f, 5.0f, -0.0f);
 	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
 	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
 	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	f.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+	f.color = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+
+	//g
+	d.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
+	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
+	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	d.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
+
+	//h
+	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
+	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
+	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	e.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+	//i
+	f.pos = DirectX::XMFLOAT3(5.0f, 5.0f, -0.0f);
+	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
+	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
+	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	f.color = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 
 
 	Vertices.push_back(a);
