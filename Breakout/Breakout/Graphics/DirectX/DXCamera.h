@@ -72,6 +72,8 @@ public:
 		m_viewPort.TopLeftY = (float)_y;
 		m_viewPort.Width = (float)_width;
 		m_viewPort.Height = (float)_height;
+		m_aspectRatio = (float)_width / (float)_height;
+		UpdateProjection();
 	}
 
 #pragma endregion
