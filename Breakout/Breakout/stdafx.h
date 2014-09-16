@@ -21,8 +21,8 @@
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
 #else
-#define MODEL_ROOT "Data/Models/"
-#define AUDIO_ROOT "Data/Audio/"
+#define MODEL_ROOT "../../Data/Models/"
+#define AUDIO_ROOT "../../Data/Audio/"
 #endif
 
 static char    m_cwd[FILENAME_MAX];
