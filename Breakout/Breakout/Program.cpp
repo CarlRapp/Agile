@@ -71,13 +71,24 @@ int main(int argc, char** argv)
 
         //m_AudioManager->PlayMusic(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), -1);
         int a = 0, b = 0, c = 0;
-        while(difftime(time(0),startTime)<5)
+        while(difftime(time(0),startTime)<10)
         {
             m_InputManager->Update();
-            if(kb->GetKeyState('1') == InputState::Pressed)
+            if(kb->GetKeyState('w') == InputState::Pressed)
             {
-                printf("a clicked %d\n", ++a);
-                //m_AudioManager->PlaySoundEffect(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), 0);
+                m_GraphicsManager->GetICamera()->Move(Vector3(0,1.0f,0));
+            }
+            if(kb->GetKeyState('s') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(0,-1.0f,0));
+            }
+            if(kb->GetKeyState('a') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(-1.0f,0,0));
+            }
+            if(kb->GetKeyState('d') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(1.0f,0,0));
             }
             
             //if(a==10)
@@ -86,7 +97,7 @@ int main(int argc, char** argv)
             
             //if(mus->GetButtonState(MouseButton::RightMB)== InputState::Pressed)
                //m_AudioManager->PlaySoundEffect(GetFile("Electric-Bass-Low-C-Staccato.wav", AUDIO_ROOT).c_str(), 0);
-            
+
             if(mus->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
             {
                 printf("X: %d\nY: %d\n", mus->getX(), mus->getY());

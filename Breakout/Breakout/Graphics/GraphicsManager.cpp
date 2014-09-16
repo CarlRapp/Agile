@@ -25,8 +25,8 @@ GraphicsManager::~GraphicsManager(void)
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera();
-	m_ICamera->SetPosition(Vector3(0, 0, 0));
+	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
+	//m_ICamera->SetPosition(Vector3(0, 1, 0));
 
 	//m_ICamera->SetLookAt(Vector3(0,0,0));
 
@@ -59,5 +59,10 @@ void GraphicsManager::Update(double dt)
 
 bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
-	return m_IGraphics->Init3D(_displayMode);
+    return m_IGraphics->Init3D(_displayMode);
+}
+
+ICamera* GraphicsManager::GetICamera()
+{
+    return m_ICamera;
 }

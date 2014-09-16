@@ -49,8 +49,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     //m_shaders.push_back(new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER));
    // glAttachShader(m_program,GL_FRAGMENT_SHADER);
     
-    glBindAttribLocation(m_program, 0, "coord3d");
-    glBindAttribLocation(m_program, 1, "v_color");
+    glBindAttribLocation(m_program, 0, "m_position");
+    glBindAttribLocation(m_program, 1, "m_normal");
     //const char* uniform_name;
     //uniform_name = "mvp";
     //uniform_mvp = glGetUniformLocation(program, uniform_name);
@@ -66,7 +66,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     }
   
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
-    LoadModel("triangle");
+    LoadModel("sphere");
     return true; 
 } 
 
@@ -83,7 +83,7 @@ void GLGraphics::LoadModel(std::string _path)
     for (std::vector<Group*>::iterator groupIt = data->Groups.begin(); groupIt != data->Groups.end(); ++groupIt)
     {
         int floatSize = (*groupIt)->triangles.size() * 9;
-        //printf("NVertx: %d\n", data->GetVertices().size());
+        
         float* vertexArray = new float[floatSize];
         float* colorArray = new float[floatSize];
 
@@ -98,27 +98,9 @@ void GLGraphics::LoadModel(std::string _path)
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
             memcpy(&colorArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
 
-    //        colorArray[3*i] = data->GetVertices()[i].Normal.X;
-    //        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
-    //        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
-            //printf("memcpy end%d\n",i);
-            //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
             i += 3;
         }
-
-
-        //for(int i = 0; i < data->GetVertices().size(); ++i)
-        //{
-            //Dest,Source,Size
-          //  memcpy(&vertexArray[3*i], &data->GetVertices()[i].Position, sizeof(Vector3));
-            //memcpy(&colorArray[3*i], &data->GetVertices()[i].Normal, sizeof(Vector3));
-    //        colorArray[3*i] = data->GetVertices()[i].Normal.X;
-    //        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
-    //        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
-
-            //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
-        //}
-
+        printf("Vertices: %d\n", i);
         glGenBuffers(1, &ibo_cube_elements);
         glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
         glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_STATIC_DRAW);
@@ -153,20 +135,29 @@ void GLGraphics::Free()
 //    glDeleteBuffers(1, &ibo_cube_elements);
 }
 
+float t;
+
 void GLGraphics::Render(ICamera* _camera) 
 { 
 
-    glClearColor(1.0, 0.0, 1.0, 1.0);
+    glClearColor(0.4, 0.4, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     glUseProgram(m_program);
 
-
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    t+=0.04f;
+    //TODO:: GET ENTITY
+    m_testLightPos.z = glm::sin(t)*5+10;
+    m_testLightPos.x = glm::cos(t)*5+10;
+    m_testMatrix = glm::rotate(m_testMatrix,3.0f,glm::vec3(1.0f,0.f,0.f));
+    
+    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
+    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
     
     GLint model = glGetUniformLocation(m_program, "m_matModel" );
-    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_identityMatrix));
+    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
     
     glm::mat4* temp1 = (glm::mat4*)_camera->GetProjection();
     
@@ -178,13 +169,7 @@ void GLGraphics::Render(ICamera* _camera)
     GLint view = glGetUniformLocation(m_program, "m_matView" );
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp2));
 
-
-    
-    
-    //GLuint mvp = glGetUniformLocation(m_program, "mvp");
-    //glUniformMatrix4fv(mvp, 1, GL_FALSE, glm::value_ptr(*d));
-
-    glDrawArrays(GL_TRIANGLES, 0, 9);
+    glDrawArrays(GL_TRIANGLES, 0, 2160);
 
     glBindVertexArray(0);
     glDisableVertexAttribArray(1);
