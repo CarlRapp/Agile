@@ -159,6 +159,32 @@ public:
         return glm::rotate(matrix,angle,axis);
     }
 
+#else
+
+#include <DirectXMath.h>
+
+#define MATRIX4 DirectX::XMFLOAT4X4
+#define VECTOR3 DirectX::XMFLOAT3
+
+static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, float _x, float _y, float _z)
+{
+	DirectX::XMMATRIX temp;
+	temp = DirectX::XMMatrixTranslation(_x, _y, _z);
+	DirectX::XMStoreFloat4x4(&_mat, temp);
+	return _mat;
+}
+
+
+static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis)
+{
+	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&_axis);
+	DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&_mat);
+	temp = DirectX::XMMatrixRotationAxis(vec, _angle);
+	DirectX::XMStoreFloat4x4(&_mat, temp);
+	return _mat;
+}
+
+
 #endif
 
 #define TRANSLATE(matrix,vector,dx1,dx2) MacroTranslate(matrix,vector,dx1,dx2)
