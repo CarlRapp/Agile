@@ -7,8 +7,6 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	//ModelLoader loader;
 	//loader.Load(modelFilename, Vertices, Indices, Subsets, mats, SkinnedData);
 
-	data->Groups.at(0)->triangles.at(1).Vertices[0].Position;
-
 	int index = 0;
 	int id = 0;
 	for (Group* group : data->Groups)
