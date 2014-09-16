@@ -92,3 +92,8 @@ int Entity::GetId(void)
 {
 	return m_id;
 }
+
+void Entity::Kill(void)
+{
+	m_state = LIMBO;
+}

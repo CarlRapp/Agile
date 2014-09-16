@@ -44,6 +44,12 @@ public:
 	ENTITY_STATE GetState(void) { return m_state; };
 	void SetState(ENTITY_STATE _state) { m_state = _state; };
 
+	/*
+	Will not actually kill the component, only change its status to 'LIMBO'
+	Killing the entity is done by the EntityFactory
+	*/
+	void Kill(void);
+
 	template <typename T>
 	T& AddComponent(T* component);
 

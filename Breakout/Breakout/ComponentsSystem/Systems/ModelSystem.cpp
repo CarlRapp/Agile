@@ -21,7 +21,7 @@ void ModelSystem::Update(float _dt)
 		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
 			continue;
 
-		m_entities[i]->SetState(Entity::LIMBO);
+		//m_entities[i]->SetState(Entity::LIMBO);
 
 	}
 

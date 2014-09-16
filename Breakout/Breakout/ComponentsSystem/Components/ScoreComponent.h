@@ -6,10 +6,12 @@
 struct ScoreComponent : Component<ScoreComponent>
 {
 	int m_score;
+	bool wasHit; // temp
 
 	ScoreComponent()
 	{
-		m_score = 0;
+		m_score = 1;
+		wasHit = false;
 	}
 
 };

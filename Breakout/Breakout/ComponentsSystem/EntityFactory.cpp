@@ -9,6 +9,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/ScoreComponent.h"
 #include "Components/ModelComponent.h"
+#include "Components/LifeComponent.h"
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
 bool EntityFactory::m_initialized = false;
@@ -62,7 +63,7 @@ Entity* EntityFactory::CreateEntity(EntityType _entityType)
 		entity->AddComponent<PositionComponent>();
 		entity->AddComponent<RotationComponent>();
 		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>();
+		entity->AddComponent<ModelComponent>().m_modelPath = "block";
 		entity->AddComponent<ScoreComponent>();
 		entity->AddComponent<HealthComponent>();
 		break;
@@ -70,18 +71,21 @@ Entity* EntityFactory::CreateEntity(EntityType _entityType)
 		entity->AddComponent<PositionComponent>();
 		entity->AddComponent<RotationComponent>();
 		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>();
+		entity->AddComponent<ModelComponent>().m_modelPath = "pad";
 		entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::BALL:
 		entity->AddComponent<PositionComponent>();
 		entity->AddComponent<RotationComponent>();
 		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>();
+		entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
 		entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::POWERUP:
 		break;
+	case EntityFactory::PLAYER:
+		entity->AddComponent<ScoreComponent>().m_score = 0;
+		entity->AddComponent<LifeComponent>();
 	default:
 		break;
 	}

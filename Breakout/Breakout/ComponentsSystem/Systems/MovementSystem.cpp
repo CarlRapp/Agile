@@ -20,7 +20,7 @@ void MovementSystem::Update(double _dt)
 
 	for (int i = 0; i < m_entities.size(); ++i)
 	{
-		if (m_entities[i]->GetState() == (Entity::LIMBO || Entity::DEACTIVATED))
+		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
 			continue;
 
 
@@ -33,7 +33,7 @@ void MovementSystem::Update(double _dt)
 		position->m_position += velocity->m_velocity * _dt;
 
 
-		m_entities[i]->SetState(Entity::LIMBO);
+		//m_entities[i]->SetState(Entity::LIMBO);
 
 	}
 }

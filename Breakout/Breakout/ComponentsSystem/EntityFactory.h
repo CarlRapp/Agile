@@ -24,7 +24,8 @@ public:
 		BLOCK = 0,
 		PAD,
 		BALL,
-		POWERUP
+		POWERUP,
+		PLAYER
 	};
 
 
@@ -35,6 +36,7 @@ public:
 
 	// Creates entity and required components based on EntityType
 	Entity* CreateEntity(EntityType _entityType);
+	// Will clear the entity from all components and change its status to 'DEAD'
 	void DeleteEntity(Entity* _entity);
 
 	// Must be called before any other function is called

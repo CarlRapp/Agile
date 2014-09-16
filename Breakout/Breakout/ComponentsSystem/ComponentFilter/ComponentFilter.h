@@ -9,6 +9,7 @@ class ComponentFilter
 {
 private:
 	std::vector<TypeID> m_requiredComponents;
+	std::vector<TypeID> m_requiresOneOf;
 	std::vector<TypeID> m_excludedComponents;
 
 public:
@@ -20,7 +21,7 @@ public:
 	ComponentFilter& Requires()
 	{
 		if (std::is_base_of<IComponent, C1>())
-			m_requiredComponents.push_back(C1::GetTypeId());
+			m_requiredComponents.emplace_back(C1::GetTypeId());
 		else
 			printf("ERROR -> Requires\n");
 
@@ -32,6 +33,25 @@ public:
 	{
 		Requires<C1>();
 		Requires<C2, Components...>();
+
+		return *this;
+	}
+
+	template <typename C1>
+	ComponentFilter& RequiresOneOf()
+	{
+		if (std::is_base_of<IComponent, C1>())
+			m_requiresOneOf.emplace_back(C1::GetTypeId());
+		else
+			printf("ERROR -> RequiresOneOf!\n");
+		return *this;
+	}
+
+	template <typename C1, typename C2, typename... Components>
+	ComponentFilter& RequiresOneOf()
+	{
+		RequiresOneOf<C1>();
+		RequiresOneOf<C2, Components...>();
 
 		return *this;
 	}

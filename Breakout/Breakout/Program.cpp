@@ -13,6 +13,7 @@
 
 #include "ComponentsSystem/Systems/MovementSystem.h"
 #include "ComponentsSystem/Systems/ModelSystem.h"
+#include "ComponentsSystem/Systems/ScoreSystem.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -27,7 +28,7 @@ AudioManager* m_AudioManager;
 InputManager* m_InputManager;
 MovementSystem m_movementSystem;
 ModelSystem m_modelSystem;
-
+ScoreSystem m_scoreSystem;
 
 #define MAX_ENTITY_COUNT 500
 Entity** m_entities;
@@ -111,11 +112,18 @@ int main(int argc, char** argv)
 	//Init done
 
 	//Create new Entity
-	auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
-	player->GetComponent<ModelComponent>()->m_modelPath = "sphere";
+	auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
+	ball->GetComponent<ModelComponent>()->m_modelPath = "sphere";
+	ball->SetState(Entity::ACTIVATED);
 
+	auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
+	block->SetState(Entity::ACTIVATED);
+
+	auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::PLAYER);
 	player->SetState(Entity::ACTIVATED);
 
+
+	m_scoreSystem.AddPlayer(player);
 	// UPDATE CALL - START
 
 
@@ -130,6 +138,7 @@ int main(int argc, char** argv)
 
 		m_movementSystem.Clear();
 		m_modelSystem.Clear();
+		m_scoreSystem.Clear();
 
 		for (int j = 0; j < MAX_ENTITY_COUNT; ++j)
 		{
@@ -141,12 +150,16 @@ int main(int argc, char** argv)
 				if (m_modelSystem.GetComponentFilter().DoesFilterPass(m_entities[j]->GetComponents()))
 					m_modelSystem.Add(m_entities[j]);
 
+				if (m_scoreSystem.GetComponentFilter().DoesFilterPass(m_entities[j]->GetComponents()))
+					m_scoreSystem.Add(m_entities[j]);
+
 				
 			}
 		}
 
 		m_movementSystem.Update(0.5f);
 		m_modelSystem.Update(0.5f);
+		m_scoreSystem.Update(0.5f);
 
 	}
 
