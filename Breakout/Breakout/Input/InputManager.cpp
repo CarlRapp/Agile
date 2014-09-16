@@ -1,4 +1,7 @@
+#include "../stdafx.h"
+
 #include "InputManager.h"
+
 #ifdef WINDOWS
 #include "Windows/WindowsInput.h"
 #else

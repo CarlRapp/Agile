@@ -44,16 +44,6 @@ void GraphicsManager::Render()
 float test = 0.0f;
 void GraphicsManager::Update(double dt)
 {
-	//Vector3 pos = m_ICamera->GetPosition();
-	//pos.z += dt * 10.0f;
-
-	//test += dt * 0.4;
-
-	//pos.x = 20 * sinf(test);
-	//pos.z = 20 * cosf(test);
-
-	//m_ICamera->SetPosition(pos);
-	//m_ICamera->SetLookAt(Vector3(0, 0, 0));
 }
 
 
