@@ -19,10 +19,10 @@ GLWindow::~GLWindow(void)
 
 }
 
-bool GLWindow::InitWindow(int x, int y, int width, int height)
+bool GLWindow::InitWindow(int _width, int _height)
 {
-	m_width = width;
-	m_height = height;
+	m_width = _width;
+	m_height = _height;
         
 	return InitWnd();
 }

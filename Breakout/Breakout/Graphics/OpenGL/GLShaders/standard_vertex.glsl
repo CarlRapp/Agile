@@ -1,11 +1,16 @@
-    
-	attribute vec3 coord3d;
-	attribute vec3 v_color;
-	uniform mat4 mvp;
-	varying vec3 f_color;
+attribute vec3 m_position;
+attribute vec3 m_normal;
 
-	void main(void) 
-	{
-		gl_Position = vec4(coord3d, 1.0);
-		f_color = v_color;
-	}
+uniform mat4 m_matModel;
+uniform mat4 m_matView;
+uniform mat4 m_matProj;
+
+varying vec3 f_normal;
+varying mat4 PVM;
+
+void main(void) 
+{
+        PVM = m_matProj*m_matView*m_matModel;
+        gl_Position = PVM*vec4(m_position, 1.0);
+        f_normal = m_normal;
+}

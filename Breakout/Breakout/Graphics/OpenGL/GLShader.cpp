@@ -82,8 +82,8 @@ bool Shader::LoadShader(std::string _path, GLenum _shaderType)
 
     if (vShaderCompiled != GL_TRUE)
     {
-            printf("Unable to compile shader %d!\n", m_ShaderID);
-            return false;
+        fprintf(stderr, "Unable to compile shader: %s\n",_path.c_str());
+        return false;
     }
     //printf("ERROR %d\n",glGetError());
     printf("Shader load success %s\n", _path.c_str());

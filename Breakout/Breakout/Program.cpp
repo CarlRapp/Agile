@@ -54,21 +54,58 @@ int main(int argc, char** argv)
 	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
 
 	m_GraphicsManager->Init3D(displayMode);
-        
-	//Mouse* mouse = m_InputManager->GetInstance()->getInputDevices()->GetMouse();
 
 	m_AudioManager = &AudioManager::GetInstance();
-	m_InputManager = InputManager::GetInstance();
-	Keyboard* KB = m_InputManager->getInputDevices()->GetKeyboard();
 
 	if (!m_AudioManager->Initialize())
 		return false;
+        
+        /*  INPUT MANAGER   */
+        m_InputManager = InputManager::GetInstance();
+        Keyboard* kb = m_InputManager->getInputDevices()->GetKeyboard();
+        Mouse* mus = m_InputManager->getInputDevices()->GetMouse();
 
-	//m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", -1);
-
+	//m_AudioManager->PlaySoundEffect("Kettle-Drum-1.wav", 0);
+        //m_AudioManager->PlayMusic("Electric-Bass-Low-C-Staccato.wav",-1);
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 
+        //m_AudioManager->PlayMusic(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), -1);
+        int a = 0, b = 0, c = 0;
+        while(difftime(time(0),startTime)<10)
+        {
+            m_InputManager->Update();
+            if(kb->GetKeyState('w') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(0,1.0f,0));
+            }
+            if(kb->GetKeyState('s') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(0,-1.0f,0));
+            }
+            if(kb->GetKeyState('a') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(-1.0f,0,0));
+            }
+            if(kb->GetKeyState('d') == InputState::Pressed)
+            {
+                m_GraphicsManager->GetICamera()->Move(Vector3(1.0f,0,0));
+            }
+            
+            //if(a==10)
+            //    break;
+               
+            
+            //if(mus->GetButtonState(MouseButton::RightMB)== InputState::Pressed)
+               //m_AudioManager->PlaySoundEffect(GetFile("Electric-Bass-Low-C-Staccato.wav", AUDIO_ROOT).c_str(), 0);
 
+            if(mus->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
+            {
+                printf("X: %d\nY: %d\n", mus->getX(), mus->getY());
+                printf("dX: %d\ndY: %d\n", mus->getdX(), mus->getdY());
+            }
+            
+            m_GraphicsManager->Render();
+        }
 
 
 	//Init
@@ -109,20 +146,14 @@ int main(int argc, char** argv)
 	}
 
 	// UPDATE CALL - END
-
-
-
-
-
-
-
-	while (difftime(time(0), startTime) < 5)
-	{
-		m_InputManager->Update();
-		m_GraphicsManager->Update(0.001f);
-		m_GraphicsManager->Render();
-	}
+//
+//	while (difftime(time(0), startTime) < 5)
+//	{
+//		m_GraphicsManager->Update(0.001f);
+//		m_GraphicsManager->Render();
+//	}
             
+		m_InputManager->Update();
 
 		delete m_GraphicsManager;
 	return 0;
