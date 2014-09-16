@@ -26,9 +26,9 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 {
 
 	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
-	//m_ICamera->SetPosition(Vector3(0, 1, 0));
+	m_ICamera->SetPosition(Vector3(0, 0, 5));
 
-	//m_ICamera->SetLookAt(Vector3(0,0,0));
+	m_ICamera->SetLookAt(Vector3(0,0,0));
 
 	m_ICamera->SetViewPort(0, 0, _width, _height);
 	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
@@ -42,8 +42,9 @@ void GraphicsManager::Render()
 }
 
 float test = 0.0f;
-void GraphicsManager::Update(double dt)
+void GraphicsManager::Update()
 {
+	m_IGraphics->Update();
 }
 
 
