@@ -68,17 +68,6 @@ public:
 	{
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
 			SceneManager::GetInstance()->Quit();
-
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('W') == InputState::Down)
-		{
-			pos.z += 30 * _dt;
-			GraphicsManager::GetInstance()->GetCamera()->SetPosition(pos);
-		}
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('S') == InputState::Down)
-		{
-			pos.z -= 30 * _dt;
-			GraphicsManager::GetInstance()->GetCamera()->SetPosition(pos);
-		}
 			
 	}
 	
