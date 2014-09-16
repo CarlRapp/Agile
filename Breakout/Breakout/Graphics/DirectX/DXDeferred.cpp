@@ -163,7 +163,8 @@ void DXDeferred::FillGBuffer(ICamera* _camera)
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
-	RenderTestTriangle(_camera);
+	//RenderTestTriangle(_camera);
+	RenderModels(_camera);
 
 	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
@@ -179,7 +180,8 @@ void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 	//Effects::CombineFinalFX->SetTexture(m_ShadowMapSRV0);
 
 
-	RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	//RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	RenderQuad(m_viewPort, m_normalSpecSRV, DXEffects::m_combineFinalFX->m_colorTech);
 	//RenderQuad(m_ViewPort, m_NormalSpecSRV, Effects::CombineFinalFX->ColorTech);
 	//Effects::CombineFinalFX->SetOpacity(0.8f);
 	//RenderQuad(shadowVP, m_ShadowMapSRV, Effects::CombineFinalFX->BlendMonoTech);
@@ -354,6 +356,92 @@ void DXDeferred::InitFullScreenQuad()
 	vinitData.pSysMem = &vertices[0];
 
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
+}
+
+void DXDeferred::RenderModels(ICamera* _camera)
+{
+	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
+	m_deviceContext->RSSetViewports(1, vp);
+
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX proj;
+
+	DirectX::XMFLOAT4X4 view4x4, proj4x4;
+	memcpy(&view4x4, _camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
+	memcpy(&proj4x4, _camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
+
+	view = DirectX::XMLoadFloat4x4(&view4x4);
+	proj = DirectX::XMLoadFloat4x4(&proj4x4);
+
+	ID3DX11EffectTechnique* tech;
+	D3DX11_TECHNIQUE_DESC techDesc;
+
+	//Static
+
+	tech = DXEffects::m_objectDeferredFX->m_basicTech;
+	tech->GetDesc(&techDesc);
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		for each (ModelInstance* instance in m_modelInstances)
+		{
+			RenderModel(instance, view, proj, tech, p);
+		}
+	}
+
+	//reset textures
+	DXEffects::m_objectDeferredFX->SetDiffuseMap(NULL);
+	DXEffects::m_objectDeferredFX->SetNormalMap(NULL);
+}
+
+void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
+{
+
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTanCol);
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	DirectX::XMFLOAT4X4 world4x4;
+	memcpy(&world4x4, &_mi->GetWorld(), sizeof(DirectX::XMFLOAT4X4));
+
+	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&world4x4);
+	DirectX::XMMATRIX worldInvTranspose;
+	DirectX::XMMATRIX worldView;
+	DirectX::XMMATRIX worldInvTransposeView;
+	DirectX::XMMATRIX worldViewProj;
+	DirectX::XMMATRIX tex = DirectX::XMMatrixTranslation(0, 0, 0);
+
+	//world = DirectX::XMLoadFloat4x4(&instance.GetWorld());
+	//float a = MathHelper::InverseTranspose(world);
+
+	worldView = XMMatrixMultiply(world, _view);
+	//worldInvTranspose = MathHelper::InverseTranspose(world);
+	worldInvTranspose = world;
+
+	//worldInvTransposeView = worldInvTranspose*view;
+	worldViewProj = XMMatrixMultiply(worldView, _proj);
+
+	DXEffects::m_objectDeferredFX->SetWorld(world);
+	DXEffects::m_objectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
+	DXEffects::m_objectDeferredFX->SetTexTransform(tex);
+	DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
+
+
+	for (UINT subset = 0; subset < _mi->GetModel()->SubsetCount; ++subset)
+	{
+		//UINT subset = 6;
+		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
+
+		if (_mi->GetModel()->HasDiffuseMaps())
+			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->GetModel()->GetDiffuseMap(subset, _mi->GetTextureIndex()));
+
+		if (_mi->GetModel()->HasNormalMaps())
+			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->GetModel()->GetNormalMap(subset, _mi->GetTextureIndex()));
+
+		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
+		_mi->GetModel()->ModelMesh.Draw(m_deviceContext, subset);
+	}
+
 }
 
 void DXDeferred::RenderTestTriangle(ICamera* _camera)
