@@ -28,6 +28,8 @@ private:
 	IComponent* GetComponent(int _componentTypeId);
 	bool HasComponent(int _componentTypeId);
 
+	static int m_counter;
+
 	int m_id;
 	ENTITY_STATE m_state;
 	std::vector<IComponent*> m_components;

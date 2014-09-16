@@ -8,9 +8,11 @@
 #include "Storage/FileManager.h"
 
 #include "ComponentsSystem/Entity/Entity.h"
+#include "ComponentsSystem/EntityFactory.h"
+#include "ComponentsSystem/Components/ModelComponent.h"
+
 #include "ComponentsSystem/Systems/MovementSystem.h"
-#include "ComponentsSystem/Components/PositionComponent.h"
-#include "ComponentsSystem/Components/VelocityComponent.h"
+#include "ComponentsSystem/Systems/ModelSystem.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -23,21 +25,12 @@
 GraphicsManager *m_GraphicsManager;
 AudioManager* m_AudioManager;
 InputManager* m_InputManager;
+MovementSystem m_movementSystem;
+ModelSystem m_modelSystem;
+
 
 #define MAX_ENTITY_COUNT 500
 Entity** m_entities;
-MovementSystem m_movementSystem;
-Entity* CreateEntity(void)
-{
-
-	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-	{
-		if (m_entities[i]->GetState() == Entity::DEAD)
-			return m_entities[i];
-	}
-
-	return 0;
-}
 
 int main(int argc, char** argv)
 {
@@ -70,42 +63,42 @@ int main(int argc, char** argv)
 	//Mix_Chunk* chunk = FileManager::GetInstance().LoadSoundEffect("Kettle-Drum-1.wav");
 
         //m_AudioManager->PlayMusic(GetFile("Kettle-Drum-1.wav", AUDIO_ROOT).c_str(), -1);
-        int a = 0, b = 0, c = 0;
-        while(difftime(time(0),startTime)<10)
-        {
-            m_InputManager->Update();
-            if(kb->GetKeyState('w') == InputState::Pressed)
-            {
-                m_GraphicsManager->GetICamera()->Move(Vector3(0,1.0f,0));
-            }
-            if(kb->GetKeyState('s') == InputState::Pressed)
-            {
-                m_GraphicsManager->GetICamera()->Move(Vector3(0,-1.0f,0));
-            }
-            if(kb->GetKeyState('a') == InputState::Pressed)
-            {
-                m_GraphicsManager->GetICamera()->Move(Vector3(-1.0f,0,0));
-            }
-            if(kb->GetKeyState('d') == InputState::Pressed)
-            {
-                m_GraphicsManager->GetICamera()->Move(Vector3(1.0f,0,0));
-            }
-            
-            //if(a==10)
-            //    break;
-               
-            
-            //if(mus->GetButtonState(MouseButton::RightMB)== InputState::Pressed)
-               //m_AudioManager->PlaySoundEffect(GetFile("Electric-Bass-Low-C-Staccato.wav", AUDIO_ROOT).c_str(), 0);
+        //int a = 0, b = 0, c = 0;
+        //while(difftime(time(0),startTime)<10)
+        //{
+        //    m_InputManager->Update();
+        //    if(kb->GetKeyState('w') == InputState::Pressed)
+        //    {
+        //        m_GraphicsManager->GetICamera()->Move(Vector3(0,1.0f,0));
+        //    }
+        //    if(kb->GetKeyState('s') == InputState::Pressed)
+        //    {
+        //        m_GraphicsManager->GetICamera()->Move(Vector3(0,-1.0f,0));
+        //    }
+        //    if(kb->GetKeyState('a') == InputState::Pressed)
+        //    {
+        //        m_GraphicsManager->GetICamera()->Move(Vector3(-1.0f,0,0));
+        //    }
+        //    if(kb->GetKeyState('d') == InputState::Pressed)
+        //    {
+        //        m_GraphicsManager->GetICamera()->Move(Vector3(1.0f,0,0));
+        //    }
+        //    
+        //    //if(a==10)
+        //    //    break;
+        //       
+        //    
+        //    //if(mus->GetButtonState(MouseButton::RightMB)== InputState::Pressed)
+        //       //m_AudioManager->PlaySoundEffect(GetFile("Electric-Bass-Low-C-Staccato.wav", AUDIO_ROOT).c_str(), 0);
 
-            if(mus->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
-            {
-                printf("X: %d\nY: %d\n", mus->getX(), mus->getY());
-                printf("dX: %d\ndY: %d\n", mus->getdX(), mus->getdY());
-            }
-            
-            m_GraphicsManager->Render();
-        }
+        //    if(mus->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
+        //    {
+        //        printf("X: %d\nY: %d\n", mus->getX(), mus->getY());
+        //        printf("dX: %d\ndY: %d\n", mus->getdX(), mus->getdY());
+        //    }
+        //    
+        //    m_GraphicsManager->Render();
+        //}
 
 
 	//Init
@@ -113,14 +106,14 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
 		m_entities[i] = new Entity(i);
+
+	EntityFactory::GetInstance()->Initialize(m_entities);
 	//Init done
 
 	//Create new Entity
-	auto player = CreateEntity();
-	//Add Components
-	player->AddComponent<VelocityComponent>();
-	player->AddComponent<PositionComponent>();
-	//Player done
+	auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
+	player->GetComponent<ModelComponent>()->m_modelPath = "sphere";
+
 	player->SetState(Entity::ACTIVATED);
 
 	// UPDATE CALL - START
@@ -128,20 +121,32 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < 2; ++i)
 	{
+		for (int j = 0; j < MAX_ENTITY_COUNT; ++j)
+		{
+			if (m_entities[j]->GetState() == Entity::LIMBO)
+				EntityFactory::GetInstance()->DeleteEntity(m_entities[j]);
+		}
 
 
 		m_movementSystem.Clear();
+		m_modelSystem.Clear();
 
-		for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
+		for (int j = 0; j < MAX_ENTITY_COUNT; ++j)
 		{
-			if (m_entities[i]->GetState() == Entity::ACTIVATED)
+			if (m_entities[j]->GetState() == Entity::ACTIVATED)
 			{
-				if (m_movementSystem.GetComponentFilter().DoesFilterPass(m_entities[i]->GetComponents()))
-					m_movementSystem.Add(m_entities[i]);
+				if (m_movementSystem.GetComponentFilter().DoesFilterPass(m_entities[j]->GetComponents()))
+					m_movementSystem.Add(m_entities[j]);
+
+				if (m_modelSystem.GetComponentFilter().DoesFilterPass(m_entities[j]->GetComponents()))
+					m_modelSystem.Add(m_entities[j]);
+
+				
 			}
 		}
 
 		m_movementSystem.Update(0.5f);
+		m_modelSystem.Update(0.5f);
 
 	}
 

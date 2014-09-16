@@ -1,8 +1,8 @@
 #include "Entity.h"
 
-
+int Entity::m_counter = 0;
 Entity::Entity()
-: m_state(DEAD)
+: m_id(m_counter++), m_state(DEAD)
 {
 }
 

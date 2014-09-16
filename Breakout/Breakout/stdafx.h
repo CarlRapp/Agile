@@ -7,17 +7,22 @@
 #define LINUX
 #define OPENGL
 #include <unistd.h>
+
+#define MODEL_ROOT "/../../Data/Models/"
+#define AUDIO_ROOT "/../../Data/Audio/"
+
 #else
 #define WINDOWS
 #define DIRECTX
+
+#define MODEL_ROOT "../../Data/Models/"
+#define AUDIO_ROOT "../../Data/Audio/"
 
 #include <Windows.h>
 
 #endif
 
 #define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
-#define MODEL_ROOT "/../../Data/Models/"
-#define AUDIO_ROOT "/../../Data/Audio/"
 static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
@@ -76,6 +81,68 @@ public:
 	Vector3() : x(0), y(0), z(0) {};
 	Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 	Vector3(Vector2 _vector, float _z) : x(_vector.x), y(_vector.y), z(_z) {}
+
+	Vector3& Vector3::operator=(Vector3 v)
+	{
+		this->x = v.x;
+		this->y = v.y;
+		this->z = v.z;
+
+		return *this;
+	}
+
+	Vector3& Vector3::operator+=(Vector3 v)
+	{
+		this->x += v.x;
+		this->y += v.y;
+		this->z += v.z;
+
+		return *this;
+	}
+
+	Vector3 Vector3::operator+(Vector3 v)
+	{
+		Vector3 vec3;
+
+		vec3.x = this->x + v.x;
+		vec3.y = this->y + v.y;
+		vec3.z = this->z + v.z;
+
+		return vec3;
+	}
+
+	Vector3 Vector3::operator*(int _i)
+	{
+		Vector3 vec3;
+
+		vec3.x = this->x * _i;
+		vec3.y = this->y * _i;
+		vec3.z = this->z * _i;
+
+		return vec3;
+	}
+
+	Vector3 Vector3::operator*(float _f)
+	{
+		Vector3 vec3;
+
+		vec3.x = this->x * _f;
+		vec3.y = this->y * _f;
+		vec3.z = this->z * _f;
+
+		return vec3;
+	}
+
+	Vector3 Vector3::operator*(double _d)
+	{
+		Vector3 vec3;
+
+		vec3.x = this->x * _d;
+		vec3.y = this->y * _d;
+		vec3.z = this->z * _d;
+
+		return vec3;
+	}
 
 	Vector2 ToVector2() { return Vector2(x, y); }
 };

@@ -3,11 +3,14 @@
 
 #include "ISystem.h"
 
-struct MovementSystem : System<MovementSystem>
+class MovementSystem : public System<MovementSystem>
 {
+private:
+public:
+
 	MovementSystem();
+	~MovementSystem();
 
 	void Update(double _dt);
 };
-
 #endif
