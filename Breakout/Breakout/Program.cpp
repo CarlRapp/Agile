@@ -46,7 +46,6 @@ int main(int argc, char** argv)
 
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 
-
         double secondsElapsed;
 
         m_GraphicsManager = GraphicsManager::GetInstance();

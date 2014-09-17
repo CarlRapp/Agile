@@ -65,7 +65,35 @@ struct Vector2
 public:
 	float x, y;
 
+	Vector2() : x(0), y(0) {}
 	Vector2(float _x, float _y) : x(_x), y(_y) {}
+
+	/* Arithmetic */
+	Vector2 Vector2::operator+(const Vector2 _vector)	{ return Vector2(x + _vector.x, y + _vector.y); }
+	Vector2 Vector2::operator+(const int _value)		{ return Vector2(x + _value, y + _value); }
+	Vector2 Vector2::operator+(const float _value)		{ return Vector2(x + _value, y + _value); }
+	Vector2 Vector2::operator-(const Vector2 _vector)	{ return Vector2(x - _vector.x, y - _vector.y); }
+	Vector2 Vector2::operator-(const int _value)		{ return Vector2(x - _value, y - _value); }
+	Vector2 Vector2::operator-(const float _value)		{ return Vector2(x - _value, y - _value); }
+	Vector2 Vector2::operator*(const Vector2 _vector)	{ return Vector2(x * _vector.x, y * _vector.y); }
+	Vector2 Vector2::operator*(const int _value)		{ return Vector2(x * _value, y * _value); }
+	Vector2 Vector2::operator*(const float _value)		{ return Vector2(x * _value, y * _value); }
+	Vector2 Vector2::operator/(const Vector2 _vector)	{ return Vector2(x / _vector.x, y / _vector.y); }
+	Vector2 Vector2::operator/(const int _value)		{ return Vector2(x / _value, y / _value); }
+	Vector2 Vector2::operator/(const float _value)		{ return Vector2(x / _value, y / _value); }
+	Vector2 Vector2::operator%(const Vector2 _vector)	{ return Vector2(fmod(x, _vector.x), fmod(y, _vector.y)); }
+	Vector2 Vector2::operator%(const int _value)		{ return Vector2(fmod(x, _value), fmod(y, _value)); }
+	Vector2 Vector2::operator%(const float _value)		{ return Vector2(fmod(x, _value), fmod(y, _value)); }
+	Vector2 Vector2::operator-()						{ return Vector2(-x, -y); }
+
+	/* Comparison */
+	bool Vector2::operator==(Vector2 _vector) { return (x == _vector.x && y == _vector.y); }
+	bool Vector2::operator!=(Vector2 _vector) { return !(x == _vector.x && y == _vector.y); }
+
+	// Expensive operation, don't do often please!
+	Vector2 Normalize() { float magn = sqrtf(x * x + y * y); return Vector2(x / magn, y / magn); }
+
+	inline float Distance(const Vector2 _vector) { float dx = x - _vector.x; float dy = y - _vector.y; return sqrtf(dx * dx + dy * dy); }
 };
 
 struct Vector3
@@ -77,7 +105,34 @@ public:
 	Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 	Vector3(Vector2 _vector, float _z) : x(_vector.x), y(_vector.y), z(_z) {}
 
+	/* Arithmetic */
+	Vector3 Vector3::operator+(const Vector3 _vector)	{ return Vector3(x + _vector.x, y + _vector.y, z + _vector.z); }
+	Vector3 Vector3::operator+(const int _value)		{ return Vector3(x + _value, y + _value, z + _value); }
+	Vector3 Vector3::operator+(const float _value)		{ return Vector3(x + _value, y + _value, z + _value); }
+	Vector3 Vector3::operator-(const Vector3 _vector)	{ return Vector3(x - _vector.x, y - _vector.y, z - _vector.z); }
+	Vector3 Vector3::operator-(const int _value)		{ return Vector3(x - _value, y - _value, z - _value); }
+	Vector3 Vector3::operator-(const float _value)		{ return Vector3(x - _value, y - _value, z - _value); }
+	Vector3 Vector3::operator*(const Vector3 _vector)	{ return Vector3(x * _vector.x, y * _vector.y, z * _vector.z); }
+	Vector3 Vector3::operator*(const int _value)		{ return Vector3(x * _value, y * _value, z * _value); }
+	Vector3 Vector3::operator*(const float _value)		{ return Vector3(x * _value, y * _value, z * _value); }
+	Vector3 Vector3::operator/(const Vector3 _vector)	{ return Vector3(x / _vector.x, y / _vector.y, z / _vector.z); }
+	Vector3 Vector3::operator/(const int _value)		{ return Vector3(x / _value, y / _value, z / _value); }
+	Vector3 Vector3::operator/(const float _value)		{ return Vector3(x / _value, y / _value, z / _value); }
+	Vector3 Vector3::operator%(const Vector3 _vector)	{ return Vector3(fmod(x, _vector.x), fmod(y, _vector.y), fmod(z, _vector.z)); }
+	Vector3 Vector3::operator%(const int _value)		{ return Vector3(fmod(x, _value), fmod(y, _value), fmod(z, _value)); }
+	Vector3 Vector3::operator%(const float _value)		{ return Vector3(fmod(x, _value), fmod(y, _value), fmod(z, _value)); }
+	Vector3 Vector3::operator-()						{ return Vector3(-x, -y, -z); }
+
+	/* Comparison */
+	bool Vector3::operator==(const Vector3 _vector)		{ return (x == _vector.x && y == _vector.y && z == _vector.z); }
+	bool Vector3::operator!=(const Vector3 _vector)		{ return !(x == _vector.x && y == _vector.y && z == _vector.z); }
+
 	Vector2 ToVector2() { return Vector2(x, y); }
+
+	// Expensive operation, don't do often please!
+	Vector3 Normalize() { float magn = sqrtf(x * x + y * y + z * z); return Vector3(x / magn, y / magn, z / magn); }
+
+	inline float Distance(const Vector3 _vector) { float dx = x - _vector.x; float dy = y - _vector.y; float dz = z - _vector.z; return sqrtf(dx * dx + dy * dy + dz * dz); }
 };
 
 
@@ -108,6 +163,22 @@ public:
 
 	Float4x4& operator= (const Float4x4& Float4x4);
 
+};
+
+struct BoundingBox2
+{
+	float x, y, width, height;
+
+	BoundingBox2() : x(0), y(0), width(0), height(0) {}
+	BoundingBox2(float _x, float _y, float _width, float _height) : x(_x), y(_y), width(_width), height(_height) {}
+};
+
+struct Sphere2
+{
+	float x, y, radius;
+
+	Sphere2() : x(0), y(0), radius(0) {}
+	Sphere2(float _x, float _y, float _radius) : x(_x), y(_y), radius(_radius) {}
 };
 
 #endif
