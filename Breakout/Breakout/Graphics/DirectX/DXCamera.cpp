@@ -11,10 +11,10 @@ DXCamera::DXCamera(void)
 	m_nearZ = 1.0f;
 	m_farZ = 420.0f;
 
-	m_position = Vector3(0, 0, 0);
-	m_forward = Vector3(0, 0, 1);
-	m_right = Vector3(1, 0, 0);
-	m_up = Vector3(0, 1, 0);
+	m_position = DirectX::XMFLOAT3(0, 0, 0);
+	m_forward = DirectX::XMFLOAT3(0, 0, 1);
+	m_right = DirectX::XMFLOAT3(1, 0, 0);
+	m_up = DirectX::XMFLOAT3(0, 1, 0);
 
 	UpdateView();
 	UpdateProjection();
@@ -31,10 +31,10 @@ DXCamera::DXCamera(float _fovy, float _aspectRatio, float _nearZ, float _farZ)
 	m_nearZ = _nearZ;
 	m_farZ = _farZ;
 
-	m_position = Vector3(0, 0, 0);
-	m_forward = Vector3(0, 0, 1);
-	m_right = Vector3(1, 0, 0);
-	m_up = Vector3(0, 1, 0);
+	m_position = DirectX::XMFLOAT3(0, 0, 0);
+	m_forward = DirectX::XMFLOAT3(0, 0, 1);
+	m_right = DirectX::XMFLOAT3(1, 0, 0);
+	m_up = DirectX::XMFLOAT3(0, 1, 0);
 
 	UpdateView();
 	UpdateProjection();
@@ -100,13 +100,10 @@ void DXCamera::UpdateView()
 void DXCamera::UpdateProjection()
 {
 	DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(m_fovy, m_aspectRatio, m_nearZ, m_farZ);
-	DirectX::XMFLOAT4X4 proj4x4;
-	DirectX::XMStoreFloat4x4(&proj4x4, proj);
-
-	memcpy(&m_projection, &proj4x4, sizeof(Float4x4));
+	DirectX::XMStoreFloat4x4(&m_projection, proj);
 }
 
-void DXCamera::Move(Vector3 _move)
+void DXCamera::Move(DirectX::XMFLOAT3 _move)
 {
 	m_position.x += _move.x;
 	m_position.y += _move.y;
@@ -124,7 +121,7 @@ void DXCamera::Move(float _move)
 	UpdateView();
 }
 
-void DXCamera::SetForward(Vector3 _forward)
+void DXCamera::SetForward(DirectX::XMFLOAT3 _forward)
 {
 	_forward.z *= -1;
 	DirectX::XMFLOAT3 up, right, forward2, position;
@@ -150,20 +147,18 @@ void DXCamera::SetForward(Vector3 _forward)
 
 	DirectX::XMMATRIX view = DirectX::XMMatrixLookToLH(pos, direction, up2);
 
-	DirectX::XMFLOAT4X4 view4x4;
-	DirectX::XMStoreFloat4x4(&view4x4, view);
-	memcpy(&m_view, &view4x4, sizeof(Float4x4));
+	DirectX::XMStoreFloat4x4(&m_view, view);
 
-	m_right = Vector3(m_view._11, m_view._21, m_view._31);
-	m_up = Vector3(m_view._12, m_view._22, m_view._32);
-	m_forward = Vector3(m_view._13, m_view._23, m_view._33);
+	m_right = DirectX::XMFLOAT3(m_view._11, m_view._21, m_view._31);
+	m_up = DirectX::XMFLOAT3(m_view._12, m_view._22, m_view._32);
+	m_forward = DirectX::XMFLOAT3(m_view._13, m_view._23, m_view._33);
 
 	UpdateView();
 }
 
-void DXCamera::SetLookAt(Vector3 _target)
+void DXCamera::SetLookAt(DirectX::XMFLOAT3 _target)
 {
-	Vector3 forward;
+	DirectX::XMFLOAT3 forward;
 	forward.x = _target.x - m_position.x;
 	forward.y = _target.y - m_position.y;
 	forward.z = -((-_target.z) - m_position.z);

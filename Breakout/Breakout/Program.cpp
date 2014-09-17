@@ -34,7 +34,7 @@ SceneManager* m_SceneManager;
 class MainMenu : public Scene<MainMenu>
 {
 private:
-	Vector3 pos;
+	VECTOR3 pos;
 	SystemManager* m_systemManager;
 	Entity** m_entities;
 	std::map<int, Entity*> m_activeEntites;
@@ -42,7 +42,7 @@ public:
 	MainMenu()
 	{
 		printf("Main Menu created!\n");
-		pos = Vector3(0, 0, 0);
+		pos = VECTOR3(0, 0, 0);
 	}
 
 	void Initialize()
@@ -114,10 +114,13 @@ int main(int argc, char** argv)
 {
 	printf("Application started!\n");
 	
+#ifdef WINDOWS
+	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
+#endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 1000, 600, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/

@@ -5,7 +5,7 @@
 #include <D3D11.h>
 #include <d3dCompiler.h>
 
-#include "DXModel.h"
+#include "DXModelManager.h"
 #include "DXTextureManager.h"
 
 #include "../IGraphics.h"
@@ -21,6 +21,8 @@ private:
 
 	DXTextureManager		m_TextureManager;
 
+
+	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;
 	ModelInstance			*m_testmodelinstance;
 
