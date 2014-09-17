@@ -49,8 +49,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     //m_shaders.push_back(new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER));
    // glAttachShader(m_program,GL_FRAGMENT_SHADER);
     
-    glBindAttribLocation(m_program, 0, "coord3d");
-    glBindAttribLocation(m_program, 1, "v_color");
+    glBindAttribLocation(m_program, 0, "m_position");
+    glBindAttribLocation(m_program, 1, "m_normal");
     //const char* uniform_name;
     //uniform_name = "mvp";
     //uniform_mvp = glGetUniformLocation(program, uniform_name);
@@ -64,11 +64,15 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
         //print_log(m_program);
         return 0;
     }
-  
+    
+    printf("OpenGL version supported by this platform: (%s) \n", glGetString(GL_VERSION));
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
-    LoadModel("triangle");
+    //LoadModel("triangle");
+    LoadModel("sphere");
     return true; 
 } 
+
+int kk=1;
 
 void GLGraphics::LoadModel(std::string _path)
 {
@@ -82,54 +86,45 @@ void GLGraphics::LoadModel(std::string _path)
     
     for (std::vector<Group*>::iterator groupIt = data->Groups.begin(); groupIt != data->Groups.end(); ++groupIt)
     {
+        ModelRenderInfo* newModel = new ModelRenderInfo;
+        
+        m_models.push_back(newModel);
+       
+        int index = m_models.size()-1;
+        
+        m_models[index]->bufferNormalID = index;
+        m_models[index]->bufferVertexID = index;
+        
         int floatSize = (*groupIt)->triangles.size() * 9;
-        //printf("NVertx: %d\n", data->GetVertices().size());
+        
         float* vertexArray = new float[floatSize];
-        float* colorArray = new float[floatSize];
+        float* normalArray = new float[floatSize];
 
         int i = 0;
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
         {
             //Dest,Source,Size
             memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(Vector3));
-            memcpy(&colorArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
+            memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
             memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(Vector3));
-            memcpy(&colorArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
+            memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
-            memcpy(&colorArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
+            memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
 
-    //        colorArray[3*i] = data->GetVertices()[i].Normal.X;
-    //        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
-    //        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
-            //printf("memcpy end%d\n",i);
-            //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
             i += 3;
         }
-
-
-        //for(int i = 0; i < data->GetVertices().size(); ++i)
-        //{
-            //Dest,Source,Size
-          //  memcpy(&vertexArray[3*i], &data->GetVertices()[i].Position, sizeof(Vector3));
-            //memcpy(&colorArray[3*i], &data->GetVertices()[i].Normal, sizeof(Vector3));
-    //        colorArray[3*i] = data->GetVertices()[i].Normal.X;
-    //        colorArray[3*i+1] = data->GetVertices()[i].Normal.Y;
-    //        colorArray[3*i+2] = data->GetVertices()[i].Normal.Z;
-
-            //printf("i=%d (%f, %f, %f)\n", i, vertexArray[3*i],vertexArray[3*i+1],vertexArray[3*i+2]);
-        //}
-
-        glGenBuffers(1, &ibo_cube_elements);
-        glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
+        printf("Vertices: %d\n", i);
+        glGenBuffers(kk, &m_models[index]->bufferVertexID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferVertexID);
         glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-        glGenBuffers(1, &vbo_cube_colors);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), colorArray, GL_STATIC_DRAW);
+        glGenBuffers(kk, &m_models[index]->bufferNormalID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferNormalID);
+        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
     }
-    
+    kk++;
     std::cout << "Loadmodel finish: " << _path << " with error: " << glGetError() << "\n";
 }
 
@@ -147,50 +142,69 @@ void GLGraphics::Resize(int _width, int _height)
 
 void GLGraphics::Free()
 {
+    for(int i = m_models.size()-1; i > -1;i--)
+    {
+        glDeleteBuffers(1, &m_models[i]->bufferNormalID);
+        glDeleteBuffers(1, &m_models[i]->bufferVertexID);
+        
+        m_models.pop_back();
+    }
+    
     glDeleteProgram(m_program);
-    glDeleteBuffers(1, &vbo_cube_vertices);
-    glDeleteBuffers(1, &vbo_cube_colors);
-//    glDeleteBuffers(1, &ibo_cube_elements);
 }
+
+float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
 
-    glClearColor(1.0, 0.0, 1.0, 1.0);
+    glClearColor(0.4, 0.4, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     glUseProgram(m_program);
 
-
+    glBindVertexArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, 1);
+    
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+
+    t+=0.001f;
+    //TODO:: GET ENTITY
+    m_testLightPos.z = glm::sin(t)*5+10;
+    m_testLightPos.x = glm::cos(t)*5+10;
+    m_testMatrix = ROTATE(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
+    //glm::rotate(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
+    glm::vec3 gg = glm::vec3(1.0f,0.f,0.f);
+    //TRANSLATE(&m_testMatrix,&gg,0,0);
+    //m_testMatrix = TRANSLATE(m_testMatrix,gg,0,0);
+    //m_testMatrix = MATRIX4.TRANSLATE();
+    
+    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
+    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
     
     GLint model = glGetUniformLocation(m_program, "m_matModel" );
-    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_identityMatrix));
+    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
     
-    glm::mat4* temp1 = (glm::mat4*)_camera->GetProjection();
+    MATRIX4* temp1 = (MATRIX4*)_camera->GetProjection();
     
     GLint projection = glGetUniformLocation(m_program, "m_matProj" );
     glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
     
-    glm::mat4* temp2 = (glm::mat4*)_camera->GetView();
+    temp1 = (MATRIX4*)_camera->GetView();
 
     GLint view = glGetUniformLocation(m_program, "m_matView" );
-    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp2));
+    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
 
+    glDrawArrays(GL_TRIANGLES, 0, 2160);
 
     
-    
-    //GLuint mvp = glGetUniformLocation(m_program, "mvp");
-    //glUniformMatrix4fv(mvp, 1, GL_FALSE, glm::value_ptr(*d));
-
-    glDrawArrays(GL_TRIANGLES, 0, 9);
-
-    glBindVertexArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(0);
     
+    glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
     glUseProgram(0);
     
     SDL_GL_SwapBuffers( );

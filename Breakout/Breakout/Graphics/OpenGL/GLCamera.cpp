@@ -14,19 +14,19 @@ GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _far
     
     m_aspectRatio = (float)m_width / (float)m_height;
 
-    m_FOVy = 2 * glm::atan(glm::tan(0.5f * _fovy) * m_aspectRatio);
+    m_FOVy = _fovy;//2 * glm::atan(glm::tan(0.5f * _fovy) * m_aspectRatio);
 
     m_nearZ = _nearZ;
     m_farZ = _farZ;
 
-    m_position  = Vector3(0, 0, 0);
-    m_forward   = Vector3(0, 0, 1);
+    m_position  = Vector3(0, 0, 5);
+    m_forward   = Vector3(0, 0, -1);
     m_right     = Vector3(1, 0, 0);
     m_up        = Vector3(0, 1, 0);
 
     UpdateView();
     UpdateProjection();
-    SetForward(Vector3(0,0,1));
+    SetForward(Vector3(0,0,-1));
 }
 
 GLCamera::~GLCamera(void)
@@ -97,13 +97,13 @@ void GLCamera::UpdateView()
 	m_view[3][3] = 1.0f;
         
         //m_view = m_identityMatrix;
-            for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_view[i][j]);
-        printf("\n");
-    }
-    printf("VIEW SECOND\n");
+//            for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_view[i][j]);
+//        printf("\n");
+//    }
+//    printf("VIEW SECOND\n");
 }
 
 void GLCamera::UpdateProjection()
@@ -111,24 +111,24 @@ void GLCamera::UpdateProjection()
 
     printf("FOV: %f | AspectRatio: %f | nearZ: %f | farZ: %f\n",m_FOVy,m_aspectRatio,m_nearZ,m_farZ);
     glm::mat4 proj;
-    //proj =glm::perspective(45.0f,m_aspectRatio,m_nearZ,m_farZ);
+    proj =glm::perspective(m_FOVy,m_aspectRatio,m_nearZ,m_farZ);
     //glm::mat4x4 proj4x4;
     //proj = m_identityMatrix;
     //DirectX::XMMATRIX proj = DirectX::XMMatrixPerspectiveFovLH(m_FOVy, m_aspectRatio, m_nearZ, m_farZ);
     //DirectX::XMFLOAT4X4 proj4x4;
     //DirectX::XMStoreFloat4x4(&proj4x4, proj);
     
-    proj = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
+    //proj = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
         
     memcpy(&m_projection, &proj, sizeof(glm::mat4));
-    
-    for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_projection[i][j]);
-        printf("\n");
-    }
-    printf("PROJECTION END\n");
+//    
+//    for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_projection[i][j]);
+//        printf("\n");
+//    }
+//    printf("PROJECTION END\n");
 }
 
 void* GLCamera::GetProjection()
@@ -155,17 +155,15 @@ void* GLCamera::GetView()
 
 void GLCamera::SetForward(Vector3 forward)
 {
-    
+	//glm::vec3 up, right, forward2;
 
-	glm::vec3 up, right, forward2, position;
+	//memcpy(&up, &m_up, sizeof(glm::vec3));
+	//memcpy(&right, &m_right, sizeof(glm::vec3));
+	//memcpy(&forward2, &forward, sizeof(Vector3));
+	//memcpy(&position, &m_position, sizeof(glm::vec3));
 
-	memcpy(&up, &m_up, sizeof(glm::vec3));
-	memcpy(&right, &m_right, sizeof(glm::vec3));
-	memcpy(&forward2, &forward, sizeof(Vector3));
-	memcpy(&position, &m_position, sizeof(glm::vec3));
-
-        glm::vec3 pos = position;
-	glm::vec3 direction = forward2;
+        glm::vec3 pos = glm::vec3(m_position.x,m_position.y,m_position.z);
+	glm::vec3 direction = glm::vec3(forward.x,forward.y,forward.z);
 	direction = glm::normalize(direction);
 	glm::vec3 up2 = glm::vec3(0, 1, 0);
         
@@ -205,18 +203,40 @@ void GLCamera::SetForward(Vector3 forward)
 //	DirectX::XMFLOAT4X4 view4x4;
 //	DirectX::XMStoreFloat4x4(&view4x4, view);
 //	memcpy(&m_view, &view4x4, sizeof(Float4x4));
-
+        
 	m_right = Vector3(m_view[0][0], m_view[1][0], m_view[2][0]);
 	m_up = Vector3(m_view[0][1], m_view[1][1], m_view[2][1]);
 	m_forward = Vector3(m_view[0][2], m_view[1][2], m_view[2][2]);
     
-            for(int i=0;i< 4;i++)
-    {
-        for(int j=0; j < 4;j++)
-            printf("%f ",m_view[i][j]);
-        printf("\n");
-    }
-    printf("VIEW FIRST\n");
+
         
 	UpdateView();
+        
+//    for(int i=0;i< 4;i++)
+//    {
+//        for(int j=0; j < 4;j++)
+//            printf("%f ",m_view[i][j]);
+//        printf("\n");
+//    }
+//    printf("VIEW FIRST\n");
+}
+
+void GLCamera::Move(Vector3 _move)
+{
+    m_position.x += _move.x;
+    m_position.y += _move.y;
+    m_position.z += _move.z;
+    
+    UpdateView();
+    
+}
+
+void GLCamera::Move(float _move)
+{
+    m_position.x += (m_forward.x)*_move;
+    m_position.y += (m_forward.y)*_move;
+    m_position.z += (m_forward.z)*_move;
+    
+    UpdateView();
+    
 }

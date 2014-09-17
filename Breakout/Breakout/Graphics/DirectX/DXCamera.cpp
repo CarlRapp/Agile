@@ -106,9 +106,27 @@ void DXCamera::UpdateProjection()
 	memcpy(&m_projection, &proj4x4, sizeof(Float4x4));
 }
 
+void DXCamera::Move(Vector3 _move)
+{
+	m_position.x += _move.x;
+	m_position.y += _move.y;
+	m_position.z -= _move.z;
+
+	UpdateView();
+}
+
+void DXCamera::Move(float _move)
+{
+	m_position.x += (m_forward.x)*_move;
+	m_position.y += (m_forward.y)*_move;
+	m_position.z += (m_forward.z)*_move;
+
+	UpdateView();
+}
+
 void DXCamera::SetForward(Vector3 _forward)
 {
-
+	_forward.z *= -1;
 	DirectX::XMFLOAT3 up, right, forward2, position;
 
 	memcpy(&up, &m_up, sizeof(DirectX::XMFLOAT3));
@@ -148,7 +166,7 @@ void DXCamera::SetLookAt(Vector3 _target)
 	Vector3 forward;
 	forward.x = _target.x - m_position.x;
 	forward.y = _target.y - m_position.y;
-	forward.z = _target.z - m_position.z;
+	forward.z = -((-_target.z) - m_position.z);
 
 	SetForward(forward);
 }

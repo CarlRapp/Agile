@@ -5,6 +5,9 @@
 #include <D3D11.h>
 #include <d3dCompiler.h>
 
+#include "DXModel.h"
+#include "DXTextureManager.h"
+
 #include "../IGraphics.h"
 #include "DXWindow.h"
 #include "DXDeferred.h"
@@ -16,6 +19,10 @@ class DXGraphics : public IGraphics
 private:
 	DXWindow				*m_window;
 
+	DXTextureManager		m_TextureManager;
+
+	DXModel					*m_testmodel;
+	ModelInstance			*m_testmodelinstance;
 
 	IDXGISwapChain			*m_swapChain = NULL;
 	ID3D11RenderTargetView	*m_renderTargetView = NULL;
@@ -42,6 +49,7 @@ public:
 	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_window; }
+	void	Update();
 	void	Render(ICamera* _camera);
 	void LoadModel(std::string _path);
 

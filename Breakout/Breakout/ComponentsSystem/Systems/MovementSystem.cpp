@@ -7,15 +7,33 @@ MovementSystem::MovementSystem()
 {
 }
 
+MovementSystem::~MovementSystem()
+{
+
+}
+
 
 void MovementSystem::Update(double _dt)
 {
+	PositionComponent* position;
+	VelocityComponent* velocity;
+
 	for (int i = 0; i < m_entities.size(); ++i)
 	{
-		float x = m_entities[i]->GetComponent<PositionComponent>()->m_X += _dt;
-		float y = m_entities[i]->GetComponent<PositionComponent>()->m_Y += _dt;
-		float z = m_entities[i]->GetComponent<PositionComponent>()->m_Z += _dt;
+		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
+			continue;
 
-		printf("Entity:%i was moved to new position: %f, %f, %f\n", i, x, y, z);
+
+		position = m_entities[i]->GetComponent<PositionComponent>();
+		velocity = m_entities[i]->GetComponent<VelocityComponent>();
+
+		Vector3 hest = velocity->m_velocity * _dt;
+		velocity->m_velocity += velocity->m_velocity;
+
+		position->m_position += velocity->m_velocity * _dt;
+
+
+		//m_entities[i]->SetState(Entity::LIMBO);
+
 	}
 }

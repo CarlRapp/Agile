@@ -18,12 +18,14 @@
 #include "DXRenderStates.h"
 #include "DXEffects.h"
 #include "DXVertex.h"
+#include "DXModel.h"
 
 class DXDeferred
 {
 
 private:
 
+	vector<ModelInstance*>	m_modelInstances;
 
 	//ID3D11Texture2D			*m_depthStencil = NULL;
 	//ID3D11DepthStencilView	*m_depthStencilView = NULL;
@@ -57,6 +59,8 @@ private:
 
 	void					InitTestTriangle();
 	void					RenderTestTriangle(ICamera* _camera);
+	void					RenderModels(ICamera* _camera);
+	void					RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
 
 
 public:
@@ -65,6 +69,8 @@ public:
 	~DXDeferred(void);
 
 	void Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height);
+
+	void AddModelInstance(ModelInstance* _mi) { m_modelInstances.push_back(_mi); }
 
 	void	Render(ID3D11RenderTargetView *_renderTargetView, ICamera* _camera);
 

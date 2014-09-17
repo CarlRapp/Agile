@@ -1,6 +1,6 @@
 #ifndef INPUTMANAGER_H
 #define INPUTMANAGER_H
-
+#include "../stdafx.h"
 #include "IInput.h"
 
 class InputManager

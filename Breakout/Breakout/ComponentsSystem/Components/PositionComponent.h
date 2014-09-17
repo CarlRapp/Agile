@@ -5,15 +5,11 @@
 
 struct PositionComponent : Component<PositionComponent>
 {
-	float m_X;
-	float m_Y;
-	float m_Z;
+	Vector3 m_position;
 
 	PositionComponent()
 	{
-		m_X = 0;
-		m_Y = 0;
-		m_Z = 0;
+		m_position = Vector3(0, 0, 0);
 	}
 
 };

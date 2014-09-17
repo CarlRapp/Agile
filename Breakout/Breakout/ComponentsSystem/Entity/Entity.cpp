@@ -1,8 +1,8 @@
 #include "Entity.h"
 
-
+int Entity::m_counter = 0;
 Entity::Entity()
-: m_state(DEAD)
+: m_id(m_counter++), m_state(DEAD)
 {
 }
 
@@ -91,4 +91,9 @@ std::vector<IComponent*> Entity::GetComponents()
 int Entity::GetId(void)
 {
 	return m_id;
+}
+
+void Entity::Kill(void)
+{
+	m_state = LIMBO;
 }

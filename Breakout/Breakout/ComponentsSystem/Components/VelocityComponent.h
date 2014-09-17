@@ -1,19 +1,16 @@
-#ifndef SPRITECOMPONENT_H
-#define SPRITECOMPONENT_H
+#ifndef VELOCITYCOMPONENT_H
+#define VELOCITYCOMPONENT_H
 
 #include "IComponent.h"
+#include "../../stdafx.h"
 
 struct VelocityComponent : Component<VelocityComponent>
 {
-	float m_X;
-	float m_Y;
-	float m_Z;
+	Vector3 m_velocity;
 
 	VelocityComponent()
 	{
-		m_X = 0;
-		m_Y = 0;
-		m_Z = 0;
+		m_velocity = Vector3(1, 5, 0);
 	}
 
 };
