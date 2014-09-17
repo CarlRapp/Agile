@@ -53,8 +53,12 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-	void SetPosition(Vector3 position)			{ m_position = position; UpdateView(); }
+	void SetPosition(Vector3 _position)			{ m_position = _position; m_position.z *= -1;  UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
+
+	void Move(Vector3 _move);
+	void Move(float _move);
+
 	void SetForward(Vector3 forward);
 	//void SetForward(float x, float y, float z) = 0;
 
@@ -68,6 +72,8 @@ public:
 		m_viewPort.TopLeftY = (float)_y;
 		m_viewPort.Width = (float)_width;
 		m_viewPort.Height = (float)_height;
+		m_aspectRatio = (float)_width / (float)_height;
+		UpdateProjection();
 	}
 
 #pragma endregion

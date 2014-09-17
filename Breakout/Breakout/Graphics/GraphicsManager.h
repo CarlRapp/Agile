@@ -34,6 +34,7 @@ public:
 	IGraphics*  GetIGraphics() { return m_IGraphics; }
 	void        Render();
 	void        Update();
+
         ICamera*    GetICamera();
 
 	//AddObject()

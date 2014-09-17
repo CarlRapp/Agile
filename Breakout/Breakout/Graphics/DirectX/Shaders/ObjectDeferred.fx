@@ -147,6 +147,7 @@ PsOut PS(VertexOut pin,
     // Default to multiplicative identity.
     //pout.Albedo = float4(1, 1, 1, 1);
 	pout.Albedo = float4(pin.Color, 1);
+	//pout.Albedo = float4(pin.NormalW, 1);
     if(gUseTexure)
 	{
 		// Sample texture.

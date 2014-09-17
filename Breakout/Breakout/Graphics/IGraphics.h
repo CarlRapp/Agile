@@ -27,6 +27,8 @@ public:
 
 
 	virtual void Render(ICamera* _Camera) = 0;
+	virtual void Update() = 0;
+
 
 	static IGraphics* GetIGraphics();
 };
