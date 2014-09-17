@@ -66,7 +66,7 @@ public:
 
 	void Update(float _dt)
 	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 			SceneManager::GetInstance()->Quit();
 			
 	}
