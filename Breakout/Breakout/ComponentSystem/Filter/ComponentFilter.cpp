@@ -1,14 +1,10 @@
 #include "ComponentFilter.h"
 
-bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*> _components) const
+bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*>* _components) const
 {
 	// Get the number of required/excluded components
 	size_t noRequiredComponents = m_requiredComponents.size();
 	size_t noExcludedComponents = m_excludedComponents.size();
-
-	// If both are 0 there is no need to check
-	if (noRequiredComponents == 0 && noExcludedComponents == 0)
-		return true;
 
 	/*
 	Go through all required components
@@ -17,9 +13,9 @@ bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*> _components)
 	*/
 	for (int i = 0; i < m_requiredComponents.size(); ++i)
 	{
-		for (int j = 0; j < _components.size(); ++j)
+		for (int j = 0; j < _components->size(); ++j)
 		{
-			if (m_requiredComponents[i] == _components[j]->m_ID)
+			if (m_requiredComponents[i] == _components->at(j)->m_ID)
 			{
 				noRequiredComponents--;
 				break;
@@ -37,9 +33,9 @@ bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*> _components)
 	*/
 	for (int i = 0; i < m_excludedComponents.size(); ++i)
 	{
-		for (int j = 0; j < _components.size(); ++j)
+		for (int j = 0; j < _components->size(); ++j)
 		{
-			if (m_excludedComponents[i] == _components[j]->m_ID)
+			if (m_excludedComponents[i] == _components->at(j)->m_ID)
 				return false;
 		}
 	}

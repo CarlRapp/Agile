@@ -68,3 +68,8 @@ ICamera* GraphicsManager::GetICamera()
 {
     return m_ICamera;
 }
+
+void GraphicsManager::AddRenderObject(std::string _path, MATRIX4 _world)
+{
+
+}

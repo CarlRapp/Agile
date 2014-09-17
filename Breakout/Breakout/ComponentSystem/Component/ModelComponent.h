@@ -6,13 +6,11 @@
 
 struct ModelComponent : Component<ModelComponent>
 {
-
 	std::string m_modelPath;
-	Vector3 m_offset;
+	MATRIX4 m_worldMatrix;
 
 	ModelComponent()
 	{
-		m_offset = Vector3(0, 0, 0);
 		m_modelPath = "";
 	}
 

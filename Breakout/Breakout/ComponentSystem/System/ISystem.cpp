@@ -18,9 +18,9 @@ std::vector<Entity*> ISystem::GetEntities() const
 	return m_entities;
 }
 
-const ComponentFilter& ISystem::GetComponentFilter() const
+const ComponentFilter* ISystem::GetComponentFilter() const
 {
-	return m_componentFilter;
+	return &m_componentFilter;
 }
 
 bool ISystem::Add(Entity* _entity)

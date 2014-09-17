@@ -83,9 +83,9 @@ bool Entity::RemoveAllComponents()
 	return true;
 }
 
-std::vector<IComponent*> Entity::GetComponents()
+std::vector<IComponent*>* Entity::GetComponents()
 {
-	return m_components;
+	return &m_components;
 }
 
 int Entity::GetId(void)
@@ -96,4 +96,10 @@ int Entity::GetId(void)
 void Entity::Kill(void)
 {
 	m_state = LIMBO;
+}
+
+void Entity::Reset(void)
+{
+	for (int i = 0; i < m_components.size(); ++i)
+		m_components[i]->Reset();
 }

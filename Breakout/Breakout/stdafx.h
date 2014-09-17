@@ -29,6 +29,7 @@ static char    m_cwd[FILENAME_MAX];
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 #define SafeDelete(x) { delete x; x = 0; }
 
+#define MAX_ENTITY_COUNT 500
 
 typedef unsigned int        UINT;
 
@@ -142,6 +143,20 @@ public:
 		vec3.z = this->z * _d;
 
 		return vec3;
+	}
+
+	bool Vector3::operator==(Vector3 v)
+	{
+		if ((this->x == v.x) && (this->y == v.y) && (this->z == v.z))
+			return true;
+		return false;
+	}
+
+	bool Vector3::operator!=(Vector3 v)
+	{
+		if ((this->x == v.x) && (this->y == v.y) && (this->z == v.z))
+			return false;
+		return true;
 	}
 
 	Vector2 ToVector2() { return Vector2(x, y); }

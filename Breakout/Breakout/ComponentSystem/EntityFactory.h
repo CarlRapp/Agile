@@ -1,8 +1,6 @@
 #ifndef ENTITIYFACTORY_H
 #define ENTITIYFACTORY_H
 
-#define MAX_ENTITY_COUNT 500
-
 #include "Entity\Entity.h"
 
 class EntityFactory
