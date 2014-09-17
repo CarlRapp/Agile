@@ -6,18 +6,18 @@
 struct ScaleComponent : Component<ScaleComponent>
 {
 
-	Vector3 m_scale;
-	Vector3 m_deltaScale;
+	VECTOR3 m_scale;
+	VECTOR3 m_deltaScale;
 
 	ScaleComponent()
 	{
-		m_scale = Vector3(1, 1, 1);
-		m_deltaScale = Vector3(0, 0, 0);
+		m_scale = VECTOR3(1, 1, 1);
+		m_deltaScale = VECTOR3(0, 0, 0);
 	}
 
 	void ScaleComponent::Reset()
 	{
-		m_deltaScale = Vector3(0, 0, 0);
+		m_deltaScale = VECTOR3(0, 0, 0);
 	}
 
 };

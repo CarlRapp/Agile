@@ -38,11 +38,11 @@ void ModelSystem::Update(float _dt)
 		model	 = m_entities[i]->GetComponent<ModelComponent>();
 
 
-		if (position->m_deltaPosition != Vector3(0, 0, 0))
+		if (ISZERO(position->m_deltaPosition))
 			change = true;
-		else if (rotation->m_deltaRotation != Vector3(0, 0, 0))
+		else if (ISZERO(rotation->m_deltaRotation))
 			change = true;
-		else if (scale->m_deltaScale != Vector3(0, 0, 0))
+		else if (ISZERO(scale->m_deltaScale))
 			change = true;
 
 

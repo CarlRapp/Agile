@@ -65,13 +65,6 @@ public:
 		m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
 		ball->SetState(Entity::ACTIVATED);
 
-		for (int i = 0; i < 490; ++i)
-		{
-			ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
-			m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
-			ball->SetState(Entity::ACTIVATED);
-		}
-
 		//auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
 		//m_activeEntites.insert(std::pair<int, Entity*>(block->GetId(), block));
 		//block->SetState(Entity::ACTIVATED);

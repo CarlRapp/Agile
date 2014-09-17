@@ -37,6 +37,7 @@ struct Vector2;
 struct Vector3;
 
 
+
 static std::string GetFile(std::string _path, std::string _root)
 {
 #ifdef WINDOWS
@@ -47,170 +48,25 @@ static std::string GetFile(std::string _path, std::string _root)
 
 
 
-    std::string temp = _root;
-    
-    if (!getcwd(m_cwd, sizeof(m_cwd)))
-        {
-            printf ("Unable to find current working directory!\n");
-            return "";
-        }
+	std::string temp = _root;
 
-     //	Open the file
+	if (!getcwd(m_cwd, sizeof(m_cwd)))
+	{
+		printf("Unable to find current working directory!\n");
+		return "";
+	}
 
-    std::string	workingDir = m_cwd;
+	//	Open the file
 
-    workingDir = workingDir.append(temp);
-    _path = workingDir.append(_path);
-    return _path;
+	std::string	workingDir = m_cwd;
+
+	workingDir = workingDir.append(temp);
+	_path = workingDir.append(_path);
+	return _path;
 
 #endif
 }
 
-struct Vector2
-{
-public:
-	float x, y;
-
-	Vector2(float _x, float _y) : x(_x), y(_y) {}
-};
-
-struct Vector3
-{
-public:
-	float x, y, z;
-
-	Vector3() : x(0), y(0), z(0) {};
-	Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
-	Vector3(Vector2 _vector, float _z) : x(_vector.x), y(_vector.y), z(_z) {}
-
-	Vector3& Vector3::operator=(Vector3 v)
-	{
-		this->x = v.x;
-		this->y = v.y;
-		this->z = v.z;
-
-		return *this;
-	}
-
-	Vector3& Vector3::operator+=(Vector3 v)
-	{
-		this->x += v.x;
-		this->y += v.y;
-		this->z += v.z;
-
-		return *this;
-	}
-
-	Vector3 Vector3::operator+(Vector3 v)
-	{
-		Vector3 vec3;
-
-		vec3.x = this->x + v.x;
-		vec3.y = this->y + v.y;
-		vec3.z = this->z + v.z;
-
-		return vec3;
-	}
-
-	Vector3 Vector3::operator*(int _i)
-	{
-		Vector3 vec3;
-
-		vec3.x = this->x * _i;
-		vec3.y = this->y * _i;
-		vec3.z = this->z * _i;
-
-		return vec3;
-	}
-
-	Vector3 Vector3::operator*(float _f)
-	{
-		Vector3 vec3;
-
-		vec3.x = this->x * _f;
-		vec3.y = this->y * _f;
-		vec3.z = this->z * _f;
-
-		return vec3;
-	}
-
-	Vector3 Vector3::operator*(double _d)
-	{
-		Vector3 vec3;
-
-		vec3.x = this->x * _d;
-		vec3.y = this->y * _d;
-		vec3.z = this->z * _d;
-
-		return vec3;
-	}
-
-	bool Vector3::operator==(Vector3 v)
-	{
-		if ((this->x == v.x) && (this->y == v.y) && (this->z == v.z))
-			return true;
-		return false;
-	}
-
-	bool Vector3::operator!=(Vector3 v)
-	{
-		if ((this->x == v.x) && (this->y == v.y) && (this->z == v.z))
-			return false;
-		return true;
-	}
-
-	Vector2 ToVector2() { return Vector2(x, y); }
-};
-
-struct Vector4
-{
-public:
-	float x, y, z, w;
-
-	Vector4() : x(0), y(0), z(0), w(0) {};
-	Vector4(float _x, float _y, float _z, float _w) : x(_x), y(_y), z(_z), w(_w) {}
-
-};
-
-struct Float4x4
-{
-public:
-	union
-	{
-		struct
-		{
-			float _11, _12, _13, _14;
-			float _21, _22, _23, _24;
-			float _31, _32, _33, _34;
-			float _41, _42, _43, _44;
-		};
-		float m[4][4];
-	};
-
-	Float4x4() {}
-	Float4x4(float m00, float m01, float m02, float m03,
-		float m10, float m11, float m12, float m13,
-		float m20, float m21, float m22, float m23,
-		float m30, float m31, float m32, float m33) :
-		_11(m00), _12(m01), _13(m02), _14(m03),
-		_21(m10), _22(m11), _23(m12), _24(m13),
-		_31(m20), _32(m21), _33(m22), _34(m23),
-		_41(m30), _42(m31), _43(m32), _44(m33){}
-	//explicit Float4x4(_In_reads_(16) const float *pArray);
-
-	float       operator() (size_t Row, size_t Column) const { return m[Row][Column]; }
-	float&      operator() (size_t Row, size_t Column) { return m[Row][Column]; }
-
-	Float4x4& operator= (const Float4x4& Float4x4)
-	{
-		_11 = Float4x4._11; _12 = Float4x4._12; _13 = Float4x4._13; _14 = Float4x4._14;
-		_21 = Float4x4._21; _22 = Float4x4._22; _23 = Float4x4._23; _24 = Float4x4._24;
-		_31 = Float4x4._31; _32 = Float4x4._32; _33 = Float4x4._33; _34 = Float4x4._34;
-		_41 = Float4x4._41; _42 = Float4x4._42; _43 = Float4x4._43; _44 = Float4x4._44;
-		return *this;
-	}
-
-};
 
 
 
@@ -223,22 +79,24 @@ public:
 #define MATRIX4 glm::mat4
 #define VECTOR3 glm::vec3
 
-    static glm::mat4 MacroTranslate(glm::mat4 matrix,glm::vec3 vector,int dx1,int dx2)
-    {
-        return glm::translate(matrix,vector);
-    }
+static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector, int dx1, int dx2)
+{
+	return glm::translate(matrix, vector);
+}
 
-    static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
-    {
-        return glm::rotate(matrix,angle,axis);
-    }
+static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
+{
+	return glm::rotate(matrix, angle, axis);
+}
 
 #else
 
 #include <DirectXMath.h>
 
 #define MATRIX4 DirectX::XMFLOAT4X4
+#define VECTOR4 DirectX::XMFLOAT4
 #define VECTOR3 DirectX::XMFLOAT3
+#define VECTOR2 DirectX::XMFLOAT2
 
 static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, float _x, float _y, float _z)
 {
@@ -258,11 +116,20 @@ static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis
 	return _mat;
 }
 
+static bool IsZero(VECTOR3 _vec)
+{
+	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
+		return true;
+
+	return false;
+}
+
 
 #endif
 
 #define TRANSLATE(matrix,vector,dx1,dx2) MacroTranslate(matrix,vector,dx1,dx2)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
+#define ISZERO(vector) IsZero(vector)
 
 
 
