@@ -49,8 +49,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     //m_shaders.push_back(new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER));
    // glAttachShader(m_program,GL_FRAGMENT_SHADER);
     
-    glBindAttribLocation(m_program, 0, "m_position");
-    glBindAttribLocation(m_program, 1, "m_normal");
+   // glBindAttribLocation(m_program, 0, "m_position");
+   // glBindAttribLocation(m_program, 1, "m_normal");
     //const char* uniform_name;
     //uniform_name = "mvp";
     //uniform_mvp = glGetUniformLocation(program, uniform_name);
@@ -68,7 +68,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     printf("OpenGL version supported by this platform: (%s) \n", glGetString(GL_VERSION));
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
     
-    LoadModel("triangle");
+    //LoadModel("triangle");
     LoadModel("sphere");
     return true; 
 } 
@@ -91,14 +91,14 @@ void GLGraphics::LoadModel(std::string _path)
        
         int index = m_models.size()-1;
         
-        m_models[index]->bufferVertexID = 255;
-        m_models[index]->bufferNormalID = 255;
-        m_models[index]->bufferVAOID = 255;
+      //  m_models[index]->bufferVertexID = 255;
+       // m_models[index]->bufferNormalID = 255;
+      //  m_models[index]->bufferVAOID = 255;
         
-        int floatSize = (*groupIt)->triangles.size() * 3 * 3;
+        int floatCount = (*groupIt)->triangles.size() * 3 * 3;
         
-        float* vertexArray = new float[floatSize];
-        float* normalArray = new float[floatSize];
+        float* vertexArray = new float[floatCount];
+        float* normalArray = new float[floatCount];
 
         int i = 0;
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
@@ -117,41 +117,36 @@ void GLGraphics::LoadModel(std::string _path)
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
         
+    
         
-        //glVertexAttribPointer(gWoodenCrate.shaders->attrib("vert"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), NULL);
-        
-        glGenBuffers(1, &m_models[index]->bufferVertexID);
-        
-        
-        glGenVertexArrays(1,&m_models[index]->bufferVAOID);
-        glBindVertexArray(m_models[index]->bufferVAOID);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferVertexID);
-        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_DYNAMIC_DRAW);
-        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_position"));
-        
-        glGenBuffers(1, &m_models[index]->bufferNormalID);
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferNormalID);
-        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
-        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_normal"));
-        
-        
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        
-        /////
+        GLuint VBOHandles[2];
+	glGenBuffers(2, VBOHandles);
 
-//        glGenBuffers(1, &m_models[index]->bufferNormalID);
-//        glGenVertexArrays(1,&m_models[index]->bufferVAOID);
-//        
-//        glBindVertexArray(m_models[index]->bufferVAOID);
-//        
-//        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferNormalID);
-//        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
-//        
-//        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_normal"));
-//        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-//        
-        glBindVertexArray(0);
+	// "Bind" (switch focus to) first buffer
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]); 
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_DYNAMIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
+
+
+	// create 1 VAO
+	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
+	glBindVertexArray(m_models[index]->bufferVAOID);
+
+	// enable "vertex attribute arrays"
+	glEnableVertexAttribArray(0); // position
+	glEnableVertexAttribArray(1); // normal
+
+	// map index 0 to position buffer
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+	glBindVertexArray(0); // disable VAO
+	glUseProgram(0); // disable shader programme
     }
     
     std::cout << "Loadmodel finish: " << _path << " with error: " << glGetError() << "\n";
@@ -173,8 +168,8 @@ void GLGraphics::Free()
 {
     for(int i = m_models.size()-1; i > -1;i--)
     {
-        glDeleteBuffers(1, &m_models[i]->bufferNormalID);
-        glDeleteBuffers(1, &m_models[i]->bufferVertexID);
+       // glDeleteBuffers(1, &m_models[i]->bufferNormalID);
+       // glDeleteBuffers(1, &m_models[i]->bufferVertexID);
         
         m_models.pop_back();
     }
@@ -192,57 +187,54 @@ void GLGraphics::Render(ICamera* _camera)
     
     glUseProgram(m_program);
 
-   // ModelRenderInfo* MRI;
+    
+   
+    ModelRenderInfo* MRI;
     
     //if(t < 1)
     //{
-   // MRI = m_models[0];
+    MRI = m_models[0];
     //}
     //else
         //MRI = m_models[1];
     
     //glBindVertexArray(MRI->bufferVAOID);
     //glBindBuffer(GL_ARRAY_BUFFER, MRI->bufferVertexID);
+
     
     //printf("Binding buffer: %d (Vertices: %d)\n", MRI->bufferVertexID, MRI->vertices);
     
 //    glEnableVertexAttribArray(0);
 //    glEnableVertexAttribArray(1);
 
-//    t+=0.001f;
-//    //TODO:: GET ENTITY
-//    m_testLightPos.z = glm::sin(t)*5+10;
-//    m_testLightPos.x = glm::cos(t)*5+10;
-//    m_testMatrix = ROTATE(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
+    t+=0.001f;
+    //TODO:: GET ENTITY
+    m_testLightPos.z = glm::sin(t)*5+10;
+    m_testLightPos.x = glm::cos(t)*5+10;
+    m_testMatrix = ROTATE(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
 
-    //glm::vec3 gg = glm::vec3(1.0f,0.f,0.f);
-    //TRANSLATE(&m_testMatrix,&gg,0,0);
-    //m_testMatrix = TRANSLATE(m_testMatrix,gg,0,0);
-    //m_testMatrix = MATRIX4.TRANSLATE();
+    glm::vec3 gg = glm::vec3(1.0f,0.f,0.f);
+   // TRANSLATE(&m_testMatrix,&gg,0,0);
     
-//    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
-//    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
-//    
-//    GLint model = glGetUniformLocation(m_program, "m_matModel" );
-//    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
-//    
-//    MATRIX4* temp1 = (MATRIX4*)_camera->GetProjection();
-//    
-//    GLint projection = glGetUniformLocation(m_program, "m_matProj" );
-//    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
-//    
-//    temp1 = (MATRIX4*)_camera->GetView();
-//
-//    GLint view = glGetUniformLocation(m_program, "m_matView" );
-//    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
-//
-//    glDrawArrays(GL_TRIANGLES, 0, MRI->vertices);
+    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
+    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
+    
+    GLint model = glGetUniformLocation(m_program, "m_matModel" );
+    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
+    
+    MATRIX4* temp1 = (MATRIX4*)_camera->GetProjection();
+    
+    GLint projection = glGetUniformLocation(m_program, "m_matProj" );
+    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
+    
+    temp1 = (MATRIX4*)_camera->GetView();
 
-//    glDisableVertexAttribArray(1);
-//    glDisableVertexAttribArray(0);
+    GLint view = glGetUniformLocation(m_program, "m_matView" );
+    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
     
-    //glBindVertexArray(0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
+    glBindVertexArray(MRI->bufferVAOID);
+    glDrawArrays(GL_TRIANGLES, 0, MRI->vertices);
     
     glUseProgram(0);
     

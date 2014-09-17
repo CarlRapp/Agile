@@ -49,10 +49,10 @@ void GraphicsManager::Update()
 	Vector3 pos = m_ICamera->GetPosition();
 	//pos.z += dt * 10.0f;
 
-	test += 0.003f * 0.4;
+	//test += 0.003f * 0.4;
 
-	pos.x = 5 * sinf(test);
-	pos.z = 5 * cosf(test);
+	//pos.x = 5 * sinf(test);
+	//pos.z = 5 * cosf(test);
 
 	m_ICamera->SetPosition(pos);
 	m_ICamera->SetLookAt(Vector3(0, 0, 0));

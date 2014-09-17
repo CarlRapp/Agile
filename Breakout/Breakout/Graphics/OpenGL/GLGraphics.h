@@ -25,18 +25,13 @@ class GLGraphics : public IGraphics
         public:
             
         int vertices;
-        GLuint bufferNormalID;
-        GLuint bufferVertexID;
+        //GLuint bufferNormalID;
+       // GLuint bufferVertexID;
         GLuint bufferVAOID;
         std::string name;
         
         ModelRenderInfo(){}
-        ModelRenderInfo(GLuint _bufferNormalID, GLuint _bufferVertexID, int _vertices, std::string _name):
-        bufferNormalID(_bufferNormalID),
-        bufferVertexID(_bufferVertexID),
-        vertices(_vertices),
-        name(_name)
-        {}
+      
     };
     
 private:
