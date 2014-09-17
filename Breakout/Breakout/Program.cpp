@@ -81,10 +81,13 @@ int main(int argc, char** argv)
 {
 	printf("Application started!\n");
 	
+#ifdef WINDOWS
+	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
+#endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 1000, 600, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
