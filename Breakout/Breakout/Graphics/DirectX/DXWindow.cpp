@@ -126,4 +126,13 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 	return true;
 }
 
+void DXWindow::Update()
+{
+	MSG msg;
+	if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	{
+		::TranslateMessage(&msg);
+		::DispatchMessage(&msg);
+	}
+}
 
