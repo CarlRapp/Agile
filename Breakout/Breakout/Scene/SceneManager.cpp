@@ -11,6 +11,14 @@ SceneManager::SceneManager()
 }
 SceneManager::~SceneManager()
 {
+	SceneMap::iterator it;
+	for (it = m_scenes.begin(); it != m_scenes.end(); ++it)
+	{
+		delete it->second;
+	}
+
+	m_scenes.clear();
+		
 }
 
 SceneManager* SceneManager::GetInstance()
