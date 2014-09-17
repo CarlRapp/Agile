@@ -42,7 +42,7 @@ void GraphicsManager::Render()
 }
 
 float test = 0.0f;
-void GraphicsManager::Update(double dt)
+void GraphicsManager::Update()
 {
 }
 

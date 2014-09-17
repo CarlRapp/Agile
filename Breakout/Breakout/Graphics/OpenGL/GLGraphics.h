@@ -27,6 +27,7 @@ class GLGraphics : public IGraphics
         int vertices;
         GLuint bufferNormalID;
         GLuint bufferVertexID;
+        GLuint bufferVAOID;
         std::string name;
         
         ModelRenderInfo(){}

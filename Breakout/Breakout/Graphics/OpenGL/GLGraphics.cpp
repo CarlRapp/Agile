@@ -67,7 +67,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     
     printf("OpenGL version supported by this platform: (%s) \n", glGetString(GL_VERSION));
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
-    //LoadModel("triangle");
+    
+    LoadModel("triangle");
     LoadModel("sphere");
     return true; 
 } 
@@ -86,16 +87,15 @@ void GLGraphics::LoadModel(std::string _path)
     
     for (std::vector<Group*>::iterator groupIt = data->Groups.begin(); groupIt != data->Groups.end(); ++groupIt)
     {
-        ModelRenderInfo* newModel = new ModelRenderInfo;
-        
-        m_models.push_back(newModel);
+        m_models.push_back(new ModelRenderInfo());
        
         int index = m_models.size()-1;
         
-        m_models[index]->bufferNormalID = index;
-        m_models[index]->bufferVertexID = index;
+        m_models[index]->bufferVertexID = 255;
+        m_models[index]->bufferNormalID = 255;
+        m_models[index]->bufferVAOID = 255;
         
-        int floatSize = (*groupIt)->triangles.size() * 9;
+        int floatSize = (*groupIt)->triangles.size() * 3 * 3;
         
         float* vertexArray = new float[floatSize];
         float* normalArray = new float[floatSize];
@@ -113,18 +113,47 @@ void GLGraphics::LoadModel(std::string _path)
 
             i += 3;
         }
-        printf("Vertices: %d\n", i);
-        glGenBuffers(kk, &m_models[index]->bufferVertexID);
+        printf("Vertices: %d [Index: %d]\n", i, index);
+        m_models[index]->vertices = i;
+        m_models[index]->name = _path;
+        
+        
+        //glVertexAttribPointer(gWoodenCrate.shaders->attrib("vert"), 3, GL_FLOAT, GL_FALSE, 5*sizeof(GLfloat), NULL);
+        
+        glGenBuffers(1, &m_models[index]->bufferVertexID);
+        
+        
+        glGenVertexArrays(1,&m_models[index]->bufferVAOID);
+        glBindVertexArray(m_models[index]->bufferVAOID);
+        
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferVertexID);
-        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-        glGenBuffers(kk, &m_models[index]->bufferNormalID);
+        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_DYNAMIC_DRAW);
+        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_position"));
+        
+        glGenBuffers(1, &m_models[index]->bufferNormalID);
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferNormalID);
-        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
+        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_normal"));
+        
+        
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+        
+        /////
+
+//        glGenBuffers(1, &m_models[index]->bufferNormalID);
+//        glGenVertexArrays(1,&m_models[index]->bufferVAOID);
+//        
+//        glBindVertexArray(m_models[index]->bufferVAOID);
+//        
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->bufferNormalID);
+//        glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
+//        
+//        glEnableVertexAttribArray(glGetAttribLocation(m_program, "m_normal"));
+//        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+//        
+        glBindVertexArray(0);
     }
-    kk++;
+    
     std::cout << "Loadmodel finish: " << _path << " with error: " << glGetError() << "\n";
 }
 
@@ -163,47 +192,57 @@ void GLGraphics::Render(ICamera* _camera)
     
     glUseProgram(m_program);
 
-    glBindVertexArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, 1);
+   // ModelRenderInfo* MRI;
     
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+    //if(t < 1)
+    //{
+   // MRI = m_models[0];
+    //}
+    //else
+        //MRI = m_models[1];
+    
+    //glBindVertexArray(MRI->bufferVAOID);
+    //glBindBuffer(GL_ARRAY_BUFFER, MRI->bufferVertexID);
+    
+    //printf("Binding buffer: %d (Vertices: %d)\n", MRI->bufferVertexID, MRI->vertices);
+    
+//    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(1);
 
-    t+=0.001f;
-    //TODO:: GET ENTITY
-    m_testLightPos.z = glm::sin(t)*5+10;
-    m_testLightPos.x = glm::cos(t)*5+10;
-    m_testMatrix = ROTATE(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
-    //glm::rotate(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
-    glm::vec3 gg = glm::vec3(1.0f,0.f,0.f);
+//    t+=0.001f;
+//    //TODO:: GET ENTITY
+//    m_testLightPos.z = glm::sin(t)*5+10;
+//    m_testLightPos.x = glm::cos(t)*5+10;
+//    m_testMatrix = ROTATE(m_testMatrix,glm::sin(t)*2,glm::vec3(1.0f,0.f,0.f));
+
+    //glm::vec3 gg = glm::vec3(1.0f,0.f,0.f);
     //TRANSLATE(&m_testMatrix,&gg,0,0);
     //m_testMatrix = TRANSLATE(m_testMatrix,gg,0,0);
     //m_testMatrix = MATRIX4.TRANSLATE();
     
-    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
-    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
-    
-    GLint model = glGetUniformLocation(m_program, "m_matModel" );
-    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
-    
-    MATRIX4* temp1 = (MATRIX4*)_camera->GetProjection();
-    
-    GLint projection = glGetUniformLocation(m_program, "m_matProj" );
-    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
-    
-    temp1 = (MATRIX4*)_camera->GetView();
+//    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
+//    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
+//    
+//    GLint model = glGetUniformLocation(m_program, "m_matModel" );
+//    glUniformMatrix4fv(model, 1, GL_FALSE, glm::value_ptr(m_testMatrix));
+//    
+//    MATRIX4* temp1 = (MATRIX4*)_camera->GetProjection();
+//    
+//    GLint projection = glGetUniformLocation(m_program, "m_matProj" );
+//    glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
+//    
+//    temp1 = (MATRIX4*)_camera->GetView();
+//
+//    GLint view = glGetUniformLocation(m_program, "m_matView" );
+//    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
+//
+//    glDrawArrays(GL_TRIANGLES, 0, MRI->vertices);
 
-    GLint view = glGetUniformLocation(m_program, "m_matView" );
-    glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
-
-    glDrawArrays(GL_TRIANGLES, 0, 2160);
-
+//    glDisableVertexAttribArray(1);
+//    glDisableVertexAttribArray(0);
     
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(0);
-    
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     glUseProgram(0);
     
