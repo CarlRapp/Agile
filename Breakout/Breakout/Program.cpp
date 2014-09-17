@@ -46,12 +46,12 @@ Entity* CreateEntity(void)
 class MainMenu : public Scene<MainMenu>
 {
 private:
-	Vector3 pos;
+	VECTOR3 pos;
 public:
 	MainMenu()
 	{
 		printf("Main Menu created!\n");
-		pos = Vector3(0, 0, 0);
+		pos = VECTOR3(0, 0, 0);
 	}
 
 	void Initialize()

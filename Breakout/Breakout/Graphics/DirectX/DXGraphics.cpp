@@ -197,8 +197,10 @@ void DXGraphics::LoadModel(std::string _path)
 
 	m_testmodelinstance->SetModel(m_testmodel);
 
-	Float4x4 world;
-	memcpy(&world, &DirectX::XMMatrixTranslation(1.5f, 0, 0), sizeof(Float4x4));
+	DirectX::XMMATRIX worldM = DirectX::XMMatrixTranslation(1.5f, 0, 0);
+	DirectX::XMFLOAT4X4 world;
+
+	DirectX::XMStoreFloat4x4(&world, worldM);
 
 	float scale = 1.0f;
 
@@ -210,8 +212,8 @@ void DXGraphics::LoadModel(std::string _path)
 
 	m_testmodelinstance->SetModel(m_testmodel);
 
-	memcpy(&world, &DirectX::XMMatrixTranslation(-1.5f, 0, 0), sizeof(Float4x4));
-
+	worldM = DirectX::XMMatrixTranslation(-1.5f, 0, 0);
+	DirectX::XMStoreFloat4x4(&world, worldM);
 
 	m_testmodelinstance->SetWorld(world, world, scale);
 

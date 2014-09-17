@@ -59,8 +59,6 @@ public:
 	DirectX::BoundingSphere					m_BoundingSphere;
 	DirectX::BoundingOrientedBox			m_BoundingOrientedBox;
 
-	float							m_SmallestRadiusInBox;
-
 
 };
 
@@ -68,9 +66,9 @@ public:
 class ModelInstance
 {
 private:
-	DXModel			*m_Model;
-	Float4x4		m_World;
-	float			m_Scale;
+	DXModel					*m_Model;
+	DirectX::XMFLOAT4X4		m_World;
+	float					m_Scale;
 
 
 	int				m_TextureIndex;
@@ -86,9 +84,9 @@ public:
 
 
 	
-	Vector4						m_Rotation;
-	Vector3						m_Translation;
-	Float4x4				m_WorldInverseTranspose;
+	DirectX::XMFLOAT4 m_Rotation;
+	DirectX::XMFLOAT3	m_Translation;
+	DirectX::XMFLOAT4X4				m_WorldInverseTranspose;
 
 	
 
@@ -99,7 +97,7 @@ public:
 
 	DXModel* GetModel() { return m_Model; }
 
-	void SetWorld(Float4x4& World, Float4x4& WorldInvTrans, float& Scale)
+	void SetWorld(DirectX::XMFLOAT4X4& World, DirectX::XMFLOAT4X4& WorldInvTrans, float& Scale)
 	{
 		m_World = World;
 		m_WorldInverseTranspose = WorldInvTrans;
@@ -113,16 +111,16 @@ public:
 
 	int GetTextureIndex() { return m_TextureIndex; }
 
-	Float4x4 GetWorld() { return m_World; }
+	DirectX::XMFLOAT4X4 GetWorld() { return m_World; }
 
 
 	ModelInstance()
 	{
 		m_Model					=	NULL;
-		m_World					=	Float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
+		m_World					= DirectX::XMFLOAT4X4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 		m_Scale					=	1;
 		m_TextureIndex			=	0;
-		m_WorldInverseTranspose =   Float4x4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+		m_WorldInverseTranspose = DirectX::XMFLOAT4X4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 	}
 
