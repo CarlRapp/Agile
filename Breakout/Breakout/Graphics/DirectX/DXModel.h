@@ -7,6 +7,7 @@
 #include "DXTextureManager.h"
 #include "DXVertex.h"
 #include "../../Storage/ModelData.h"
+#include <DirectXCollision.h>
 
 //#include "ModelLoader.h"
 
@@ -55,8 +56,8 @@ public:
 	*/
 	DXMesh ModelMesh;
 
-	//BoundingSphere					m_BoundingSphere;
-	//BoundingOrientedBox				m_BoundingOrientedBox;
+	DirectX::BoundingSphere					m_BoundingSphere;
+	DirectX::BoundingOrientedBox			m_BoundingOrientedBox;
 
 	float							m_SmallestRadiusInBox;
 

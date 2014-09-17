@@ -46,12 +46,13 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 
 	SubsetCount = Subsets.size();
 
-	/*
-	SubsetCount = mats.size();
+	
+	//SubsetCount = mats.size();
 
-	TPM = mats[0].DiffuseMapNames.size();
+	//TPM = mats[0].DiffuseMapNames.size();
 	for(UINT i = 0; i < SubsetCount; ++i)
 	{
+		/*
 		Mat.push_back(mats[i].Mat);
 
 		for (int j = 0; j < mats[i].DiffuseMapNames.size(); ++j)
@@ -74,15 +75,20 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 			}
 		}
 
-
-		
-		//m_SmallestRadiusInBox = 10;
-		
-		//BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
-		//BoundingOrientedBox::CreateFromBoundingBox(m_BoundingOrientedBox, AABB);
-		//BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
+		*/
 		
 	}
+	/*
+	DirectX::BoundingBox AABB;
+	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
+
+	DirectX::BoundingOrientedBox::CreateFromBoundingBox(m_BoundingOrientedBox, AABB);
+
+	XMFLOAT3 Extents = m_BoundingOrientedBox.Extents;
+	m_SmallestRadiusInBox = (Extents.x > Extents.z) ? Extents.z : Extents.x;
+
+	BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
+
 	*/
 	//BoundingOrientedBox::CreateFromPoints(m_BoundingOrientedBox, Vertices.size(), &Vertices[0].Pos, sizeof(Vertex::PosNormalTexTanSkinned));
 }
