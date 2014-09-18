@@ -60,7 +60,9 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
 	LoadModel("sphere");
-	//LoadModel("triangle");
+
+	LoadModel("triangle");
+	LoadModel("sphere");
 
 	return true;
 }
@@ -187,18 +189,20 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	return S_OK;
 }
 
+float asdasdddd = 1.5f;
 void DXGraphics::LoadModel(std::string _path)
 {
-	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
+	m_modelManager.LoadModel(m_device, _path);
 
-	m_testmodel = new DXModel(m_device, m_TextureManager, data);
 
 	m_testmodelinstance = new ModelInstance();
 
-	m_testmodelinstance->SetModel(m_testmodel);
+	m_testmodelinstance->SetModel(m_modelManager.GetModel(_path));
 
-	Float4x4 world;
-	memcpy(&world, &DirectX::XMMatrixTranslation(1.5f, 0, 0), sizeof(Float4x4));
+	DirectX::XMMATRIX worldM = DirectX::XMMatrixTranslation(asdasdddd, 0, 0); asdasdddd -= 3.0f;
+	DirectX::XMFLOAT4X4 world;
+
+	DirectX::XMStoreFloat4x4(&world, worldM);
 
 	float scale = 1.0f;
 
@@ -206,57 +210,34 @@ void DXGraphics::LoadModel(std::string _path)
 
 	m_DXDeferred->AddModelInstance(m_testmodelinstance);
 
+	/*
 	m_testmodelinstance = new ModelInstance();
 
 	m_testmodelinstance->SetModel(m_testmodel);
 
-	memcpy(&world, &DirectX::XMMatrixTranslation(-1.5f, 0, 0), sizeof(Float4x4));
-
+	worldM = DirectX::XMMatrixTranslation(-1.5f, 0, 0);
+	DirectX::XMStoreFloat4x4(&world, worldM);
 
 	m_testmodelinstance->SetWorld(world, world, scale);
 
 	m_DXDeferred->AddModelInstance(m_testmodelinstance);
+	*/
 
 	/*
-	if (!data)
+	std::vector<VECTOR3> vertices;
+
+	for (Group* group : data->Groups)
 	{
-		printf("Loadmodel failed: %s\n", _path.c_str());
-		return;
-	}
-
-	for (std::vector<Group*>::iterator groupIt = data->Groups.begin(); groupIt != data->Groups.end(); ++groupIt)
-	{
-		int floatSize = (*groupIt)->triangles.size() * 9;
-
-		float* vertexArray = new float[floatSize];
-		float* colorArray = new float[floatSize];
-
-		int i = 0;
-		for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
+		for (Triangle triangle : group->triangles)
 		{
-			//Dest,Source,Size
-			memcpy(&vertexArray[3 * i], &(*triangleIt).Vertices[0].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
-			memcpy(&vertexArray[3 * (i + 1)], &(*triangleIt).Vertices[1].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * (i + 1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
-			memcpy(&vertexArray[3 * (i + 2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * (i + 2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
-
-			i += 3;
+			for (int i = 0; i < 3; i++)
+			{
+				vertices.push_back(triangle.Vertices[i].Position);
+			}
 		}
-		printf("Vertices: %d\n", i);
-		glGenBuffers(1, &ibo_cube_elements);
-		glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
-		glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-		glGenBuffers(1, &vbo_cube_colors);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-		glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), colorArray, GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 	}
 
-	std::cout << "Loadmodel finish: " << _path << " with error: " << glGetError() << "\n";
+	return vertices;
 	*/
 }
 

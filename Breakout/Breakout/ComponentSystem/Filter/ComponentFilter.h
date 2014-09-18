@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "../ClassTypeID.h"
-#include "../Components/IComponent.h"
+#include "../Component/IComponent.h"
 
 class ComponentFilter
 {
@@ -75,7 +75,7 @@ public:
 		return *this;
 	}
 
-	bool DoesFilterPass(const std::vector<IComponent*> _components) const;
+	bool DoesFilterPass(const std::vector<IComponent*>* _components) const;
 	void Clear();
 
 };

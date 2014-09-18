@@ -7,10 +7,11 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
-#include "ComponentsSystem/Entity/Entity.h"
-#include "ComponentsSystem/Systems/MovementSystem.h"
-#include "ComponentsSystem/Components/PositionComponent.h"
-#include "ComponentsSystem/Components/VelocityComponent.h"
+#include "ComponentSystem/Entity/Entity.h"
+#include "ComponentSystem/System/SystemManager.h"
+#include "ComponentSystem/System/ScoreSystem.h"
+#include "ComponentSystem/System/MovementSystem.h"
+#include "ComponentSystem/EntityFactory.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -28,35 +29,51 @@ AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
 SceneManager* m_SceneManager;
 
-#define MAX_ENTITY_COUNT 500
-Entity** m_entities;
-MovementSystem m_movementSystem;
-Entity* CreateEntity(void)
-{
 
-	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-	{
-		if (m_entities[i]->GetState() == Entity::DEAD)
-			return m_entities[i];
-	}
-
-	return 0;
-}
 
 class MainMenu : public Scene<MainMenu>
 {
 private:
-	Vector3 pos;
+	VECTOR3 pos;
+	SystemManager* m_systemManager;
+	Entity** m_entities;
+	std::map<int, Entity*> m_activeEntites;
 public:
 	MainMenu()
 	{
 		printf("Main Menu created!\n");
-		pos = Vector3(0, 0, 0);
+		pos = VECTOR3(0, 0, 0);
 	}
 
 	void Initialize()
 	{
 		printf("Initialized (MAIN MENU)\n");
+
+		m_systemManager = new SystemManager();
+		m_systemManager->AddSystem<MovementSystem>();
+		//m_systemManager->AddSystem<ScoreSystem>();
+
+
+		m_entities = new Entity*[MAX_ENTITY_COUNT];
+
+		for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
+			m_entities[i] = new Entity(i);
+
+		EntityFactory::GetInstance()->Initialize(m_entities);
+
+		auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
+		m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
+		ball->SetState(Entity::ACTIVATED);
+
+		//auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
+		//m_activeEntites.insert(std::pair<int, Entity*>(block->GetId(), block));
+		//block->SetState(Entity::ACTIVATED);
+
+		//auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::PLAYER);
+		//m_activeEntites.insert(std::pair<int, Entity*>(player->GetId(), player));
+		//player->SetState(Entity::ACTIVATED);
+
+
 	}
 
 	void LoadContent()
@@ -68,7 +85,16 @@ public:
 	{
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
 			SceneManager::GetInstance()->Quit();
-			
+
+		m_systemManager->Update(_dt, &m_activeEntites);
+
+		for (std::map < int, Entity*>::iterator it = m_activeEntites.begin(); it != m_activeEntites.end(); ++it)
+		{
+			if (it->second->GetState() == Entity::LIMBO)
+				EntityFactory::GetInstance()->DeleteEntity(it->second);
+			//else
+			//	it->second->Reset();
+		}
 	}
 	
 	void Render()
@@ -81,10 +107,13 @@ int main(int argc, char** argv)
 {
 	printf("Application started!\n");
 	
+#ifdef WINDOWS
+	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
+#endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 1000, 600, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/

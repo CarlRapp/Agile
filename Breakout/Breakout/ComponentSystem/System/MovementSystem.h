@@ -11,6 +11,6 @@ public:
 	MovementSystem();
 	~MovementSystem();
 
-	void Update(double _dt);
+	void Update(float _dt);
 };
 #endif

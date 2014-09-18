@@ -35,6 +35,7 @@ public:
 	void        Render();
 	void        Update();
     ICamera*    GetICamera();
+	void		AddRenderObject(std::string _path, MATRIX4 _world);
 
 	//AddObject()
 	//RemoveObject()

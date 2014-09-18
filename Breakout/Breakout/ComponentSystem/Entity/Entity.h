@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../Components/IComponent.h"
+#include "../Component/IComponent.h"
 
 #include <iostream>
 #include <type_traits>
@@ -66,8 +66,9 @@ public:
 	bool HasComponent();
 
 
-	std::vector<IComponent*> GetComponents();
+	std::vector<IComponent*>* GetComponents();
 	bool RemoveAllComponents();
+	void Reset(void);
 	int GetId();
 
 

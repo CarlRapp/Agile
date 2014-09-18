@@ -2,14 +2,14 @@
 
 #include "EntityFactory.h"
 
-#include "Components/PositionComponent.h"
-#include "Components/RotationComponent.h"
-#include "Components/ScaleComponent.h"
-#include "Components/VelocityComponent.h"
-#include "Components/HealthComponent.h"
-#include "Components/ScoreComponent.h"
-#include "Components/ModelComponent.h"
-#include "Components/LifeComponent.h"
+#include "Component/PositionComponent.h"
+#include "Component/RotationComponent.h"
+#include "Component/ScaleComponent.h"
+#include "Component/VelocityComponent.h"
+#include "Component/HealthComponent.h"
+#include "Component/ScoreComponent.h"
+#include "Component/ModelComponent.h"
+#include "Component/LifeComponent.h"
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
 bool EntityFactory::m_initialized = false;

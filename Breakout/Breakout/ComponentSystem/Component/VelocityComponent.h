@@ -6,11 +6,11 @@
 
 struct VelocityComponent : Component<VelocityComponent>
 {
-	Vector3 m_velocity;
+	VECTOR3 m_velocity;
 
 	VelocityComponent()
 	{
-		m_velocity = Vector3(1, 5, 0);
+		m_velocity = VECTOR3(1, 5, 0);
 	}
 
 };
