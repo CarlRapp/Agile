@@ -52,7 +52,8 @@ namespace SceneSystem
 		LARGE_INTEGER m_t1, m_t2;
 #else
 		// Fix on unix
-		timeval m_t1, m_t2;
+		struct timeval m_t1, m_t2;
+                struct timezone m_tZone;
 #endif
 
 		

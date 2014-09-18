@@ -1,3 +1,4 @@
+#version 420
 varying vec3 f_normal;
 uniform mat4 m_matModel;
 uniform vec3 m_testLight;

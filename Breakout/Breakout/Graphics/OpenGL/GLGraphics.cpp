@@ -104,12 +104,12 @@ void GLGraphics::LoadModel(std::string _path)
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
         {
             //Dest,Source,Size
-            memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
-            memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
-            memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
+            memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(VECTOR3));
+            memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(VECTOR3));
+            memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(VECTOR3));
+            memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(VECTOR3));
+            memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(VECTOR3));
+            memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(VECTOR3));
 
             i += 3;
         }

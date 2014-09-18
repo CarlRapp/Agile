@@ -1,5 +1,6 @@
 #include "ComponentFilter.h"
 
+
 bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*>* _components) const
 {
 	// Get the number of required/excluded components

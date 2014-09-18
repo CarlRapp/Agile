@@ -33,9 +33,6 @@ static char    m_cwd[FILENAME_MAX];
 
 typedef unsigned int        UINT;
 
-struct Vector2;
-struct Vector3;
-
 
 
 static std::string GetFile(std::string _path, std::string _root)
@@ -78,6 +75,7 @@ static std::string GetFile(std::string _path, std::string _root)
 
 #define MATRIX4 glm::mat4
 #define VECTOR3 glm::vec3
+#define VECTOR2 glm::vec2
 
 static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector, int dx1, int dx2)
 {

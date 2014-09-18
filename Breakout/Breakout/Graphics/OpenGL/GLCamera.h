@@ -19,7 +19,7 @@ private:
         int m_height;
 
 	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ;
-	Vector3				m_position, m_forward, m_right, m_up;
+	VECTOR3				m_position, m_forward, m_right, m_up;
         glm::mat4                       m_projection,m_view;
         void*                           m_vpProjection;
         void*                           m_vpView;
@@ -45,10 +45,10 @@ public:
 	void* GetView();
 	void* GetProjection();
 
-	Vector3 GetPosition()		{ return m_position; }
-	Vector3 GetForward()		{ return m_forward; }
-	Vector3 GetRight()			{ return m_right; }
-	Vector3 GetUp()				{ return m_up; }
+	VECTOR3 GetPosition()		{ return m_position; }
+	VECTOR3 GetForward()		{ return m_forward; }
+	VECTOR3 GetRight()			{ return m_right; }
+	VECTOR3 GetUp()				{ return m_up; }
 
 	//BoundingFrustum GetFrustum() = 0;
 
@@ -61,13 +61,13 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-        void Move(Vector3 _move);
+        void Move(VECTOR3 _move);
         void Move(float _move);
-	void SetPosition(Vector3 position) { m_position = position; UpdateView(); }
+	void SetPosition(VECTOR3 position) { m_position = position; UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
-	void SetForward(Vector3 forward);
+	void SetForward(VECTOR3 forward);
 	//void SetForward(float x, float y, float z) = 0;
-        void SetLookAt(Vector3 _target){}
+        void SetLookAt(VECTOR3 _target){}
 	//void SetLookAt(Vector3 target) = 0;
 
 	//void SetLookAt(float x, float y, float z) = 0;
