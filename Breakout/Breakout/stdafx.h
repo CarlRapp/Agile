@@ -70,7 +70,35 @@ struct Vector2
 public:
 	float x, y;
 
+	Vector2() : x(0), y(0) {}
 	Vector2(float _x, float _y) : x(_x), y(_y) {}
+
+	/* Arithmetic */
+	Vector2 Vector2::operator+(const Vector2& _vector) const		{ return Vector2(x + _vector.x, y + _vector.y); }
+	Vector2 Vector2::operator+(const int& _value) const			{ return Vector2(x + _value, y + _value); }
+	Vector2 Vector2::operator+(const float& _value) const		{ return Vector2(x + _value, y + _value); }
+	Vector2 Vector2::operator-(const Vector2& _vector) const		{ return Vector2(x - _vector.x, y - _vector.y); }
+	Vector2 Vector2::operator-(const int& _value) const			{ return Vector2(x - _value, y - _value); }
+	Vector2 Vector2::operator-(const float& _value) const		{ return Vector2(x - _value, y - _value); }
+	Vector2 Vector2::operator*(const Vector2& _vector) const		{ return Vector2(x * _vector.x, y * _vector.y); }
+	Vector2 Vector2::operator*(const int& _value) const			{ return Vector2(x * _value, y * _value); }
+	Vector2 Vector2::operator*(const float& _value) const		{ return Vector2(x * _value, y * _value); }
+	Vector2 Vector2::operator/(const Vector2& _vector) const		{ return Vector2(x / _vector.x, y / _vector.y); }
+	Vector2 Vector2::operator/(const int& _value) const			{ return Vector2(x / _value, y / _value); }
+	Vector2 Vector2::operator/(const float& _value) const		{ return Vector2(x / _value, y / _value); }
+	Vector2 Vector2::operator%(const Vector2& _vector) const		{ return Vector2(fmod(x, _vector.x), fmod(y, _vector.y)); }
+	Vector2 Vector2::operator%(const int& _value) const			{ return Vector2(fmod(x, _value), fmod(y, _value)); }
+	Vector2 Vector2::operator%(const float& _value) const		{ return Vector2(fmod(x, _value), fmod(y, _value)); }
+	Vector2 Vector2::operator-() const							{ return Vector2(-x, -y); }
+
+	/* Comparison */
+	bool Vector2::operator==(const Vector2& _vector) const		{ return (x == _vector.x && y == _vector.y); }
+	bool Vector2::operator!=(const Vector2& _vector) const		{ return !(x == _vector.x && y == _vector.y); }
+
+	// Expensive operation, don't do often please!
+	inline Vector2 Normalize() const { float magn = sqrtf(x * x + y * y); return Vector2(x / magn, y / magn); }
+
+	inline float Distance(const Vector2& _vector) const { float dx = x - _vector.x; float dy = y - _vector.y; return sqrtf(dx * dx + dy * dy); }
 };
 
 struct Vector3
@@ -195,6 +223,22 @@ public:
 		return *this;
 	}
 
+};
+
+struct BoundingBox
+{
+	float x, y, z, width, height, depth;
+
+	BoundingBox() : x(0), y(0), z(0), width(0), height(0), depth(0) {}
+	BoundingBox(const float _x, const float _y, const float _z, const float _width, const float _height, const float _depth) : x(_x), y(_y), width(_width), height(_height), depth(_depth) {}
+};
+
+struct BoundingSphere
+{
+	float x, y, z, radius;
+
+	BoundingSphere() : x(0), y(0), z(0), radius(0) {}
+	BoundingSphere(const float _x, const float _y, const float _z, const float _radius) : x(_x), y(_y), z(_z), radius(_radius) {}
 };
 
 
