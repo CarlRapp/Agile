@@ -37,8 +37,8 @@ public:
     ICamera*    GetICamera();
 	void		AddRenderObject(std::string _path, MATRIX4 _world);
 
-	//AddObject()
-	//RemoveObject()
+	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+	void RemoveObject(int _id);
 
 	bool        Init3D(DisplayMode _displayMode);
 };
