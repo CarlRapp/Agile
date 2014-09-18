@@ -240,22 +240,6 @@ void DXDeferred::InitFullScreenQuad()
 	vertices[2] = v3;
 	vertices[3] = v4;
 
-	/*
-	Vertex::Quad vertices[4];
-	//upper left
-	vertices[0].Pos = XMFLOAT2(-1, 1);
-	vertices[0].Tex = XMFLOAT2(0, 0);
-	//upper right
-	vertices[1].Pos = XMFLOAT2(1, 1);
-	vertices[1].Tex = XMFLOAT2(1, 0);
-	//lower left
-	vertices[2].Pos = XMFLOAT2(-1, -1);
-	vertices[2].Tex = XMFLOAT2(0, 1);
-	//lower right
-	vertices[3].Pos = XMFLOAT2(1, -1);
-	vertices[3].Tex = XMFLOAT2(1, 1);
-	*/
-
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
 	vbd.ByteWidth = sizeof(DXVertex::Quad) * 4;
