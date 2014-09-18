@@ -18,6 +18,11 @@ bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*>* _components
 			if (m_requiredComponents[i] == _components->at(j)->m_ID)
 			{
 				noRequiredComponents--;
+				if (noRequiredComponents <= 0)
+				{
+					i = m_requiredComponents.size();
+					break;
+				}
 				break;
 			}
 		}

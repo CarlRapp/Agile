@@ -11,7 +11,19 @@
 #include "ComponentSystem/System/SystemManager.h"
 #include "ComponentSystem/System/ScoreSystem.h"
 #include "ComponentSystem/System/MovementSystem.h"
+#include "ComponentSystem/System/ModelSystem.h"
 #include "ComponentSystem/EntityFactory.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/PositionComponent.h"
+#include "ComponentSystem/Component/RotationComponent.h"
+#include "ComponentSystem/Component/ScaleComponent.h"
+#include "ComponentSystem/Component/VelocityComponent.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/ScoreComponent.h"
+#include "ComponentSystem/Component/ModelComponent.h"
+#include "ComponentSystem/Component/LifeComponent.h"
+
+#include "ComponentSystem/World.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -38,6 +50,8 @@ private:
 	SystemManager* m_systemManager;
 	Entity** m_entities;
 	std::map<int, Entity*> m_activeEntites;
+
+	World* world;
 public:
 	MainMenu()
 	{
@@ -61,9 +75,13 @@ public:
 
 		EntityFactory::GetInstance()->Initialize(m_entities);
 
-		auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
-		m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
-		ball->SetState(Entity::ACTIVATED);
+		for (int i = 0; i < 200; ++i)
+		{
+			auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
+			m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
+			ball->SetState(Entity::ACTIVATED);
+		}
+
 
 		//auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
 		//m_activeEntites.insert(std::pair<int, Entity*>(block->GetId(), block));
@@ -73,7 +91,23 @@ public:
 		//m_activeEntites.insert(std::pair<int, Entity*>(player->GetId(), player));
 		//player->SetState(Entity::ACTIVATED);
 
+		/*	New Implementation	*/
+		world = new World();
+		world->AddSystem<ModelSystem>();
 
+		Entity* e = world->CreateEntity();
+		world->AddEntity(e);
+		e = world->CreateEntity();
+		world->AddEntity(e);
+		e = world->CreateEntity();
+		world->AddEntity(e);
+		e = world->CreateEntity();
+		e->AddComponent<PositionComponent>();
+		e->AddComponent<RotationComponent>();
+		e->AddComponent<ScaleComponent>();
+		e->AddComponent<ModelComponent>().m_modelPath = "sphere";
+		e->AddComponent<VelocityComponent>();
+		world->AddEntity(e);
 	}
 
 	void LoadContent()
@@ -86,15 +120,7 @@ public:
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
 			SceneManager::GetInstance()->Quit();
 
-		m_systemManager->Update(_dt, &m_activeEntites);
-
-		for (std::map < int, Entity*>::iterator it = m_activeEntites.begin(); it != m_activeEntites.end(); ++it)
-		{
-			if (it->second->GetState() == Entity::LIMBO)
-				EntityFactory::GetInstance()->DeleteEntity(it->second);
-			//else
-			//	it->second->Reset();
-		}
+		world->Update(_dt);
 	}
 	
 	void Render()
