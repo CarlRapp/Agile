@@ -22,8 +22,8 @@ public:
 	//virtual void RotateY(float angle) = 0;
 
 #pragma region Get Functions
-	virtual void* GetView() = 0;
-	virtual void* GetProjection() = 0;
+	virtual MATRIX4* GetView() = 0;
+	virtual MATRIX4* GetProjection() = 0;
 
 	virtual Vector3 GetPosition() = 0;
 	//virtual Vector3 GetForward() = 0;

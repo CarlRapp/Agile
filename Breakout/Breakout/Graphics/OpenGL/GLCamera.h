@@ -42,8 +42,8 @@ public:
 	//void RotateY(float angle) = 0;
 
 #pragma region Get Functions
-	void* GetView();
-	void* GetProjection();
+	MATRIX4* GetView();
+	MATRIX4* GetProjection();
 
 	Vector3 GetPosition()		{ return m_position; }
 	Vector3 GetForward()		{ return m_forward; }

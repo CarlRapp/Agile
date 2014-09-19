@@ -131,7 +131,7 @@ void GLCamera::UpdateProjection()
 //    printf("PROJECTION END\n");
 }
 
-void* GLCamera::GetProjection()
+MATRIX4 *GLCamera::GetProjection()
 {
 //    for(int i=0;i< 4;i++)
 //    {
@@ -141,16 +141,12 @@ void* GLCamera::GetProjection()
 //    }
 //    printf("PROJECTION END\n");
     
-    m_vpProjection = &m_projection;
-    
-    return m_vpProjection;
+    return &m_projection;
 }
 
-void* GLCamera::GetView()
+MATRIX4* GLCamera::GetView()
 {
-    m_vpView = &m_view;
-    
-    return m_vpView;
+    return &m_view;
 }
 
 void GLCamera::SetForward(Vector3 forward)
