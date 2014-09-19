@@ -25,8 +25,10 @@ void World::Start()
 bool World::AddEntity(Entity* _e)
 {
 	for each(Entity* e in m_activeEntities)
+	{
 		if (e->GetId() == _e->GetId())
 			return false;
+	}
 
 	m_activeEntities.push_back(_e);
 	printf("Entity #%d added!\n", _e->GetId());

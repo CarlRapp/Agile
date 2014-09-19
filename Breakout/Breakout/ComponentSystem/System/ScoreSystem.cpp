@@ -2,9 +2,10 @@
 #include "../Component/LifeComponent.h"
 #include "../Component/ScoreComponent.h"
 #include "../../Input/InputManager.h"
+#include "../World.h"
 
-ScoreSystem::ScoreSystem()
-: Base(ComponentFilter().Requires<ScoreComponent>().Excludes<LifeComponent>())
+ScoreSystem::ScoreSystem(World* _world)
+: Base(ComponentFilter().Requires<ScoreComponent>().Excludes<LifeComponent>(), _world)
 {
 }
 

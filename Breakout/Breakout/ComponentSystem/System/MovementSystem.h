@@ -8,7 +8,7 @@ class MovementSystem : public System<MovementSystem>
 private:
 public:
 
-	MovementSystem();
+	MovementSystem(World* _world);
 	~MovementSystem();
 
 	void Update(float _dt);

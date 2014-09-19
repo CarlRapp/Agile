@@ -6,13 +6,12 @@
 #include "../Scene/SceneManager.h"
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/System/ModelSystem.h"
-#include "../ComponentSystem/Component/PositionComponent.h"
-#include "../ComponentSystem/Component/RotationComponent.h"
-#include "../ComponentSystem/Component/ScaleComponent.h"
-#include "../ComponentSystem/Component/ModelComponent.h"
-#include "../ComponentSystem/Component/VelocityComponent.h"
+#include "../ComponentSystem/System/InputSystem.h"
+#include "../ComponentSystem/System/PlayerSystem.h"
+#include "../ComponentSystem/System/MovementSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
+#include "../ComponentSystem/EntityFactory.h"
 using namespace SceneSystem;
 
 class GameScene : public Scene<GameScene>
@@ -32,25 +31,26 @@ public:
 		/*	New Implementation	*/
 		world = new World();
 		world->AddSystem<ModelSystem>();
+		world->AddSystem<InputSystem>();
+		world->AddSystem<PlayerSystem>();
+		world->AddSystem<MovementSystem>();
 
-		Entity* e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
-		world->AddEntity(e);
+		Entity* e;
 
 		for (int y = 5; y < 10; ++y)
 			for (int x = 0; x < 10; ++x)
 			{
 				e = world->CreateEntity();
-				e->AddComponent<PositionComponent>(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
-				e->AddComponent<RotationComponent>();
-				e->AddComponent<ScaleComponent>();
-				e->AddComponent<ModelComponent>().m_modelPath = "box";
-				e->AddComponent<VelocityComponent>();
+				EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+				e->GetComponent<PositionComponent>()->m_position = VECTOR3(x + x*0.5f, y + y*0.5f, 0);
 				world->AddEntity(e);
 			}
+
+			e = world->CreateEntity();
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+			e->GetComponent<PositionComponent>()->m_position = VECTOR3(0, 0, 0);
+			e->GetComponent<ScaleComponent>()->m_scale.x = 5.f;
+			world->AddEntity(e);
 
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
@@ -78,7 +78,7 @@ public:
 			GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
+		//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
 			world->Update(_dt);
 	}
 

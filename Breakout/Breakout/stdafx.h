@@ -116,6 +116,15 @@ static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis
 	return _mat;
 }
 
+static DirectX::XMFLOAT4X4 MacroScale(MATRIX4 _mat, float _x, float _y, float _z)
+{
+	DirectX::XMMATRIX temp;
+	temp = DirectX::XMMatrixScaling(_x, _y, _z);
+	DirectX::XMStoreFloat4x4(&_mat, temp);
+
+	return _mat;
+}
+
 static bool IsZero(VECTOR3 _vec)
 {
 	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
@@ -129,6 +138,7 @@ static bool IsZero(VECTOR3 _vec)
 
 #define TRANSLATE(matrix,vector,dx1,dx2) MacroTranslate(matrix,vector,dx1,dx2)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
+#define SCALE(matrix, x, y, z) MacroScale(matrix, x, y, z)
 #define ISZERO(vector) IsZero(vector)
 
 

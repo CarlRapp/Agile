@@ -9,7 +9,7 @@ private:
 
 public:
 
-	ScoreSystem();
+	ScoreSystem(World* _world);
 	~ScoreSystem();
 
 	void Update(float _dt);

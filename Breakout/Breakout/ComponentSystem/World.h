@@ -62,7 +62,7 @@ void World::AddNewComponent()
 template <typename T>
 void World::AddSystem()
 {
-	m_systems.push_back(new T{});
+	m_systems.push_back(new T(this));
 
 
 }
