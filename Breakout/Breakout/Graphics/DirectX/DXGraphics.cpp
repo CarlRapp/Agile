@@ -62,15 +62,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
-
-	for (int i = 0; i < 3; ++i)
-	{
-		DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
-
-		AddObject(i, "sphere", &world[i], &world[i]);
-	}
-
-
 	return true;
 }
 
