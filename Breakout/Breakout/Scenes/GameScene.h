@@ -6,11 +6,14 @@
 #include "../Scene/SceneManager.h"
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/System/ModelSystem.h"
+#include "../ComponentSystem/System/MovementSystem.h"
 #include "../ComponentSystem/Component/PositionComponent.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/Component/ScaleComponent.h"
 #include "../ComponentSystem/Component/ModelComponent.h"
 #include "../ComponentSystem/Component/VelocityComponent.h"
+#include "../ComponentSystem/Component/CollisionComponent.h"
+#include "../ComponentSystem/System/CollisionSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 using namespace SceneSystem;
@@ -32,6 +35,8 @@ public:
 
 		/*	New Implementation	*/
 		world = new World();
+		world->AddSystem<MovementSystem>();
+		world->AddSystem<CollisionSystem>();
 		world->AddSystem<ModelSystem>();
 
 		int xBlocks = 16;
@@ -43,7 +48,6 @@ public:
 		e->AddComponent<RotationComponent>();
 		e->AddComponent<ScaleComponent>();
 		e->AddComponent<ModelComponent>().m_modelPath = "wall";
-		e->AddComponent<VelocityComponent>();
 		world->AddEntity(e);
 
 		e = world->CreateEntity();
@@ -51,7 +55,6 @@ public:
 		e->AddComponent<RotationComponent>();
 		e->AddComponent<ScaleComponent>();
 		e->AddComponent<ModelComponent>().m_modelPath = "wall";
-		e->AddComponent<VelocityComponent>();
 		world->AddEntity(e);
 
 		for (int y = 7; y < 7 + yBlocks; ++y)
@@ -62,16 +65,28 @@ public:
 				e->AddComponent<RotationComponent>();
 				e->AddComponent<ScaleComponent>();
 				e->AddComponent<ModelComponent>().m_modelPath = "box";
+				e->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
 				e->AddComponent<VelocityComponent>();
 				world->AddEntity(e);
 			}
+
+		e = world->CreateEntity();
+		e->AddComponent<PositionComponent>(VECTOR3(2, 0, 0));
+		e->AddComponent<RotationComponent>();
+		e->AddComponent<ScaleComponent>();
+		e->AddComponent<ModelComponent>().m_modelPath = "box";
+		e->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
+		e->AddComponent<VelocityComponent>();
+		world->AddEntity(e);
 
 		player = world->CreateEntity();
 		player->AddComponent<PositionComponent>(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 1.0f, 0));
 		player->AddComponent<RotationComponent>();
 		player->AddComponent<ScaleComponent>();
 		player->AddComponent<ModelComponent>().m_modelPath = "sphere";
+		player->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
 		player->AddComponent<VelocityComponent>();
+		player->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 2, 0);
 		world->AddEntity(player);
 
 		GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
@@ -125,6 +140,13 @@ down arrow: 40
 				player->GetComponent<PositionComponent>()->m_position = VECTOR3(pos.x + 15 * _dt, pos.y, pos.z);
 			player->GetComponent<PositionComponent>()->m_deltaPosition = VECTOR3(1, 0, 0);
 		}
+
+		if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::LeftMB) == InputState::Down)
+			printf("LOL");
+		if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::RightMB) == InputState::Down)
+			printf("LOL");
+		if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
+			printf("LOL");
 
 		//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
 			world->Update(_dt);

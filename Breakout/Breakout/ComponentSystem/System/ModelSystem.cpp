@@ -50,7 +50,6 @@ void ModelSystem::Update(float _dt)
 		if (change)
 		{
 			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position.x, position->m_position.y, position->m_position.z);
-			position->Reset();
 			GraphicsManager::GetInstance()->AddObject(m_entities[i]->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
 		

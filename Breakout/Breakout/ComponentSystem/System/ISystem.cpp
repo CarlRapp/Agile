@@ -32,6 +32,7 @@ bool ISystem::Add(Entity* _entity)
 	if (!m_componentFilter.DoesFilterPass(_entity->GetComponents()))
 		return false;
 
+	m_entityMap[_entity->GetId()] = _entity;
 	m_entities.push_back(_entity);
 	return true;
 }
