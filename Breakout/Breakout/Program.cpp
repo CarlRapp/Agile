@@ -7,6 +7,8 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
+#include "Scenes/GameScene.h"
+
 #include "ComponentSystem/Entity/Entity.h"
 #include "ComponentSystem/System/SystemManager.h"
 #include "ComponentSystem/System/ScoreSystem.h"
@@ -41,94 +43,6 @@ AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
 SceneManager* m_SceneManager;
 
-
-
-class MainMenu : public Scene<MainMenu>
-{
-private:
-	VECTOR3 pos;
-	SystemManager* m_systemManager;
-	Entity** m_entities;
-	std::map<int, Entity*> m_activeEntites;
-
-	World* world;
-public:
-	MainMenu()
-	{
-		printf("Main Menu created!\n");
-		pos = VECTOR3(0, 0, 0);
-	}
-
-	void Initialize()
-	{
-		printf("Initialized (MAIN MENU)\n");
-
-		m_systemManager = new SystemManager();
-		m_systemManager->AddSystem<MovementSystem>();
-		//m_systemManager->AddSystem<ScoreSystem>();
-
-
-		m_entities = new Entity*[MAX_ENTITY_COUNT];
-
-		for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-			m_entities[i] = new Entity(i);
-
-		EntityFactory::GetInstance()->Initialize(m_entities);
-
-		for (int i = 0; i < 200; ++i)
-		{
-			auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
-			m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
-			ball->SetState(Entity::ACTIVATED);
-		}
-
-
-		//auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
-		//m_activeEntites.insert(std::pair<int, Entity*>(block->GetId(), block));
-		//block->SetState(Entity::ACTIVATED);
-
-		//auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::PLAYER);
-		//m_activeEntites.insert(std::pair<int, Entity*>(player->GetId(), player));
-		//player->SetState(Entity::ACTIVATED);
-
-		/*	New Implementation	*/
-		world = new World();
-		world->AddSystem<ModelSystem>();
-
-		Entity* e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
-		e->AddComponent<PositionComponent>();
-		e->AddComponent<RotationComponent>();
-		e->AddComponent<ScaleComponent>();
-		e->AddComponent<ModelComponent>().m_modelPath = "sphere";
-		e->AddComponent<VelocityComponent>();
-		world->AddEntity(e);
-	}
-
-	void LoadContent()
-	{
-		printf("Loading Content (MAIN MENU)\n");
-	}
-
-	void Update(float _dt)
-	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
-			SceneManager::GetInstance()->Quit();
-
-		world->Update(_dt);
-	}
-	
-	void Render()
-	{
-		m_GraphicsManager->Render();
-	}
-};
-
 int main(int argc, char** argv)
 {
 	printf("Application started!\n");
@@ -150,7 +64,7 @@ int main(int argc, char** argv)
 
 	/*	CREATE SCENE MANAGER HERE	*/
 	m_SceneManager = SceneManager::GetInstance();
-	if (!m_SceneManager->AddScene<MainMenu>(true))
+	if (!m_SceneManager->AddScene<GameScene>(true))
 		printf("Could not add scene!\n");
 
 	/*	START HERE	*/
