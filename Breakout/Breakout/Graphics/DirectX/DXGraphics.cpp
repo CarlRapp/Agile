@@ -65,9 +65,9 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 
 	for (int i = 0; i < 3; ++i)
 	{
-		DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
+		//DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
 
-		AddObject(i, "sphere", &world[i], &world[i]);
+		//AddObject(i, "sphere", &world[i], &world[i]);
 	}
 
 

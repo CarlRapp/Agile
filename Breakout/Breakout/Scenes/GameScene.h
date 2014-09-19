@@ -19,6 +19,7 @@ class GameScene : public Scene<GameScene>
 {
 private:
 	World* world;
+	Entity* player;
 public:
 	GameScene()
 	{
@@ -33,15 +34,28 @@ public:
 		world = new World();
 		world->AddSystem<ModelSystem>();
 
-		Entity* e = world->CreateEntity();
-		world->AddEntity(e);
+		int xBlocks = 16;
+		int yBlocks = 5;
+
+		Entity* e;
 		e = world->CreateEntity();
-		world->AddEntity(e);
-		e = world->CreateEntity();
+		e->AddComponent<PositionComponent>(VECTOR3(0, 0, 0));
+		e->AddComponent<RotationComponent>();
+		e->AddComponent<ScaleComponent>();
+		e->AddComponent<ModelComponent>().m_modelPath = "wall";
+		e->AddComponent<VelocityComponent>();
 		world->AddEntity(e);
 
-		for (int y = 5; y < 10; ++y)
-			for (int x = 0; x < 10; ++x)
+		e = world->CreateEntity();
+		e->AddComponent<PositionComponent>(VECTOR3(xBlocks + 1+ (xBlocks+1)*0.5f, 0, 0));
+		e->AddComponent<RotationComponent>();
+		e->AddComponent<ScaleComponent>();
+		e->AddComponent<ModelComponent>().m_modelPath = "wall";
+		e->AddComponent<VelocityComponent>();
+		world->AddEntity(e);
+
+		for (int y = 7; y < 7 + yBlocks; ++y)
+			for (int x = 1; x < 1 + xBlocks; ++x)
 			{
 				e = world->CreateEntity();
 				e->AddComponent<PositionComponent>(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
@@ -52,6 +66,15 @@ public:
 				world->AddEntity(e);
 			}
 
+		player = world->CreateEntity();
+		player->AddComponent<PositionComponent>(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 1.0f, 0));
+		player->AddComponent<RotationComponent>();
+		player->AddComponent<ScaleComponent>();
+		player->AddComponent<ModelComponent>().m_modelPath = "sphere";
+		player->AddComponent<VelocityComponent>();
+		world->AddEntity(player);
+
+		GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
 		ModelData* lol = FileManager::GetInstance().LoadModel(GetFile("box", MODEL_ROOT));
@@ -76,9 +99,34 @@ public:
 			GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 			GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+		/*
+left arrow: 37 
+up arrow: 38
+right arrow: 39
+down arrow: 40
+		*/
+		float speed = 15.0f;
+		float xbounds = 16 + 1 + (16 + 1)*0.5f - 1;
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(37) == InputState::Down)
+		{
+			VECTOR3 pos = player->GetComponent<PositionComponent>()->m_position;
+			if (pos.x -15*_dt < 2)
+				player->GetComponent<PositionComponent>()->m_position = VECTOR3(2, pos.y, pos.z);
+			else
+				player->GetComponent<PositionComponent>()->m_position = VECTOR3(pos.x - 15 * _dt, pos.y, pos.z);
+			player->GetComponent<PositionComponent>()->m_deltaPosition = VECTOR3(1, 0, 0);
+		}
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(39) == InputState::Down)
+		{
+			VECTOR3 pos = player->GetComponent<PositionComponent>()->m_position;
+			if (pos.x + 15 * _dt > xbounds)
+				player->GetComponent<PositionComponent>()->m_position = VECTOR3(xbounds, pos.y, pos.z);
+			else
+				player->GetComponent<PositionComponent>()->m_position = VECTOR3(pos.x + 15 * _dt, pos.y, pos.z);
+			player->GetComponent<PositionComponent>()->m_deltaPosition = VECTOR3(1, 0, 0);
+		}
 
-
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
+		//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
 			world->Update(_dt);
 	}
 
