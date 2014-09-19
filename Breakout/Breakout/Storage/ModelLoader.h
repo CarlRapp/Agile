@@ -14,9 +14,9 @@ class ModelLoader
 	map<string, Material*>	m_materials;
 	map<string, Group*>		m_groups;
 
-	vector<Vector3>			m_positions;
-	vector<Vector3>			m_normals;
-	vector<Vector2>			m_texCoords;
+	vector<VECTOR3>			m_positions;
+	vector<VECTOR3>			m_normals;
+	vector<VECTOR2>			m_texCoords;
 	vector<Vertex>			m_vertices;
 
 	Group*					m_currentGroup;

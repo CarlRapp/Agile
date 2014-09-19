@@ -13,6 +13,8 @@ DXGraphics::DXGraphics(void)
 
 DXGraphics::~DXGraphics(void)
 {
+	m_modelInstances.clear();
+
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
 	DXInputLayouts::DestroyAll();
@@ -39,6 +41,7 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
+MATRIX4 world[3];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -59,8 +62,14 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
-	LoadModel("sphere");
-	//LoadModel("triangle");
+
+	for (int i = 0; i < 3; ++i)
+	{
+		//DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
+
+		//AddObject(i, "sphere", &world[i], &world[i]);
+	}
+
 
 	return true;
 }
@@ -187,77 +196,10 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	return S_OK;
 }
 
+float asdasdddd = 1.5f;
 void DXGraphics::LoadModel(std::string _path)
 {
-	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
-
-	m_testmodel = new DXModel(m_device, m_TextureManager, data);
-
-	m_testmodelinstance = new ModelInstance();
-
-	m_testmodelinstance->SetModel(m_testmodel);
-
-	Float4x4 world;
-	memcpy(&world, &DirectX::XMMatrixTranslation(1.5f, 0, 0), sizeof(Float4x4));
-
-	float scale = 1.0f;
-
-	m_testmodelinstance->SetWorld(world, world, scale);
-
-	m_DXDeferred->AddModelInstance(m_testmodelinstance);
-
-	m_testmodelinstance = new ModelInstance();
-
-	m_testmodelinstance->SetModel(m_testmodel);
-
-	memcpy(&world, &DirectX::XMMatrixTranslation(-1.5f, 0, 0), sizeof(Float4x4));
-
-
-	m_testmodelinstance->SetWorld(world, world, scale);
-
-	m_DXDeferred->AddModelInstance(m_testmodelinstance);
-
-	/*
-	if (!data)
-	{
-		printf("Loadmodel failed: %s\n", _path.c_str());
-		return;
-	}
-
-	for (std::vector<Group*>::iterator groupIt = data->Groups.begin(); groupIt != data->Groups.end(); ++groupIt)
-	{
-		int floatSize = (*groupIt)->triangles.size() * 9;
-
-		float* vertexArray = new float[floatSize];
-		float* colorArray = new float[floatSize];
-
-		int i = 0;
-		for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
-		{
-			//Dest,Source,Size
-			memcpy(&vertexArray[3 * i], &(*triangleIt).Vertices[0].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
-			memcpy(&vertexArray[3 * (i + 1)], &(*triangleIt).Vertices[1].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * (i + 1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
-			memcpy(&vertexArray[3 * (i + 2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
-			memcpy(&colorArray[3 * (i + 2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
-
-			i += 3;
-		}
-		printf("Vertices: %d\n", i);
-		glGenBuffers(1, &ibo_cube_elements);
-		glBindBuffer(GL_ARRAY_BUFFER, ibo_cube_elements);
-		glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), vertexArray, GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-		glGenBuffers(1, &vbo_cube_colors);
-		glBindBuffer(GL_ARRAY_BUFFER, vbo_cube_colors);
-		glBufferData(GL_ARRAY_BUFFER, floatSize * sizeof(float), colorArray, GL_STATIC_DRAW);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	}
-
-	std::cout << "Loadmodel finish: " << _path << " with error: " << glGetError() << "\n";
-	*/
+	m_modelManager.LoadModel(m_device, _path);
 }
 
 
@@ -277,11 +219,32 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_renderTargetView, _camera);
+	m_DXDeferred->Render(m_renderTargetView, m_modelInstances, _camera);
 
 
 	if (FAILED(m_swapChain->Present(0, 0)))
 	{
 		int a = 2;
 	}
+}
+
+void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+{
+	if (m_modelInstances.count(_id) != 0)
+		return;
+
+	LoadModel(_model);
+
+	ModelInstance *mi = new ModelInstance();
+
+	mi->model = m_modelManager.GetModel(_model);
+	mi->world = _world;
+	mi->worldInverseTranspose = _worldInverseTranspose;
+
+	m_modelInstances.insert(pair<int, ModelInstance*>(_id, mi));
+}
+
+void DXGraphics::RemoveObject(int _id)
+{
+	m_modelInstances.erase(_id);
 }

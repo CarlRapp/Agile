@@ -7,10 +7,25 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
-#include "ComponentsSystem/Entity/Entity.h"
-#include "ComponentsSystem/Systems/MovementSystem.h"
-#include "ComponentsSystem/Components/PositionComponent.h"
-#include "ComponentsSystem/Components/VelocityComponent.h"
+#include "Scenes/GameScene.h"
+
+#include "ComponentSystem/Entity/Entity.h"
+#include "ComponentSystem/System/SystemManager.h"
+#include "ComponentSystem/System/ScoreSystem.h"
+#include "ComponentSystem/System/MovementSystem.h"
+#include "ComponentSystem/System/ModelSystem.h"
+#include "ComponentSystem/EntityFactory.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/PositionComponent.h"
+#include "ComponentSystem/Component/RotationComponent.h"
+#include "ComponentSystem/Component/ScaleComponent.h"
+#include "ComponentSystem/Component/VelocityComponent.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/ScoreComponent.h"
+#include "ComponentSystem/Component/ModelComponent.h"
+#include "ComponentSystem/Component/LifeComponent.h"
+
+#include "ComponentSystem/World.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -28,63 +43,17 @@ AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
 SceneManager* m_SceneManager;
 
-#define MAX_ENTITY_COUNT 500
-Entity** m_entities;
-MovementSystem m_movementSystem;
-Entity* CreateEntity(void)
-{
-
-	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-	{
-		if (m_entities[i]->GetState() == Entity::DEAD)
-			return m_entities[i];
-	}
-
-	return 0;
-}
-
-class MainMenu : public Scene<MainMenu>
-{
-private:
-	Vector3 pos;
-public:
-	MainMenu()
-	{
-		printf("Main Menu created!\n");
-		pos = Vector3(0, 0, 0);
-	}
-
-	void Initialize()
-	{
-		printf("Initialized (MAIN MENU)\n");
-	}
-
-	void LoadContent()
-	{
-		printf("Loading Content (MAIN MENU)\n");
-	}
-
-	void Update(float _dt)
-	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('Q') == InputState::Pressed)
-			SceneManager::GetInstance()->Quit();
-			
-	}
-	
-	void Render()
-	{
-		m_GraphicsManager->Render();
-	}
-};
-
 int main(int argc, char** argv)
 {
 	printf("Application started!\n");
 	
+#ifdef WINDOWS
+	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
+#endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 100, 1000, 800, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 1000, 600, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
@@ -95,7 +64,7 @@ int main(int argc, char** argv)
 
 	/*	CREATE SCENE MANAGER HERE	*/
 	m_SceneManager = SceneManager::GetInstance();
-	if (!m_SceneManager->AddScene<MainMenu>(true))
+	if (!m_SceneManager->AddScene<GameScene>(true))
 		printf("Could not add scene!\n");
 
 	/*	START HERE	*/
