@@ -102,7 +102,7 @@ static bool MacroIsZero(glm::vec3 _vec)
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
 
-static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, XMFLOAT3 _vector)
+static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
 	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
@@ -120,7 +120,7 @@ static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis
 	return _mat;
 }
 
-static bool IsZero(VECTOR3 _vec)
+static bool MacroIsZero(VECTOR3 _vec)
 {
 	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
 		return true;
