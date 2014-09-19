@@ -107,70 +107,100 @@ void GLGraphics::LoadModel(std::string _path)
         m_testMatrices.push_back(glm::mat4(1.0f));
         m_testMatrices.push_back(glm::mat4(1.0f));
         
-        GLuint VBOHandles[6];
-	glGenBuffers(5, VBOHandles);
-        float pad1 = 0;
+        m_testMatrices[0] = glm::translate(glm::mat4(1.0f),glm::vec3(1.0f,1.0f,1.0f));
+        m_testMatrices[1] = glm::translate(glm::mat4(1.0f),glm::vec3(-1.0f,-1.0f,-1.0f));
+        
+        int pos         = glGetAttribLocation(m_program, "m_position");
+        int pad1         = glGetAttribLocation(m_program, "pad1");
+        int normal      = glGetAttribLocation(m_program, "m_normal");
+        int pad2         = glGetAttribLocation(m_program, "pad2");
+        int color       = glGetAttribLocation(m_program, "m_color");
+        int matrix      = glGetAttribLocation(m_program, "m_matModel");
+        
+        GLuint VBOHandles[4];
+	glGenBuffers(4, VBOHandles);
+        float padData = 0;
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]); 
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float), &pad1, GL_DYNAMIC_DRAW);
+        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
+        //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
         
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]); 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float), &pad1, GL_DYNAMIC_DRAW);
+        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]); 
+        //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
         
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[4]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &m_testColor, GL_DYNAMIC_DRAW);
 //        
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[5]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
         glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), &m_testMatrices[index], GL_DYNAMIC_DRAW);
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
 
-	// enable "vertex attribute arrays"
-	glEnableVertexAttribArray(0); // position
-        glEnableVertexAttribArray(1); // pad
-	glEnableVertexAttribArray(2); // normal
-        glEnableVertexAttribArray(3); // pad
-        glEnableVertexAttribArray(4); // color
+        std::cout <<" error1: " << glGetError() << "\n";
         
+	// enable "vertex attribute arrays"
+	glEnableVertexAttribArray(pos);         // position     1
+        glEnableVertexAttribArray(pos+1);        // pad          2
+	glEnableVertexAttribArray(normal);      // normal       3
+        glEnableVertexAttribArray(normal+1);        // pad          4
+        glEnableVertexAttribArray(color);       // color        5
+            std::cout <<" errorA: " << glGetError() << "\n";   
+        glEnableVertexAttribArray(matrix);      //matrix        6
+        glEnableVertexAttribArray(matrix+1);    //matrix        7
+        glEnableVertexAttribArray(matrix+2);    //matrix        8
+        glEnableVertexAttribArray(matrix+3);    //matrix        9
+        
+    std::cout <<" error2: " << glGetError() << "\n";    
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
-        glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        std::cout <<" error3: " << glGetError() << "\n";
+        //pad
+        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
+        glVertexAttribPointer(pos+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
+std::cout <<" error4: " << glGetError() << "\n";
         //normal
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-
+	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
+	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        //pad
+        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
+        glVertexAttribPointer(normal+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
+std::cout <<" error2: " << glGetError() << "\n";
         //color
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[4]);
-        glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-        glVertexAttribDivisor(VBOHandles[4], 1);
-
+        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
+        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+        glVertexAttribDivisor(color, 1);
+std::cout <<" error3: " << glGetError() << "\n";
         //model matrix
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[5]);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
+        glVertexAttribPointer(matrix, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 0));
+        glVertexAttribDivisor(matrix, 1);
+        glVertexAttribPointer(matrix+1, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 1));
+        glVertexAttribDivisor(matrix+1, 1);
+        glVertexAttribPointer(matrix+2, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 2));
+        glVertexAttribDivisor(matrix+2, 1);
+        glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
+        glVertexAttribDivisor(matrix+3, 1);
+        std::cout <<" error4: " << glGetError() << "\n";
         // Loop over each column of the matrix...
-        for (int i = 0; i < 4; i++)
-        {
-            // Set up the vertex attribute
-            glVertexAttribPointer(  5 + i,              // Location
-                                    4, 
-                                    GL_FLOAT, 
-                                    GL_FALSE,       // vec4
-                                    sizeof(glm::mat4),                // Stride
-                                    (void *)(sizeof(glm::vec4) * i)); // Start offset
-            // Enable it
-            glEnableVertexAttribArray(5 + i);
-            // Make it instanced
-            glVertexAttribDivisor(5 + i, 1);
-        }
+//        for (int i = 0; i < 4; i++)
+//        {
+//            // Set up the vertex attribute
+//            glVertexAttribPointer(  5 + i,              // Location
+//                                    4, 
+//                                    GL_FLOAT, 
+//                                    GL_FALSE,       // vec4
+//                                    sizeof(glm::mat4),                // Stride
+//                                    (void *)(sizeof(glm::vec4) * i)); // Start offset
+//            // Enable it
+//           
+//            // Make it instanced
+//            glVertexAttribDivisor(5 + i, 1);
+//        }
 
         glBindVertexArray(0); // disable VAO
         glUseProgram(0); // disable shader programme
@@ -264,13 +294,14 @@ int GLGraphics::ModelToRender()
 {
     t+=0.1f;
     int instances = 2;
-    m_testMatrices[0] = glm::rotate(glm::mat4(1.0f),sin(t),glm::vec3(0.0f,0.0f,1.0f));
-    m_testMatrices[1] = glm::rotate(glm::mat4(1.0f),cos(t),glm::vec3(0.0f,1.0f,0.0f));
+    m_testMatrices[0] *= glm::rotate(glm::mat4(1.0f),sin(t),glm::vec3(0.0f,0.0f,1.0f));
+    m_testMatrices[1] *= glm::rotate(glm::mat4(1.0f),cos(t),glm::vec3(0.0f,1.0f,0.0f));
+
     ModelRenderInfo* MRI;
 
     MRI = m_models[0];
     
-    glBindBuffer(GL_ARRAY_BUFFER,5);
+    glBindBuffer(GL_ARRAY_BUFFER,4);
 
     glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
     std::cout << "Mapping error: " << glGetError() << "\n";
@@ -291,24 +322,24 @@ int GLGraphics::ModelToRender()
     glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER,0);
     
-//    glBindBuffer(GL_ARRAY_BUFFER,1);
+//    glBindBuffer(GL_ARRAY_BUFFER,2);
 //
-//    float* floats = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+//    glm::vec3* floats = (glm::vec3*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 //    std::cout << "Mapping error: " << glGetError() << "\n";
 //
-//    for(int i=0; i< instances; i++)
-//    {
-//        for(int k=0;k< 9;k++)
-//        {
 //
-//            printf("    %f",floats[i*k]);
-//            
-//            //floats[i*k] = 2.0f;
-//        }
-//        printf("\n");
-//        printf("END ONE\n");
+//    for(int k=0;k< 3;k++)
+//    {
+//
+//        printf("    %f  %f  %f",floats[k].x,floats[k].y,floats[k].z);
+//
+//        floats[k].x = 1.0f;
+//        floats[k].y = 0.0f;
+//        floats[k].z = 0.0f;
 //    }
-//    printf("END VTXZ\n");
+//    printf("\n");
+//    printf("END ONE\n");
+//
 //    glUnmapBuffer(GL_ARRAY_BUFFER);
 //    glBindBuffer(GL_ARRAY_BUFFER,0);
     
