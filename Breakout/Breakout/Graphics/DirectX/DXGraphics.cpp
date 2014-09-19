@@ -219,7 +219,7 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_renderTargetView, m_modelInstances, _camera);
+	m_DXDeferred->Render(m_device, m_renderTargetView, m_modelInstances, _camera);
 
 
 	if (FAILED(m_swapChain->Present(0, 0)))

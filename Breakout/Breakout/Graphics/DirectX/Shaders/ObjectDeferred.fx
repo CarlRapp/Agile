@@ -1,13 +1,24 @@
 #include "LightHelper.fx"
 
+
 cbuffer cbPerObject
+{
+	float4x4 gTexTransform;
+	Material gMaterial;
+};
+
+cbuffer cbPerObjectNormal
 {
 	float4x4 gWorld;
 	float4x4 gWorldInvTranspose;
 	float4x4 gWorldViewProj;
-	float4x4 gTexTransform;
-	Material gMaterial;
 }; 
+
+cbuffer cbPerObjectInstanced
+{
+	float4x4 gViewProj;
+};
+
 
 cbuffer cbSkinned
 {
@@ -34,10 +45,20 @@ SamplerState samPoint
 
 struct VertexIn
 {
-	float3 PosL     : POSITION;
-	float3 NormalL  : NORMAL;
-	float2 Tex      : TEXCOORD;
-	float4 TangentL : TANGENT;
+	float3 PosL					: POSITION;
+	float3 NormalL				: NORMAL;
+	float2 Tex					: TEXCOORD;
+	float4 TangentL				: TANGENT;
+};
+
+struct VertexInstancedIn
+{
+	float3 PosL					: POSITION;
+	float3 NormalL				: NORMAL;
+	float2 Tex					: TEXCOORD;
+	float4 TangentL				: TANGENT;
+	row_major float4x4 World	: WORLD;
+	uint InstanceId				: SV_InstanceID;
 };
 
 struct VertexInC
@@ -65,7 +86,7 @@ struct VertexOut
     float3 NormalW    : NORMAL;
 	float4 TangentW   : TANGENT;
 	float2 Tex        : TEXCOORD0;
-	float3 Color      : COLOR;
+	//float3 Color      : COLOR;
 };
 
 struct PsOut
@@ -74,7 +95,7 @@ struct PsOut
 	float4 NormalSpec	: COLOR1;
 };
 
-VertexOut VS(VertexInC vin)
+VertexOut VS(VertexIn vin)
 {
 	VertexOut vout;
 	
@@ -88,7 +109,28 @@ VertexOut VS(VertexInC vin)
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
-	vout.Color = vin.ColorL;
+	//vout.Color = vin.ColorL;
+
+	return vout;
+}
+
+VertexOut VSInstanced(VertexInstancedIn vin)
+{
+	VertexOut vout;
+
+	// Transform to world space space.
+	vout.NormalW = mul(vin.NormalL, (float3x3)vin.World);
+	vout.TangentW = mul(vin.TangentL, vin.World);
+
+	vout.PosH = mul(float4(vin.PosL, 1.0f), vin.World);
+
+	// Transform to homogeneous clip space.
+	vout.PosH = mul(vout.PosH, gViewProj);
+
+	// Output vertex attributes for interpolation across triangle.
+	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
+
+	//vout.Color = vin.ColorL;
 
 	return vout;
 }
@@ -128,7 +170,7 @@ VertexOut SkinnedVS(SkinnedVertexIn vin)
 	// Output vertex attributes for interpolation across triangle.
 	vout.Tex = mul(float4(vin.Tex, 0.0f, 1.0f), gTexTransform).xy;
 
-	vout.Color = float4(1, 1, 1, 1);
+	//vout.Color = float4(1, 1, 1, 1);
 
 	return vout;
 }
@@ -145,8 +187,8 @@ PsOut PS(VertexOut pin,
 	pin.NormalW = normalize(pin.NormalW);
 
     // Default to multiplicative identity.
-    //pout.Albedo = float4(1, 1, 1, 1);
-	pout.Albedo = float4(pin.Color, 1);
+    pout.Albedo = float4(1, 1, 1, 1);
+	//pout.Albedo = float4(pin.Color, 1);
 	//pout.Albedo = float4(pin.NormalW, 1);
     if(gUseTexure)
 	{
@@ -187,6 +229,16 @@ technique11 BasicTech
 		SetGeometryShader( NULL );
         SetPixelShader( CompileShader( ps_5_0, PS(false, false, false) ) );
     }
+}
+
+technique11 BasicInstancedTech
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VSInstanced()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS(false, false, false)));
+	}
 }
 
 technique11 TexTech

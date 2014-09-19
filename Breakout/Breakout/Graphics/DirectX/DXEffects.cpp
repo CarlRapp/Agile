@@ -44,8 +44,11 @@ ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wst
 	m_texNormalAlphaClipSkinnedTech = m_FX->GetTechniqueByName("TexNormalAlphaClipSkinnedTech");
 	m_normalSkinnedTech = m_FX->GetTechniqueByName("NormalSkinnedTech");
 
+	m_basicInstancedTech = m_FX->GetTechniqueByName("BasicInstancedTech");
+
 	m_worldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	m_world = m_FX->GetVariableByName("gWorld")->AsMatrix();
+	m_viewProj = m_FX->GetVariableByName("gViewProj")->AsMatrix();
 	m_worldInvTranspose = m_FX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
 	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();

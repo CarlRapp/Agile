@@ -22,8 +22,8 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				DXVertex::PosNormalTexTanCol vertex;
-				vertex.color = DirectX::XMFLOAT3(1, 1, 1);
+				DXVertex::PosNormalTexTan vertex;
+				//vertex.color = DirectX::XMFLOAT3(1, 1, 1);
 				vertex.tangentU = DirectX::XMFLOAT4(0, 0, 0, 0);
 				memcpy(&vertex.pos, &triangle.Vertices[i].Position, sizeof(DirectX::XMFLOAT3));
 				memcpy(&vertex.normal, &triangle.Vertices[i].Normal, sizeof(DirectX::XMFLOAT3));
@@ -80,12 +80,12 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	}
 	
 	DirectX::BoundingBox AABB;
-	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
+	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTan));
 
 	DirectX::BoundingOrientedBox::CreateFromBoundingBox(m_BoundingOrientedBox, AABB);
 
 	//DirectX::BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
-	DirectX::BoundingSphere::CreateFromPoints(m_BoundingSphere, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
+	DirectX::BoundingSphere::CreateFromPoints(m_BoundingSphere, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTan));
 
 	
 	//BoundingOrientedBox::CreateFromPoints(m_BoundingOrientedBox, Vertices.size(), &Vertices[0].Pos, sizeof(Vertex::PosNormalTexTanSkinned));

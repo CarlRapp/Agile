@@ -44,7 +44,7 @@ public:
 	}
 	
 	// Keep CPU copies of the mesh data to read from.  
-	vector<DXVertex::PosNormalTexTanCol> Vertices;
+	vector<DXVertex::PosNormalTexTan> Vertices;
 	vector<UINT> Indices;
 	vector<DXMesh::Subset> Subsets;
 	
