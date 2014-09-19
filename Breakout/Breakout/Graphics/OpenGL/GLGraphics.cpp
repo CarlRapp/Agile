@@ -59,7 +59,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     printf("OpenGL version supported by this platform: (%s) \n", glGetString(GL_VERSION));
     std::cout << "Initialize 3D with error: " << glGetError() << "\n";
     
-    LoadModel("triangle");
+    //LoadModel("triangle");
     //LoadModel("sphere");
     return true; 
 } 
@@ -133,9 +133,10 @@ void GLGraphics::LoadModel(std::string _path)
         
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), &m_testColor, GL_DYNAMIC_DRAW);
-//        
+
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
         glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), &m_testMatrices[index], GL_DYNAMIC_DRAW);
+        
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
@@ -209,11 +210,13 @@ void GLGraphics::Resize(int _width, int _height)
 
 void GLGraphics::Free()
 {
+    
+
     for(int i = m_models.size()-1; i > -1;i--)
     {
        // glDeleteBuffers(1, &m_models[i]->bufferNormalID);
        // glDeleteBuffers(1, &m_models[i]->bufferVertexID);
-        
+        m_models[i]->instances.clear();
         m_models.pop_back();
     }
     
@@ -234,22 +237,17 @@ void GLGraphics::Render(ICamera* _camera)
     glClearColor(0.4, 0.4, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    
-    
     int vertices = ModelToRender();
-    glUseProgram(m_program);
-    // Activate instancing program
     
-
-    //CameraToRedner();
+    glUseProgram(m_program);
+    
     LightsToRender();
+    
     CameraToRender(_camera);
-    // Render INSTANCE_COUNT objects
     
     glDrawArraysInstanced(GL_TRIANGLES,0,vertices,instances);
     glBindVertexArray(0);
 
-//    glDrawArrays(GL_TRIANGLES, 0, 3);
     glUseProgram(0);
     
     SDL_GL_SwapBuffers( );
@@ -260,8 +258,8 @@ int GLGraphics::ModelToRender()
 {
     t+=0.001f;
     int instances = 2;
-    m_testMatrices[0] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,0.0f,1.0f));
-    m_testMatrices[1] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,1.0f,0.0f));
+//    m_testMatrices[0] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,0.0f,1.0f));
+//    m_testMatrices[1] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,1.0f,0.0f));
 
     ModelRenderInfo* MRI;
 
@@ -319,101 +317,141 @@ void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
     
 }
 
-void GLGraphics::RemoveObject(int _id)
-{
-    
-}
-
 void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
 {
+
+    for(int i=0; i < m_models.size();i++)
+    {
+        if (m_models[0]->instances.count(_id) !=0)
+                return;
+    }
+
+    int newModelID = 0;
     
+    for(int i=0; i < m_models.size();i++)
+    {
+//        if(!(i == m_models.size()-1))
+//        if(m_models[i]->name != _model)
+//        {
+//            continue;
+//        }
+//        
+        if(m_models[i]->name == _model)
+        {
+            newModelID = i;
+            printf("Model exists %s , skipping LoadModel\n",_model.c_str());
+            break;
+        }
+    }
+    
+    if(!newModelID)
+    {
+        newModelID = m_models.size();
+        printf("Model not found, using LoadModel\n");
+        LoadModel(_model);
+    }
+    
+    ModelInstance *mi = new ModelInstance();
+
+    mi->world = _world;
+    mi->worldInverseTranspose = _worldInverseTranspose;
+
+    m_models[newModelID]->instances.insert(pair<int, ModelInstance*>(_id, mi));
 }
 
-int GLGraphics::SetUniformV(const char* _variable, float _value)
+void GLGraphics::RemoveObject(int _id)
 {
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniform1fv(location, 1, &_value);
-	else
-		return 1;
-
-	return 0;
+    for(int i=0; i< m_models.size();i++)
+    {
+        m_models[i]->instances.erase(_id);
+    }
 }
 
-int GLGraphics::SetUniformV(const char* _variable, glm::vec3 _value)
-{
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniform3fv(location, 1, &_value[0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(const char* _variable, glm::vec4 _value)
-{
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniform4fv(location, 1, &_value[0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(const char* _variable, glm::mat3 _value)
-{
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
-	else 
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(const char* _variable, glm::mat4 _value)
-{
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(const char* _variable, int _value)
-{
-	//	Set as current program
-	glUseProgram(m_program);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(m_program, _variable);
-	if (location >= 0)
-		glUniform1i(location, _value);
-	else return 1;
-
-	return 0;
-}
+//int GLGraphics::SetUniformV(const char* _variable, float _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniform1fv(location, 1, &_value);
+//	else
+//		return 1;
+//
+//	return 0;
+//}
+//
+//int GLGraphics::SetUniformV(const char* _variable, glm::vec3 _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniform3fv(location, 1, &_value[0]);
+//	else
+//		return 1;
+//
+//	return 0;
+//}
+//
+//int GLGraphics::SetUniformV(const char* _variable, glm::vec4 _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniform4fv(location, 1, &_value[0]);
+//	else
+//		return 1;
+//
+//	return 0;
+//}
+//
+//int GLGraphics::SetUniformV(const char* _variable, glm::mat3 _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
+//	else 
+//		return 1;
+//
+//	return 0;
+//}
+//
+//int GLGraphics::SetUniformV(const char* _variable, glm::mat4 _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
+//	else
+//		return 1;
+//
+//	return 0;
+//}
+//
+//int GLGraphics::SetUniformV(const char* _variable, int _value)
+//{
+//	//	Set as current program
+//	glUseProgram(m_program);
+//
+//	//	Get pointer for variable
+//	int location = glGetUniformLocation(m_program, _variable);
+//	if (location >= 0)
+//		glUniform1i(location, _value);
+//	else return 1;
+//
+//	return 0;
+//}
