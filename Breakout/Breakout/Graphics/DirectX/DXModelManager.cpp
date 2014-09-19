@@ -1,72 +1,49 @@
-#include "ModelManager.h"
+#include "DXModelManager.h"
 
-ModelManager* ModelManager::gInstance	=	0;
-ModelManager::ModelManager(ID3D11Device* Device)
+DXModelManager::DXModelManager(void)
 {
-	gLoadedModels	=	map<string, Model*>();
-	gDevice			=	Device;
-
-	gTextureManager.Init(Device);
-}
-ModelManager::~ModelManager()
-{
-	for ( gModelIterator = gLoadedModels.begin(); gModelIterator != gLoadedModels.end(); ++gModelIterator )
-		delete	gModelIterator->second;
-
-	gLoadedModels.clear();
+	m_loadedModels	=	map<string, DXModel*>();
 }
 
-bool ModelManager::IsInitialized()
+DXModelManager::~DXModelManager()
 {
-	return gInstance != 0;
+	for (m_modelIterator = m_loadedModels.begin(); m_modelIterator != m_loadedModels.end(); ++m_modelIterator)
+		delete	m_modelIterator->second;
+
+	m_loadedModels.clear();
 }
 
-void ModelManager::Initialize(ID3D11Device* Device)
+
+void DXModelManager::LoadModel(ID3D11Device* _device, string _path)
 {
-	if ( IsInitialized() )
+	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
+
+	if (m_loadedModels.count(_path) != 0)
 		return;
 
-	gInstance		=	new ModelManager(Device);
-}
-
-ModelManager* ModelManager::GetInstance()
-{
-	return gInstance;
-}
-
-void ModelManager::LoadModel(string Name, string Filename, string ModelPath, string TexturePath)
-{
-	if ( gLoadedModels.count(Name) != 0 )
-		return;
-
-	Model*	tModel	=	new Model(gDevice, gTextureManager, ModelPath + Filename, TexturePath);
+	DXModel*	tModel = new DXModel(_device, m_textureManager, data);
 
 	if ( tModel == 0 )
 	{
-		DebugScreen::GetInstance()->AddLogMessage("Model: \"" + Filename + "\" could not be loaded.", Red);
 		return;
 	}
 
-	gLoadedModels.insert(pair<string, Model*>(Name, tModel));
+	m_loadedModels.insert(pair<string, DXModel*>(_path, tModel));
 }
 
-void ModelManager::LoadModel(string Name, string Filename, string Path)
-{
-	LoadModel(Name, Filename, Path, Path);
-}
 
-Model* ModelManager::GetModel(string Name)
+DXModel* DXModelManager::GetModel(string _name)
 {
-	if ( gLoadedModels.count(Name) != 0 )
-		return gLoadedModels[Name];
+	if (m_loadedModels.count(_name) != 0)
+		return m_loadedModels[_name];
 
-	DebugScreen::GetInstance()->AddLogMessage("Model: \"" + Name + "\" is not loaded.", Red);
 	return 0;
 }
 
-ModelInstance* ModelManager::CreateModelInstance(string ModelName)
+/*
+ModelInstance* DXModelManager::CreateModelInstance(string ModelName)
 {
-	Model*	tModel	=	GetModel(ModelName);
+	DXModel*	tModel = GetModel(ModelName);
 
 	if ( tModel == 0 )
 		return 0;
@@ -77,3 +54,4 @@ ModelInstance* ModelManager::CreateModelInstance(string ModelName)
 
 	return	tInstance;
 }
+*/

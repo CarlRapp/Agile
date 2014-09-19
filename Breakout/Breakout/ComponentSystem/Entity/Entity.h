@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "../Components/IComponent.h"
+#include "../Component/IComponent.h"
 
 #include <iostream>
 #include <type_traits>
@@ -18,7 +18,8 @@ public:
 		DEAD,
 		LIMBO,
 		ACTIVATED,
-		DEACTIVATED
+		DEACTIVATED,
+		CHANGED
 	};
 
 private:
@@ -27,6 +28,8 @@ private:
 	void RemoveComponent(int _componentTypeId);
 	IComponent* GetComponent(int _componentTypeId);
 	bool HasComponent(int _componentTypeId);
+
+	static int m_counter;
 
 	int m_id;
 	ENTITY_STATE m_state;
@@ -41,6 +44,12 @@ public:
 
 	ENTITY_STATE GetState(void) { return m_state; };
 	void SetState(ENTITY_STATE _state) { m_state = _state; };
+
+	/*
+	Will not actually kill the component, only change its status to 'LIMBO'
+	Killing the entity is done by the EntityFactory
+	*/
+	void Kill(void);
 
 	template <typename T>
 	T& AddComponent(T* component);
@@ -58,8 +67,9 @@ public:
 	bool HasComponent();
 
 
-	std::vector<IComponent*> GetComponents();
+	std::vector<IComponent*>* GetComponents();
 	bool RemoveAllComponents();
+	void Reset(void);
 	int GetId();
 
 

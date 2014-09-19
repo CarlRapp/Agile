@@ -78,18 +78,16 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		*/
 		
 	}
-	/*
+	
 	DirectX::BoundingBox AABB;
 	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
 
 	DirectX::BoundingOrientedBox::CreateFromBoundingBox(m_BoundingOrientedBox, AABB);
 
-	XMFLOAT3 Extents = m_BoundingOrientedBox.Extents;
-	m_SmallestRadiusInBox = (Extents.x > Extents.z) ? Extents.z : Extents.x;
+	//DirectX::BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
+	DirectX::BoundingSphere::CreateFromPoints(m_BoundingSphere, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
 
-	BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
-
-	*/
+	
 	//BoundingOrientedBox::CreateFromPoints(m_BoundingOrientedBox, Vertices.size(), &Vertices[0].Pos, sizeof(Vertex::PosNormalTexTanSkinned));
 }
 

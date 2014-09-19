@@ -34,11 +34,11 @@ public:
 	IGraphics*  GetIGraphics() { return m_IGraphics; }
 	void        Render();
 	void        Update();
+    ICamera*    GetICamera();
+	void		AddRenderObject(std::string _path, MATRIX4 _world);
 
-        ICamera*    GetICamera();
-
-	//AddObject()
-	//RemoveObject()
+	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+	void RemoveObject(int _id);
 
 	bool        Init3D(DisplayMode _displayMode);
 };

@@ -13,8 +13,8 @@ private:
 	D3D11_VIEWPORT m_viewPort;
 
 	float				m_fovy, m_aspectRatio, m_nearZ, m_farZ;
-	Vector3				m_position, m_forward, m_right, m_up;
-	Float4x4			m_view, m_projection;
+	DirectX::XMFLOAT3				m_position, m_forward, m_right, m_up;
+	DirectX::XMFLOAT4X4			m_view, m_projection;
 
 	void UpdateView();
 	void UpdateProjection();
@@ -37,10 +37,10 @@ public:
 	void* GetView()		{ return &m_view; }
 	void* GetProjection()	{ return &m_projection; }
 
-	Vector3 GetPosition()		{ return m_position; }
-	Vector3 GetForward()		{ return m_forward; }
-	Vector3 GetRight()			{ return m_right; }
-	Vector3 GetUp()				{ return m_up; }
+	DirectX::XMFLOAT3 GetPosition()		{ return m_position; }
+	DirectX::XMFLOAT3 GetForward()		{ return m_forward; }
+	DirectX::XMFLOAT3 GetRight()			{ return m_right; }
+	DirectX::XMFLOAT3 GetUp()				{ return m_up; }
 
 	//BoundingFrustum GetFrustum() = 0;
 
@@ -53,16 +53,16 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-	void SetPosition(Vector3 _position)			{ m_position = _position; m_position.z *= -1;  UpdateView(); }
+	void SetPosition(DirectX::XMFLOAT3 _position)			{ m_position = _position; m_position.z *= -1;  UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
 
-	void Move(Vector3 _move);
+	void Move(DirectX::XMFLOAT3 _move);
 	void Move(float _move);
 
-	void SetForward(Vector3 forward);
+	void SetForward(DirectX::XMFLOAT3 forward);
 	//void SetForward(float x, float y, float z) = 0;
 
-	void SetLookAt(Vector3 _target);
+	void SetLookAt(DirectX::XMFLOAT3 _target);
 
 	//void SetLookAt(float x, float y, float z) = 0;
 
