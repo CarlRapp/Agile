@@ -1,5 +1,6 @@
 #include "CollisionSystem.h"
 #include "../Component/VelocityComponent.h"
+#include "../Component/ModelComponent.h"
 
 CollisionSystem::CollisionSystem()
 : Base(ComponentFilter().Requires<PositionComponent, CollisionComponent, VelocityComponent>())
@@ -23,7 +24,7 @@ void CollisionSystem::Update(float _dt)
 	{
 		Entity* e = it->second;
 
-		if (e->GetState() == Entity::LIMBO || e->GetState() == Entity::DEAD)
+		if (e->GetState() != Entity::ALIVE)
 			continue;
 
 		position = e->GetComponent<PositionComponent>();
@@ -52,8 +53,9 @@ void CollisionSystem::Update(float _dt)
 
 			BCol = B->GetComponent<CollisionComponent>();
 
-			if (ACol->CollidesWith(BCol->m_position, BCol->m_size))
+			if (ACol->CollidesWith(BCol))
 			{
+				B->SetState(Entity::DEAD);
 				printf("LOL!");
 				PositionComponent* bajs = A->GetComponent<PositionComponent>();
 				bajs->m_position.y -= bajs->m_deltaPosition.y;

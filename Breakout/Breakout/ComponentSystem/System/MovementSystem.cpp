@@ -17,18 +17,19 @@ void MovementSystem::Update(float _dt)
 {
 	PositionComponent* position;
 	VelocityComponent* velocity;
+	EntityMap::iterator it;
 
-	for (int i = 0; i < m_entities.size(); ++i)
+	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
-		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
+		Entity* e = it->second;
+		if (e->GetState() != Entity::ALIVE)
 			continue;
 
-		
-		velocity = m_entities[i]->GetComponent<VelocityComponent>();
+		velocity = e->GetComponent<VelocityComponent>();
 		if (ISZERO(velocity->m_velocity))
 			continue;
 
-		position = m_entities[i]->GetComponent<PositionComponent>();
+		position = e->GetComponent<PositionComponent>();
 
 		position->m_position.x += velocity->m_velocity.x * _dt;
 		position->m_position.y += velocity->m_velocity.y * _dt;

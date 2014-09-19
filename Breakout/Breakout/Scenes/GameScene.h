@@ -40,7 +40,7 @@ public:
 		world->AddSystem<ModelSystem>();
 
 		int xBlocks = 16;
-		int yBlocks = 5;
+		int yBlocks = 3;
 
 		Entity* e;
 		e = world->CreateEntity();
@@ -57,7 +57,7 @@ public:
 		e->AddComponent<ModelComponent>().m_modelPath = "wall";
 		world->AddEntity(e);
 
-		for (int y = 7; y < 7 + yBlocks; ++y)
+		for (int y = 12; y > 12 - yBlocks; --y)
 			for (int x = 1; x < 1 + xBlocks; ++x)
 			{
 				e = world->CreateEntity();
@@ -84,9 +84,10 @@ public:
 		player->AddComponent<RotationComponent>();
 		player->AddComponent<ScaleComponent>();
 		player->AddComponent<ModelComponent>().m_modelPath = "sphere";
-		player->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
+		player->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(2, 2));
+		player->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
 		player->AddComponent<VelocityComponent>();
-		player->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 2, 0);
+		player->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 4, 0);
 		world->AddEntity(player);
 
 		GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
@@ -148,7 +149,11 @@ down arrow: 40
 		if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
 			printf("LOL");
 
-		//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Down)
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Pressed)
+		{
+			player->GetComponent<VelocityComponent>()->m_velocity.y *= -1;
+
+		}
 			world->Update(_dt);
 	}
 

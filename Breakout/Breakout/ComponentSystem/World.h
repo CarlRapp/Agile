@@ -3,7 +3,6 @@
 #include "../stdafx.h"
 #include "Entity/Entity.h"
 #include "System/ISystem.h"
-#include "System/SystemManager.h"
 
 #include <map>
 
