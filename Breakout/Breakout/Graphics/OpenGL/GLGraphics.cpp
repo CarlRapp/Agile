@@ -91,12 +91,12 @@ void GLGraphics::LoadModel(std::string _path)
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
         {
             //Dest,Source,Size
-            memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(Vector3));
-            memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(Vector3));
-            memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(Vector3));
-            memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(Vector3));
+            memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(glm::vec3));
+            memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(glm::vec3));
+            memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(glm::vec3));
+            memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(glm::vec3));
+            memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(glm::vec3));
+            memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(glm::vec3));
 
             i += 3;
         }
@@ -110,12 +110,12 @@ void GLGraphics::LoadModel(std::string _path)
         m_testMatrices[0] = glm::translate(glm::mat4(1.0f),glm::vec3(1.0f,1.0f,1.0f));
         m_testMatrices[1] = glm::translate(glm::mat4(1.0f),glm::vec3(-1.0f,-1.0f,-1.0f));
         
-        int pos         = glGetAttribLocation(m_program, "m_position");
-        int pad1         = glGetAttribLocation(m_program, "pad1");
-        int normal      = glGetAttribLocation(m_program, "m_normal");
-        int pad2         = glGetAttribLocation(m_program, "pad2");
-        int color       = glGetAttribLocation(m_program, "m_color");
-        int matrix      = glGetAttribLocation(m_program, "m_matModel");
+        int pos             = glGetAttribLocation(m_program, "m_position");
+        int pad1            = glGetAttribLocation(m_program, "pad1");
+        int normal          = glGetAttribLocation(m_program, "m_normal");
+        int pad2            = glGetAttribLocation(m_program, "pad2");
+        int color           = glGetAttribLocation(m_program, "m_color");
+        int matrix          = glGetAttribLocation(m_program, "m_matModel");
         
         GLuint VBOHandles[4];
 	glGenBuffers(4, VBOHandles);
@@ -140,41 +140,41 @@ void GLGraphics::LoadModel(std::string _path)
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
 
-        std::cout <<" error1: " << glGetError() << "\n";
+
         
 	// enable "vertex attribute arrays"
 	glEnableVertexAttribArray(pos);         // position     1
-        glEnableVertexAttribArray(pos+1);        // pad          2
+        glEnableVertexAttribArray(pos+1);       // pad          2
 	glEnableVertexAttribArray(normal);      // normal       3
-        glEnableVertexAttribArray(normal+1);        // pad          4
+        glEnableVertexAttribArray(normal+1);    // pad          4
         glEnableVertexAttribArray(color);       // color        5
-            std::cout <<" errorA: " << glGetError() << "\n";   
+
         glEnableVertexAttribArray(matrix);      //matrix        6
         glEnableVertexAttribArray(matrix+1);    //matrix        7
         glEnableVertexAttribArray(matrix+2);    //matrix        8
         glEnableVertexAttribArray(matrix+3);    //matrix        9
         
-    std::cout <<" error2: " << glGetError() << "\n";    
+
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]);
 	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        std::cout <<" error3: " << glGetError() << "\n";
+
         //pad
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
         glVertexAttribPointer(pos+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
-std::cout <<" error4: " << glGetError() << "\n";
+
         //normal
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
 	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         //pad
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
         glVertexAttribPointer(normal+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
-std::cout <<" error2: " << glGetError() << "\n";
+
         //color
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
         glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
         glVertexAttribDivisor(color, 1);
-std::cout <<" error3: " << glGetError() << "\n";
+
         //model matrix
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
         glVertexAttribPointer(matrix, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 0));
@@ -185,22 +185,7 @@ std::cout <<" error3: " << glGetError() << "\n";
         glVertexAttribDivisor(matrix+2, 1);
         glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
         glVertexAttribDivisor(matrix+3, 1);
-        std::cout <<" error4: " << glGetError() << "\n";
-        // Loop over each column of the matrix...
-//        for (int i = 0; i < 4; i++)
-//        {
-//            // Set up the vertex attribute
-//            glVertexAttribPointer(  5 + i,              // Location
-//                                    4, 
-//                                    GL_FLOAT, 
-//                                    GL_FALSE,       // vec4
-//                                    sizeof(glm::mat4),                // Stride
-//                                    (void *)(sizeof(glm::vec4) * i)); // Start offset
-//            // Enable it
-//           
-//            // Make it instanced
-//            glVertexAttribDivisor(5 + i, 1);
-//        }
+
 
         glBindVertexArray(0); // disable VAO
         glUseProgram(0); // disable shader programme
@@ -244,25 +229,6 @@ float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-
-//    int instances = 4;
-//    
-//    glClearColor(0.4, 0.4, 0.8, 1.0);
-//    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-//    
-//    glUseProgram(m_program);
-//
-//    LightsToRender();
-//    
-//    CameraToRender(_camera);
-//    
-//    glDrawArrays(GL_TRIANGLES, 0, ModelToRender());
-//    
-//    glUseProgram(0);
-//    
-//    SDL_GL_SwapBuffers( );
-    
-
     int instances = 2;
     
     glClearColor(0.4, 0.4, 0.8, 1.0);
@@ -292,10 +258,10 @@ void GLGraphics::Render(ICamera* _camera)
 
 int GLGraphics::ModelToRender()
 {
-    t+=0.1f;
+    t+=0.001f;
     int instances = 2;
-    m_testMatrices[0] *= glm::rotate(glm::mat4(1.0f),sin(t),glm::vec3(0.0f,0.0f,1.0f));
-    m_testMatrices[1] *= glm::rotate(glm::mat4(1.0f),cos(t),glm::vec3(0.0f,1.0f,0.0f));
+    m_testMatrices[0] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,0.0f,1.0f));
+    m_testMatrices[1] *= glm::rotate(glm::mat4(1.0f),t,glm::vec3(0.0f,1.0f,0.0f));
 
     ModelRenderInfo* MRI;
 
@@ -304,44 +270,23 @@ int GLGraphics::ModelToRender()
     glBindBuffer(GL_ARRAY_BUFFER,4);
 
     glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-    std::cout << "Mapping error: " << glGetError() << "\n";
+    //std::cout << "Mapping error: " << glGetError() << "\n";
 
     for(int i=0; i< instances; i++)
     {
         matrices[i] = m_testMatrices[i];
 
-        for(int k=0;k< 4;k++)
-        {
-            for(int j=0; j < 4;j++)
-                printf("    %f",matrices[i][k][j]);// .m[i][j]);
-            printf("\n");
-        }
-        printf("END\n");
+//        for(int k=0;k< 4;k++)
+//        {
+//            for(int j=0; j < 4;j++)
+//                printf("    %f",matrices[i][k][j]););
+//            printf("\n");
+//        }
+//        printf("END\n");
     }
     
     glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER,0);
-    
-//    glBindBuffer(GL_ARRAY_BUFFER,2);
-//
-//    glm::vec3* floats = (glm::vec3*)glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-//    std::cout << "Mapping error: " << glGetError() << "\n";
-//
-//
-//    for(int k=0;k< 3;k++)
-//    {
-//
-//        printf("    %f  %f  %f",floats[k].x,floats[k].y,floats[k].z);
-//
-//        floats[k].x = 1.0f;
-//        floats[k].y = 0.0f;
-//        floats[k].z = 0.0f;
-//    }
-//    printf("\n");
-//    printf("END ONE\n");
-//
-//    glUnmapBuffer(GL_ARRAY_BUFFER);
-//    glBindBuffer(GL_ARRAY_BUFFER,0);
     
     glBindVertexArray(MRI->bufferVAOID);
 
@@ -367,6 +312,21 @@ void GLGraphics::CameraToRender(ICamera* _camera)
 
     GLint view = glGetUniformLocation(m_program, "m_matView" );
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
+}
+
+void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
+{
+    
+}
+
+void GLGraphics::RemoveObject(int _id)
+{
+    
+}
+
+void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+{
+    
 }
 
 int GLGraphics::SetUniformV(const char* _variable, float _value)

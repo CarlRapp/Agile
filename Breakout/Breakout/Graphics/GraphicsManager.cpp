@@ -51,8 +51,8 @@ void GraphicsManager::Update()
 
 	test += 0.001f * 0.4;
 
-	pos.x = 5 * sinf(test);
-	pos.z = 5 * cosf(test);
+	//pos.x = 5 * sinf(test);
+	//pos.z = 5 * cosf(test);
 
 	//m_ICamera->SetPosition(pos);
 	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));

@@ -20,7 +20,7 @@ struct ScaleComponent : Component<ScaleComponent>
 		m_deltaScale = VECTOR3(0, 0, 0);
 	}
 
-	void ScaleComponent::Reset()
+	void Reset()
 	{
 		m_deltaScale = VECTOR3(0, 0, 0);
 	}
