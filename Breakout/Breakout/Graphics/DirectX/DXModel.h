@@ -59,22 +59,13 @@ public:
 	DirectX::BoundingSphere					m_BoundingSphere;
 	DirectX::BoundingOrientedBox			m_BoundingOrientedBox;
 
-	float							m_SmallestRadiusInBox;
-
 
 };
 
-#define UPDATE_INTERVAL 1.0f / 50.0f
-class ModelInstance
+
+struct ModelInstance
 {
 private:
-	DXModel			*m_Model;
-	Float4x4		m_World;
-	float			m_Scale;
-
-
-	int				m_TextureIndex;
-
 	template<typename T>
 	static T Clamp(const T& x, const T& low, const T& high)
 	{
@@ -83,80 +74,24 @@ private:
 
 public:
 
-
-
+	DXModel					*model;
+	DirectX::XMFLOAT4X4		*world;
+	DirectX::XMFLOAT4X4		*worldInverseTranspose;
+	int						textureIndex;
 	
-	Vector4						m_Rotation;
-	Vector3						m_Translation;
-	Float4x4				m_WorldInverseTranspose;
-
-	
-
-	void SetModel(DXModel* Model)
-	{
-		m_Model = Model;
-	}
-
-	DXModel* GetModel() { return m_Model; }
-
-	void SetWorld(Float4x4& World, Float4x4& WorldInvTrans, float& Scale)
-	{
-		m_World = World;
-		m_WorldInverseTranspose = WorldInvTrans;
-		m_Scale = Scale;
-	}
 
 	void SetTextureIndex(int index) 
 	{ 
-		m_TextureIndex = Clamp<int>(index, 0, m_Model->GetTPM() - 1); 
+		textureIndex = Clamp<int>(index, 0, model->GetTPM() - 1);
 	}
 
-	int GetTextureIndex() { return m_TextureIndex; }
-
-	Float4x4 GetWorld() { return m_World; }
+	int GetTextureIndex() { return textureIndex; }
 
 
 	ModelInstance()
 	{
-		m_Model					=	NULL;
-		m_World					=	Float4x4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1);
-		m_Scale					=	1;
-		m_TextureIndex			=	0;
-		m_WorldInverseTranspose =   Float4x4(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
+		textureIndex = 0;
 	}
-
-
-	/*
-	BoundingSphere GetBoundingSphere()
-	{
-		BoundingSphere out;
-		if (m_Model)
-		{
-			XMMATRIX world = XMLoadFloat4x4(&m_World);
-			m_Model->m_BoundingSphere.Transform(out, world);
-		}
-		return out;
-	}
-
-	BoundingOrientedBox GetBoundingOrientedBox()
-	{
-		BoundingOrientedBox out;
-		if (m_Model)
-		{			
-			XMVECTOR rot	= XMLoadFloat4(&m_Rotation);
-			XMVECTOR trans	= XMLoadFloat3(&m_Translation);
-			out	= m_Model->m_BoundingOrientedBox;				
-			out.Transform(out, m_Scale, rot, trans);
-		}
-		return out;
-	}
-
-	float GetSmallestRaduisInBox()
-	{
-		return m_Model->m_SmallestRadiusInBox * m_Scale;
-	}
-	*/
 };
 
 

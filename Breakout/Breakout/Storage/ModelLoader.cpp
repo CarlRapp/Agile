@@ -2,9 +2,9 @@
 
 ModelLoader::ModelLoader()
 {
-	m_positions = vector<Vector3>();
-	m_normals = vector<Vector3>();
-	m_texCoords = vector<Vector2>();
+	m_positions = vector<VECTOR3>();
+	m_normals = vector<VECTOR3>();
+	m_texCoords = vector<VECTOR2>();
 	m_vertices = vector<Vertex>();
 
 	m_newGroupNameCounter = 0;
@@ -245,7 +245,7 @@ void ModelLoader::ParsePosition(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	Vector3 pos(x, y, -z);
+	VECTOR3 pos(x, y, -z);
 
 	m_positions.push_back(pos);
 }
@@ -256,7 +256,7 @@ void ModelLoader::ParseNormal(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	Vector3 normal(x, y, -z);
+	VECTOR3 normal(x, y, -z);
 
 	m_normals.push_back(normal);
 }
@@ -266,7 +266,7 @@ void ModelLoader::ParseTexCoord(std::ifstream& file)
 	file >> x;
 	file >> y;
 
-	Vector2 texCoord(x, 1 - y);
+	VECTOR2 texCoord(x, 1 - y);
 
 	m_texCoords.push_back(texCoord);
 }

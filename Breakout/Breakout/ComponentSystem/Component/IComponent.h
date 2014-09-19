@@ -11,6 +11,8 @@ public:
 	virtual ~IComponent() {}
 
 	TypeID m_ID;
+
+	virtual void Reset(void) {};
 };
 
 template<typename T>

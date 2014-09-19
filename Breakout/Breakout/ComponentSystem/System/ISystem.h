@@ -5,12 +5,13 @@
 #include <vector>
 #include "../Entity/Entity.h"
 #include "../ClassTypeID.h"
-#include "../ComponentFilter/ComponentFilter.h"
+#include "../Filter/ComponentFilter.h"
+#include <map>
+
 
 class ISystem
 {
 private:
-
 	virtual void Initialize(){}
 	virtual void OnEntityAdded(){}
 	virtual void OnEntityRemove(){}
@@ -18,8 +19,9 @@ private:
 	ComponentFilter m_componentFilter;
 
 protected:
-
+	typedef std::map<TypeID, Entity*> EntityMap;
 	std::vector<Entity*> m_entities;
+	EntityMap m_entityMap;
 
 public:
 	ISystem();
@@ -27,12 +29,14 @@ public:
 
 	virtual ~ISystem() = 0;
 
-	const ComponentFilter& GetComponentFilter() const;
+	const ComponentFilter* GetComponentFilter() const;
 	std::vector<Entity*> GetEntities() const;
 
 	bool Add(Entity* _entity);
 	bool Remove(Entity* _entity);
 	void Clear(void);
+
+	virtual void Update(float _dt) = 0;
 
 };
 
@@ -50,8 +54,6 @@ public:
 		: ISystem(_componentFilter)
 	{
 	}
-
-
 
 	static TypeID GetTypeID()
 	{

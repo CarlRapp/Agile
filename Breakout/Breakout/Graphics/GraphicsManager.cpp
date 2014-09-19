@@ -25,10 +25,10 @@ GraphicsManager::~GraphicsManager(void)
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
-	m_ICamera->SetPosition(Vector3(0, 0, 5));
+	m_ICamera = ICamera::GetICamera(90.0f,_width,_height,0.1f,100.0f);
+	m_ICamera->SetPosition(VECTOR3(0, 0, 10));
 
-	m_ICamera->SetLookAt(Vector3(0,0,0));
+	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 
 	m_ICamera->SetViewPort(0, 0, _width, _height);
 	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
@@ -46,16 +46,16 @@ void GraphicsManager::Update()
 {
 	m_IGraphics->Update();
 
-	//Vector3 pos = m_ICamera->GetPosition();
+	VECTOR3 pos = m_ICamera->GetPosition();
 	//pos.z += dt * 10.0f;
 
-	//test += 0.003f * 0.4;
+	test += 0.001f * 0.4;
 
-	//pos.x = 5 * sinf(test);
-	//pos.z = 5 * cosf(test);
+	pos.x = 5 * sinf(test);
+	pos.z = 5 * cosf(test);
 
 	//m_ICamera->SetPosition(pos);
-	//m_ICamera->SetLookAt(Vector3(0, 0, 0));
+	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 
@@ -64,7 +64,22 @@ bool GraphicsManager::Init3D(DisplayMode _displayMode)
     return m_IGraphics->Init3D(_displayMode);
 }
 
+void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+{
+	m_IGraphics->AddObject(_id, _model, _world, _worldInverseTranspose);
+}
+
+void GraphicsManager::RemoveObject(int _id)
+{
+	m_IGraphics->RemoveObject(_id);
+}
+
 ICamera* GraphicsManager::GetICamera()
 {
     return m_ICamera;
+}
+
+void GraphicsManager::AddRenderObject(std::string _path, MATRIX4 _world)
+{
+
 }

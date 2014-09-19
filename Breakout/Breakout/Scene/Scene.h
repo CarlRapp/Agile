@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 #include "../stdafx.h"
-#include "../ComponentsSystem/ClassTypeID.h"
+#include "../ComponentSystem/ClassTypeID.h"
 #include <map>
 
 

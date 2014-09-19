@@ -3,7 +3,6 @@
 #include "../stdafx.h"
 #include "ICamera.h"
 
-
 enum DisplayMode
 {
 	Fullscreen, Windowed, BorderlessWindow
@@ -26,9 +25,11 @@ public:
 	virtual void LoadModel(std::string _path) = 0;
 
 
-	virtual void Render(ICamera* _Camera) = 0;
+	virtual void Render(ICamera* _camera) = 0;
 	virtual void Update() = 0;
 
+	virtual void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose) = 0;
+	virtual void RemoveObject(int _id) = 0;
 
 	static IGraphics* GetIGraphics();
 };

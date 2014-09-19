@@ -1,13 +1,13 @@
 #include "Entity.h"
 
-
+int Entity::m_counter = 0;
 Entity::Entity()
-: m_state(DEAD)
+: m_id(m_counter++), m_state(DEAD), m_components(std::vector<IComponent*>())
 {
 }
 
 Entity::Entity(int _id)
-: m_id(_id), m_state(DEAD)
+: m_id(_id), m_state(DEAD), m_components(std::vector<IComponent*>())
 {
 }
 
@@ -29,6 +29,8 @@ void Entity::AddComponent(IComponent* base, TypeID _componentTypeId)
 
 	base->m_ID = _componentTypeId;
 	m_components.push_back(base);
+
+	m_state = Entity::CHANGED;
 }
 
 void Entity::RemoveComponent(int _componentTypeId)
@@ -43,6 +45,7 @@ void Entity::RemoveComponent(int _componentTypeId)
 		}
 	}
 
+	m_state = Entity::CHANGED;
 }
 
 IComponent* Entity::GetComponent(int _componentTypeId)
@@ -83,12 +86,23 @@ bool Entity::RemoveAllComponents()
 	return true;
 }
 
-std::vector<IComponent*> Entity::GetComponents()
+std::vector<IComponent*>* Entity::GetComponents()
 {
-	return m_components;
+	return &m_components;
 }
 
 int Entity::GetId(void)
 {
 	return m_id;
+}
+
+void Entity::Kill(void)
+{
+	m_state = LIMBO;
+}
+
+void Entity::Reset(void)
+{
+	for (int i = 0; i < m_components.size(); ++i)
+		m_components[i]->Reset();
 }
