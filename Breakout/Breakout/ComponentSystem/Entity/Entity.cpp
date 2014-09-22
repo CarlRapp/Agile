@@ -41,11 +41,12 @@ void Entity::RemoveComponent(int _componentTypeId)
 		if (_componentTypeId == m_components[i]->m_ID)
 		{
 			m_components.erase(m_components.begin() + i);
+			m_state = Entity::CHANGED;
 			break;
 		}
 	}
 
-	m_state = Entity::CHANGED;
+	
 }
 
 IComponent* Entity::GetComponent(int _componentTypeId)

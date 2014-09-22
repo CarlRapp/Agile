@@ -9,24 +9,6 @@
 
 #include "Scenes/GameScene.h"
 
-#include "ComponentSystem/Entity/Entity.h"
-#include "ComponentSystem/System/SystemManager.h"
-#include "ComponentSystem/System/ScoreSystem.h"
-#include "ComponentSystem/System/MovementSystem.h"
-#include "ComponentSystem/System/ModelSystem.h"
-#include "ComponentSystem/EntityFactory.h"
-#include "ComponentSystem/Component/HealthComponent.h"
-#include "ComponentSystem/Component/PositionComponent.h"
-#include "ComponentSystem/Component/RotationComponent.h"
-#include "ComponentSystem/Component/ScaleComponent.h"
-#include "ComponentSystem/Component/VelocityComponent.h"
-#include "ComponentSystem/Component/HealthComponent.h"
-#include "ComponentSystem/Component/ScoreComponent.h"
-#include "ComponentSystem/Component/ModelComponent.h"
-#include "ComponentSystem/Component/LifeComponent.h"
-
-#include "ComponentSystem/World.h"
-
 #ifdef WINDOWS
 #include <SDL.h>
 #include <SDL_mixer.h>
