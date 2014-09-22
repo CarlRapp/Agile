@@ -358,10 +358,10 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
 		if (_mi->model->HasDiffuseMaps())
-			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset, _mi->GetTextureIndex()));
+			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset));
 
 		if (_mi->model->HasNormalMaps())
-			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->model->GetNormalMap(subset, _mi->GetTextureIndex()));
+			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->model->GetNormalMap(subset));
 
 		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
 		_mi->model->ModelMesh.Draw(m_deviceContext, subset);
@@ -428,10 +428,10 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, map<int, ModelInsta
 			//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
 			if (_mi->begin()->second->model->HasDiffuseMaps())
-				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->begin()->second->model->GetDiffuseMap(subset, _mi->begin()->second->GetTextureIndex()));
+				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->begin()->second->model->GetDiffuseMap(subset));
 
 			if (_mi->begin()->second->model->HasNormalMaps())
-				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->begin()->second->model->GetNormalMap(subset, _mi->begin()->second->GetTextureIndex()));
+				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->begin()->second->model->GetNormalMap(subset));
 
 			_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
 			_mi->begin()->second->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
