@@ -251,6 +251,16 @@ technique11 TexTech
     }
 }
 
+technique11 TexInstancedTech
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VSInstanced()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS(true, false, false)));
+	}
+}
+
 technique11 TexNormalTech
 {
     pass P0
@@ -259,6 +269,16 @@ technique11 TexNormalTech
 		SetGeometryShader( NULL );
         SetPixelShader( CompileShader( ps_5_0, PS(true, true, false) ) );
     }
+}
+
+technique11 TexNormalInstancedTech
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VSInstanced()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS(true, true, false)));
+	}
 }
 
 technique11 TexAlphaClipTech
@@ -289,6 +309,16 @@ technique11 NormalTech
 		SetGeometryShader( NULL );
         SetPixelShader( CompileShader( ps_5_0, PS(false, true, false) ) );
     }
+}
+
+technique11 NormalInstancedTech
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VSInstanced()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS(false, true, false)));
+	}
 }
 
 
