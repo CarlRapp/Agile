@@ -71,7 +71,8 @@ private:
 //        int SetUniformV(const char* variable,glm::mat4 value);
 //        int SetUniformV(const char* variable,int value);
         
-        int ModelToRender();
+        int RenderInstanced();
+        int RenderStandard();
         void LightsToRender();
         void CameraToRender(ICamera* _camera);
 public:
@@ -90,6 +91,8 @@ public:
         void AddRenderObject(std::string _path, MATRIX4 _world);
         void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
         void RemoveObject(int _id);
+        
+
 };
 
 
