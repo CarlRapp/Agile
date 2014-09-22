@@ -7,7 +7,6 @@ DXCamera::DXCamera(void)
 
 	m_fovy = (float)59 * PI * 1.0f / 180.0f;
 	m_aspectRatio = 16.0f / 9.0f;
-	m_aspectRatio = 1000.0f / 800.0f;
 	m_nearZ = 1.0f;
 	m_farZ = 420.0f;
 
