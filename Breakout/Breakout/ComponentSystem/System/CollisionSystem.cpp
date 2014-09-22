@@ -56,6 +56,7 @@ void CollisionSystem::Update(float _dt)
 			if (ACol->CollidesWith(BCol))
 			{
 				B->SetState(Entity::DEAD);
+				A->SetState(Entity::DEAD);
 				printf("LOL!");
 				PositionComponent* bajs = A->GetComponent<PositionComponent>();
 				bajs->m_position.y -= bajs->m_deltaPosition.y;

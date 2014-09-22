@@ -7,9 +7,9 @@
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/System/ModelSystem.h"
 #include "../ComponentSystem/System/MovementSystem.h"
-#include "../ComponentSystem/System/TempSystem.h"
 #include "../ComponentSystem/System/InputSystem.h"
 #include "../ComponentSystem/System/CollisionSystem.h"
+#include "../ComponentSystem/System/ProjectileSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"
@@ -33,11 +33,10 @@ public:
 		/*	New Implementation	*/
 		world = new World();
 		world->AddSystem<InputSystem>();
-		world->AddSystem<TempSystem>();
 		world->AddSystem<MovementSystem>();
+		world->AddSystem<ProjectileSystem>();
 		world->AddSystem<CollisionSystem>();
 		world->AddSystem<ModelSystem>();
-		
 
 		int xBlocks = 16;
 		int yBlocks = 3;
@@ -64,12 +63,12 @@ public:
 				world->AddEntity(e);
 			}
 
-		e = world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
-		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
-		e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
-		world->AddEntity(e);
+		//e = world->CreateEntity();
+		//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+		//e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
+		//e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
+		//e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
+		//world->AddEntity(e);
 
 
 
