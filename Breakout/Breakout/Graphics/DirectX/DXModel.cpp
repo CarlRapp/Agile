@@ -64,7 +64,7 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 			if (data->Groups[i]->material->Map_bump != "")
 			{
 				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
-				DiffuseMapSRV.push_back(normalMapSRV);
+				NormalMapSRV.push_back(normalMapSRV);
 			}
 		}
 		

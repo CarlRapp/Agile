@@ -59,6 +59,7 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
 
+	m_textureManager.Init(m_device);
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -201,7 +202,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 float asdasdddd = 1.5f;
 void DXGraphics::LoadModel(std::string _path)
 {
-	m_modelManager.LoadModel(m_device, _path);
+	m_modelManager.LoadModel(m_device, _path, m_textureManager);
 }
 
 
