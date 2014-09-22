@@ -4,8 +4,8 @@ ISystem::ISystem()
 {
 }
 
-ISystem::ISystem(const ComponentFilter& _componentFilter)
-: m_componentFilter(_componentFilter), m_entityMap(EntityMap())
+ISystem::ISystem(const ComponentFilter& _componentFilter, World* _world)
+: m_componentFilter(_componentFilter), m_entityMap(EntityMap()), m_world(_world)
 {
 }
 

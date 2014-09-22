@@ -2,8 +2,8 @@
 #include "../Component/VelocityComponent.h"
 #include "../Component/PositionComponent.h"
 
-MovementSystem::MovementSystem()
-: Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>())
+MovementSystem::MovementSystem(World* _world)
+: Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>(), _world)
 {
 }
 

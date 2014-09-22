@@ -3,17 +3,25 @@
 
 #include "Entity\Entity.h"
 
+
+#include "Component/PositionComponent.h"
+#include "Component/RotationComponent.h"
+#include "Component/ScaleComponent.h"
+#include "Component/VelocityComponent.h"
+#include "Component/HealthComponent.h"
+#include "Component/ScoreComponent.h"
+#include "Component/ModelComponent.h"
+#include "Component/LifeComponent.h"
+#include "Component/MouseInputComponent.h"
+#include "Component/KeyboardInputComponent.h"
+#include "Component/CollisionComponent.h"
+
 class EntityFactory
 {
 private:
 	EntityFactory(void) {};
 
 	static EntityFactory* m_entityFactory;
-	static bool m_initialized;
-
-
-	Entity** m_entites;
-	
 
 public:
 
@@ -23,22 +31,14 @@ public:
 		PAD,
 		BALL,
 		POWERUP,
-		PLAYER
+		WALL
 	};
 
-
-
 	~EntityFactory(void);
-	
+
 	static EntityFactory* GetInstance();
 
 	// Creates entity and required components based on EntityType
-	Entity* CreateEntity(EntityType _entityType);
-	// Will clear the entity from all components and change its status to 'DEAD'
-	void DeleteEntity(Entity* _entity);
-
-	// Must be called before any other function is called
-	void Initialize(Entity** _entites);
-
+	void CreateEntity(Entity* _entity, EntityType _entityType);
 };
 #endif

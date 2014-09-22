@@ -2,8 +2,8 @@
 #include "../Component/VelocityComponent.h"
 #include "../Component/ModelComponent.h"
 
-CollisionSystem::CollisionSystem()
-: Base(ComponentFilter().Requires<PositionComponent, CollisionComponent, VelocityComponent>())
+CollisionSystem::CollisionSystem(World* _world)
+: Base(ComponentFilter().Requires<PositionComponent, CollisionComponent, VelocityComponent>(), _world)
 {
 
 }

@@ -22,6 +22,7 @@ private:
 
 	void AddNewComponent(TypeID _id);
 	void AddEntityToComponentPool(Entity* _e);
+
 public:
 	World();
 	~World();
@@ -38,7 +39,7 @@ public:
 	void AddNewComponent();
 
 	template <typename T>
-	void AddSystem();
+	T* AddSystem();
 };
 
 template <typename T>
@@ -59,11 +60,16 @@ void World::AddNewComponent()
 	printf("New component list created!\n");
 }
 template <typename T>
-void World::AddSystem()
+T* World::AddSystem()
 {
-	m_systems.push_back(new T{});
 
+	if (std::is_base_of<ISystem, T>())
+	{
+		T* t = new T(this);
+		m_systems.push_back(t);
+		return t;
+	}
 
+	return 0;
 }
-
 #endif

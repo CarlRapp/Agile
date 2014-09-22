@@ -7,22 +7,19 @@
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/System/ModelSystem.h"
 #include "../ComponentSystem/System/MovementSystem.h"
-#include "../ComponentSystem/Component/PositionComponent.h"
-#include "../ComponentSystem/Component/RotationComponent.h"
-#include "../ComponentSystem/Component/ScaleComponent.h"
-#include "../ComponentSystem/Component/ModelComponent.h"
-#include "../ComponentSystem/Component/VelocityComponent.h"
-#include "../ComponentSystem/Component/CollisionComponent.h"
+#include "../ComponentSystem/System/TempSystem.h"
+#include "../ComponentSystem/System/InputSystem.h"
 #include "../ComponentSystem/System/CollisionSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
+#include "../ComponentSystem/EntityFactory.h"
 using namespace SceneSystem;
 
 class GameScene : public Scene<GameScene>
 {
 private:
 	World* world;
-	Entity* player;
+	//Entity* player;
 public:
 	GameScene()
 	{
@@ -35,66 +32,60 @@ public:
 
 		/*	New Implementation	*/
 		world = new World();
+		world->AddSystem<InputSystem>();
+		world->AddSystem<TempSystem>();
 		world->AddSystem<MovementSystem>();
 		world->AddSystem<CollisionSystem>();
 		world->AddSystem<ModelSystem>();
+		
 
 		int xBlocks = 16;
 		int yBlocks = 3;
 
 		Entity* e;
+
 		e = world->CreateEntity();
-		e->AddComponent<PositionComponent>(VECTOR3(0, 0, 0));
-		e->AddComponent<RotationComponent>();
-		e->AddComponent<ScaleComponent>();
-		e->AddComponent<ModelComponent>().m_modelPath = "wall";
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
 		world->AddEntity(e);
 
 		e = world->CreateEntity();
-		e->AddComponent<PositionComponent>(VECTOR3(xBlocks + 1+ (xBlocks+1)*0.5f, 0, 0));
-		e->AddComponent<RotationComponent>();
-		e->AddComponent<ScaleComponent>();
-		e->AddComponent<ModelComponent>().m_modelPath = "wall";
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
+		e->GetComponent<PositionComponent>()->m_position = VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0);
 		world->AddEntity(e);
 
 		for (int y = 12; y > 12 - yBlocks; --y)
 			for (int x = 1; x < 1 + xBlocks; ++x)
 			{
 				e = world->CreateEntity();
-				e->AddComponent<PositionComponent>(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
-				e->AddComponent<RotationComponent>();
-				e->AddComponent<ScaleComponent>();
-				e->AddComponent<ModelComponent>().m_modelPath = "box";
-				e->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
-				e->AddComponent<VelocityComponent>();
+				EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+				e->GetComponent<PositionComponent>()->m_position = VECTOR3(x + x*0.5f, y + y*0.5f, 0);
+				e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
+				e->GetComponent<CollisionComponent>()->m_size = VECTOR2(1, 1);
 				world->AddEntity(e);
 			}
 
 		e = world->CreateEntity();
-		e->AddComponent<PositionComponent>(VECTOR3(2, 0, 0));
-		e->AddComponent<RotationComponent>();
-		e->AddComponent<ScaleComponent>();
-		e->AddComponent<ModelComponent>().m_modelPath = "box";
-		e->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(1, 1));
-		e->AddComponent<VelocityComponent>();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
+		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
+		e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
 		world->AddEntity(e);
 
-		player = world->CreateEntity();
-		player->AddComponent<PositionComponent>(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 1.0f, 0));
-		player->AddComponent<RotationComponent>();
-		player->AddComponent<ScaleComponent>();
-		player->AddComponent<ModelComponent>().m_modelPath = "sphere";
-		player->AddComponent<CollisionComponent>(VECTOR2(0, 0), VECTOR2(2, 2));
-		player->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
-		player->AddComponent<VelocityComponent>();
-		player->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 4, 0);
-		world->AddEntity(player);
+
+
+
+		e = world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+		e->GetComponent<PositionComponent>()->m_position = VECTOR3(8, 0, 0);
+		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
+		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(1, 1);
+		world->AddEntity(e);
 
 		GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
 		ModelData* lol = FileManager::GetInstance().LoadModel(GetFile("box", MODEL_ROOT));
-		int a = 2;
+
 	}
 
 	void LoadContent()
@@ -121,7 +112,7 @@ up arrow: 38
 right arrow: 39
 down arrow: 40
 		*/
-		float speed = 15.0f;
+	/*	float speed = 15.0f;
 		float xbounds = 16 + 1 + (16 + 1)*0.5f - 1;
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(37) == InputState::Down)
 		{
@@ -153,7 +144,7 @@ down arrow: 40
 		{
 			player->GetComponent<VelocityComponent>()->m_velocity.y *= -1;
 
-		}
+		}*/
 			world->Update(_dt);
 	}
 

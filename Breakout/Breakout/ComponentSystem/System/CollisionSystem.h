@@ -9,7 +9,7 @@ class CollisionSystem : public System<CollisionSystem>
 {
 private:
 public:
-	CollisionSystem();
+	CollisionSystem(World* _world);
 	~CollisionSystem();
 
 	void Update(float _dt);

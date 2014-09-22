@@ -11,7 +11,7 @@ struct RotationComponent : Component<RotationComponent>
 	RotationComponent()
 	{
 		m_rotation = VECTOR3(0, 0, 0);
-		m_deltaRotation = VECTOR3(0, 0, 0);
+		m_deltaRotation = VECTOR3(1, 0, 0);
 	}
 
 	void RotationComponent::Reset()

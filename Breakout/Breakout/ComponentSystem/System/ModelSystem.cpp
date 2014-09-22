@@ -6,8 +6,9 @@
 #include "../Component/RotationComponent.h"
 #include "../Component/ScaleComponent.h"
 
-ModelSystem::ModelSystem(void)
-: Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>())
+
+ModelSystem::ModelSystem(World* _world)
+: Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>(), _world)
 {
 }
 
