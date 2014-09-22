@@ -34,7 +34,6 @@ static char    m_cwd[FILENAME_MAX];
 typedef unsigned int        UINT;
 
 
-
 static std::string GetFile(std::string _path, std::string _root)
 {
 #ifdef WINDOWS
@@ -75,8 +74,9 @@ static std::string GetFile(std::string _path, std::string _root)
 
 #define MATRIX4 glm::mat4
 #define VECTOR3 glm::vec3
+#define VECTOR2 glm::vec2
 
-static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector, int dx1, int dx2)
+static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector)
 {
 	return glm::translate(matrix, vector);
 }
@@ -86,10 +86,13 @@ static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
 	return glm::rotate(matrix, angle, axis);
 }
 
-static inline VECTOR2 Normalize(const VECTOR2& _vec) { float magn = sqrtf(_vec.x * _vec.x + _vec.y * _vec.y); return VECTOR2(_vec.x / magn, _vec.y / magn); }
+static bool MacroIsZero(glm::vec3 _vec)
+{
+	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
+		return true;
 
-static inline float Distance(const VECTOR2& _vec1, const VECTOR2& _vec2) { return sqrtf((_vec1.x - _vec2.x) * (_vec1.x - _vec2.x) + (_vec1.y - _vec2.y) * (_vec1.y - _vec2.y)); }
-
+	return false;
+}
 #else
 
 #include <DirectXMath.h>
@@ -99,10 +102,10 @@ static inline float Distance(const VECTOR2& _vec1, const VECTOR2& _vec2) { retur
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
 
-static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4& _mat, float _x, float _y, float _z)
+static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
-	temp = DirectX::XMMatrixTranslation(_x, _y, _z);
+	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
 	DirectX::XMStoreFloat4x4(&_mat, temp);
 	return _mat;
 }
@@ -131,9 +134,9 @@ static inline float Distance(const VECTOR2& _vec1, const VECTOR2& _vec2) { retur
 
 #endif
 
-#define TRANSLATE(matrix,vector,dx1,dx2) MacroTranslate(matrix,vector,dx1,dx2)
+#define TRANSLATE(matrix,vector) MacroTranslate(matrix,vector)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
-#define ISZERO(vector) IsZero(vector)
+#define ISZERO(vector) MacroIsZero(vector)
 #define NORMALIZE(vector) Normalize(vector)
 #define DISTANCE(vector1, vector2) Distance(vector1, vector2)
 

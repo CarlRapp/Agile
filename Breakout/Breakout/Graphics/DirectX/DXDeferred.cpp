@@ -26,7 +26,6 @@ DXDeferred::~DXDeferred(void)
 	ReleaseCOM(m_finalSRV);
 	ReleaseCOM(m_finalUAV);
 	ReleaseCOM(m_fullSceenQuad);
-	SafeDelete(m_testTriangle);
 }
 
 void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, int _Width, int _Height)
@@ -45,7 +44,6 @@ void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext
 	m_viewPort.Width = (float)m_width;
 	m_viewPort.Height = (float)m_height;
 
-	InitTestTriangle();
 	InitFullScreenQuad();
 	InitBuffers();
 
@@ -154,7 +152,7 @@ void DXDeferred::ClearBuffers()
 
 }
 
-void DXDeferred::FillGBuffer(ICamera* _camera)
+void DXDeferred::FillGBuffer(map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
@@ -164,7 +162,7 @@ void DXDeferred::FillGBuffer(ICamera* _camera)
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	//RenderTestTriangle(_camera);
-	RenderModels(_camera);
+	RenderModels(_modelInstances, _camera);
 
 	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
@@ -215,92 +213,6 @@ void DXDeferred::RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV,
 	_tech->GetPassByIndex(0)->Apply(0, m_deviceContext);
 }
 
-void DXDeferred::InitTestTriangle()
-{
-	m_testTriangle = new DXMesh();
-
-	std::vector<DXVertex::PosNormalTexTanCol> Vertices;
-	std::vector<UINT> Indices;
-	std::vector<DXMesh::Subset> Subsets;
-	DXVertex::PosNormalTexTanCol a, b, c, d, e, f;
-
-	//a
-	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, -5.0f);
-	a.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	a.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	a.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	a.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	//b
-	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -5.0f);
-	b.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	b.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	b.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	b.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-	//c
-	c.pos = DirectX::XMFLOAT3(0.0f, 5.0f, -5.0f);
-	c.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	c.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	c.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	c.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-
-	//d
-	d.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, 5.0f);
-	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	d.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//e
-	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, 5.0f);
-	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	e.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-	//f
-	f.pos = DirectX::XMFLOAT3(0.0f, 5.0f, 5.0f);
-	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	f.color = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
-
-
-	Vertices.push_back(a);
-	Vertices.push_back(b);
-	Vertices.push_back(c);
-
-	Vertices.push_back(d);
-	Vertices.push_back(e);
-	Vertices.push_back(f);
-
-	m_testTriangle->SetVertices(m_device, &Vertices[0], Vertices.size());
-
-	Indices.push_back(0);
-	Indices.push_back(1);
-	Indices.push_back(2);
-
-	Indices.push_back(3);
-	Indices.push_back(4);
-	Indices.push_back(5);
-
-	m_testTriangle->SetIndices(m_device, &Indices[0], Indices.size());
-
-	DXMesh::Subset subset;
-	subset.m_faceCount = 2;
-	subset.m_faceStart = 0;
-	subset.m_id = 0;
-	subset.m_vertexCount = 6;
-	subset.m_vertexStart = 0;
-
-	Subsets.push_back(subset);
-
-	m_testTriangle->SetSubsetTable(Subsets);
-
-
-}
 
 
 void DXDeferred::InitFullScreenQuad()
@@ -358,7 +270,7 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderModels(ICamera* _camera)
+void DXDeferred::RenderModels(map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
 {
 	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
 	m_deviceContext->RSSetViewports(1, vp);
@@ -382,10 +294,12 @@ void DXDeferred::RenderModels(ICamera* _camera)
 	tech->GetDesc(&techDesc);
 	for (UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		for each (ModelInstance* instance in m_modelInstances)
+		map<int, ModelInstance*>::iterator	m_modelIterator;
+		for (m_modelIterator = _modelInstances.begin(); m_modelIterator != _modelInstances.end(); ++m_modelIterator)
 		{
-			RenderModel(instance, view, proj, tech, p);
+			RenderModel(m_modelIterator->second, view, proj, tech, p);
 		}
+		
 	}
 
 	//reset textures
@@ -401,10 +315,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTanCol);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	DirectX::XMFLOAT4X4 world4x4;
-	memcpy(&world4x4, &_mi->GetWorld(), sizeof(DirectX::XMFLOAT4X4));
-
-	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(&world4x4);
+	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(_mi->world);
 	DirectX::XMMATRIX worldInvTranspose;
 	DirectX::XMMATRIX worldView;
 	DirectX::XMMATRIX worldInvTransposeView;
@@ -427,92 +338,29 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 	DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
 
 
-	for (UINT subset = 0; subset < _mi->GetModel()->SubsetCount; ++subset)
+	for (UINT subset = 0; subset < _mi->model->SubsetCount; ++subset)
 	{
 		//UINT subset = 6;
 		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
-		if (_mi->GetModel()->HasDiffuseMaps())
-			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->GetModel()->GetDiffuseMap(subset, _mi->GetTextureIndex()));
+		if (_mi->model->HasDiffuseMaps())
+			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset, _mi->GetTextureIndex()));
 
-		if (_mi->GetModel()->HasNormalMaps())
-			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->GetModel()->GetNormalMap(subset, _mi->GetTextureIndex()));
+		if (_mi->model->HasNormalMaps())
+			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->model->GetNormalMap(subset, _mi->GetTextureIndex()));
 
 		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
-		_mi->GetModel()->ModelMesh.Draw(m_deviceContext, subset);
+		_mi->model->ModelMesh.Draw(m_deviceContext, subset);
 	}
 
 }
 
-void DXDeferred::RenderTestTriangle(ICamera* _camera)
-{
-	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
-	m_deviceContext->RSSetViewports(1, vp);
 
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX proj;
-
-	DirectX::XMFLOAT4X4 view4x4, proj4x4;
-	memcpy(&view4x4, _camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
-	memcpy(&proj4x4, _camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
-
-	view = DirectX::XMLoadFloat4x4(&view4x4);
-	proj = DirectX::XMLoadFloat4x4(&proj4x4);
-
-	ID3DX11EffectTechnique* tech;
-	D3DX11_TECHNIQUE_DESC techDesc;
-
-	//Static
-
-	tech = DXEffects::m_objectDeferredFX->m_basicTech;
-	tech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		
-		m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
-		//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
-		m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTanCol);
-		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(0, 0, 0);;
-		DirectX::XMMATRIX worldInvTranspose;
-		DirectX::XMMATRIX worldView;
-		DirectX::XMMATRIX worldInvTransposeView;
-		DirectX::XMMATRIX worldViewProj;
-		DirectX::XMMATRIX tex = DirectX::XMMatrixTranslation(0, 0, 0);
-
-		//world = DirectX::XMLoadFloat4x4(&instance.GetWorld());
-		//float a = MathHelper::InverseTranspose(world);
-
-		worldView = XMMatrixMultiply(world, view);
-		//worldInvTranspose = MathHelper::InverseTranspose(world);
-		worldInvTranspose = world;
-
-		//worldInvTransposeView = worldInvTranspose*view;
-		worldViewProj = XMMatrixMultiply(worldView, proj);
-
-		DXEffects::m_objectDeferredFX->SetWorld(world);
-		DXEffects::m_objectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
-		DXEffects::m_objectDeferredFX->SetTexTransform(tex);
-		DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
-
-
-		tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
-
-		m_testTriangle->Draw(m_deviceContext, 0);
-
-	}
-
-	//reset textures
-	DXEffects::m_objectDeferredFX->SetDiffuseMap(NULL);
-	DXEffects::m_objectDeferredFX->SetNormalMap(NULL);
-}
-
-
-void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, ICamera* _camera)
+void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
-	FillGBuffer(_camera);
+	FillGBuffer(_modelInstances, _camera);
 	//shadowmap->Render();
 	CombineFinal(_renderTargetView);
 }

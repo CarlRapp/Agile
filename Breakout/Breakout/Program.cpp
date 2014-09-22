@@ -7,11 +7,25 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
+#include "Scenes/GameScene.h"
+
 #include "ComponentSystem/Entity/Entity.h"
 #include "ComponentSystem/System/SystemManager.h"
 #include "ComponentSystem/System/ScoreSystem.h"
 #include "ComponentSystem/System/MovementSystem.h"
+#include "ComponentSystem/System/ModelSystem.h"
 #include "ComponentSystem/EntityFactory.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/PositionComponent.h"
+#include "ComponentSystem/Component/RotationComponent.h"
+#include "ComponentSystem/Component/ScaleComponent.h"
+#include "ComponentSystem/Component/VelocityComponent.h"
+#include "ComponentSystem/Component/HealthComponent.h"
+#include "ComponentSystem/Component/ScoreComponent.h"
+#include "ComponentSystem/Component/ModelComponent.h"
+#include "ComponentSystem/Component/LifeComponent.h"
+
+#include "ComponentSystem/World.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -28,80 +42,6 @@ GraphicsManager *m_GraphicsManager;
 AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
 SceneManager* m_SceneManager;
-
-
-
-class MainMenu : public Scene<MainMenu>
-{
-private:
-	VECTOR3 pos;
-	SystemManager* m_systemManager;
-	Entity** m_entities;
-	std::map<int, Entity*> m_activeEntites;
-public:
-	MainMenu()
-	{
-		printf("Main Menu created!\n");
-		pos = VECTOR3(0, 0, 0);
-	}
-
-	void Initialize()
-	{
-		printf("Initialized (MAIN MENU)\n");
-
-		m_systemManager = new SystemManager();
-		m_systemManager->AddSystem<MovementSystem>();
-		//m_systemManager->AddSystem<ScoreSystem>();
-
-
-		m_entities = new Entity*[MAX_ENTITY_COUNT];
-
-		for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-			m_entities[i] = new Entity(i);
-
-		EntityFactory::GetInstance()->Initialize(m_entities);
-
-		auto ball = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BALL);
-		m_activeEntites.insert(std::pair<int, Entity*>(ball->GetId(), ball));
-		ball->SetState(Entity::ACTIVATED);
-
-		//auto block = EntityFactory::GetInstance()->CreateEntity(EntityFactory::BLOCK);
-		//m_activeEntites.insert(std::pair<int, Entity*>(block->GetId(), block));
-		//block->SetState(Entity::ACTIVATED);
-
-		//auto player = EntityFactory::GetInstance()->CreateEntity(EntityFactory::PLAYER);
-		//m_activeEntites.insert(std::pair<int, Entity*>(player->GetId(), player));
-		//player->SetState(Entity::ACTIVATED);
-
-
-	}
-
-	void LoadContent()
-	{
-		printf("Loading Content (MAIN MENU)\n");
-	}
-
-	void Update(float _dt)
-	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('A') == InputState::Pressed)
-			SceneManager::GetInstance()->Quit();
-
-		m_systemManager->Update(_dt, &m_activeEntites);
-
-		for (std::map < int, Entity*>::iterator it = m_activeEntites.begin(); it != m_activeEntites.end(); ++it)
-		{
-			if (it->second->GetState() == Entity::LIMBO)
-				EntityFactory::GetInstance()->DeleteEntity(it->second);
-			//else
-			//	it->second->Reset();
-		}
-	}
-	
-	void Render()
-	{
-		m_GraphicsManager->Render();
-	}
-};
 
 int main(int argc, char** argv)
 {
@@ -124,7 +64,7 @@ int main(int argc, char** argv)
 
 	/*	CREATE SCENE MANAGER HERE	*/
 	m_SceneManager = SceneManager::GetInstance();
-	if (!m_SceneManager->AddScene<MainMenu>(true))
+	if (!m_SceneManager->AddScene<GameScene>(true))
 		printf("Could not add scene!\n");
 
 	/*	START HERE	*/

@@ -18,7 +18,8 @@ public:
 		DEAD,
 		LIMBO,
 		ACTIVATED,
-		DEACTIVATED
+		DEACTIVATED,
+		CHANGED
 	};
 
 private:

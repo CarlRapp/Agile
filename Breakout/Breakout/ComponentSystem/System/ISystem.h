@@ -6,11 +6,12 @@
 #include "../Entity/Entity.h"
 #include "../ClassTypeID.h"
 #include "../Filter/ComponentFilter.h"
+#include <map>
+
 
 class ISystem
 {
 private:
-
 	virtual void Initialize(){}
 	virtual void OnEntityAdded(){}
 	virtual void OnEntityRemove(){}
@@ -18,8 +19,9 @@ private:
 	ComponentFilter m_componentFilter;
 
 protected:
-
+	typedef std::map<TypeID, Entity*> EntityMap;
 	std::vector<Entity*> m_entities;
+	EntityMap m_entityMap;
 
 public:
 	ISystem();

@@ -12,6 +12,9 @@
 #include "DXWindow.h"
 #include "DXDeferred.h"
 #include "../ICamera.h"
+#include <map>
+
+
 
 class DXGraphics : public IGraphics
 {
@@ -19,9 +22,9 @@ class DXGraphics : public IGraphics
 private:
 	DXWindow				*m_window;
 
-	DXTextureManager		m_TextureManager;
+	DXTextureManager		m_textureManager;
 
-
+	map<int, ModelInstance*>m_modelInstances;
 	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;
 	ModelInstance			*m_testmodelinstance;
@@ -54,6 +57,9 @@ public:
 	void	Update();
 	void	Render(ICamera* _camera);
 	void LoadModel(std::string _path);
+
+	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+	void RemoveObject(int _id);
 
 };
 

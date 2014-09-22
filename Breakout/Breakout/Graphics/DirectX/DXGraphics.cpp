@@ -13,6 +13,8 @@ DXGraphics::DXGraphics(void)
 
 DXGraphics::~DXGraphics(void)
 {
+	m_modelInstances.clear();
+
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
 	DXInputLayouts::DestroyAll();
@@ -39,6 +41,7 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
+MATRIX4 world[3];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -59,10 +62,14 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
-	LoadModel("sphere");
 
-	LoadModel("triangle");
-	LoadModel("sphere");
+	for (int i = 0; i < 3; ++i)
+	{
+		//DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
+
+		//AddObject(i, "sphere", &world[i], &world[i]);
+	}
+
 
 	return true;
 }
@@ -193,52 +200,6 @@ float asdasdddd = 1.5f;
 void DXGraphics::LoadModel(std::string _path)
 {
 	m_modelManager.LoadModel(m_device, _path);
-
-
-	m_testmodelinstance = new ModelInstance();
-
-	m_testmodelinstance->SetModel(m_modelManager.GetModel(_path));
-
-	DirectX::XMMATRIX worldM = DirectX::XMMatrixTranslation(asdasdddd, 0, 0); asdasdddd -= 3.0f;
-	DirectX::XMFLOAT4X4 world;
-
-	DirectX::XMStoreFloat4x4(&world, worldM);
-
-	float scale = 1.0f;
-
-	m_testmodelinstance->SetWorld(world, world, scale);
-
-	m_DXDeferred->AddModelInstance(m_testmodelinstance);
-
-	/*
-	m_testmodelinstance = new ModelInstance();
-
-	m_testmodelinstance->SetModel(m_testmodel);
-
-	worldM = DirectX::XMMatrixTranslation(-1.5f, 0, 0);
-	DirectX::XMStoreFloat4x4(&world, worldM);
-
-	m_testmodelinstance->SetWorld(world, world, scale);
-
-	m_DXDeferred->AddModelInstance(m_testmodelinstance);
-	*/
-
-	/*
-	std::vector<VECTOR3> vertices;
-
-	for (Group* group : data->Groups)
-	{
-		for (Triangle triangle : group->triangles)
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				vertices.push_back(triangle.Vertices[i].Position);
-			}
-		}
-	}
-
-	return vertices;
-	*/
 }
 
 
@@ -258,11 +219,32 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_renderTargetView, _camera);
+	m_DXDeferred->Render(m_renderTargetView, m_modelInstances, _camera);
 
 
 	if (FAILED(m_swapChain->Present(0, 0)))
 	{
 		int a = 2;
 	}
+}
+
+void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+{
+	if (m_modelInstances.count(_id) != 0)
+		return;
+
+	LoadModel(_model);
+
+	ModelInstance *mi = new ModelInstance();
+
+	mi->model = m_modelManager.GetModel(_model);
+	mi->world = _world;
+	mi->worldInverseTranspose = _worldInverseTranspose;
+
+	m_modelInstances.insert(pair<int, ModelInstance*>(_id, mi));
+}
+
+void DXGraphics::RemoveObject(int _id)
+{
+	m_modelInstances.erase(_id);
 }

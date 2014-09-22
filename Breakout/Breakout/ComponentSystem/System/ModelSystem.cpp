@@ -14,7 +14,7 @@ ModelSystem::ModelSystem(void)
 ModelSystem::~ModelSystem()
 {
 }
-
+float lol = 0;
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -24,6 +24,7 @@ void ModelSystem::Update(float _dt)
 	ScaleComponent* scale;
 	ModelComponent* model;
 
+	lol += _dt;
 
 	for (int i = 0; i < m_entities.size(); ++i)
 	{
@@ -38,21 +39,24 @@ void ModelSystem::Update(float _dt)
 		model	 = m_entities[i]->GetComponent<ModelComponent>();
 
 
-		if (ISZERO(position->m_deltaPosition))
+		if (!ISZERO(position->m_deltaPosition))
 			change = true;
-		else if (ISZERO(rotation->m_deltaRotation))
+		else if (!ISZERO(rotation->m_deltaRotation))
 			change = true;
-		else if (ISZERO(scale->m_deltaScale))
+		else if (!ISZERO(scale->m_deltaScale))
 			change = true;
 
-
+		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			//TRANSLATE(model->m_worldMatrix,position->
-			// Calc worldmatrix
+			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position);
+			position->Reset();
+			GraphicsManager::GetInstance()->AddObject(m_entities[i]->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
+		
+		//model->m_worldMatrix = ROTATE(model->m_worldMatrix, 40, VECTOR3(0, 1, 0));
 
-
+		
 
 	}
 

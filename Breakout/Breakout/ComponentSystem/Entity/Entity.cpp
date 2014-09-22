@@ -2,12 +2,12 @@
 
 int Entity::m_counter = 0;
 Entity::Entity()
-: m_id(m_counter++), m_state(DEAD)
+: m_id(m_counter++), m_state(DEAD), m_components(std::vector<IComponent*>())
 {
 }
 
 Entity::Entity(int _id)
-: m_id(_id), m_state(DEAD)
+: m_id(_id), m_state(DEAD), m_components(std::vector<IComponent*>())
 {
 }
 
@@ -29,6 +29,8 @@ void Entity::AddComponent(IComponent* base, TypeID _componentTypeId)
 
 	base->m_ID = _componentTypeId;
 	m_components.push_back(base);
+
+	m_state = Entity::CHANGED;
 }
 
 void Entity::RemoveComponent(int _componentTypeId)
@@ -43,6 +45,7 @@ void Entity::RemoveComponent(int _componentTypeId)
 		}
 	}
 
+	m_state = Entity::CHANGED;
 }
 
 IComponent* Entity::GetComponent(int _componentTypeId)
