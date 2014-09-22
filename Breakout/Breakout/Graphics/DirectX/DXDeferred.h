@@ -25,7 +25,7 @@ class DXDeferred
 
 private:
 
-	
+	ID3D11Buffer			*m_instanceBuffer;
 
 	//ID3D11Texture2D			*m_depthStencil = NULL;
 	//ID3D11DepthStencilView	*m_depthStencilView = NULL;
