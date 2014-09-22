@@ -9,6 +9,8 @@
 #include "DXEffects.h"
 #include "DXVertex.h"
 
+static const int INSTANCEDBUFFERSIZE = 200;
+
 DXDeferred::DXDeferred(void)
 {
 
@@ -26,6 +28,7 @@ DXDeferred::~DXDeferred(void)
 	ReleaseCOM(m_finalSRV);
 	ReleaseCOM(m_finalUAV);
 	ReleaseCOM(m_fullSceenQuad);
+	ReleaseCOM(m_instanceBuffer);
 }
 
 void DXDeferred::Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height)
@@ -131,6 +134,16 @@ void DXDeferred::InitBuffers()
 	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 	m_device->CreateUnorderedAccessView(finalTex, 0, &m_finalUAV);
 
+
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_DYNAMIC;
+	vbd.ByteWidth = sizeof(DXInstance::World) * INSTANCEDBUFFERSIZE;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+
+	m_device->CreateBuffer(&vbd, 0, &m_instanceBuffer);
 
 	//RELEASE
 	albedoTex->Release();
@@ -363,44 +376,12 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstanc
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
-	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_instancedPosNormalTexTan);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	vector<DXInstance::World> instancedData;
-
-	for (ModelInstance *mi : *_mi)
-	{
-		DXInstance::World data;
-		data.world = *mi->world;
-		instancedData.push_back(data);
-	}
-
-	ID3D11Buffer* instanceBuffer;
-	D3D11_BUFFER_DESC vbd;
-	vbd.Usage = D3D11_USAGE_DYNAMIC;
-	vbd.ByteWidth = sizeof(DXInstance::World) * instancedData.size();
-	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	vbd.MiscFlags = 0;
-	vbd.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA vinitData;
-	vinitData.pSysMem = &instancedData[0];
-
-	if (_device->CreateBuffer(&vbd, 0, &instanceBuffer) == S_OK)
-		int a = 2;
 	
-	D3D11_MAPPED_SUBRESOURCE mappedData;
-	m_deviceContext->Map(instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
 
-	DXInstance::World* dataView = reinterpret_cast<DXInstance::World*>(mappedData.pData);
-
-	for (int i = 0; i < instancedData.size(); ++i)
-	{
-		dataView[i] = instancedData[i];
-	}
-
-	m_deviceContext->Unmap(instanceBuffer, 0);
+	
 
 	DirectX::XMMATRIX viewProj;
 	DirectX::XMMATRIX tex = DirectX::XMMatrixTranslation(0, 0, 0);
@@ -412,23 +393,50 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstanc
 	DXEffects::m_objectDeferredFX->SetTexTransform(tex);
 	DXEffects::m_objectDeferredFX->SetViewProj(viewProj);
 
+	vector<DXInstance::World> instancedData;
 
-	for (UINT subset = 0; subset < _mi->at(0)->model->SubsetCount; ++subset)
+	for (ModelInstance *mi : *_mi)
 	{
-		//UINT subset = 6;
-		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
-
-		if (_mi->at(0)->model->HasDiffuseMaps())
-			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->at(0)->model->GetDiffuseMap(subset, _mi->at(0)->GetTextureIndex()));
-
-		if (_mi->at(0)->model->HasNormalMaps())
-			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->at(0)->model->GetNormalMap(subset, _mi->at(0)->GetTextureIndex()));
-
-		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
-		_mi->at(0)->model->ModelMesh.DrawInstanced(m_deviceContext, subset, instanceBuffer, instancedData.size());
+		DXInstance::World data;
+		data.world = *mi->world;
+		instancedData.push_back(data);
 	}
 
-	ReleaseCOM(instanceBuffer);
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+
+
+	for (int k = 0; k < instancedData.size();)
+	{
+		m_deviceContext->Map(m_instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+		DXInstance::World* dataView = reinterpret_cast<DXInstance::World*>(mappedData.pData);
+		int i;
+		for (i = 0; k < instancedData.size() && i < INSTANCEDBUFFERSIZE; ++i)
+		{
+			dataView[i] = instancedData[k];
+			++k;
+		}
+
+		m_deviceContext->Unmap(m_instanceBuffer, 0);
+
+		for (UINT subset = 0; subset < _mi->at(0)->model->SubsetCount; ++subset)
+		{
+			//UINT subset = 6;
+			//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
+
+			if (_mi->at(0)->model->HasDiffuseMaps())
+				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->at(0)->model->GetDiffuseMap(subset, _mi->at(0)->GetTextureIndex()));
+
+			if (_mi->at(0)->model->HasNormalMaps())
+				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->at(0)->model->GetNormalMap(subset, _mi->at(0)->GetTextureIndex()));
+
+			_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
+			_mi->at(0)->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
+		}
+	}	
+	
+
 
 }
 
