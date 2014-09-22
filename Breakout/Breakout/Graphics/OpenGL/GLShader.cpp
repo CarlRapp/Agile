@@ -82,10 +82,23 @@ bool Shader::LoadShader(std::string _path, GLenum _shaderType)
 
     if (vShaderCompiled != GL_TRUE)
     {
+        int length = 0;
+        glGetShaderiv(m_ShaderID, GL_INFO_LOG_LENGTH, &length);
+        if(length > 0) 
+        {
+                // create a log of error messages
+                char* errorLog = new char[length];
+                int written = 0;
+                glGetShaderInfoLog(m_ShaderID, length, &written, errorLog);
+                printf("Shader error log;\n%s\n", errorLog);
+                delete [] errorLog;
+        }
+        
         printf("\033[31mUnable to compile shader: %s\n\033[30m",_path.c_str());
+
         return false;
     }
-    //printf("ERROR %d\n",glGetError());
+
     printf("\033[32mShader load success %s\n\033[30m", _path.c_str());
 
     return true;

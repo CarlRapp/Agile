@@ -75,7 +75,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     std::cout << "\n\033[30m";
     
     //LoadModel("triangle");
-    //LoadModel("sphere");
+    LoadModel("sphere");
     return true; 
 } 
 
@@ -247,7 +247,7 @@ void GLGraphics::Render(ICamera* _camera)
 { 
     int instances = 2;
     
-    glClearColor(0.4, 0.4, 0.8, 1.0);
+    glClearColor(0.1, 0.1, 0.2, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     
