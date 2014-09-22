@@ -17,6 +17,11 @@ GraphicsManager* GraphicsManager::GetInstance()
 	return m_GMInstance;
 }
 
+void GraphicsManager::Destroy()
+{
+	SafeDelete(m_GMInstance);
+}
+
 GraphicsManager::~GraphicsManager(void)
 {
     SafeDelete(m_IGraphics);
@@ -25,7 +30,7 @@ GraphicsManager::~GraphicsManager(void)
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
+	m_ICamera = ICamera::GetICamera(59.0f,_width,_height,0.1f,100.0f);
 	m_ICamera->SetPosition(VECTOR3(0, 3, 5));
 
 	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
@@ -51,8 +56,8 @@ void GraphicsManager::Update()
 
 	test += 0.001f * 0.4;
 
-	pos.x = 5 * sinf(test);
-	pos.z = 5 * cosf(test);
+	pos.x = 75 * sinf(test);
+	pos.z = 75 * cosf(test);
 
 	m_ICamera->SetPosition(pos);
 	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));

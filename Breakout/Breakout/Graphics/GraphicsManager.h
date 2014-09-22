@@ -28,6 +28,7 @@ public:
 
 	~GraphicsManager(void);
 	static GraphicsManager* GetInstance();
+	static void Destroy();
 
 
 	bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
