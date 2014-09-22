@@ -7,28 +7,26 @@
 #include "ISystem.h"
 #include "../Component/VelocityComponent.h"
 #include "../Component/PositionComponent.h"
-#include "../Component/SphereComponent.h"
-#include "../Component/BoxComponent.h"
-#include "../../Game/Collision/CollisionMath.h"
+#include "../Component/CollisionComponent.h"
 
 class PhysicsSystem : public System<PhysicsSystem>
 {
 private:
 	const int VELOCITYITERATIONS = 8;
 	const int POSITIONITERATIONS = 2;
+	const b2Vec2 DEFAULTGRAVITY = b2Vec2(0, -10.0f);
 	
 
-	b2World* m_world;
+	b2World* m_b2World;
 	
 
 public:
 	PhysicsSystem();
-	explicit PhysicsSystem(const b2Vec2& _gravity);
 	~PhysicsSystem();
 
-	void Update(double _dt);
+	void Update(float _dt);
 
-	void SetGravity(b2Vec2& _vector) { m_world->SetGravity(_vector); }
+	void SetGravity(const b2Vec2& _gravity) { m_b2World->SetGravity(_gravity); }
 };
 
 #endif

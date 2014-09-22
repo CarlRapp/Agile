@@ -14,13 +14,13 @@ private:
 public:
 	b2Body* m_body;
 
-	CollisionComponent(b2World& _world, b2BodyDef& _bodyDef, b2FixtureDef& _fixtureDef)
+	CollisionComponent(b2World& _world, const b2BodyDef& _bodyDef, const b2FixtureDef& _fixtureDef)
 	{
 		m_body = _world.CreateBody(&_bodyDef);
 		m_body->CreateFixture(&_fixtureDef);
 	}
 
-	CollisionComponent(b2World& _world, b2BodyDef& _bodyDef, b2PolygonShape& _shape, float _density)
+	CollisionComponent(b2World& _world, const b2BodyDef& _bodyDef, const b2PolygonShape& _shape, float _density)
 	{
 		m_body = _world.CreateBody(&_bodyDef);
 		m_body->CreateFixture(&_shape, _density);

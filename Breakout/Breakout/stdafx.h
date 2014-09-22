@@ -93,6 +93,11 @@ static bool MacroIsZero(glm::vec3 _vec)
 
 	return false;
 }
+
+static inline glm::vec2 Normalize(const glm::vec2& _vec) { float magn = sqrtf(_vec.x * _vec.x + _vec.y * _vec.y); return VECTOR2(_vec.x / magn, _vec.y / magn); }
+
+static inline float Distance(const glm::vec2& _vec1, const glm::vec2& _vec2) { return sqrtf((_vec1.x - _vec2.x) * (_vec1.x - _vec2.x) + (_vec1.y - _vec2.y) * (_vec1.y - _vec2.y)); }
+
 #else
 
 #include <DirectXMath.h>
@@ -120,7 +125,7 @@ static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4& _mat, float _angle, const VECTOR
 	return _mat;
 }
 
-static inline bool IsZero(const VECTOR3& _vec)
+static inline bool MacroIsZero(const VECTOR3& _vec)
 {
 	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
 		return true;

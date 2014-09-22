@@ -1,28 +1,25 @@
 #include "PhysicsSystem.h"
 
-PhysicsSystem::PhysicsSystem() : Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>().RequiresOneOf<BoxComponent, SphereComponent>())
+PhysicsSystem::PhysicsSystem() 
+: Base(ComponentFilter().Requires<VelocityComponent, PositionComponent, CollisionComponent>())
 {
-	m_world = new b2World(b2Vec2(0,0));
+	m_b2World = new b2World(DEFAULTGRAVITY);
 }
 
-PhysicsSystem::PhysicsSystem(const b2Vec2& _gravity) : Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>().RequiresOneOf<BoxComponent, SphereComponent>())
-{
-	m_world = new b2World(_gravity);
-}
 
 PhysicsSystem::~PhysicsSystem()
 {
-	delete m_world;
+	delete m_b2World;
 }
 
-void PhysicsSystem::Update(double _dt)
+void PhysicsSystem::Update(float _dt)
 {
-	//for (b2Body* body = m_world->GetBodyList(); body; body->GetNext())
+	m_b2World->Step(_dt, VELOCITYITERATIONS, POSITIONITERATIONS);
+	if (m_b2World->GetBodyList() != 0)
 	{
-		
+		b2Vec2 position = m_b2World->GetBodyList()->GetPosition();
+		float32 angle = m_b2World->GetBodyList()->GetAngle();
+		printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
 	}
-	m_world->Step(_dt, VELOCITYITERATIONS, POSITIONITERATIONS);
-	b2Vec2 position = m_world->GetBodyList()->GetPosition();
-	float32 angle = m_world->GetBodyList()->GetAngle();
-	printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
+
 }

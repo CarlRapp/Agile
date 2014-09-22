@@ -6,6 +6,7 @@
 #include "../Scene/SceneManager.h"
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/System/ModelSystem.h"
+#include "../ComponentSystem/System/PhysicsSystem.h"
 #include "../ComponentSystem/Component/PositionComponent.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/Component/ScaleComponent.h"
@@ -33,6 +34,7 @@ public:
 		/*	New Implementation	*/
 		world = new World();
 		world->AddSystem<ModelSystem>();
+		world->AddSystem<PhysicsSystem>();
 
 		int xBlocks = 16;
 		int yBlocks = 5;
@@ -63,6 +65,7 @@ public:
 				e->AddComponent<ScaleComponent>();
 				e->AddComponent<ModelComponent>().m_modelPath = "box";
 				e->AddComponent<VelocityComponent>();
+				e->AddComponent<CollisionComponent>();
 				world->AddEntity(e);
 			}
 
