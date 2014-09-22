@@ -23,7 +23,7 @@ private:
 public:
 
 	DXCamera(void);
-	DXCamera(float _fovy, float _aspectRatio, float _nearZ, float _farZ);
+	DXCamera(float _fov, float _width, float _height, float _nearZ, float _farZ);
 	~DXCamera(void);
 
 

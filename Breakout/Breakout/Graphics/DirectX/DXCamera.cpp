@@ -20,14 +20,16 @@ DXCamera::DXCamera(void)
 	UpdateProjection();
 }
 
-DXCamera::DXCamera(float _fovy, float _aspectRatio, float _nearZ, float _farZ)
+DXCamera::DXCamera(float _fov, float _width, float _height, float _nearZ, float _farZ)
 {
 	m_viewPort.MinDepth = 0.0f;
 	m_viewPort.MaxDepth = 1.0f;
 
 
-	m_fovy = 2 * atan(tan(0.5f * _fovy) * _aspectRatio);
-	m_aspectRatio = _aspectRatio;
+	m_aspectRatio = _width / _height;
+
+	//m_fovy = 2 * atan(tan(0.5f * _fov) * m_aspectRatio);
+	m_fovy = (float)_fov * PI * 1.0f / 180.0f;
 	m_nearZ = _nearZ;
 	m_farZ = _farZ;
 
