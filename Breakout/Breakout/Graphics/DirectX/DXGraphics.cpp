@@ -41,8 +41,8 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
-#define asd 1000
-MATRIX4 world[asd];
+//#define asd 1000
+//MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -65,12 +65,12 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 
 
 
-	for (int i = 0; i < asd; ++i)
-	{
-		DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-50 + (i % 50) * 2.0f, 20-((i / 50) * 2), 0));
+	//for (int i = 0; i < asd; ++i)
+	//{
+	//	DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-50 + (i % 50) * 2.0f, 20-((i / 50) * 2), 0));
 
-		AddObject(i, "sphere", &world[i], &world[i]);
-	}
+	//	AddObject(i, "sphere", &world[i], &world[i]);
+	//}
 
 
 	return true;
