@@ -41,7 +41,8 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
-MATRIX4 world[3];
+#define asd 200
+MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -63,12 +64,14 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
 
-	for (int i = 0; i < 3; ++i)
+
+	for (int i = 0; i < asd; ++i)
 	{
-		DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
+		DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-50 + (i % 50) * 2.0f, 20-((i / 50) * 2), 0));
 
 		AddObject(i, "sphere", &world[i], &world[i]);
 	}
+	
 
 
 	return true;
