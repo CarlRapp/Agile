@@ -15,7 +15,6 @@ using namespace std;
 
 class DXModel
 {
-	int TPM;
 	vector<ID3D11ShaderResourceView*> DiffuseMapSRV;
 	vector<ID3D11ShaderResourceView*> NormalMapSRV;
 public:
@@ -29,22 +28,19 @@ public:
 	bool HasDiffuseMaps() { return !DiffuseMapSRV.empty(); }
 	bool HasNormalMaps() { return !NormalMapSRV.empty(); }
 
-	int  GetTPM() { return TPM; }
 
-	ID3D11ShaderResourceView* GetDiffuseMap(int Subset, int textureIndex)
+	ID3D11ShaderResourceView* GetDiffuseMap(int Subset)
 	{
-		int index = TPM * Subset + textureIndex;
-		return DiffuseMapSRV[index];
+		return DiffuseMapSRV[Subset];
 	}
 
-	ID3D11ShaderResourceView* GetNormalMap(int Subset, int textureIndex)
+	ID3D11ShaderResourceView* GetNormalMap(int Subset)
 	{
-		int index = TPM * Subset + textureIndex;
-		return NormalMapSRV[index];
+		return NormalMapSRV[Subset];
 	}
 	
 	// Keep CPU copies of the mesh data to read from.  
-	vector<DXVertex::PosNormalTexTanCol> Vertices;
+	vector<DXVertex::PosNormalTexTan> Vertices;
 	vector<UINT> Indices;
 	vector<DXMesh::Subset> Subsets;
 	
@@ -77,20 +73,10 @@ public:
 	DXModel					*model;
 	DirectX::XMFLOAT4X4		*world;
 	DirectX::XMFLOAT4X4		*worldInverseTranspose;
-	int						textureIndex;
-	
-
-	void SetTextureIndex(int index) 
-	{ 
-		textureIndex = Clamp<int>(index, 0, model->GetTPM() - 1);
-	}
-
-	int GetTextureIndex() { return textureIndex; }
 
 
 	ModelInstance()
 	{
-		textureIndex = 0;
 	}
 };
 

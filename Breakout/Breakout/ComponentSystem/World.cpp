@@ -64,6 +64,7 @@ void World::Update(float _dt)
 	for (int i = m_activeEntities.size() - 1; i >= 0; --i)
 	{
 		Entity* e = m_activeEntities[i];
+		//m_activeEntities[i]->Reset();
 
 		switch (e->GetState())
 		{

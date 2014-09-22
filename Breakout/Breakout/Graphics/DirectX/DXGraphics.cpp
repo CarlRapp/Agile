@@ -41,7 +41,8 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
-MATRIX4 world[3];
+//#define asd 1000
+//MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -58,17 +59,19 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
 
+	m_textureManager.Init(m_device);
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
 
-	for (int i = 0; i < 3; ++i)
-	{
-		//DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-2.5f + 2.5f * i, 0, 0));
 
-		//AddObject(i, "sphere", &world[i], &world[i]);
-	}
+	//for (int i = 0; i < asd; ++i)
+	//{
+	//	DirectX::XMStoreFloat4x4(&world[i], DirectX::XMMatrixTranslation(-50 + (i % 50) * 2.0f, 20-((i / 50) * 2), 0));
+
+	//	AddObject(i, "sphere", &world[i], &world[i]);
+	//}
 
 
 	return true;
@@ -103,7 +106,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
-	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT | DXGI_USAGE_UNORDERED_ACCESS;
 	sd.OutputWindow = m_window->GetHandle();
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
@@ -199,7 +202,7 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 float asdasdddd = 1.5f;
 void DXGraphics::LoadModel(std::string _path)
 {
-	m_modelManager.LoadModel(m_device, _path);
+	m_modelManager.LoadModel(m_device, _path, m_textureManager);
 }
 
 
@@ -219,7 +222,7 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_renderTargetView, m_modelInstances, _camera);
+	m_DXDeferred->Render(m_device, m_renderTargetView, m_modelInstances, _camera);
 
 
 	if (FAILED(m_swapChain->Present(0, 0)))
@@ -230,7 +233,13 @@ void DXGraphics::Render(ICamera* _camera)
 
 void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
 {
-	if (m_modelInstances.count(_id) != 0)
+	//if (m_modelInstances.count(_model) == 0)
+	//{
+	//	m_modelInstances[_model] = map<int, ModelInstance*>();
+	//}
+
+
+	if (m_modelInstances[_model].count(_id) != 0)
 		return;
 
 	LoadModel(_model);
@@ -241,10 +250,15 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->world = _world;
 	mi->worldInverseTranspose = _worldInverseTranspose;
 
-	m_modelInstances.insert(pair<int, ModelInstance*>(_id, mi));
+	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
 
 void DXGraphics::RemoveObject(int _id)
 {
-	m_modelInstances.erase(_id);
+
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = m_modelInstances.begin(); mapIterator != m_modelInstances.end(); ++mapIterator)
+	{
+		mapIterator->second.erase(_id);
+	}
 }

@@ -6,9 +6,12 @@
 #include "../Entity/Entity.h"
 #include "../ClassTypeID.h"
 #include "../Filter/ComponentFilter.h"
+#include "../../stdafx.h"
 #include <map>
 
+class World;
 
+typedef std::map<TypeID, Entity*> EntityMap;
 class ISystem
 {
 private:
@@ -18,19 +21,22 @@ private:
 
 	ComponentFilter m_componentFilter;
 
+	
+
+
 protected:
-	typedef std::map<TypeID, Entity*> EntityMap;
-	std::vector<Entity*> m_entities;
+	
 	EntityMap m_entityMap;
+	World* m_world;
 
 public:
 	ISystem();
-	ISystem(const ComponentFilter& _componentFilter);
+	ISystem(const ComponentFilter& _componentFilter, World* _world);
 
 	virtual ~ISystem() = 0;
 
 	const ComponentFilter* GetComponentFilter() const;
-	std::vector<Entity*> GetEntities() const;
+	EntityMap GetEntities();
 
 	bool Add(Entity* _entity);
 	bool Remove(Entity* _entity);
@@ -50,8 +56,8 @@ public:
 	typedef System<T> Base;
 
 	System() {}
-	System(const ComponentFilter& _componentFilter)
-		: ISystem(_componentFilter)
+	System(const ComponentFilter& _componentFilter, World* _world)
+		: ISystem(_componentFilter, _world)
 	{
 	}
 

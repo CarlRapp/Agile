@@ -6,6 +6,7 @@
 
 #include <d3d11.h>
 #include <vector>
+
 class DXMesh
 {
 public:
@@ -37,6 +38,7 @@ public:
 	void SetSubsetTable(std::vector<Subset>& _subsetTable);
 
 	void Draw(ID3D11DeviceContext* _dc, UINT _subsetId);
+	void DrawInstanced(ID3D11DeviceContext* _dc, UINT _subsetId, ID3D11Buffer *_ib, int _numInstances);
 
 private:
 	DXMesh(const DXMesh& _rhs);

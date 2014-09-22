@@ -14,14 +14,14 @@ DXModelManager::~DXModelManager()
 }
 
 
-void DXModelManager::LoadModel(ID3D11Device* _device, string _path)
+void DXModelManager::LoadModel(ID3D11Device* _device, string _path, DXTextureManager &_texMgr)
 {
 	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
 
 	if (m_loadedModels.count(_path) != 0)
 		return;
 
-	DXModel*	tModel = new DXModel(_device, m_textureManager, data);
+	DXModel*	tModel = new DXModel(_device, _texMgr, data);
 
 	if ( tModel == 0 )
 	{

@@ -8,7 +8,7 @@ class ModelSystem : public System<ModelSystem>
 private:
 public:
 
-	ModelSystem();
+	ModelSystem(World* _world);
 	~ModelSystem();
 
 	void Update(float _dt);

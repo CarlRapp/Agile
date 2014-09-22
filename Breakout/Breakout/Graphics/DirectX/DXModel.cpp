@@ -22,8 +22,8 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		{
 			for (int i = 0; i < 3; i++)
 			{
-				DXVertex::PosNormalTexTanCol vertex;
-				vertex.color = DirectX::XMFLOAT3(1, 1, 1);
+				DXVertex::PosNormalTexTan vertex;
+				//vertex.color = DirectX::XMFLOAT3(1, 1, 1);
 				vertex.tangentU = DirectX::XMFLOAT4(0, 0, 0, 0);
 				memcpy(&vertex.pos, &triangle.Vertices[i].Position, sizeof(DirectX::XMFLOAT3));
 				memcpy(&vertex.normal, &triangle.Vertices[i].Normal, sizeof(DirectX::XMFLOAT3));
@@ -52,40 +52,59 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	//TPM = mats[0].DiffuseMapNames.size();
 	for(UINT i = 0; i < SubsetCount; ++i)
 	{
-		/*
-		Mat.push_back(mats[i].Mat);
-
-		for (int j = 0; j < mats[i].DiffuseMapNames.size(); ++j)
+		if (data->Groups[i]->material)
 		{
-			if (mats[i].DiffuseMapNames[j] != "")
+			if (data->Groups[i]->material->Map_Kd != "")
 			{
-				ID3D11ShaderResourceView* diffuseMapSRV = texMgr.CreateTexture(texturePath + mats[i].DiffuseMapNames[j]);
-				if (diffuseMapSRV)
-					DiffuseMapSRV.push_back(diffuseMapSRV);
+				ID3D11ShaderResourceView* diffuseMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_Kd);
+				DiffuseMapSRV.push_back(diffuseMapSRV);
+			}
+
+
+			if (data->Groups[i]->material->Map_bump != "")
+			{
+				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
+				NormalMapSRV.push_back(normalMapSRV);
 			}
 		}
+		
 
-		for (int j = 0; j < mats[i].NormalMapNames.size(); ++j)
-		{
-			if (mats[i].NormalMapNames[j] != "")
-			{
-				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(texturePath + mats[i].NormalMapNames[j]);
-				if (normalMapSRV)
-					NormalMapSRV.push_back(normalMapSRV);
-			}
-		}
 
-		*/
+		
+
+		//Mat.push_back(mats[i].Mat);
+
+		//for (int j = 0; j < mats[i].DiffuseMapNames.size(); ++j)
+		//{
+		//	if (mats[i].DiffuseMapNames[j] != "")
+		//	{
+		//		ID3D11ShaderResourceView* diffuseMapSRV = texMgr.CreateTexture(texturePath + mats[i].DiffuseMapNames[j]);
+		//		if (diffuseMapSRV)
+		//			DiffuseMapSRV.push_back(diffuseMapSRV);
+		//	}
+		//}
+
+		//for (int j = 0; j < mats[i].NormalMapNames.size(); ++j)
+		//{
+		//	if (mats[i].NormalMapNames[j] != "")
+		//	{
+		//		ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(texturePath + mats[i].NormalMapNames[j]);
+		//		if (normalMapSRV)
+		//			NormalMapSRV.push_back(normalMapSRV);
+		//	}
+		//}
+
+		
 		
 	}
 	
 	DirectX::BoundingBox AABB;
-	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
+	DirectX::BoundingBox::CreateFromPoints(AABB, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTan));
 
 	DirectX::BoundingOrientedBox::CreateFromBoundingBox(m_BoundingOrientedBox, AABB);
 
 	//DirectX::BoundingSphere::CreateFromBoundingBox(m_BoundingSphere, m_BoundingOrientedBox);
-	DirectX::BoundingSphere::CreateFromPoints(m_BoundingSphere, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTanCol));
+	DirectX::BoundingSphere::CreateFromPoints(m_BoundingSphere, Vertices.size(), &Vertices[0].pos, sizeof(DXVertex::PosNormalTexTan));
 
 	
 	//BoundingOrientedBox::CreateFromPoints(m_BoundingOrientedBox, Vertices.size(), &Vertices[0].Pos, sizeof(Vertex::PosNormalTexTanSkinned));

@@ -127,6 +127,7 @@ int Mouse::getY() { return m_positionY; }
 
 InputState Mouse::GetButtonState(char _button)
 {
+	_button++;
 	if (_button < MOUSEBUTTONS)
 	{
 		bool	tLastFrame = m_lastFrameButtons[_button];

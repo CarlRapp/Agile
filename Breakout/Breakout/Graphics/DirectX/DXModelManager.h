@@ -11,8 +11,6 @@ class DXModelManager
 {
 private:
 
-	DXTextureManager	m_textureManager;
-
 	map <string, DXModel*>			m_loadedModels;
 	map <string, DXModel*>::iterator	m_modelIterator;
 
@@ -22,7 +20,7 @@ public:
 
 
 	DXModel*	GetModel(string _path);
-	void	LoadModel(ID3D11Device* _device, string _path);
+	void	LoadModel(ID3D11Device* _device, string _path, DXTextureManager &_texMgr);
 
 	//ModelInstance*	CreateModelInstance(string ModelName);
 };
