@@ -72,6 +72,9 @@ public:
 	ID3DX11EffectTechnique* m_normalSkinnedTech;
 
 	ID3DX11EffectTechnique* m_basicInstancedTech;
+	ID3DX11EffectTechnique* m_texInstancedTech;
+	ID3DX11EffectTechnique* m_texNormalInstancedTech;
+	ID3DX11EffectTechnique* m_normalInstancedTech;
 
 	ID3DX11EffectMatrixVariable* m_worldViewProj;
 	ID3DX11EffectMatrixVariable* m_world;
