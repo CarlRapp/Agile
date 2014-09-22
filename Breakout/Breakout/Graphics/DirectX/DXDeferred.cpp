@@ -191,8 +191,8 @@ void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 	//Effects::CombineFinalFX->SetTexture(m_ShadowMapSRV0);
 
 
-	//RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
-	RenderQuad(m_viewPort, m_normalSpecSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	//RenderQuad(m_viewPort, m_normalSpecSRV, DXEffects::m_combineFinalFX->m_colorTech);
 	//RenderQuad(m_ViewPort, m_NormalSpecSRV, Effects::CombineFinalFX->ColorTech);
 	//Effects::CombineFinalFX->SetOpacity(0.8f);
 	//RenderQuad(shadowVP, m_ShadowMapSRV, Effects::CombineFinalFX->BlendMonoTech);
@@ -288,32 +288,52 @@ void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, M
 	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
 	for (mapIterator = _modelInstances.begin(); mapIterator != _modelInstances.end(); ++mapIterator)
 	{
-		//Normal
-		if (mapIterator->second.size() < 5)
+		if (!mapIterator->second.empty())
 		{
-			tech = DXEffects::m_objectDeferredFX->m_basicTech;
-			tech->GetDesc(&techDesc);
-
-			for (UINT p = 0; p < techDesc.Passes; ++p)
+			//Normal
+			if (mapIterator->second.size() < 5)
 			{
-				map<int, ModelInstance*>::iterator	modelIterator;
-				for (modelIterator = mapIterator->second.begin(); modelIterator != mapIterator->second.end(); ++modelIterator)
+				tech = DXEffects::m_objectDeferredFX->m_basicTech;
+				if (mapIterator->second.begin()->second->model->HasDiffuseMaps())
 				{
-					RenderModel(modelIterator->second, view, proj, tech, p);
+					tech = DXEffects::m_objectDeferredFX->m_texTech;
+					if (mapIterator->second.begin()->second->model->HasNormalMaps())
+						tech = DXEffects::m_objectDeferredFX->m_texNormalTech;
 				}
-			}			
-		}
+				else if (mapIterator->second.begin()->second->model->HasNormalMaps())
+					tech = DXEffects::m_objectDeferredFX->m_normalTech;
+				tech->GetDesc(&techDesc);
 
-		//Instanced
-		else
-		{
-			tech = DXEffects::m_objectDeferredFX->m_basicInstancedTech;
-			tech->GetDesc(&techDesc);
-			for (UINT p = 0; p < techDesc.Passes; ++p)
-			{
-				RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+				for (UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					map<int, ModelInstance*>::iterator	modelIterator;
+					for (modelIterator = mapIterator->second.begin(); modelIterator != mapIterator->second.end(); ++modelIterator)
+					{
+						RenderModel(modelIterator->second, view, proj, tech, p);
+					}
+				}
 			}
-		}		
+
+			//Instanced
+			else
+			{
+				tech = DXEffects::m_objectDeferredFX->m_basicInstancedTech;
+				if (mapIterator->second.begin()->second->model->HasDiffuseMaps())
+				{
+					tech = DXEffects::m_objectDeferredFX->m_texInstancedTech;
+					if (mapIterator->second.begin()->second->model->HasNormalMaps())
+						tech = DXEffects::m_objectDeferredFX->m_texNormalInstancedTech;
+				}
+				else if (mapIterator->second.begin()->second->model->HasNormalMaps())
+					tech = DXEffects::m_objectDeferredFX->m_normalInstancedTech;
+				tech->GetDesc(&techDesc);
+
+				for (UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+				}
+			}
+		}
 	}
 
 	//reset textures
