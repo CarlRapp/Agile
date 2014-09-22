@@ -40,7 +40,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 
 		else if (str == "mtllib")								//materialfile
 		{
-			ParseMaterialFile(file, filePath);
+			ParseMaterialFile(file, MODEL_ROOT);
 		}
                 str = "";
 	}
@@ -126,6 +126,8 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	//get material filename
 	std::getline(file, str);
 	Btrim(str);
+
+	str = dir + str;
 
 	//append directory in front of filename
 	//str = dir + str;
