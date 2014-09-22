@@ -15,7 +15,7 @@ struct PositionComponent : Component<PositionComponent>
 	}
 	PositionComponent(VECTOR3 _position) : m_position(_position)
 	{
-		m_deltaPosition = VECTOR3(1, 0, 0);
+		m_deltaPosition = VECTOR3(0, 0, 0);
 	}
 
 	void Reset()

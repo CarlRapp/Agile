@@ -12,6 +12,8 @@ struct ModelComponent : Component<ModelComponent>
 	ModelComponent()
 	{
 		m_modelPath = "";
+
+		m_worldMatrix = MATRIX4();
 	}
 
 };
