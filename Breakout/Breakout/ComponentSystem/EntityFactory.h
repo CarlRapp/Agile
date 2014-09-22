@@ -1,7 +1,20 @@
 #ifndef ENTITIYFACTORY_H
 #define ENTITIYFACTORY_H
 
-#include "Entity\Entity.h"
+#include "Entity/Entity.h"
+
+
+#include "Component/PositionComponent.h"
+#include "Component/RotationComponent.h"
+#include "Component/ScaleComponent.h"
+#include "Component/VelocityComponent.h"
+#include "Component/HealthComponent.h"
+#include "Component/ScoreComponent.h"
+#include "Component/ModelComponent.h"
+#include "Component/LifeComponent.h"
+#include "Component/MouseInputComponent.h"
+#include "Component/KeyboardInputComponent.h"
+#include "Component/CollisionComponent.h"
 
 
 #include "Component/PositionComponent.h"
@@ -29,13 +42,11 @@ public:
 		PAD,
 		BALL,
 		POWERUP,
-		PLAYER
+		WALL
 	};
 
-
-
 	~EntityFactory(void);
-	
+
 	static EntityFactory* GetInstance();
 
 	// Creates entity and required components based on EntityType

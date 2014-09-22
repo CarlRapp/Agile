@@ -38,12 +38,11 @@ float SceneManager::GetDeltaTime()
 	QueryPerformanceCounter(&m_t1);
 	return (float)(dt*0.001f);
 #else
-	/* IMPLEMENT SHIT HERE */
-	gettimeofday(&m_t2);
-	double dt = (t2.tv_sec - t1.tv_sec)*1000.0f;
-	dt += (t2.tv_usec - t1.tv_usec) * 0.001f;
-	gettimeofday(&m_t1);
-	return dt;
+//	/* IMPLEMENT SHIT HERE */
+        gettimeofday(&m_t2, &m_tZone);
+        float dt = (m_t2.tv_sec - m_t1.tv_sec) * 1000.0f + (m_t2.tv_usec - m_t1.tv_usec)*0.001f;
+        gettimeofday(&m_t1, &m_tZone);
+	return (float)dt * 0.001f;
 #endif
 }
 
@@ -54,7 +53,9 @@ void SceneManager::Start()
 	QueryPerformanceCounter(&m_t1);
 #else
 	// Start linux timer here
-	gettimeofday(&m_t1);
+	//gettimeofday(&m_t1,NULL);
+        gettimeofday(&m_t1, &m_tZone);
+        gettimeofday(&m_t2, &m_tZone);
 #endif
 
 	float lol = 0;

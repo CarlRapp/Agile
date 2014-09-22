@@ -62,6 +62,8 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
+
+
 	return true;
 }
 

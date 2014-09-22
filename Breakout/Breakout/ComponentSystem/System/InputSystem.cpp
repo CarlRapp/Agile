@@ -1,11 +1,12 @@
 #include "InputSystem.h"
-#include "../Component/InputComponent.h"
+#include "../Component/MouseInputComponent.h"
+#include "../Component/KeyboardInputComponent.h"
 #include "../Component/PositionComponent.h"
 #include "../World.h"
 #include "../EntityFactory.h"
 
 InputSystem::InputSystem(World* _world)
-: Base(ComponentFilter().Requires<InputComponent, PositionComponent>(), _world)
+: Base(ComponentFilter().RequiresOneOf<MouseInputComponent, KeyboardInputComponent>(), _world)
 {
 	m_mouse = InputManager::GetInstance()->getInputDevices()->GetMouse();
 	m_keyboard = InputManager::GetInstance()->getInputDevices()->GetKeyboard();
@@ -19,28 +20,41 @@ InputSystem::~InputSystem()
 
 void InputSystem::Update(float _dt)
 {
-	InputComponent* input;
+	int dx = m_mouse->getdX();
+	int dy = m_mouse->getdY();
+	InputState lButton = m_mouse->GetButtonState(MouseButton::LeftMB);
+	InputState rButton = m_mouse->GetButtonState(MouseButton::RightMB);
+	InputState mButton = m_mouse->GetButtonState(MouseButton::MiddleMB);
 
-	for (int i = 0; i < m_entities.size(); ++i)
+
+	EntityMap::iterator it;
+	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
-		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
+		Entity* e = it->second;
+		if (e->GetState() != Entity::ALIVE)
 			continue;
 
-		input = m_entities[i]->GetComponent<InputComponent>();
-
-		input->m_controls.MouseDX = m_mouse->getdX();
-		input->m_controls.MouseDY = m_mouse->getdY();
-
-		if (m_keyboard->GetKeyState(32) == InputState::Pressed)
+		if (e->HasComponent<MouseInputComponent>())
 		{
-			Entity* e;
-			e = m_world->CreateEntity();
-			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-			e->GetComponent<PositionComponent>()->m_position = m_entities[i]->GetComponent<PositionComponent>()->m_position;
-			e->GetComponent<PositionComponent>()->m_position.y += 2;
-			m_world->AddEntity(e);
+			MouseInputComponent* c = e->GetComponent<MouseInputComponent>();
+			c->m_controls.LeftButton = lButton;
+			c->m_controls.RightButton = rButton;
+			c->m_controls.MiddleButton = mButton;
+
+			c->m_controls.MouseDX = dx;
+			c->m_controls.MouseDY = dy;
+		}
+		if (e->HasComponent <KeyboardInputComponent>())
+		{
+			KeyboardInputComponent* c = e->GetComponent<KeyboardInputComponent>();
+
+			for (std::map<int, InputState>::iterator i = c->m_keys.begin(); i != c->m_keys.end(); ++i)
+				i->second = m_keyboard->GetKeyState(i->first);
+
 		}
 
 
 	}
+
+
 }

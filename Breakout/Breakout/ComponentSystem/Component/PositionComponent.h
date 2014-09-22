@@ -18,7 +18,7 @@ struct PositionComponent : Component<PositionComponent>
 		m_deltaPosition = VECTOR3(0, 0, 0);
 	}
 
-	void PositionComponent::Reset()
+	void Reset()
 	{
 		m_deltaPosition = VECTOR3(0, 0, 0);
 	}

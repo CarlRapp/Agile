@@ -25,8 +25,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
-		_entity->AddComponent<ScoreComponent>();
-		_entity->AddComponent<HealthComponent>();
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
@@ -34,20 +34,25 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
 		_entity->AddComponent<VelocityComponent>();
-		_entity->AddComponent<InputComponent>();
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<MouseInputComponent>();
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
+		_entity->AddComponent<CollisionComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::POWERUP:
 		break;
-	case EntityFactory::PLAYER:
-		_entity->AddComponent<ScoreComponent>().m_score = 0;
-		_entity->AddComponent<LifeComponent>();
+	case EntityFactory::WALL:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
 	default:
 		break;
 	}

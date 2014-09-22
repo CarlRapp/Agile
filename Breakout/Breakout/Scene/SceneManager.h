@@ -7,6 +7,7 @@
 #ifdef WINDOWS
 #include <Windows.h>
 #else
+#include <SDL/SDL.h>
 #include <sys/time.h>
 #endif
 
@@ -52,7 +53,10 @@ namespace SceneSystem
 		LARGE_INTEGER m_t1, m_t2;
 #else
 		// Fix on unix
-		timeval m_t1, m_t2;
+#define TimeVal struct timeval
+#define TimeZone struct	timezone
+                TimeVal	m_t1, m_t2;
+                TimeZone m_tZone;
 #endif
 
 		

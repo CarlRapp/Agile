@@ -1,7 +1,6 @@
 #include "MovementSystem.h"
 #include "../Component/VelocityComponent.h"
 #include "../Component/PositionComponent.h"
-#include "../World.h"
 
 MovementSystem::MovementSystem(World* _world)
 : Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>(), _world)
@@ -16,31 +15,28 @@ MovementSystem::~MovementSystem()
 
 void MovementSystem::Update(float _dt)
 {
-
-	VelocityComponent* velocity;
 	PositionComponent* position;
+	VelocityComponent* velocity;
+	EntityMap::iterator it;
 
-
-	for (int i = 0; i < m_entities.size(); ++i)
+	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
-		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
+		Entity* e = it->second;
+		if (e->GetState() != Entity::ALIVE)
 			continue;
 
-		velocity = m_entities[i]->GetComponent<VelocityComponent>();
-		position = m_entities[i]->GetComponent<PositionComponent>();
+		velocity = e->GetComponent<VelocityComponent>();
+		if (ISZERO(velocity->m_velocity))
+			continue;
 
-		if (velocity->m_velocity.x != 0)
-		{
+		position = e->GetComponent<PositionComponent>();
 
-			position->m_deltaPosition.x = velocity->m_velocity.x * _dt * 2.f;
-			
-			float x = position->m_position.x + position->m_deltaPosition.x;
-			x = x > 13.5f ? x = 13.5f : x = x;
-			x = x < 0 ? x = 0 : x = x;
-			position->m_position.x = x;
+		position->m_position.x += velocity->m_velocity.x * _dt;
+		position->m_position.y += velocity->m_velocity.y * _dt;
+		position->m_position.z += velocity->m_velocity.z * _dt;
 
-		}
-
+		position->m_deltaPosition.x = velocity->m_velocity.x * _dt;
+		position->m_deltaPosition.y = velocity->m_velocity.y * _dt;
+		position->m_deltaPosition.z = velocity->m_velocity.z * _dt;
 	}
-
 }
