@@ -70,6 +70,7 @@ void ModelLoader::ParseGroup(std::ifstream& file)
 	{
 		m_currentGroup = new Group;
 		m_currentGroup->name = str;
+		m_currentGroup->material = NULL;
 		m_groups[str] = m_currentGroup;
 	}
 	else
