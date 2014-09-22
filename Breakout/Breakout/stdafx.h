@@ -33,10 +33,6 @@ static char    m_cwd[FILENAME_MAX];
 
 typedef unsigned int        UINT;
 
-struct Vector2;
-struct Vector3;
-
-
 
 static std::string GetFile(std::string _path, std::string _root)
 {

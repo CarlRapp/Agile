@@ -19,7 +19,7 @@ enum MouseButton
 #pragma endregion
 
 #pragma region Mouse and Keyboard struct
-#define MOUSEBUTTONS 4
+#define MOUSEBUTTONS 5
 struct Mouse
 {
 private:

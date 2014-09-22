@@ -13,9 +13,9 @@ ISystem::~ISystem()
 {
 }
 
-std::vector<Entity*> ISystem::GetEntities() const
+EntityMap ISystem::GetEntities()
 {
-	return m_entities;
+	return m_entityMap;
 }
 
 const ComponentFilter* ISystem::GetComponentFilter() const
@@ -32,7 +32,7 @@ bool ISystem::Add(Entity* _entity)
 	if (!m_componentFilter.DoesFilterPass(_entity->GetComponents()))
 		return false;
 
-	m_entities.push_back(_entity);
+	m_entityMap[_entity->GetId()] = _entity;
 	return true;
 }
 
@@ -47,5 +47,5 @@ bool ISystem::Remove(Entity* _entity)
 
 void ISystem::Clear(void)
 {
-	m_entities.clear();
+	m_entityMap.clear();
 }

@@ -8,7 +8,7 @@
 #include "../Filter/ComponentFilter.h"
 #include <map>
 
-
+typedef std::map<TypeID, Entity*> EntityMap;
 class ISystem
 {
 private:
@@ -19,8 +19,7 @@ private:
 	ComponentFilter m_componentFilter;
 
 protected:
-	typedef std::map<TypeID, Entity*> EntityMap;
-	std::vector<Entity*> m_entities;
+	
 	EntityMap m_entityMap;
 
 public:
@@ -30,7 +29,7 @@ public:
 	virtual ~ISystem() = 0;
 
 	const ComponentFilter* GetComponentFilter() const;
-	std::vector<Entity*> GetEntities() const;
+	EntityMap GetEntities();
 
 	bool Add(Entity* _entity);
 	bool Remove(Entity* _entity);
