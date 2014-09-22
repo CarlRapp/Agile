@@ -24,17 +24,17 @@ void World::Start()
 
 bool World::AddEntity(Entity* _e)
 {
-	for each(Entity* e in m_activeEntities)
+	for(Entity* e : m_activeEntities)
 		if (e->GetId() == _e->GetId())
 			return false;
 
 	m_activeEntities.push_back(_e);
 	printf("Entity #%d added!\n", _e->GetId());
 
-	for each(IComponent* c in *_e->GetComponents())
+	for(IComponent* c : *_e->GetComponents())
 		AddNewComponent(c->m_ID);
 
-	for each(ISystem* system in m_systems)
+	for(ISystem* system : m_systems)
 		system->Add(_e);
 
 	AddEntityToComponentPool(_e);
@@ -58,7 +58,7 @@ Entity* World::CreateEntity()
 
 void World::Update(float _dt)
 {
-	for each(ISystem* system in m_systems)
+	for(ISystem* system : m_systems)
 		system->Update(_dt);
 
 	for (int i = m_activeEntities.size() - 1; i >= 0; --i)
@@ -83,7 +83,7 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	for each(ISystem* system in m_systems)
+	for(ISystem* system : m_systems)
 	{
 		system->Remove(_e);
 		system->Add(_e);
@@ -96,7 +96,7 @@ void World::KillEntity(Entity* _e)
 	_e->RemoveAllComponents();
 	_e->SetState(Entity::DEAD);
 
-	for each(ISystem* system in m_systems)
+	for(ISystem* system : m_systems)
 		system->Remove(_e);
 }
 
@@ -110,7 +110,7 @@ void World::AddNewComponent(TypeID _id)
 
 void World::AddEntityToComponentPool(Entity* _e)
 {
-	for each(IComponent* c in *_e->GetComponents())
+	for(IComponent* c : *_e->GetComponents())
 	{
 		m_componentEntityPool[c->m_ID]->push_back(_e);
 	}

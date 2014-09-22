@@ -36,9 +36,9 @@ bool GLWindow::InitWnd()
     if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL ) == NULL ) 
     { return false; } 
     //Set caption 
-    SDL_WM_SetCaption( "OpenGL Test", NULL ); 
     
-    std::cout << "SDL Window Success\n";
+    
+    std::cout << "\033[32mSDL Window Success\n\033[30m";;
     
     return true; 
 }
@@ -49,14 +49,14 @@ bool GLWindow::InitGL()
     GLenum glewError = glewInit();
     if( glewError != GLEW_OK )
     {
-        printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+        printf( "\033[31mError initializing GLEW! %s\n\033[30m", glewGetErrorString( glewError ) );
         return false;
     }
 
     //Make sure OpenGL 2.1 is supported
     if( !GLEW_VERSION_2_1 )
     {
-        printf( "OpenGL 2.1 not supported!\n" );
+        printf( "\033[31mOpenGL 2.1 not supported!\n\033[30m" );
         return false;
     }
 
@@ -87,11 +87,11 @@ bool GLWindow::InitGL()
     GLenum error = glGetError();
     if( error != GL_NO_ERROR )
     {
-        printf( "Error initializing OpenGL!");
+        printf( "\033[31mError initializing OpenGL!\033[30m\n");
         return false;
     }
-    
-    std::cout << "OGL Window Success\n";
+
+    std::cout << "\033[32mOpenGL Initialize Success\n\033[30m";
 
     return true;
 }

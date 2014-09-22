@@ -19,14 +19,14 @@ GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _far
     m_nearZ = _nearZ;
     m_farZ = _farZ;
 
-    m_position  = Vector3(0, 0, 5);
-    m_forward   = Vector3(0, 0, -1);
-    m_right     = Vector3(1, 0, 0);
-    m_up        = Vector3(0, 1, 0);
+    m_position  = glm::vec3(0, 0, 5);
+    m_forward   = glm::vec3(0, 0, -1);
+    m_right     = glm::vec3(1, 0, 0);
+    m_up        = glm::vec3(0, 1, 0);
 
     UpdateView();
     UpdateProjection();
-    SetForward(Vector3(0,0,-1));
+    SetForward(glm::vec3(0,0,-1));
 }
 
 GLCamera::~GLCamera(void)
@@ -149,7 +149,17 @@ MATRIX4* GLCamera::GetView()
     return &m_view;
 }
 
-void GLCamera::SetForward(Vector3 forward)
+void GLCamera::SetLookAt(glm::vec3 _target)
+{
+    glm::vec3 forward;
+    forward.x = _target.x - m_position.x;
+    forward.y = _target.y - m_position.y;
+    forward.z = _target.z - m_position.z;
+
+    SetForward(forward);
+}
+
+void GLCamera::SetForward(glm::vec3 forward)
 {
 	//glm::vec3 up, right, forward2;
 
@@ -189,7 +199,7 @@ void GLCamera::SetForward(Vector3 forward)
 		up2 = glm::vec3(0, 0, -1);
 
         
-	m_view = glm::lookAt(pos,direction,up2);
+	m_view = glm::lookAt(pos,pos+direction,up2);
 
 	//DirectX::XMStoreFloat4x4(&view4x4, view);
 	//memcpy(&m_view, &view, sizeof(glm::mat4));
@@ -200,9 +210,9 @@ void GLCamera::SetForward(Vector3 forward)
 //	DirectX::XMStoreFloat4x4(&view4x4, view);
 //	memcpy(&m_view, &view4x4, sizeof(Float4x4));
         
-	m_right = Vector3(m_view[0][0], m_view[1][0], m_view[2][0]);
-	m_up = Vector3(m_view[0][1], m_view[1][1], m_view[2][1]);
-	m_forward = Vector3(m_view[0][2], m_view[1][2], m_view[2][2]);
+	m_right = glm::vec3(m_view[0][0], m_view[1][0], m_view[2][0]);
+	m_up = glm::vec3(m_view[0][1], m_view[1][1], m_view[2][1]);
+	m_forward = glm::vec3(m_view[0][2], m_view[1][2], m_view[2][2]);
     
 
         
@@ -217,7 +227,7 @@ void GLCamera::SetForward(Vector3 forward)
 //    printf("VIEW FIRST\n");
 }
 
-void GLCamera::Move(Vector3 _move)
+void GLCamera::Move(glm::vec3 _move)
 {
     m_position.x += _move.x;
     m_position.y += _move.y;
@@ -236,3 +246,64 @@ void GLCamera::Move(float _move)
     UpdateView();
     
 }
+
+//void GLCamera::Strafe(float delta) 
+//{
+//	m_position += delta * m_right;
+//}
+//
+//void GLCamera::Roll(float angle) 
+//{
+//	glm::mat4 R = glm::rotate(angle, m_forward);
+//	glm::vec4 r = (R * glm::vec4(m_right, 0));
+//	m_right.x = r.x;
+//	m_right.y = r.y;
+//	m_right.z = r.z;
+//	glm::vec4 u = (R * glm::vec4(m_up, 0));
+//	m_up.x = u.x;
+//	m_up.y = u.y;
+//	m_up.z = u.z;
+//}
+//
+//void GLCamera::Pitch(float angle) 
+//{
+//	glm::mat4 R = glm::rotate(angle, m_right);
+//	glm::vec4 l = (R * glm::vec4(m_forward, 0));
+//	m_forward.x = l.x;
+//	m_forward.y = l.y;
+//	m_forward.z = l.z;
+//	glm::vec4 u = (R * glm::vec4(m_up, 0));
+//	m_up.x = u.x;
+//	m_up.y = u.y;
+//	m_up.z = u.z;
+//}
+//
+//void GLCamera::Yaw(float angle) 
+//{
+//	glm::mat4 R = glm::rotate(angle, m_up);
+//	glm::vec4 l = (R * glm::vec4(m_forward, 0));
+//	m_forward.x = l.x;
+//	m_forward.y = l.y;
+//	m_forward.z = l.z;
+//	glm::vec4 r = (R * glm::vec4(m_right, 0));
+//	m_right.x = r.x;
+//	m_right.y = r.y;
+//	m_right.z = r.z;
+//}
+//
+//void GLCamera::RotateY(float angle) 
+//{   
+//	glm::mat4 R = glm::rotate(angle, glm::vec3(0, 1, 0));
+//	glm::vec4 l = (glm::vec4(m_forward, 0) * R);
+//	m_forward.x = l.x;
+//	m_forward.y = l.y;
+//	m_forward.z = l.z;
+//	glm::vec4 r = (glm::vec4(m_right, 0) * R);
+//	m_right.x = r.x;
+//	m_right.y = r.y;
+//	m_right.z = r.z;
+//	glm::vec4 u = (glm::vec4(m_up, 0) * R);
+//	m_up.x = u.x;
+//	m_up.y = u.y;
+//	m_up.z = u.z;
+//}

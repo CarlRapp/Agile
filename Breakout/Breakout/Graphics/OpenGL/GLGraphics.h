@@ -16,20 +16,30 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <vector>
+#include <map>
 //#include <string>
 
 class GLGraphics : public IGraphics
 {
+    struct ModelInstance
+    {
+        private:
+
+        public:
+
+        glm::mat4	*world;
+        glm::mat4	*worldInverseTranspose;
+    };
+    
     struct ModelRenderInfo
     {
         public:
             
         int vertices;
-        //GLuint bufferNormalID;
-       // GLuint bufferVertexID;
         GLuint bufferVAOID;
-        glm::vec3 worldPos;
         std::string name;
+        std::map<int, ModelInstance*> instances;
+        //std::vector<ModelInstance> instances;
         
         ModelRenderInfo(){}
       
@@ -52,14 +62,17 @@ private:
         std::vector<glm::mat4> m_testMatrices;
         glm::vec4 m_testColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
         
-        int SetUniformV(const char* variable,float value);
-        int SetUniformV(const char* variable,glm::vec3 value);
-        int SetUniformV(const char* variable,glm::vec4 value);
-        int SetUniformV(const char* variable,glm::mat3 value);
-        int SetUniformV(const char* variable,glm::mat4 value);
-        int SetUniformV(const char* variable,int value);
+        //std::map<int, ModelInstance*> m_modelInstances;
         
-        int ModelToRender();
+//        int SetUniformV(const char* variable,float value);
+//        int SetUniformV(const char* variable,glm::vec3 value);
+//        int SetUniformV(const char* variable,glm::vec4 value);
+//        int SetUniformV(const char* variable,glm::mat3 value);
+//        int SetUniformV(const char* variable,glm::mat4 value);
+//        int SetUniformV(const char* variable,int value);
+        
+        int RenderInstanced();
+        int RenderStandard();
         void LightsToRender();
         void CameraToRender(ICamera* _camera);
 public:
@@ -74,6 +87,12 @@ public:
         void Free();
         void Update();
         void LoadModel(std::string _path);
+        
+        void AddRenderObject(std::string _path, MATRIX4 _world);
+        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+        void RemoveObject(int _id);
+        
+
 };
 
 

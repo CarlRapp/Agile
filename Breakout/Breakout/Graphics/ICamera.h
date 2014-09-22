@@ -45,10 +45,10 @@ public:
 	virtual void Move(VECTOR3 _move) = 0;
         virtual void Move(float _move) = 0;
 	//virtual void SetPosition(float x, float y, float z) = 0;
-		virtual void SetForward(VECTOR3 _forward) = 0;
+	virtual void SetForward(VECTOR3 _forward) = 0;
 	//virtual void SetForward(float x, float y, float z) = 0;
 
-		virtual void SetLookAt(VECTOR3 _target) = 0;
+	virtual void SetLookAt(VECTOR3 _target) = 0;
 
 	//virtual void SetLookAt(float x, float y, float z) = 0;
 
