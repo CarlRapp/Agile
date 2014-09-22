@@ -2,31 +2,33 @@
 #define _COLLISIONMATH_H_
 
 #include "../../stdafx.h"
+#include "../../ComponentSystem/Component/BoxComponent.h"
+#include "../../ComponentSystem/Component/SphereComponent.h"
 
 class CollisionMath
 {
 private:
 public:
 	// Checks if a box intersects with a box
-	inline bool BoxBoxIntersection(const BoundingBox& _boundingBox1, const BoundingBox& _boundingBox2) const;
+	static inline bool BoxBoxIntersection(const BoxComponent& _boundingBox1, const BoxComponent& _boundingBox2);
 
 	// Checks if a box intersects with a box. If they do intersect, give the first box a new position that doesn't intersect with the second box
-	bool BoxBoxIntersection(BoundingBox& _boundingBox1, const BoundingBox& _boundingBox2, const Vector2& _boundingBox1Velocity) const;
+	static bool BoxBoxIntersection(BoxComponent& _boundingBox1, const BoxComponent& _boundingBox2, const VECTOR2& _boundingBox1Velocity);
 
 	// Checks if a sphere intersects with a box
-	inline bool SphereBoxIntersection(const BoundingSphere& _sphere, const BoundingBox& _boundingBox) const;
+	static inline bool SphereBoxIntersection(const SphereComponent& _sphere, const BoxComponent& _boundingBox);
 
 	// Checks if a sphere intersects with a box. If they do intersect, give the sphere a new position that doesn't intersect with the box
-	bool SphereBoxIntersection(BoundingSphere& _sphere, const BoundingBox& _boundingBox, const Vector2& _sphereVelocity) const;
+	static bool SphereBoxIntersection(SphereComponent& _sphere, const BoxComponent& _boundingBox, const VECTOR2& _sphereVelocity);
 
 	// Checks if a point intersects with a box
-	inline bool PointBoxIntersection(const Vector2& _point, const BoundingBox& _boundingBox) const;
+	static inline bool PointBoxIntersection(const VECTOR2& _point, const BoxComponent& _boundingBox);
 
 	// Checks if a point intersects with a sphere
-	inline bool PointSphereIntersection(const Vector2& _point, const BoundingSphere& _sphere) const;
+	static inline bool PointSphereIntersection(const VECTOR2& _point, const SphereComponent& _sphere);
 
 	// Checks if two lines intersect. If they do intersect, return the intersection point
-	bool LineLineIntersection(const Vector2& _startPoint1, const Vector2& _endPoint1, const Vector2& _startPoint2, const Vector2& _endPoint2, Vector2& _intersectionPoint) const;
+	static bool LineLineIntersection(VECTOR2& _intersectionPoint, const VECTOR2& _startPoint1, const VECTOR2& _endPoint1, const VECTOR2& _startPoint2, const VECTOR2& _endPoint2);
 };
 
 #endif
