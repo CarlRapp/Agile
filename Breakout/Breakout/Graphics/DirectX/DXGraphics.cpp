@@ -41,7 +41,7 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
-#define asd 200
+#define asd 1000
 MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
@@ -71,7 +71,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 
 		AddObject(i, "sphere", &world[i], &world[i]);
 	}
-	
 
 
 	return true;
@@ -233,7 +232,13 @@ void DXGraphics::Render(ICamera* _camera)
 
 void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
 {
-	if (m_modelInstances.count(_id) != 0)
+	//if (m_modelInstances.count(_model) == 0)
+	//{
+	//	m_modelInstances[_model] = map<int, ModelInstance*>();
+	//}
+
+
+	if (m_modelInstances[_model].count(_id) != 0)
 		return;
 
 	LoadModel(_model);
@@ -244,10 +249,15 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->world = _world;
 	mi->worldInverseTranspose = _worldInverseTranspose;
 
-	m_modelInstances.insert(pair<int, ModelInstance*>(_id, mi));
+	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
 
 void DXGraphics::RemoveObject(int _id)
 {
-	m_modelInstances.erase(_id);
+
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = m_modelInstances.begin(); mapIterator != m_modelInstances.end(); ++mapIterator)
+	{
+		mapIterator->second.erase(_id);
+	}
 }

@@ -16,6 +16,7 @@
 
 
 
+
 class DXGraphics : public IGraphics
 {
 
@@ -24,7 +25,13 @@ private:
 
 	DXTextureManager		m_textureManager;
 
-	map<int, ModelInstance*>m_modelInstances;
+	//map<int, ModelInstance*>m_modelInstances;
+
+
+	map<std::string, map<int, ModelInstance*>>	m_modelInstances;
+
+
+
 	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;
 	ModelInstance			*m_testmodelinstance;

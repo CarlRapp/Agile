@@ -165,7 +165,7 @@ void DXDeferred::ClearBuffers()
 
 }
 
-void DXDeferred::FillGBuffer(ID3D11Device *_device, map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
@@ -267,7 +267,7 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderModels(ID3D11Device *_device, map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
 	m_deviceContext->RSSetViewports(1, vp);
@@ -285,37 +285,37 @@ void DXDeferred::RenderModels(ID3D11Device *_device, map<int, ModelInstance*> &_
 	ID3DX11EffectTechnique* tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 
-	//Normal
-	/*
-	tech = DXEffects::m_objectDeferredFX->m_basicTech;
-	tech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = _modelInstances.begin(); mapIterator != _modelInstances.end(); ++mapIterator)
 	{
-		map<int, ModelInstance*>::iterator	modelIterator;
-		for (modelIterator = _modelInstances.begin(); modelIterator != _modelInstances.end(); ++modelIterator)
+		//Normal
+		if (mapIterator->second.size() < 5)
 		{
-			RenderModel(modelIterator->second, view, proj, tech, p);
+			tech = DXEffects::m_objectDeferredFX->m_basicTech;
+			tech->GetDesc(&techDesc);
+
+			for (UINT p = 0; p < techDesc.Passes; ++p)
+			{
+				map<int, ModelInstance*>::iterator	modelIterator;
+				for (modelIterator = mapIterator->second.begin(); modelIterator != mapIterator->second.end(); ++modelIterator)
+				{
+					RenderModel(modelIterator->second, view, proj, tech, p);
+				}
+			}			
 		}
-		
-	}
-	*/
-	//Instanced
 
-	map<int, ModelInstance*>::iterator	modelIterator;
-	vector<ModelInstance*> mi;
-	for (modelIterator = _modelInstances.begin(); modelIterator != _modelInstances.end(); ++modelIterator)
-	{
-		mi.push_back(modelIterator->second);
+		//Instanced
+		else
+		{
+			tech = DXEffects::m_objectDeferredFX->m_basicInstancedTech;
+			tech->GetDesc(&techDesc);
+			for (UINT p = 0; p < techDesc.Passes; ++p)
+			{
+				RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+			}
+		}		
 	}
 
-	
-	tech = DXEffects::m_objectDeferredFX->m_basicInstancedTech;
-	tech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{		
-		RenderModelInstanced(_device, &mi, view, proj, tech, p);
-	}
-	
 	//reset textures
 	DXEffects::m_objectDeferredFX->SetDiffuseMap(NULL);
 	DXEffects::m_objectDeferredFX->SetNormalMap(NULL);
@@ -369,7 +369,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 
 }
 
-void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
+void DXDeferred::RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
 {
 	if (_mi->empty())
 		return;
@@ -395,10 +395,12 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstanc
 
 	vector<DXInstance::World> instancedData;
 
-	for (ModelInstance *mi : *_mi)
+
+	map<int, ModelInstance*>::iterator	modelIterator;
+	for (modelIterator = _mi->begin(); modelIterator != _mi->end(); ++modelIterator)
 	{
 		DXInstance::World data;
-		data.world = *mi->world;
+		data.world = *modelIterator->second->world;
 		instancedData.push_back(data);
 	}
 
@@ -420,19 +422,19 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstanc
 
 		m_deviceContext->Unmap(m_instanceBuffer, 0);
 
-		for (UINT subset = 0; subset < _mi->at(0)->model->SubsetCount; ++subset)
+		for (UINT subset = 0; subset < _mi->begin()->second->model->SubsetCount; ++subset)
 		{
 			//UINT subset = 6;
 			//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
-			if (_mi->at(0)->model->HasDiffuseMaps())
-				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->at(0)->model->GetDiffuseMap(subset, _mi->at(0)->GetTextureIndex()));
+			if (_mi->begin()->second->model->HasDiffuseMaps())
+				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->begin()->second->model->GetDiffuseMap(subset, _mi->begin()->second->GetTextureIndex()));
 
-			if (_mi->at(0)->model->HasNormalMaps())
-				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->at(0)->model->GetNormalMap(subset, _mi->at(0)->GetTextureIndex()));
+			if (_mi->begin()->second->model->HasNormalMaps())
+				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->begin()->second->model->GetNormalMap(subset, _mi->begin()->second->GetTextureIndex()));
 
 			_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
-			_mi->at(0)->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
+			_mi->begin()->second->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
 		}
 	}	
 	
@@ -441,7 +443,7 @@ void DXDeferred::RenderModelInstanced(ID3D11Device *_device, vector<ModelInstanc
 }
 
 
-void DXDeferred::Render(ID3D11Device *_device, ID3D11RenderTargetView *_renderTargetView, map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+void DXDeferred::Render(ID3D11Device *_device, ID3D11RenderTargetView *_renderTargetView, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
