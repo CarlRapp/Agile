@@ -63,12 +63,12 @@ public:
 				world->AddEntity(e);
 			}
 
-		//e = world->CreateEntity();
-		//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-		//e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
-		//e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
-		//e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
-		//world->AddEntity(e);
+		e = world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
+		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
+		e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
+		world->AddEntity(e);
 
 
 
