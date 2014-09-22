@@ -19,7 +19,7 @@ private:
         int m_height;
 
 	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ;
-	Vector3				m_position, m_forward, m_right, m_up;
+	glm::vec3			m_position, m_forward, m_right, m_up;
         glm::mat4                       m_projection,m_view;
         void*                           m_vpProjection;
         void*                           m_vpView;
@@ -42,13 +42,13 @@ public:
 	//void RotateY(float angle) = 0;
 
 #pragma region Get Functions
-	void* GetView();
-	void* GetProjection();
+	MATRIX4* GetView();
+	MATRIX4* GetProjection();
 
-	Vector3 GetPosition()		{ return m_position; }
-	Vector3 GetForward()		{ return m_forward; }
-	Vector3 GetRight()			{ return m_right; }
-	Vector3 GetUp()				{ return m_up; }
+	glm::vec3 GetPosition()		{ return m_position; }
+	glm::vec3 GetForward()		{ return m_forward; }
+	glm::vec3 GetRight()		{ return m_right; }
+	glm::vec3 GetUp()		{ return m_up; }
 
 	//BoundingFrustum GetFrustum() = 0;
 
@@ -61,13 +61,13 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-        void Move(Vector3 _move);
+        void Move(glm::vec3 _move);
         void Move(float _move);
-	void SetPosition(Vector3 position) { m_position = position; UpdateView(); }
+	void SetPosition(glm::vec3 position) { m_position = position; UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
-	void SetForward(Vector3 forward);
+	void SetForward(glm::vec3 forward);
 	//void SetForward(float x, float y, float z) = 0;
-        void SetLookAt(Vector3 _target){}
+        void SetLookAt(glm::vec3 _target){}
 	//void SetLookAt(Vector3 target) = 0;
 
 	//void SetLookAt(float x, float y, float z) = 0;

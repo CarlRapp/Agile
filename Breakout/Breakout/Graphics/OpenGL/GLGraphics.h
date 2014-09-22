@@ -25,17 +25,14 @@ class GLGraphics : public IGraphics
         public:
             
         int vertices;
-        GLuint bufferNormalID;
-        GLuint bufferVertexID;
+        //GLuint bufferNormalID;
+       // GLuint bufferVertexID;
+        GLuint bufferVAOID;
+        glm::vec3 worldPos;
         std::string name;
         
         ModelRenderInfo(){}
-        ModelRenderInfo(GLuint _bufferNormalID, GLuint _bufferVertexID, int _vertices, std::string _name):
-        bufferNormalID(_bufferNormalID),
-        bufferVertexID(_bufferVertexID),
-        vertices(_vertices),
-        name(_name)
-        {}
+      
     };
     
 private:
@@ -51,7 +48,9 @@ private:
         std::vector<Shader*> m_shaders;
         
         glm::vec3 m_testLightPos = glm::vec3(0,3,0);
-        glm::mat4 m_testMatrix = glm::mat4 {1,0,0,0 ,0,1,0,0 ,0,0,1,0 ,0,0,0,1};
+                                            
+        std::vector<glm::mat4> m_testMatrices;
+        glm::vec4 m_testColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
         
         int SetUniformV(const char* variable,float value);
         int SetUniformV(const char* variable,glm::vec3 value);
@@ -59,6 +58,10 @@ private:
         int SetUniformV(const char* variable,glm::mat3 value);
         int SetUniformV(const char* variable,glm::mat4 value);
         int SetUniformV(const char* variable,int value);
+        
+        int ModelToRender();
+        void LightsToRender();
+        void CameraToRender(ICamera* _camera);
 public:
 
 	GLGraphics(void);
@@ -71,6 +74,10 @@ public:
         void Free();
         void Update();
         void LoadModel(std::string _path);
+        
+        void AddRenderObject(std::string _path, MATRIX4 _world);
+        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+        void RemoveObject(int _id);
 };
 
 

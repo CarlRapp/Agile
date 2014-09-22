@@ -26,21 +26,21 @@ private:
 
 public:
 
-	~GraphicsManager(void);
-	static GraphicsManager* GetInstance();
-	static void Destroy();
+    ~GraphicsManager(void);
+    static GraphicsManager* GetInstance();
+    static void Destroy();
 
 
-	bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
-	IGraphics*  GetIGraphics() { return m_IGraphics; }
-	void        Render();
-	void        Update();
+    bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
+    IGraphics*  GetIGraphics() { return m_IGraphics; }
+    void        Render();
+    void        Update();
     ICamera*    GetICamera();
 
-	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
-	void RemoveObject(int _id);
+    void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+    void        RemoveObject(int _id);
 
-	bool        Init3D(DisplayMode _displayMode);
+    bool        Init3D(DisplayMode _displayMode);
 };
 
 
