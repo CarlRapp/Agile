@@ -45,7 +45,21 @@ bool ComponentFilter::DoesFilterPass(const std::vector<IComponent*>* _components
 		}
 	}
 
-	return true;
+	if (m_requiresOneOf.size() < 1)
+		return true;
+
+	for (int i = 0; i < m_requiresOneOf.size(); ++i)
+	{
+		for (int j = 0; j < _components->size(); ++j)
+		{
+			if (m_requiresOneOf[i] == _components->at(j)->m_ID)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 void ComponentFilter::Clear()

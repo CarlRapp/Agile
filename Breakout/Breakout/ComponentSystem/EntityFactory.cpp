@@ -2,17 +2,8 @@
 
 #include "EntityFactory.h"
 
-#include "Component/PositionComponent.h"
-#include "Component/RotationComponent.h"
-#include "Component/ScaleComponent.h"
-#include "Component/VelocityComponent.h"
-#include "Component/HealthComponent.h"
-#include "Component/ScoreComponent.h"
-#include "Component/ModelComponent.h"
-#include "Component/LifeComponent.h"
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
-bool EntityFactory::m_initialized = false;
 
 EntityFactory* EntityFactory::GetInstance()
 {
@@ -24,77 +15,45 @@ EntityFactory* EntityFactory::GetInstance()
 	return m_entityFactory;
 }
 
-void EntityFactory::Initialize(Entity** _entites)
+
+void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 {
-	m_entites = _entites;
-	m_initialized = true;
-}
-
-
-Entity* EntityFactory::CreateEntity(EntityType _entityType)
-{
-	if (!m_initialized)
-	{
-		printf("EntityFactory not initialized!\n");
-		return 0;
-	}
-
-
-	Entity* entity = 0;
-
-	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
-	{
-		if (m_entites[i]->GetState() == Entity::DEAD)
-		{
-			entity = m_entites[i];
-			break;
-		}
-	}
-
-	if (entity == 0)
-	{
-		printf("Max number of entites already in use!\n");
-		return 0;
-	}
-
 	switch (_entityType)
 	{
 	case EntityFactory::BLOCK:
-		entity->AddComponent<PositionComponent>();
-		entity->AddComponent<RotationComponent>();
-		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>().m_modelPath = "block";
-		entity->AddComponent<ScoreComponent>();
-		entity->AddComponent<HealthComponent>();
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::PAD:
-		entity->AddComponent<PositionComponent>();
-		entity->AddComponent<RotationComponent>();
-		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>().m_modelPath = "pad";
-		entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
+		_entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<MouseInputComponent>();
 		break;
 	case EntityFactory::BALL:
-		entity->AddComponent<PositionComponent>();
-		entity->AddComponent<RotationComponent>();
-		entity->AddComponent<ScaleComponent>();
-		entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
-		entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<VelocityComponent>();
 		break;
 	case EntityFactory::POWERUP:
 		break;
-	case EntityFactory::PLAYER:
-		entity->AddComponent<ScoreComponent>().m_score = 0;
-		entity->AddComponent<LifeComponent>();
+	case EntityFactory::WALL:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
 	default:
 		break;
 	}
-
-	return entity;
-}
-
-void EntityFactory::DeleteEntity(Entity* _entity)
-{
-	_entity->RemoveAllComponents();
-	_entity->SetState(Entity::DEAD);
 }

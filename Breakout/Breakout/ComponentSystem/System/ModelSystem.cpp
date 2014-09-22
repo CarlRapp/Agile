@@ -6,8 +6,9 @@
 #include "../Component/RotationComponent.h"
 #include "../Component/ScaleComponent.h"
 
-ModelSystem::ModelSystem(void)
-: Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>())
+
+ModelSystem::ModelSystem(World* _world)
+: Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>(), _world)
 {
 }
 
@@ -26,17 +27,24 @@ void ModelSystem::Update(float _dt)
 
 	lol += _dt;
 
-	for (int i = 0; i < m_entities.size(); ++i)
+	EntityMap::iterator it;
+
+	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
-		if ((m_entities[i]->GetState() == Entity::LIMBO) || m_entities[i]->GetState() == Entity::DEACTIVATED)
+		Entity* e = it->second;
+		if (e->GetState() != Entity::ALIVE)
+		{
+			GraphicsManager::GetInstance()->RemoveObject(e->GetId());
 			continue;
+		}
+			
 
 		bool change = false;
 
-		position = m_entities[i]->GetComponent<PositionComponent>();
-		rotation = m_entities[i]->GetComponent<RotationComponent>();
-		scale	 = m_entities[i]->GetComponent<ScaleComponent>();
-		model	 = m_entities[i]->GetComponent<ModelComponent>();
+		position = e->GetComponent<PositionComponent>();
+		rotation = e->GetComponent<RotationComponent>();
+		scale = e->GetComponent<ScaleComponent>();
+		model = e->GetComponent<ModelComponent>();
 
 
 		if (!ISZERO(position->m_deltaPosition))
@@ -49,15 +57,9 @@ void ModelSystem::Update(float _dt)
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position);
-			position->Reset();
-			GraphicsManager::GetInstance()->AddObject(m_entities[i]->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position.x, position->m_position.y, position->m_position.z);
+			GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
-		
-		//model->m_worldMatrix = ROTATE(model->m_worldMatrix, 40, VECTOR3(0, 1, 0));
-
-		
-
 	}
 
 }
