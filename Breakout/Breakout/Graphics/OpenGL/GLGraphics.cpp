@@ -384,8 +384,6 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
     mi->worldInverseTranspose = _worldInverseTranspose;
 
     m_models[newModelID]->instances.insert(pair<int, ModelInstance*>(_id, mi));
-    
-
 }
 
 void GLGraphics::RemoveObject(int _id)

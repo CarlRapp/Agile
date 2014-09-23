@@ -40,6 +40,9 @@ public:
 
 	template <typename T>
 	T* AddSystem();
+        
+        //TODO map systems with id instead of vector
+        ISystem* GetSystem(int _id);
 };
 
 template <typename T>
