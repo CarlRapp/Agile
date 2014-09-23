@@ -19,6 +19,7 @@
 #define AUDIO_ROOT "../../Data/Audio/"
 
 #include <Windows.h>
+#include "MathHelper.h"
 
 #endif
 
@@ -66,74 +67,6 @@ static std::string GetFile(std::string _path, std::string _root)
 
 
 
-#ifdef LINUX
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#define MATRIX4 glm::mat4
-#define VECTOR3 glm::vec3
-#define VECTOR2 glm::vec2
-
-static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector)
-{
-	return glm::translate(matrix, vector);
-}
-
-static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
-{
-	return glm::rotate(matrix, angle, axis);
-}
-
-static bool MacroIsZero(glm::vec3 _vec)
-{
-	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
-		return true;
-
-	return false;
-}
-#else
-
-#include <DirectXMath.h>
-
-#define MATRIX4 DirectX::XMFLOAT4X4
-#define VECTOR4 DirectX::XMFLOAT4
-#define VECTOR3 DirectX::XMFLOAT3
-#define VECTOR2 DirectX::XMFLOAT2
-
-static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, VECTOR3 _vector)
-{
-	DirectX::XMMATRIX temp;
-	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
-	DirectX::XMStoreFloat4x4(&_mat, temp);
-	return _mat;
-}
-
-
-static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis)
-{
-	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&_axis);
-	DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&_mat);
-	temp = DirectX::XMMatrixRotationAxis(vec, _angle);
-	DirectX::XMStoreFloat4x4(&_mat, temp);
-	return _mat;
-}
-
-static bool MacroIsZero(VECTOR3 _vec)
-{
-	if (_vec.x == 0 && _vec.y == 0 && _vec.z == 0)
-		return true;
-
-	return false;
-}
-
-
-#endif
-
-#define TRANSLATE(matrix,vector) MacroTranslate(matrix,vector)
-#define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
-#define ISZERO(vector) MacroIsZero(vector)
 
 
 
