@@ -10,6 +10,7 @@
 ModelSystem::ModelSystem(World* _world)
 : Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>(), _world)
 {
+
 }
 
 ModelSystem::~ModelSystem()
@@ -62,9 +63,48 @@ void ModelSystem::Update(float _dt)
 			position->Reset();
 			rotation->Reset();
 			scale->Reset();
-
-			GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
 	}
+        
+        //RunEvents();
 
 }
+
+//void ModelSystem::RunEvents()
+//{
+//     if(m_nextEvent == NONE)
+//            return;
+//     
+//     if(m_nextEvent == INITIALIZE)
+//     {
+//         //LoadModels();
+//         printf("YO\n");
+//     }
+//     
+//     m_nextEvent = NONE;
+//}
+
+//void ModelSystem::LoadModels()
+//{
+//    EntityMap::iterator it;
+//    ModelComponent* model;
+//    
+//    for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+//    {
+//        Entity* e = it->second;
+//        model = e->GetComponent<ModelComponent>();
+//        GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+//    }
+//}
+//
+//void ModelSystem::LoadModel(int entityID)
+//{
+//    EntityMap::iterator it;
+//    ModelComponent* model;
+//    
+//    Entity* e = m_entityMap.find(entityID)->second;
+//    
+//
+//    model = e->GetComponent<ModelComponent>();
+//    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+//}

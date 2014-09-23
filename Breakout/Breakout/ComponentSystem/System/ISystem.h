@@ -14,6 +14,14 @@ class World;
 typedef std::map<TypeID, Entity*> EntityMap;
 class ISystem
 {
+public:
+    
+    	enum EVENT
+	{
+		NONE = 0,
+		INITIALIZE,
+	};
+    
 private:
 	virtual void Initialize(){}
 	virtual void OnEntityAdded(){}
@@ -28,8 +36,11 @@ protected:
 	
 	EntityMap m_entityMap;
 	World* m_world;
+        EVENT m_nextEvent;
+        virtual void RunEvents(){};
 
 public:
+    
 	ISystem();
 	ISystem(const ComponentFilter& _componentFilter, World* _world);
 
@@ -43,7 +54,7 @@ public:
 	void Clear(void);
 
 	virtual void Update(float _dt) = 0;
-
+        void SetEvent(EVENT _event){m_nextEvent = _event;}
 };
 
 template<typename T>
