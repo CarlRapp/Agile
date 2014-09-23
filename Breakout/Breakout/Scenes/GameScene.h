@@ -84,7 +84,8 @@ public:
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
 		ModelData* lol = FileManager::GetInstance().LoadModel(GetFile("box", MODEL_ROOT));
-
+                GraphicsManager::GetInstance()->AddLight(VECTOR3(5.0, 5.0, 3.0), VECTOR3(0.2, 0.8, 0.8), VECTOR3(0.5, 0.5, 1.0), 1000.0);
+                GraphicsManager::GetInstance()->AddLight(VECTOR3(-5.0, 5.0, 3.0), VECTOR3(0.2, 0.8, 0.8), VECTOR3(1.0, 0.5, 0.5), 1000.0);
 	}
 
 	void LoadContent()
