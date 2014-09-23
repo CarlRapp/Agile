@@ -89,8 +89,8 @@ public:
 	void LoadContent()
 	{
             printf("1\n");
-//            m_world->GetSystem(4)->SetEvent(ISystem::EVENT::INITIALIZE);
-//            
+           m_world->GetSystem(4)->SetEvent(ISystem::EVENT::INITIALIZE);
+			//((ModelSystem*)m_world->GetSystem(4))->LoadModels();
             printf("Loading Content (Game Scene)\n");
 	}
 

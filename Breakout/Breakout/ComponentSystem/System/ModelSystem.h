@@ -17,12 +17,12 @@ public:
         
         //loads models into graphics
         //load all models at startup
-//        void LoadModels();
+        void LoadModels();
 //        //load one model
-//        void LoadModel(int entityID);
+       void LoadModel(int entityID);
         
         //runs methods depending on what's in m_nextEvent
-        //void RunEvents();
+        void RunEvents();
         
         
 };
