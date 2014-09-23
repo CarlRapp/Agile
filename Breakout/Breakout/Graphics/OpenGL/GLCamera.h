@@ -67,9 +67,13 @@ public:
 	//void SetPosition(float x, float y, float z) = 0;
 	void SetForward(glm::vec3 forward);
 	//void SetForward(float x, float y, float z) = 0;
-        void SetLookAt(glm::vec3 _target){}
+        void SetLookAt(glm::vec3 _target);
 	//void SetLookAt(Vector3 target) = 0;
-
+//	void Strafe(float delta);
+//	void Yaw(float angle);
+//	void Pitch(float angle);
+//	void Roll(float angle);
+//	void RotateY(float angle);
 	//void SetLookAt(float x, float y, float z) = 0;
 
 	void SetViewPort(int X, int Y, int Width, int Height)

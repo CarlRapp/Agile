@@ -59,6 +59,7 @@ void SceneManager::Start()
 #endif
 
 	float lol = 0;
+
 	InputManager* IM = InputManager::GetInstance();
 	GraphicsManager* GM = GraphicsManager::GetInstance();
 
@@ -70,13 +71,13 @@ void SceneManager::Start()
 
 		m_activeScene->Update(dt);
 		m_activeScene->Render();
-
+                //setbuf(stdout, NULL);
 		lol += dt;
-		if (lol > 1)
+		if (lol > 0.5f)
 		{
-			printf("FPS: %f\n", 1.0f / dt);
-			printf("Delta: %f\n", dt);
-			lol = 0;
+                    printf("FPS: %f | Delta: %f\n" , 1.0f / dt,dt);
+
+                    lol = 0;
 		}
 	}
 

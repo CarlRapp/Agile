@@ -21,7 +21,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 {
 	ifstream file;
 	file.open(filePath + ".obj");
-        
+
 	if (!file)
 		return 0;
 	string str;
@@ -29,8 +29,8 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 	while (!file.eof())
 	{
 		file >> str;
-
-		if (str == "#" || str == "s")	ParseComment(file);
+                
+		if (str == "#" || str == "s")           ParseComment(file);
 		else if (str == "v")			ParsePosition(file);	//position
 		else if (str == "vn")			ParseNormal(file);		//normal
 		else if (str == "vt")			ParseTexCoord(file);	//texturkoordinat

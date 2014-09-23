@@ -58,6 +58,11 @@ void ModelSystem::Update(float _dt)
 		if (change)
 		{
 			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position);
+			//TEMP
+			position->Reset();
+			rotation->Reset();
+			scale->Reset();
+
 			GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
 	}

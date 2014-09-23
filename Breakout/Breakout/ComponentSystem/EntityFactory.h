@@ -16,6 +16,17 @@
 #include "Component/KeyboardInputComponent.h"
 #include "Component/CollisionComponent.h"
 
+
+#include "Component/PositionComponent.h"
+#include "Component/RotationComponent.h"
+#include "Component/ScaleComponent.h"
+#include "Component/VelocityComponent.h"
+#include "Component/HealthComponent.h"
+#include "Component/ScoreComponent.h"
+#include "Component/ModelComponent.h"
+#include "Component/LifeComponent.h"
+#include "Component/InputComponent.h"
+
 class EntityFactory
 {
 private:
