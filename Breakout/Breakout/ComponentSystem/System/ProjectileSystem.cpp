@@ -31,7 +31,7 @@ void ProjectileSystem::Update(float _dt)
 		}
 
 		position = m_entites[i]->GetComponent<PositionComponent>();
-		if (position->m_position.y > 25)
+		if (position->GetPosition().y > 25)
 		{
 			m_entites[i]->SetState(Entity::DEAD);
 			m_entites.erase(m_entites.begin() + i);
