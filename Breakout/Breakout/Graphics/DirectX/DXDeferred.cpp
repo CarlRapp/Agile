@@ -9,6 +9,8 @@
 #include "DXEffects.h"
 #include "DXVertex.h"
 
+static const int INSTANCEDBUFFERSIZE = 200;
+
 DXDeferred::DXDeferred(void)
 {
 
@@ -26,15 +28,16 @@ DXDeferred::~DXDeferred(void)
 	ReleaseCOM(m_finalSRV);
 	ReleaseCOM(m_finalUAV);
 	ReleaseCOM(m_fullSceenQuad);
+	ReleaseCOM(m_instanceBuffer);
 }
 
-void DXDeferred::Init(ID3D11Device *_Device, ID3D11DeviceContext *_DeviceContext, int _Width, int _Height)
+void DXDeferred::Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height)
 {
-	m_device = _Device;
-	m_deviceContext = _DeviceContext;
+	m_device = _device;
+	m_deviceContext = _deviceContext;
 
-	m_width = _Width;
-	m_height = _Height;
+	m_width = _width;
+	m_height = _height;
 
 
 	m_viewPort.MinDepth = 0.0f;
@@ -132,6 +135,16 @@ void DXDeferred::InitBuffers()
 	m_device->CreateUnorderedAccessView(finalTex, 0, &m_finalUAV);
 
 
+	D3D11_BUFFER_DESC vbd;
+	vbd.Usage = D3D11_USAGE_DYNAMIC;
+	vbd.ByteWidth = sizeof(DXInstance::World) * INSTANCEDBUFFERSIZE;
+	vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	vbd.MiscFlags = 0;
+	vbd.StructureByteStride = 0;
+
+	m_device->CreateBuffer(&vbd, 0, &m_instanceBuffer);
+
 	//RELEASE
 	albedoTex->Release();
 	normalSpecTex->Release();
@@ -152,7 +165,7 @@ void DXDeferred::ClearBuffers()
 
 }
 
-void DXDeferred::FillGBuffer(map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
@@ -162,7 +175,7 @@ void DXDeferred::FillGBuffer(map<int, ModelInstance*> &_modelInstances, ICamera*
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	//RenderTestTriangle(_camera);
-	RenderModels(_modelInstances, _camera);
+	RenderModels(_device, _modelInstances, _camera);
 
 	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
@@ -178,8 +191,8 @@ void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 	//Effects::CombineFinalFX->SetTexture(m_ShadowMapSRV0);
 
 
-	//RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
-	RenderQuad(m_viewPort, m_normalSpecSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	RenderQuad(m_viewPort, m_albedoSRV, DXEffects::m_combineFinalFX->m_colorTech);
+	//RenderQuad(m_viewPort, m_normalSpecSRV, DXEffects::m_combineFinalFX->m_colorTech);
 	//RenderQuad(m_ViewPort, m_NormalSpecSRV, Effects::CombineFinalFX->ColorTech);
 	//Effects::CombineFinalFX->SetOpacity(0.8f);
 	//RenderQuad(shadowVP, m_ShadowMapSRV, Effects::CombineFinalFX->BlendMonoTech);
@@ -240,22 +253,6 @@ void DXDeferred::InitFullScreenQuad()
 	vertices[2] = v3;
 	vertices[3] = v4;
 
-	/*
-	Vertex::Quad vertices[4];
-	//upper left
-	vertices[0].Pos = XMFLOAT2(-1, 1);
-	vertices[0].Tex = XMFLOAT2(0, 0);
-	//upper right
-	vertices[1].Pos = XMFLOAT2(1, 1);
-	vertices[1].Tex = XMFLOAT2(1, 0);
-	//lower left
-	vertices[2].Pos = XMFLOAT2(-1, -1);
-	vertices[2].Tex = XMFLOAT2(0, 1);
-	//lower right
-	vertices[3].Pos = XMFLOAT2(1, -1);
-	vertices[3].Tex = XMFLOAT2(1, 1);
-	*/
-
 	D3D11_BUFFER_DESC vbd;
 	vbd.Usage = D3D11_USAGE_IMMUTABLE;
 	vbd.ByteWidth = sizeof(DXVertex::Quad) * 4;
@@ -270,7 +267,7 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderModels(map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
 	m_deviceContext->RSSetViewports(1, vp);
@@ -288,18 +285,55 @@ void DXDeferred::RenderModels(map<int, ModelInstance*> &_modelInstances, ICamera
 	ID3DX11EffectTechnique* tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
 
-	//Static
-
-	tech = DXEffects::m_objectDeferredFX->m_basicTech;
-	tech->GetDesc(&techDesc);
-	for (UINT p = 0; p < techDesc.Passes; ++p)
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = _modelInstances.begin(); mapIterator != _modelInstances.end(); ++mapIterator)
 	{
-		map<int, ModelInstance*>::iterator	m_modelIterator;
-		for (m_modelIterator = _modelInstances.begin(); m_modelIterator != _modelInstances.end(); ++m_modelIterator)
+		if (!mapIterator->second.empty())
 		{
-			RenderModel(m_modelIterator->second, view, proj, tech, p);
+			//Normal
+			if (mapIterator->second.size() < 5)
+			{
+				tech = DXEffects::m_objectDeferredFX->m_basicTech;
+				if (mapIterator->second.begin()->second->model->HasDiffuseMaps())
+				{
+					tech = DXEffects::m_objectDeferredFX->m_texTech;
+					if (mapIterator->second.begin()->second->model->HasNormalMaps())
+						tech = DXEffects::m_objectDeferredFX->m_texNormalTech;
+				}
+				else if (mapIterator->second.begin()->second->model->HasNormalMaps())
+					tech = DXEffects::m_objectDeferredFX->m_normalTech;
+				tech->GetDesc(&techDesc);
+
+				for (UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					map<int, ModelInstance*>::iterator	modelIterator;
+					for (modelIterator = mapIterator->second.begin(); modelIterator != mapIterator->second.end(); ++modelIterator)
+					{
+						RenderModel(modelIterator->second, view, proj, tech, p);
+					}
+				}
+			}
+
+			//Instanced
+			else
+			{
+				tech = DXEffects::m_objectDeferredFX->m_basicInstancedTech;
+				if (mapIterator->second.begin()->second->model->HasDiffuseMaps())
+				{
+					tech = DXEffects::m_objectDeferredFX->m_texInstancedTech;
+					if (mapIterator->second.begin()->second->model->HasNormalMaps())
+						tech = DXEffects::m_objectDeferredFX->m_texNormalInstancedTech;
+				}
+				else if (mapIterator->second.begin()->second->model->HasNormalMaps())
+					tech = DXEffects::m_objectDeferredFX->m_normalInstancedTech;
+				tech->GetDesc(&techDesc);
+
+				for (UINT p = 0; p < techDesc.Passes; ++p)
+				{
+					RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+				}
+			}
 		}
-		
 	}
 
 	//reset textures
@@ -312,7 +346,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
-	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTanCol);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	DirectX::XMMATRIX world = DirectX::XMLoadFloat4x4(_mi->world);
@@ -344,10 +378,10 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
 		if (_mi->model->HasDiffuseMaps())
-			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset, _mi->GetTextureIndex()));
+			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset));
 
 		if (_mi->model->HasNormalMaps())
-			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->model->GetNormalMap(subset, _mi->GetTextureIndex()));
+			DXEffects::m_objectDeferredFX->SetNormalMap(_mi->model->GetNormalMap(subset));
 
 		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
 		_mi->model->ModelMesh.Draw(m_deviceContext, subset);
@@ -355,12 +389,85 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 
 }
 
+void DXDeferred::RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
+{
+	if (_mi->empty())
+		return;
 
-void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, map<int, ModelInstance*> &_modelInstances, ICamera* _camera)
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_instancedPosNormalTexTan);
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	
+
+	
+
+	DirectX::XMMATRIX viewProj;
+	DirectX::XMMATRIX tex = DirectX::XMMatrixTranslation(0, 0, 0);
+
+
+	//worldInvTransposeView = worldInvTranspose*view;
+	viewProj = XMMatrixMultiply(_view, _proj);
+
+	DXEffects::m_objectDeferredFX->SetTexTransform(tex);
+	DXEffects::m_objectDeferredFX->SetViewProj(viewProj);
+
+	vector<DXInstance::World> instancedData;
+
+
+	map<int, ModelInstance*>::iterator	modelIterator;
+	for (modelIterator = _mi->begin(); modelIterator != _mi->end(); ++modelIterator)
+	{
+		DXInstance::World data;
+		data.world = *modelIterator->second->world;
+		instancedData.push_back(data);
+	}
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedData;
+
+
+	for (int k = 0; k < instancedData.size();)
+	{
+		m_deviceContext->Map(m_instanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedData);
+
+		DXInstance::World* dataView = reinterpret_cast<DXInstance::World*>(mappedData.pData);
+		int i;
+		for (i = 0; k < instancedData.size() && i < INSTANCEDBUFFERSIZE; ++i)
+		{
+			dataView[i] = instancedData[k];
+			++k;
+		}
+
+		m_deviceContext->Unmap(m_instanceBuffer, 0);
+
+		for (UINT subset = 0; subset < _mi->begin()->second->model->SubsetCount; ++subset)
+		{
+			//UINT subset = 6;
+			//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
+
+			if (_mi->begin()->second->model->HasDiffuseMaps())
+				DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->begin()->second->model->GetDiffuseMap(subset));
+
+			if (_mi->begin()->second->model->HasNormalMaps())
+				DXEffects::m_objectDeferredFX->SetNormalMap(_mi->begin()->second->model->GetNormalMap(subset));
+
+			_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
+			_mi->begin()->second->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
+		}
+	}	
+	
+
+
+}
+
+
+void DXDeferred::Render(ID3D11Device *_device, ID3D11RenderTargetView *_renderTargetView, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
-	FillGBuffer(_modelInstances, _camera);
+	FillGBuffer(_device, _modelInstances, _camera);
 	//shadowmap->Render();
 	CombineFinal(_renderTargetView);
 }

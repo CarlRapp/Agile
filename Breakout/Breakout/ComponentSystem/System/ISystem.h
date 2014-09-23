@@ -6,6 +6,7 @@
 #include "../Entity/Entity.h"
 #include "../ClassTypeID.h"
 #include "../Filter/ComponentFilter.h"
+#include "../../stdafx.h"
 #include <map>
 
 class World;

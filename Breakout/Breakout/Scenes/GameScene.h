@@ -35,6 +35,7 @@ public:
 		world->AddSystem<InputSystem>();
 		world->AddSystem<TempSystem>();
 		world->AddSystem<MovementSystem>();
+		world->AddSystem<ProjectileSystem>();
 		world->AddSystem<ModelSystem>();
 		PhysicsSystem* physicsSystem = world->AddSystem<PhysicsSystem>();
 		

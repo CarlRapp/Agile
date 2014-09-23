@@ -22,7 +22,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 {
 	ifstream file;
 	file.open(filePath + ".obj");
-        
+
 	if (!file)
 		return 0;
 	string str;
@@ -30,8 +30,8 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 	while (!file.eof())
 	{
 		file >> str;
-
-		if (str == "#" || str == "s")	ParseComment(file);
+                
+		if (str == "#" || str == "s")           ParseComment(file);
 		else if (str == "v")			ParsePosition(file);	//position
 		else if (str == "vn")			ParseNormal(file);		//normal
 		else if (str == "vt")			ParseTexCoord(file);	//texturkoordinat
@@ -41,7 +41,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 
 		else if (str == "mtllib")								//materialfile
 		{
-			ParseMaterialFile(file, filePath);
+			ParseMaterialFile(file, MODEL_ROOT);
 		}
                 str = "";
 	}
@@ -71,6 +71,7 @@ void ModelLoader::ParseGroup(std::ifstream& file)
 	{
 		m_currentGroup = new Group;
 		m_currentGroup->name = str;
+		m_currentGroup->material = NULL;
 		m_groups[str] = m_currentGroup;
 	}
 	else
@@ -126,6 +127,8 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	//get material filename
 	std::getline(file, str);
 	Btrim(str);
+
+	str = dir + str;
 
 	//append directory in front of filename
 	//str = dir + str;

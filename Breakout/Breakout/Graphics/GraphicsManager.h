@@ -28,6 +28,7 @@ public:
 
     ~GraphicsManager(void);
     static GraphicsManager* GetInstance();
+    static void Destroy();
 
 
     bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
@@ -35,7 +36,6 @@ public:
     void        Render();
     void        Update();
     ICamera*    GetICamera();
-    void	AddRenderObject(std::string _path, MATRIX4 _world);
 
     void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
     void        RemoveObject(int _id);

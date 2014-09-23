@@ -17,6 +17,11 @@ GraphicsManager* GraphicsManager::GetInstance()
 	return m_GMInstance;
 }
 
+void GraphicsManager::Destroy()
+{
+	SafeDelete(m_GMInstance);
+}
+
 GraphicsManager::~GraphicsManager(void)
 {
     SafeDelete(m_IGraphics);
@@ -77,9 +82,4 @@ void GraphicsManager::RemoveObject(int _id)
 ICamera* GraphicsManager::GetICamera()
 {
     return m_ICamera;
-}
-
-void GraphicsManager::AddRenderObject(std::string _path, MATRIX4 _world)
-{
-
 }

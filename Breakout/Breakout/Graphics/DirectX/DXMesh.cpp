@@ -1,5 +1,5 @@
 #include "DXMesh.h"
-
+#include "DXVertex.h"
 
 
 DXMesh::DXMesh()
@@ -49,6 +49,21 @@ void DXMesh::Draw(ID3D11DeviceContext* _dc, UINT _subsetId)
 		m_subsetTable[_subsetId].m_faceCount * 3,
 		m_subsetTable[_subsetId].m_faceStart * 3,
 		0);
+}
 
-		
+void  DXMesh::DrawInstanced(ID3D11DeviceContext* _dc, UINT _subsetId, ID3D11Buffer *_ib, int _numInstances)
+{
+	UINT stride[2] = { m_vertexStride, sizeof(DXInstance::World) };
+	UINT offset[2] = { 0, 0 };
+	ID3D11Buffer* vbs[2] = { m_VB, _ib };
+	_dc->IASetVertexBuffers(0, 2, vbs, stride, offset);
+	_dc->IASetIndexBuffer(m_IB, m_indexBufferFormat, 0);
+
+
+	_dc->DrawIndexedInstanced(
+		m_subsetTable[_subsetId].m_faceCount * 3,
+		_numInstances, 
+		m_subsetTable[_subsetId].m_faceStart * 3, 
+		0, 0);
+
 }

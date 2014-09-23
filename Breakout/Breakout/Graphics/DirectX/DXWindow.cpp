@@ -64,6 +64,9 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
+	case WM_SIZE:
+	case WM_MOVE:
+		break;
 	default:
 		return DefWindowProc(_hwnd, _msg, _wParam, _lParam);
 	}
@@ -112,6 +115,8 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 		0,
 		_hInstanceHandle,
 		0);
+
+	
 
 	if (m_hWndMain == 0)
 	{

@@ -46,6 +46,7 @@ public:
 	~ObjectDeferredEffect();
 
 	void SetWorldViewProj(DirectX::CXMMATRIX _M)					{ m_worldViewProj->SetMatrix(reinterpret_cast<const float*>(&_M)); }
+	void SetViewProj(DirectX::CXMMATRIX _M)							{ m_viewProj->SetMatrix(reinterpret_cast<const float*>(&_M)); }
 	void SetWorld(DirectX::CXMMATRIX _M)							{ m_world->SetMatrix(reinterpret_cast<const float*>(&_M)); }
 	void SetWorldInvTranspose(DirectX::CXMMATRIX _M)				{ m_worldInvTranspose->SetMatrix(reinterpret_cast<const float*>(&_M)); }
 	void SetTexTransform(DirectX::CXMMATRIX _M)					{ m_texTransform->SetMatrix(reinterpret_cast<const float*>(&_M)); }
@@ -70,8 +71,14 @@ public:
 	ID3DX11EffectTechnique* m_texNormalAlphaClipSkinnedTech;
 	ID3DX11EffectTechnique* m_normalSkinnedTech;
 
+	ID3DX11EffectTechnique* m_basicInstancedTech;
+	ID3DX11EffectTechnique* m_texInstancedTech;
+	ID3DX11EffectTechnique* m_texNormalInstancedTech;
+	ID3DX11EffectTechnique* m_normalInstancedTech;
+
 	ID3DX11EffectMatrixVariable* m_worldViewProj;
 	ID3DX11EffectMatrixVariable* m_world;
+	ID3DX11EffectMatrixVariable* m_viewProj;
 	ID3DX11EffectMatrixVariable* m_worldInvTranspose;
 	ID3DX11EffectMatrixVariable* m_texTransform;
 	ID3DX11EffectMatrixVariable* m_boneTransforms;
