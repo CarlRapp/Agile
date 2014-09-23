@@ -28,7 +28,6 @@ public:
 	void Initialize()
 	{
 		printf("Initialized (Game Scene)\n");
-                             printf("5\n");
 		/*	New Implementation	*/
 		m_world = new World();
 		m_world->AddSystem<InputSystem>();
@@ -36,7 +35,6 @@ public:
 		m_world->AddSystem<ProjectileSystem>();
 		m_world->AddSystem<CollisionSystem>();
 		m_world->AddSystem<ModelSystem>();
-                         printf("4\n");
 		int xBlocks = 16;
 		int yBlocks = 3;
 
@@ -83,14 +81,12 @@ public:
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
 		ModelData* lol = FileManager::GetInstance().LoadModel(GetFile("box", MODEL_ROOT));
-                printf("2\n");
 	}
 
 	void LoadContent()
 	{
-            printf("1\n");
            m_world->GetSystem(4)->SetEvent(ISystem::EVENT::INITIALIZE);
-			//((ModelSystem*)m_world->GetSystem(4))->LoadModels();
+
             printf("Loading Content (Game Scene)\n");
 	}
 

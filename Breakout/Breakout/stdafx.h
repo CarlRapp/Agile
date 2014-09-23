@@ -19,10 +19,10 @@
 #define AUDIO_ROOT "../../Data/Audio/"
 
 #include <Windows.h>
-#include "MathHelper.h"
+
 
 #endif
-
+#include "MathHelper.h"
 #define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
 static char    m_cwd[FILENAME_MAX];
 

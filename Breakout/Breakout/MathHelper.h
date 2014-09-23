@@ -2,19 +2,22 @@
 #define _MATHHELPER_H_
 
 
-#ifdef LINUX
+
+#ifdef __linux__
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #define MATRIX4 glm::mat4
+#define VECTOR4 glm::vec4
 #define VECTOR3 glm::vec3
 #define VECTOR2 glm::vec2
 
-static glm::mat4 MacroTranslate(glm::mat4 matrix, glm::vec3 vector)
+static glm::mat4 MacroTranslate(glm::vec3 vector)
 {
-	return glm::translate(matrix, vector);
+    
+	return glm::translate(glm::mat4(1.0f), vector);
 }
 
 static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
@@ -30,7 +33,7 @@ static bool MacroIsZero(glm::vec3 _vec)
 	return false;
 }
 
-static float MacroDot(glm::vec3 glm::vec3, VECTOR3 vector2)
+static float MacroDot(glm::vec3, glm::vec3)
 {
 	//FIXA!
 	return 1.0f;
@@ -125,7 +128,7 @@ DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r);
 
 #endif
 
-#define TRANSLATE(matrix,vector) MacroTranslate(matrix,vector)
+#define TRANSLATE(vector) MacroTranslate(vector)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
 #define ISZERO(vector) MacroIsZero(vector)
 
