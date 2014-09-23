@@ -1,6 +1,8 @@
 #ifndef ENTITIYFACTORY_H
 #define ENTITIYFACTORY_H
 
+#include <Box2D.h>
+
 #include "Entity/Entity.h"
 
 
@@ -15,6 +17,7 @@
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
 #include "Component/CollisionComponent.h"
+
 
 class EntityFactory
 {

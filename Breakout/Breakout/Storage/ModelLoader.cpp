@@ -9,6 +9,7 @@ ModelLoader::ModelLoader()
 
 	m_newGroupNameCounter = 0;
 	m_materialAfterGroup = true;
+	m_numVertices = 0;
 }
 
 ModelLoader::~ModelLoader()
@@ -45,12 +46,12 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
                 str = "";
 	}
 	//ParseFace2(file);
-
+	
 	ModelData* model = new ModelData();
 	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
 		model->Groups.push_back(it->second);
-        
-        
+	}
 	return model;
 }
 
@@ -318,7 +319,8 @@ void ModelLoader::ParseFace(std::ifstream& file)
 
 		triangle.Vertices[t] = vertex;
 	}
-	m_currentGroup->triangles.push_back(triangle);
+	m_currentGroup->triangles->push_back(triangle);
+	m_numVertices += 3;
 }
 
 void ModelLoader::ParseFace2(std::ifstream& file)

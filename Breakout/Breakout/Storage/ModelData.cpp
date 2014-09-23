@@ -2,7 +2,6 @@
 
 ModelData::ModelData()
 {
-	Groups = vector<Group*>();
 }
 
 ModelData::~ModelData()

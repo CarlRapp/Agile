@@ -47,7 +47,7 @@ void ModelSystem::Update(float _dt)
 		model = e->GetComponent<ModelComponent>();
 
 
-		if (!ISZERO(position->m_deltaPosition))
+		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
 		else if (!ISZERO(rotation->m_deltaRotation))
 			change = true;
@@ -57,7 +57,7 @@ void ModelSystem::Update(float _dt)
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->m_position);
+			model->m_worldMatrix = TRANSLATE(model->m_worldMatrix, position->GetPosition());
 			GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 		}
 	}

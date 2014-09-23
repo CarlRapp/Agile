@@ -16,17 +16,19 @@ private:
 	const int POSITIONITERATIONS = 2;
 	const b2Vec2 DEFAULTGRAVITY = b2Vec2(0, -10.0f);
 	
-
 	b2World* m_b2World;
 	
+	void CreateBody(Entity* entity, CollisionComponent& _collision, const VECTOR3& _position, float rotation);
 
 public:
-	PhysicsSystem();
+	PhysicsSystem(World* _world);
 	~PhysicsSystem();
 
 	void Update(float _dt);
 
 	void SetGravity(const b2Vec2& _gravity) { m_b2World->SetGravity(_gravity); }
+
+	b2World& GetB2World() { return *m_b2World; }
 };
 
 #endif

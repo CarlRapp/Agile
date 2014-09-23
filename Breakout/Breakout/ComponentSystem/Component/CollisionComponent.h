@@ -5,30 +5,25 @@
 
 #include "../../stdafx.h"
 #include "IComponent.h"
+#include "../EntityFactory.h"
 
 struct CollisionComponent : Component<CollisionComponent>
 {
-private:
-	CollisionComponent();
-
 public:
 	b2Body* m_body;
-
-	CollisionComponent(b2World& _world, const b2BodyDef& _bodyDef, const b2FixtureDef& _fixtureDef)
+	b2BodyDef* m_bodyDef;
+	b2FixtureDef* m_fixDef;
+	bool m_added;
+	
+	CollisionComponent(b2FixtureDef* _fixDef) : m_added(false), m_fixDef(_fixDef) 
 	{
-		m_body = _world.CreateBody(&_bodyDef);
-		m_body->CreateFixture(&_fixtureDef);
-	}
-
-	CollisionComponent(b2World& _world, const b2BodyDef& _bodyDef, const b2PolygonShape& _shape, float _density)
-	{
-		m_body = _world.CreateBody(&_bodyDef);
-		m_body->CreateFixture(&_shape, _density);
+		assert(_fixDef);
 	}
 
 	~CollisionComponent()
 	{
-		m_body->GetWorld()->DestroyBody(m_body);
+		if (m_body != 0)
+			m_body->GetWorld()->DestroyBody(m_body);
 	}
 };
 

@@ -9,7 +9,7 @@
 #include "../ComponentSystem/System/MovementSystem.h"
 #include "../ComponentSystem/System/TempSystem.h"
 #include "../ComponentSystem/System/InputSystem.h"
-#include "../ComponentSystem/System/CollisionSystem.h"
+#include "../ComponentSystem/System/PhysicsSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"
@@ -35,11 +35,11 @@ public:
 		world->AddSystem<InputSystem>();
 		world->AddSystem<TempSystem>();
 		world->AddSystem<MovementSystem>();
-		world->AddSystem<CollisionSystem>();
 		world->AddSystem<ModelSystem>();
+		PhysicsSystem* physicsSystem = world->AddSystem<PhysicsSystem>();
 		
 
-		int xBlocks = 16;
+		int xBlocks = 32;
 		int yBlocks = 3;
 
 		Entity* e;
@@ -47,40 +47,35 @@ public:
 		e = world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
 		world->AddEntity(e);
-
+		/*
 		e = world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-		e->GetComponent<PositionComponent>()->m_position = VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0);
+		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0));
 		world->AddEntity(e);
-
+		*/
 		for (int y = 12; y > 12 - yBlocks; --y)
 			for (int x = 1; x < 1 + xBlocks; ++x)
 			{
 				e = world->CreateEntity();
 				EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-				e->GetComponent<PositionComponent>()->m_position = VECTOR3(x + x*0.5f, y + y*0.5f, 0);
-				e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
-				e->GetComponent<CollisionComponent>()->m_size = VECTOR2(1, 1);
+				e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 10, 0));
+
 				world->AddEntity(e);
 			}
-
+		
+		
 		e = world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
-		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(2, 2);
-		e->GetComponent<CollisionComponent>()->m_offset = VECTOR2(-1, -1);
+		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0.7f, 25, 0));
 		world->AddEntity(e);
+		
 
 
-
-
+		/*
 		e = world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-		e->GetComponent<PositionComponent>()->m_position = VECTOR3(8, 0, 0);
-		e->GetComponent<CollisionComponent>()->m_position = VECTOR2(0, 0);
-		e->GetComponent<CollisionComponent>()->m_size = VECTOR2(1, 1);
 		world->AddEntity(e);
-
+		*/
 		GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 		GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 

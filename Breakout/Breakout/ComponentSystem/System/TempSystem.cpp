@@ -44,7 +44,7 @@ void TempSystem::Update(float _dt)
 			Entity* e = m_world->CreateEntity();
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
 			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
-			e->GetComponent<PositionComponent>()->m_position = VECTOR3(position->m_position.x, position->m_position.y + 1, 0);
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x, position->GetPosition().y + 1, 0));
 
 			m_world->AddEntity(e);
 		}
