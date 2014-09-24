@@ -1,3 +1,2 @@
 newmtl Default_Smoothing
 map_Kd projectileTexture.png
-map_bump normal.png

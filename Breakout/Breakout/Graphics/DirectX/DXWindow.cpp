@@ -64,8 +64,20 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	case WM_SIZE:
-	case WM_MOVE:
+	case WM_KILLFOCUS:
+		ClipCursor(0);
+		ShowCursor(true);
+		break;
+	case WM_SETFOCUS:
+		// TEMP
+		RECT rc;
+		rc.left = 100;
+		rc.right = rc.left + 1000;
+		rc.top = 350;
+		rc.bottom = rc.top + 600;
+
+		ClipCursor(&rc);
+		ShowCursor(false);
 		break;
 	default:
 		return DefWindowProc(_hwnd, _msg, _wParam, _lParam);
@@ -132,16 +144,6 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 
 void DXWindow::Update()
 {
-	// TEMP
-	RECT rc;
-	rc.left = 100;
-	rc.right = rc.left + 1000;
-	rc.top = 350;
-	rc.bottom = rc.top + 600;
-
-	ClipCursor(&rc);
-	ShowCursor(true);
-
 	MSG msg;
 	if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
