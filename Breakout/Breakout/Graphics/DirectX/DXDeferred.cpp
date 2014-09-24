@@ -93,7 +93,6 @@ void DXDeferred::Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext
 	InitFullScreenQuad();
 	InitBuffers();
 
-	UpdateLights();
 
 }
 
@@ -744,13 +743,19 @@ void DXDeferred::UpdateLights()
 }
 
 
+float ddda = 0.0f;
 void DXDeferred::Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_finalUAV, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
+
+	ddda += 0.004;
+	m_pointLights->at(0)->GetGPULight()->Position.x = 15 + 10 * sinf(ddda);
+	m_pointLights->at(0)->GetGPULight()->Position.z = 10 * cosf(ddda);
+
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
 
 
-	//UpdateLights();
+	UpdateLights();
 	FillGBuffer(_device, _modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
 	//shadowmap->Render();
@@ -759,6 +764,8 @@ void DXDeferred::Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_final
 
 void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 {
+	
+
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
