@@ -50,7 +50,7 @@ public:
 	EntityMap GetEntities();
 
 	bool Add(Entity* _entity);
-	bool Remove(Entity* _entity);
+	virtual bool Remove(Entity* _entity);
 	void Clear(void);
 
 	virtual void Update(float _dt) = 0;

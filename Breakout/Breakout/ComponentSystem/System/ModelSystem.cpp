@@ -113,3 +113,9 @@ void ModelSystem::LoadModel(int _entityID)
 
 	e->SetInitialized(true);
 }
+
+bool ModelSystem::Remove(Entity* _entity)
+{
+	GraphicsManager::GetInstance()->RemoveObject(_entity->GetId());
+	return ISystem::Remove(_entity);
+}

@@ -20,7 +20,7 @@ public:
         //void LoadModels();
 //        //load one model
        void LoadModel(int entityID);
-        
+       bool Remove(Entity* _entity);
         //runs methods depending on what's in m_nextEvent
         void RunEvents();
         
