@@ -53,7 +53,7 @@ void ProjectileSystem::Update(float _dt)
 			position = it->second->GetComponent<PositionComponent>();
 
 			Entity* e = m_world->CreateEntity();
-			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
 			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
 			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x, position->GetPosition().y + 1, 0));
 
