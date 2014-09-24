@@ -35,7 +35,7 @@ public:
 		world->AddSystem<InputSystem>();
 		world->AddSystem<MovementSystem>();
 		world->AddSystem<ProjectileSystem>();
-		world->AddSystem<CollisionSystem>();
+		//world->AddSystem<CollisionSystem>();
 		world->AddSystem<ModelSystem>();
 
 		int xBlocks = 16;
