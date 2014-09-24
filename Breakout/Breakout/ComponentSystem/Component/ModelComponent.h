@@ -13,7 +13,7 @@ struct ModelComponent : Component<ModelComponent>
 	{
 		m_modelPath = "";
 
-		DirectX::XMStoreFloat4x4(&m_worldMatrix,DirectX::XMMatrixIdentity());
+                m_worldMatrix = GETIMATRIX();
 	}
 
 };

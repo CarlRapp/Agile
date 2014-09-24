@@ -16,7 +16,7 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-float lol = 0;
+
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -25,8 +25,6 @@ void ModelSystem::Update(float _dt)
 	RotationComponent* rotation;
 	ScaleComponent* scale;
 	ModelComponent* model;
-
-	lol += _dt;
 
 	EntityMap::iterator it;
 
@@ -112,4 +110,10 @@ void ModelSystem::LoadModel(int _entityID)
     GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
 
 	e->SetInitialized(true);
+}
+
+bool ModelSystem::Remove(Entity* _entity)
+{
+	GraphicsManager::GetInstance()->RemoveObject(_entity->GetId());
+	return ISystem::Remove(_entity);
 }

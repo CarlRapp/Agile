@@ -74,8 +74,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     std::cout << "\033[31m with error: " << glGetError();
     std::cout << "\n\033[30m";
     
-    //LoadModel("triangle");
-    LoadModel("sphere");
+    //LoadModel("sphere");
+    
     return true; 
 } 
 
@@ -97,13 +97,13 @@ void GLGraphics::LoadModel(std::string _path)
        
         int index = m_models.size()-1;
 
-        int floatCount = (*groupIt)->triangles.size() * 3 * 3;
+        int floatCount = (*groupIt)->triangles->size() * 3 * 3;
         
         float* vertexArray = new float[floatCount];
         float* normalArray = new float[floatCount];
 
         int i = 0;
-        for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
+        for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles->begin(); triangleIt != (*groupIt)->triangles->end(); ++triangleIt)
         {
             //Dest,Source,Size
             memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(glm::vec3));
@@ -146,7 +146,7 @@ void GLGraphics::LoadModel(std::string _path)
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 16 * 500 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
@@ -254,7 +254,8 @@ void GLGraphics::Render(ICamera* _camera)
     
     glUseProgram(m_program);
     
-    LightsToRender();
+    //LightsToRender();
+    UpdateLights();
     
     CameraToRender(_camera);
     
@@ -317,12 +318,31 @@ int GLGraphics::RenderInstanced()
     return 1;
 }
 
-void GLGraphics::LightsToRender()
+void GLGraphics::AddLight(vec3 worldPos, vec3 intensity, vec3 color, float range)
+{   
+    m_lights.push_back(new LightInfo(worldPos, intensity, color, range));
+}
+
+void GLGraphics::UpdateLights()
 {
-    m_testLightPos.z = glm::sin(t)*5+10;
-    m_testLightPos.x = glm::cos(t)*5+10;
-    GLint testLight = glGetUniformLocation(m_program, "m_testLight" );
-    glUniform3f(testLight, m_testLightPos.x,m_testLightPos.y,m_testLightPos.z);
+    for(int i = 0; i < m_lights.size(); i++)
+	{
+            //Light properties
+            vec4 LightPosition = vec4(m_lights[i]->Position, 1.0f);	// Light position
+            
+            //-----Send all the lights values------
+            const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
+            char positionStr[25], intensityStr[25], colorStr[25], rangeStr[25];
+            strcpy(positionStr, "Lights[");	 	strcat(positionStr, indexStr);		strcat(positionStr, "].Position");
+            strcpy(intensityStr, "Lights[");	strcat(intensityStr, indexStr);		strcat(intensityStr, "].Intensity");
+            strcpy(colorStr, "Lights[");		strcat(colorStr, indexStr);			strcat(colorStr, "].Color");
+            strcpy(rangeStr, "Lights[");		strcat(rangeStr, indexStr);			strcat(rangeStr, "].Range");
+
+            SetUniformV(m_program, positionStr, LightPosition);
+            SetUniformV(m_program, intensityStr, m_lights[i]->Intensity);
+            SetUniformV(m_program, colorStr, m_lights[i]->Color);
+            SetUniformV(m_program, rangeStr, m_lights[i]->Range);
+	}
 }
 
 void GLGraphics::CameraToRender(ICamera* _camera)
@@ -394,91 +414,91 @@ void GLGraphics::RemoveObject(int _id)
     }
 }
 
-//int GLGraphics::SetUniformV(const char* _variable, float _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniform1fv(location, 1, &_value);
-//	else
-//		return 1;
-//
-//	return 0;
-//}
-//
-//int GLGraphics::SetUniformV(const char* _variable, glm::vec3 _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniform3fv(location, 1, &_value[0]);
-//	else
-//		return 1;
-//
-//	return 0;
-//}
-//
-//int GLGraphics::SetUniformV(const char* _variable, glm::vec4 _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniform4fv(location, 1, &_value[0]);
-//	else
-//		return 1;
-//
-//	return 0;
-//}
-//
-//int GLGraphics::SetUniformV(const char* _variable, glm::mat3 _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
-//	else 
-//		return 1;
-//
-//	return 0;
-//}
-//
-//int GLGraphics::SetUniformV(const char* _variable, glm::mat4 _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
-//	else
-//		return 1;
-//
-//	return 0;
-//}
-//
-//int GLGraphics::SetUniformV(const char* _variable, int _value)
-//{
-//	//	Set as current program
-//	glUseProgram(m_program);
-//
-//	//	Get pointer for variable
-//	int location = glGetUniformLocation(m_program, _variable);
-//	if (location >= 0)
-//		glUniform1i(location, _value);
-//	else return 1;
-//
-//	return 0;
-//}
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, float _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniform1fv(location, 1, &_value);
+	else
+		return 1;
+
+	return 0;
+}
+
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::vec3 _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniform3fv(location, 1, &_value[0]);
+	else
+		return 1;
+
+	return 0;
+}
+
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::vec4 _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniform4fv(location, 1, &_value[0]);
+	else
+		return 1;
+
+	return 0;
+}
+
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::mat3 _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
+	else 
+		return 1;
+
+	return 0;
+}
+
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::mat4 _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
+	else
+		return 1;
+
+	return 0;
+}
+
+int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, int _value)
+{
+	//	Set as current program
+	glUseProgram(shaderProg);
+
+	//	Get pointer for variable
+	int location = glGetUniformLocation(shaderProg, _variable);
+	if (location >= 0)
+		glUniform1i(location, _value);
+	else return 1;
+
+	return 0;
+}

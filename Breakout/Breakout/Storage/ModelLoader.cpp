@@ -63,8 +63,8 @@ void ModelLoader::CalculateTangents()
 		int vertexCount = it->second->triangles->size() * 3;
 		VECTOR3 *tan1 = new VECTOR3[vertexCount * 2];
 		VECTOR3 *tan2 = tan1 + vertexCount;
-		ZeroMemory(tan1, vertexCount * sizeof(VECTOR3) * 2);
-        //memset(tan1,0 ,vertexCount * sizeof(VECTOR3) * 2);
+                memset(tan1,0 ,vertexCount * sizeof(VECTOR3) * 2);
+                
 		for (int i = 0; i < it->second->triangles->size(); ++i)
 		{
 			const VECTOR3& v1 = it->second->triangles->at(i).Vertices[0].Position;
