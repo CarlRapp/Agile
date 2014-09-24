@@ -52,7 +52,7 @@ void ModelSystem::Update(float _dt)
 		model = e->GetComponent<ModelComponent>();
 
 
-		if (!ISZERO(position->m_deltaPosition))
+		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
 		else if (!ISZERO(rotation->m_deltaRotation))
 			change = true;

@@ -15,10 +15,10 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		subset.m_id = id;
 		subset.m_faceStart = index / 3;
 		subset.m_vertexStart = index;
-		subset.m_faceCount = group->triangles.size();
+		subset.m_faceCount = group->triangles->size();
 		subset.m_vertexCount = subset.m_faceCount * 3;
 
-		for (Triangle triangle : group->triangles)
+		for (Triangle triangle : *(group->triangles))
 		{
 			for (int i = 0; i < 3; i++)
 			{
