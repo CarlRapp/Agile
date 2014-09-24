@@ -100,6 +100,8 @@ void World::KillEntity(Entity* _e)
 
 	for(ISystem* system : m_systems)
 		system->Remove(_e);
+
+	printf("Entity #%d removed!\n", _e->GetId());
 }
 
 void World::AddNewComponent(TypeID _id)

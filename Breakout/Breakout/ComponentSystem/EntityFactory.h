@@ -34,7 +34,8 @@ public:
 		PAD,
 		BALL,
 		POWERUP,
-		WALL
+		WALL,
+		PROJECTILE
 	};
 
 	~EntityFactory(void);

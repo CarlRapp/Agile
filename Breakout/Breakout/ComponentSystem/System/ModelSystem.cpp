@@ -62,7 +62,7 @@ void ModelSystem::Update(float _dt)
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(position->m_position);
+			model->m_worldMatrix = TRANSLATE(position->GetPosition());
 			//TEMP
 			position->Reset();
 			rotation->Reset();

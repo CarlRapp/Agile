@@ -32,7 +32,7 @@ void ProjectileSystem::Update(float _dt)
 		}
 
 		position = m_entites[i]->GetComponent<PositionComponent>();
-		if (position->GetPosition().y > 25)
+		if (position->GetPosition().y > 25 || position->GetPosition().y < -20)
 		{
 			m_entites[i]->SetState(Entity::DEAD);
 			m_entites.erase(m_entites.begin() + i);
@@ -54,12 +54,25 @@ void ProjectileSystem::Update(float _dt)
 			position = it->second->GetComponent<PositionComponent>();
 
 			Entity* e = m_world->CreateEntity();
-			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PROJECTILE);
 			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x, position->GetPosition().y + 1, 0));
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x - 2.5f, position->GetPosition().y + 2.0f, 0));
 			
 			m_world->AddEntity(e);
 			m_entites.emplace_back(e);
+
+
+			e = m_world->CreateEntity();
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PROJECTILE);
+			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x + 2.5f, position->GetPosition().y + 2.0f, 0));
+
+			m_world->AddEntity(e);
+			m_entites.emplace_back(e);
+
+
+
+
 
 		}
 
