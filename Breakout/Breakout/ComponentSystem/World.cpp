@@ -96,9 +96,12 @@ void World::KillEntity(Entity* _e)
 {
 	_e->RemoveAllComponents();
 	_e->SetState(Entity::DEAD);
+	_e->SetInitialized(false);
 
 	for(ISystem* system : m_systems)
 		system->Remove(_e);
+
+	printf("Entity #%d removed!\n", _e->GetId());
 }
 
 void World::AddNewComponent(TypeID _id)
@@ -115,4 +118,9 @@ void World::AddEntityToComponentPool(Entity* _e)
 	{
 		m_componentEntityPool[c->m_ID]->push_back(_e);
 	}
+}
+
+ISystem* World::GetSystem(int _id)
+{
+    return m_systems[_id];
 }

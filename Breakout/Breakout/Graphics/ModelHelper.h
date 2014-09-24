@@ -56,6 +56,7 @@ public:
 	VECTOR3			Position;
 	VECTOR2			Texture;
 	VECTOR3			Normal;
+	VECTOR4			Tangent;
 };
 
 struct Triangle

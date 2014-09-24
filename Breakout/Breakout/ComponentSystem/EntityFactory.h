@@ -33,7 +33,8 @@ public:
 		PAD,
 		BALL,
 		POWERUP,
-		WALL
+		WALL,
+		PROJECTILE
 	};
 
 	static EntityFactory* GetInstance();

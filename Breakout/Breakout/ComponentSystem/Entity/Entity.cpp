@@ -2,12 +2,12 @@
 
 int Entity::m_counter = 0;
 Entity::Entity()
-: m_id(m_counter++), m_state(DEAD), m_components(std::vector<IComponent*>())
+: m_id(m_counter++), m_state(DEAD), m_components(std::vector<IComponent*>()), m_initialized(false)
 {
 }
 
 Entity::Entity(int _id)
-: m_id(_id), m_state(DEAD), m_components(std::vector<IComponent*>())
+: m_id(_id), m_state(DEAD), m_components(std::vector<IComponent*>()), m_initialized(false)
 {
 }
 
@@ -106,4 +106,14 @@ void Entity::Reset(void)
 {
 	for (int i = 0; i < m_components.size(); ++i)
 		m_components[i]->Reset();
+}
+
+
+bool Entity::GetInitialized(void)
+{
+	return m_initialized;
+}
+void Entity::SetInitialized(bool _value)
+{
+	m_initialized = _value;
 }

@@ -19,7 +19,6 @@ class GameScene : public Scene<GameScene>
 {
 private:
 	World* m_world;
-	//Entity* player;
 public:
 	GameScene();
 	~GameScene();
