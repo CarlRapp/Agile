@@ -74,10 +74,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     std::cout << "\033[31m with error: " << glGetError();
     std::cout << "\n\033[30m";
     
-    //LoadModel("triangle");
-    LoadModel("sphere");
-   // AddLight(vec3(5.0, 5.0, 3.0), vec3(0.2, 0.8, 0.8), vec3(0.5, 0.5, 1.0), 1000.0);
-   // AddLight(vec3(-5.0, 5.0, 3.0), vec3(0.2, 0.8, 0.8), vec3(1.0, 0.5, 0.5), 1000.0);
+    //LoadModel("sphere");
+    
     return true; 
 } 
 
@@ -148,7 +146,7 @@ void GLGraphics::LoadModel(std::string _path)
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 16 * 500 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);

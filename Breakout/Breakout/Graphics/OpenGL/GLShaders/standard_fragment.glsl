@@ -1,4 +1,4 @@
-#version 420
+#version 440
 
 uniform vec3 m_testLight;
 

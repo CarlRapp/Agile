@@ -102,9 +102,9 @@ public:
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('d') == InputState::Down)
 			GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(50 * _dt, 0, 0));
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('w') == InputState::Down)
-			GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 			GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
+			GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 		/*
 left arrow: 37 
 up arrow: 38
