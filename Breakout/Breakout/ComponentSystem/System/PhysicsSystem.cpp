@@ -87,7 +87,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 	case EntityFactory::PAD:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 0.5f);
+		polygonShape->SetAsBox(2.5f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::PAD;
@@ -102,6 +102,14 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		fixDef->friction = 50.0f;
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		break;
+	case EntityFactory::PROJECTILE:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(0.1f, 1.0f);
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.3f;
+		fixDef->filter.categoryBits = CollisionCategory::BALL;
 	case EntityFactory::POWERUP:
 		break;
 	case EntityFactory::WALL:
