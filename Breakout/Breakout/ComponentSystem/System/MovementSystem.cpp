@@ -4,7 +4,7 @@
 #include "../Component/MouseInputComponent.h"
 
 MovementSystem::MovementSystem(World* _world)
-: Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>(), _world)
+: Base(ComponentFilter().Requires<PositionComponent, MouseInputComponent>(), _world)
 {
 }
 
@@ -51,6 +51,18 @@ void MovementSystem::Update(float _dt)
 		position->m_position.x = position->m_position.x < 1 ? 1 : position->m_position.x;
 		position->m_position.x = position->m_position.x > 24.5f ? 24.5f : position->m_position.x;
 
+	}
+	*/
+	/*
+	for (auto entityPair : m_entityMap)
+	{
+		Entity* e = entityPair.second;
+
+		auto mouse = e->GetComponent<MouseInputComponent>();
+		auto position = e->GetComponent<PositionComponent>();
+		auto velocity->m_velocity.x = mouse->m_controls.MouseDX * 5.f;
+
+		
 	}
 	*/
 }

@@ -19,7 +19,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<InputSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ModelSystem>();
-	PhysicsSystem* physicsSystem = m_world->AddSystem<PhysicsSystem>();
+	m_world->AddSystem<PhysicsSystem>();
 
 
 	int xBlocks = 32;
