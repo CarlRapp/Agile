@@ -8,13 +8,11 @@
 
 class ModelData
 {
-private:
-
 public:
+	std::vector<Group*> Groups;
+
 	ModelData();
 	~ModelData();
-
-	std::vector<Group*> Groups;
 };
 
 

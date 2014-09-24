@@ -27,6 +27,7 @@ DXGraphics::~DXGraphics(void)
 	ReleaseCOM(m_depthStencilView);
 	ReleaseCOM(m_device);
 	ReleaseCOM(m_deviceContext);
+	ReleaseCOM(m_finalUAV);
 }
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -153,9 +154,21 @@ HRESULT DXGraphics::InitDirect3D(DisplayMode _displayMode)
 		return hr;
 
 	hr = m_device->CreateRenderTargetView(pBackBuffer, NULL, &m_renderTargetView);
-	pBackBuffer->Release();
+	
 	if (FAILED(hr))
 		return hr;
+
+
+	//Create the UnorderedAccessView
+	D3D11_UNORDERED_ACCESS_VIEW_DESC UAVDesc;
+	UAVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	UAVDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	hr = m_device->CreateUnorderedAccessView(pBackBuffer, 0, &m_finalUAV);
+	if (FAILED(hr))
+		return hr;
+
+	pBackBuffer->Release();
+
 
 	// Create depth stencil texture
 	D3D11_TEXTURE2D_DESC descDepth;
@@ -222,7 +235,7 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_device, m_renderTargetView, m_modelInstances, _camera);
+	m_DXDeferred->Render(m_device, m_finalUAV, m_modelInstances, _camera);
 
 
 	if (FAILED(m_swapChain->Present(0, 0)))

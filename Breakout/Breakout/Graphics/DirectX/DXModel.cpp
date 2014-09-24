@@ -15,10 +15,10 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		subset.m_id = id;
 		subset.m_faceStart = index / 3;
 		subset.m_vertexStart = index;
-		subset.m_faceCount = group->triangles.size();
+		subset.m_faceCount = group->triangles->size();
 		subset.m_vertexCount = subset.m_faceCount * 3;
 
-		for (Triangle triangle : group->triangles)
+		for (Triangle triangle : *(group->triangles))
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -59,14 +59,14 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	{
 		if (data->Groups[i]->material)
 		{
-			if (data->Groups[i]->material->Map_Kd != "")
+			if (data->Groups[i]->material->Map_Kd != "none")
 			{
 				ID3D11ShaderResourceView* diffuseMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_Kd);
 				DiffuseMapSRV.push_back(diffuseMapSRV);
 			}
 
 
-			if (data->Groups[i]->material->Map_bump != "")
+			if (data->Groups[i]->material->Map_bump != "none")
 			{
 				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
 				NormalMapSRV.push_back(normalMapSRV);
@@ -74,10 +74,13 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		}
 		
 
+		DXMaterial m;
+		m.SpecIntensity = 100;
+		m.SpecPower = 200;
 
-		
+		//data->Groups[i]->material->Ks
 
-		//Mat.push_back(mats[i].Mat);
+		Mat.push_back(m);
 
 		//for (int j = 0; j < mats[i].DiffuseMapNames.size(); ++j)
 		//{

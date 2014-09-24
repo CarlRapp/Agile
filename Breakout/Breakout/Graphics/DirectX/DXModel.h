@@ -8,6 +8,7 @@
 #include "DXVertex.h"
 #include "../../Storage/ModelData.h"
 #include <DirectXCollision.h>
+#include "DXLightHelper.h"
 
 //#include "ModelLoader.h"
 
@@ -23,7 +24,7 @@ public:
 
 	UINT SubsetCount;
 
-	//vector<Material> Mat;
+	vector<DXMaterial> Mat;
 	
 	bool HasDiffuseMaps() { return !DiffuseMapSRV.empty(); }
 	bool HasNormalMaps() { return !NormalMapSRV.empty(); }

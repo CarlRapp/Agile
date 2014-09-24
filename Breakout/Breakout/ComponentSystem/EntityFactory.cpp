@@ -25,25 +25,25 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
-		_entity->AddComponent<CollisionComponent>();
-		_entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
+
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
 		_entity->AddComponent<VelocityComponent>();
-		_entity->AddComponent<CollisionComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
 		_entity->AddComponent<MouseInputComponent>();
+		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
-		_entity->AddComponent<CollisionComponent>();
 		_entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		break;
 	case EntityFactory::POWERUP:
 		break;
@@ -51,9 +51,17 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<CollisionComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
+		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 	default:
+		break;
+	case EntityFactory::PROJECTILE:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "projectile";
+		_entity->AddComponent<VelocityComponent>();
+		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		break;
 	}
 }

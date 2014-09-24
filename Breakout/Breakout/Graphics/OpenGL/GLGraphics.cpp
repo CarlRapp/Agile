@@ -97,13 +97,13 @@ void GLGraphics::LoadModel(std::string _path)
        
         int index = m_models.size()-1;
 
-        int floatCount = (*groupIt)->triangles.size() * 3 * 3;
+        int floatCount = (*groupIt)->triangles->size() * 3 * 3;
         
         float* vertexArray = new float[floatCount];
         float* normalArray = new float[floatCount];
 
         int i = 0;
-        for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles.begin(); triangleIt != (*groupIt)->triangles.end(); ++triangleIt)
+        for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles->begin(); triangleIt != (*groupIt)->triangles->end(); ++triangleIt)
         {
             //Dest,Source,Size
             memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(glm::vec3));

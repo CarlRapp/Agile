@@ -1,10 +1,8 @@
 #include "MovementSystem.h"
-#include "../Component/VelocityComponent.h"
-#include "../Component/PositionComponent.h"
-#include "../Component/MouseInputComponent.h"
+
 
 MovementSystem::MovementSystem(World* _world)
-: Base(ComponentFilter().Requires<VelocityComponent, PositionComponent>(), _world)
+: Base(ComponentFilter().Requires<PositionComponent, VelocityComponent, CollisionComponent, MouseInputComponent>(), _world)
 {
 }
 
@@ -16,39 +14,42 @@ MovementSystem::~MovementSystem()
 
 void MovementSystem::Update(float _dt)
 {
-	PositionComponent* position;
-	VelocityComponent* velocity;
-	EntityMap::iterator it;
-
-	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+	for (auto entityPair : m_entityMap)
 	{
-		Entity* e = it->second;
-		if (e->GetState() != Entity::ALIVE)
-			continue;
+		Entity* e = entityPair.second;
 
-		velocity = e->GetComponent<VelocityComponent>();
+		auto mouse = e->GetComponent<MouseInputComponent>();
+		auto position = e->GetComponent<PositionComponent>();
+		auto velocity = e->GetComponent<VelocityComponent>();
+		auto collision = e->GetComponent<CollisionComponent>();
 
-		if (e->HasComponent<MouseInputComponent>())
+		velocity->m_velocity = VECTOR3(mouse->m_controls.MouseDX * 5.f, -mouse->m_controls.MouseDY * 5.f, 0);
+
+		if (collision->IsAdded())
 		{
-			MouseInputComponent* mouse = e->GetComponent<MouseInputComponent>();
-			velocity->m_velocity.x = mouse->m_controls.MouseDX * 5.f;
+			collision->GetBody()->SetLinearVelocity(b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y));
+
+			/*for (b2ContactEdge* contactEdge = collision->m_body->GetContactList(); contactEdge; contactEdge = contactEdge->next)
+			{
+				b2Contact* contact = contactEdge->contact;
+				if (!contact->IsTouching())
+					continue;
+				
+				b2WorldManifold worldManifold;
+				contact->GetWorldManifold(&worldManifold);
+
+				b2Fixture* fixture = contact->GetFixtureB();
+				if (fixture->GetFilterData().categoryBits == CollisionCategory::BALL)
+				{
+					//fixture->GetBody()->ApplyForceToCenter(b2Vec2(0, 1000.0f), true);
+					b2Vec2 distToCollision = (worldManifold.points[0] - fixture->GetBody()->GetPosition());
+					float magn = 1 / sqrtf(distToCollision.x * distToCollision.x + distToCollision.y * distToCollision.y); 
+					distToCollision = b2Vec2(distToCollision.x * magn, distToCollision.y * magn);
+					if (distToCollision.y < 0)
+					fixture->GetBody()->SetLinearVelocity(b2Vec2(-distToCollision.x * 10.0f, -distToCollision.y * 10.0f));
+				}
+			}*/
 		}
-
-		if (ISZERO(velocity->m_velocity))
-			continue;
-
-		position = e->GetComponent<PositionComponent>();
-
-		position->m_position.x += velocity->m_velocity.x * _dt;
-		position->m_position.y += velocity->m_velocity.y * _dt;
-		position->m_position.z += velocity->m_velocity.z * _dt;
-
-		position->m_deltaPosition.x = velocity->m_velocity.x * _dt;
-		position->m_deltaPosition.y = velocity->m_velocity.y * _dt;
-		position->m_deltaPosition.z = velocity->m_velocity.z * _dt;
-
-		position->m_position.x = position->m_position.x < 1 ? 1 : position->m_position.x;
-		position->m_position.x = position->m_position.x > 24.5f ? 24.5f : position->m_position.x;
-
 	}
+	
 }

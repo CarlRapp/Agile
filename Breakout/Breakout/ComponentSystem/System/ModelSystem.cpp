@@ -36,7 +36,11 @@ void ModelSystem::Update(float _dt)
 			GraphicsManager::GetInstance()->RemoveObject(e->GetId());
 			continue;
 		}
-			
+		if (!e->GetInitialized())
+		{
+			LoadModel(e->GetId());
+		}
+
 
 		bool change = false;
 
@@ -46,7 +50,7 @@ void ModelSystem::Update(float _dt)
 		model = e->GetComponent<ModelComponent>();
 
 
-		if (!ISZERO(position->m_deltaPosition))
+		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
 		else if (!ISZERO(rotation->m_deltaRotation))
 			change = true;
@@ -56,7 +60,7 @@ void ModelSystem::Update(float _dt)
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(position->m_position);
+			model->m_worldMatrix = TRANSLATE(position->GetPosition());
 			//TEMP
 			position->Reset();
 			rotation->Reset();
@@ -70,39 +74,46 @@ void ModelSystem::Update(float _dt)
 
 void ModelSystem::RunEvents()
 {
-     if(m_nextEvent == NONE)
-            return;
-     
-     if(m_nextEvent == INITIALIZE)
-     {
-         LoadModels();
-         printf("YO\n");
-     }
-     
-     m_nextEvent = NONE;
+     //if(m_nextEvent == NONE)
+     //       return;
+     //
+     //if(m_nextEvent == INITIALIZE)
+     //{
+     //    LoadModels();
+     //    printf("YO\n");
+     //}
+     //
+     //m_nextEvent = NONE;
 }
 
-void ModelSystem::LoadModels()
+//void ModelSystem::LoadModels()
+//{
+//    EntityMap::iterator it;
+//    ModelComponent* model;
+//    
+//    for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+//    {
+//        Entity* e = it->second;
+//        model = e->GetComponent<ModelComponent>();
+//        GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+//    }
+//}
+
+void ModelSystem::LoadModel(int _entityID)
 {
     EntityMap::iterator it;
     ModelComponent* model;
     
-    for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
-    {
-        Entity* e = it->second;
-        model = e->GetComponent<ModelComponent>();
-        GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
-    }
-}
-
-void ModelSystem::LoadModel(int entityID)
-{
-    EntityMap::iterator it;
-    ModelComponent* model;
-    
-    Entity* e = m_entityMap.find(entityID)->second;
-    
+    Entity* e = m_entityMap.find(_entityID)->second;
 
     model = e->GetComponent<ModelComponent>();
     GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+
+	e->SetInitialized(true);
+}
+
+bool ModelSystem::Remove(Entity* _entity)
+{
+	GraphicsManager::GetInstance()->RemoveObject(_entity->GetId());
+	return ISystem::Remove(_entity);
 }

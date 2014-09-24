@@ -22,6 +22,7 @@ class ModelLoader
 	Group*					m_currentGroup;
 	int						m_newGroupNameCounter;
 	bool					m_materialAfterGroup;
+	int						m_numVertices;
 
 	void ParseComment(std::ifstream& file);
 	void ParseFace(std::ifstream& file);

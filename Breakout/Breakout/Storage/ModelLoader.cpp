@@ -9,6 +9,7 @@ ModelLoader::ModelLoader()
 
 	m_newGroupNameCounter = 0;
 	m_materialAfterGroup = true;
+	m_numVertices = 0;
 }
 
 ModelLoader::~ModelLoader()
@@ -46,12 +47,12 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 	}
 	CalculateTangents();
 	//ParseFace2(file);
-
+	
 	ModelData* model = new ModelData();
 	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
 		model->Groups.push_back(it->second);
-        
-        
+	}
 	return model;
 }
 
@@ -59,20 +60,20 @@ void ModelLoader::CalculateTangents()
 {
 	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
 	{
-		int vertexCount = it->second->triangles.size() * 3;
+		int vertexCount = it->second->triangles->size() * 3;
 		VECTOR3 *tan1 = new VECTOR3[vertexCount * 2];
 		VECTOR3 *tan2 = tan1 + vertexCount;
-		//ZeroMemory(tan1, vertexCount * sizeof(VECTOR3) * 2);
                 memset(tan1,0 ,vertexCount * sizeof(VECTOR3) * 2);
-		for (int i = 0; i < it->second->triangles.size(); ++i)
+                
+		for (int i = 0; i < it->second->triangles->size(); ++i)
 		{
-			const VECTOR3& v1 = it->second->triangles[i].Vertices[0].Position;
-			const VECTOR3& v2 = it->second->triangles[i].Vertices[1].Position;
-			const VECTOR3& v3 = it->second->triangles[i].Vertices[2].Position;
+			const VECTOR3& v1 = it->second->triangles->at(i).Vertices[0].Position;
+			const VECTOR3& v2 = it->second->triangles->at(i).Vertices[1].Position;
+			const VECTOR3& v3 = it->second->triangles->at(i).Vertices[2].Position;
 
-			const VECTOR2& w1 = it->second->triangles[i].Vertices[0].Texture;
-			const VECTOR2& w2 = it->second->triangles[i].Vertices[1].Texture;
-			const VECTOR2& w3 = it->second->triangles[i].Vertices[2].Texture;
+			const VECTOR2& w1 = it->second->triangles->at(i).Vertices[0].Texture;
+			const VECTOR2& w2 = it->second->triangles->at(i).Vertices[1].Texture;
+			const VECTOR2& w3 = it->second->triangles->at(i).Vertices[2].Texture;
 
 			float x1 = v2.x - v1.x;
 			float x2 = v3.x - v1.x;
@@ -104,12 +105,12 @@ void ModelLoader::CalculateTangents()
 		
 		for (long a = 0; a < vertexCount; a++)
 		{
-			const VECTOR3& n = it->second->triangles[a / 3].Vertices[a % 3].Normal;
+			const VECTOR3& n = it->second->triangles->at(a / 3).Vertices[a % 3].Normal;
 			const VECTOR3& t = tan1[a];
 
 			// Gram-Schmidt orthogonalize
 			VECTOR3 tan3 = NORMALIZE((t - n * DOT(n, t)));
-			VECTOR4 *tangent = &it->second->triangles[a / 3].Vertices[a % 3].Tangent;
+			VECTOR4 *tangent = &it->second->triangles->at(a / 3).Vertices[a % 3].Tangent;
 			tangent->x = tan3.x;
 			tangent->y = tan3.y;
 			tangent->z = tan3.z;
@@ -387,7 +388,8 @@ void ModelLoader::ParseFace(std::ifstream& file)
 
 		triangle.Vertices[t] = vertex;
 	}
-	m_currentGroup->triangles.push_back(triangle);
+	m_currentGroup->triangles->push_back(triangle);
+	m_numVertices += 3;
 }
 
 void ModelLoader::ParseFace2(std::ifstream& file)

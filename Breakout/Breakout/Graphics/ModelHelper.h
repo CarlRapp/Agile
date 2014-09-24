@@ -72,7 +72,9 @@ struct Group
 	string			name;
 	Material*		material;
 
-	vector<Triangle>	triangles;
+	vector<Triangle>*	triangles;
+
+	Group() { triangles = new vector<Triangle>(); }
 };
 
 

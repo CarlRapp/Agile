@@ -14,6 +14,11 @@
 #define VECTOR3 glm::vec3
 #define VECTOR2 glm::vec2
 
+static glm::mat4 GetIdentityMatrix()
+{
+    return glm::mat4();
+}
+
 static glm::mat4 MacroTranslate(glm::vec3 vector)
 {
     
@@ -62,12 +67,22 @@ static glm::vec3 MacroNormalize(glm::vec3 vector)
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
 
-static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, VECTOR3 _vector)
+static DirectX::XMFLOAT4X4 MacroTranslate()
+{
+    XMFLOAT4X4 temp;
+    DirectX::XMStoreFloat4x4(&temp,DirectX::XMMatrixIdentity());
+    return temp;
+}
+
+static DirectX::XMFLOAT4X4 GetIdentityMatrix(VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
 	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
-	DirectX::XMStoreFloat4x4(&_mat, temp);
-	return _mat;
+
+	DirectX::XMFLOAT4X4 float4x4;
+	DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
 }
 
 
@@ -127,6 +142,8 @@ DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r);
 
 
 #endif
+
+#define GETIMATRIX() GetIdentityMatrix()
 
 #define TRANSLATE(vector) MacroTranslate(vector)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
