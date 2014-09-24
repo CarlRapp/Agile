@@ -266,6 +266,11 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
 
+void DXGraphics::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
+{
+	printf("ERIK FIXA, HÄR FINNS INGA LJUS\n");
+}
+
 void DXGraphics::RemoveObject(int _id)
 {
 
