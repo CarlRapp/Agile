@@ -31,6 +31,8 @@ private:
 
 	static int m_counter;
 
+	bool m_initialized;
+
 	int m_id;
 	ENTITY_STATE m_state;
 	std::vector<IComponent*> m_components;
@@ -72,6 +74,8 @@ public:
 	void Reset(void);
 	int GetId();
 
+	bool GetInitialized(void);
+	void SetInitialized(bool _value);
 
 };
 

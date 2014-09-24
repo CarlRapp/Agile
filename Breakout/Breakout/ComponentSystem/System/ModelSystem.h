@@ -17,7 +17,7 @@ public:
         
         //loads models into graphics
         //load all models at startup
-        void LoadModels();
+        //void LoadModels();
 //        //load one model
        void LoadModel(int entityID);
         

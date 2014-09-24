@@ -40,11 +40,11 @@ void MovementSystem::Update(float _dt)
 		position = e->GetComponent<PositionComponent>();
 
 		position->m_position.x += velocity->m_velocity.x * _dt;
-		//position->m_position.y += velocity->m_velocity.y * _dt;
+		position->m_position.y += velocity->m_velocity.y * _dt;
 		//position->m_position.z += velocity->m_velocity.z * _dt;
 
 		position->m_deltaPosition.x = velocity->m_velocity.x * _dt;
-		//position->m_deltaPosition.y = velocity->m_velocity.y * _dt;
+		position->m_deltaPosition.y = velocity->m_velocity.y * _dt;
 		//position->m_deltaPosition.z = velocity->m_velocity.z * _dt;
 
 		position->m_position.x = position->m_position.x < 1 ? 1 : position->m_position.x;

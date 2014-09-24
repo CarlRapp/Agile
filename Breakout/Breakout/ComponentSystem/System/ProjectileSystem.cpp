@@ -4,6 +4,7 @@
 
 #include "../World.h"
 #include "../EntityFactory.h"
+#include "../../Graphics/GraphicsManager.h"
 
 ProjectileSystem::ProjectileSystem(World* _world)
 : Base(ComponentFilter().Requires<PositionComponent, MouseInputComponent>(), _world)
@@ -56,9 +57,11 @@ void ProjectileSystem::Update(float _dt)
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
 			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
 			e->GetComponent<PositionComponent>()->m_position = VECTOR3(position->m_position.x, position->m_position.y + 1, 0);
-
+			
 			m_world->AddEntity(e);
 			m_entites.emplace_back(e);
+
+			m_world->GetSystem(4)->SetEvent(ISystem::EVENT::INITIALIZE);
 		}
 
 

@@ -96,6 +96,7 @@ void World::KillEntity(Entity* _e)
 {
 	_e->RemoveAllComponents();
 	_e->SetState(Entity::DEAD);
+	_e->SetInitialized(false);
 
 	for(ISystem* system : m_systems)
 		system->Remove(_e);

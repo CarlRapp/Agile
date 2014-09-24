@@ -62,12 +62,15 @@ static glm::vec3 MacroNormalize(glm::vec3 vector)
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
 
-static DirectX::XMFLOAT4X4 MacroTranslate(MATRIX4 _mat, VECTOR3 _vector)
+static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
 	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
-	DirectX::XMStoreFloat4x4(&_mat, temp);
-	return _mat;
+
+	DirectX::XMFLOAT4X4 float4x4;
+	DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
 }
 
 

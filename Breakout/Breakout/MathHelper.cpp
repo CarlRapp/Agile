@@ -1,4 +1,5 @@
 #include "MathHelper.h"
+#include "stdafx.h"
 
 #ifdef WINDOWS
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r)
