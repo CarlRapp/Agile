@@ -100,23 +100,23 @@ public:
 	TiledLightningEffect(ID3D11Device* _device, const std::wstring& _filename);
 	~TiledLightningEffect();
 
-	void SetViewProjTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)		{ m_viewProjTexs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
-	void SetViewProj(const DirectX::XMFLOAT4X4* _M, int _cnt)			{ m_viewProj->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
-	void SetTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)				{ m_texs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
+	//void SetViewProjTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)		{ m_viewProjTexs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
+	//void SetViewProj(const DirectX::XMFLOAT4X4* _M, int _cnt)			{ m_viewProj->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
+	//void SetTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)				{ m_texs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
 	void SetInvViewProj(const DirectX::XMFLOAT4X4* _M)					{ m_invViewProj->SetMatrix(reinterpret_cast<const float*>(_M)); }
 	void SetCamPosition(const DirectX::XMFLOAT4* _V)					{ m_camPosition->SetFloatVector(reinterpret_cast<const float*>(_V)); }
 	void SetResolution(const DirectX::XMFLOAT2 _v)					{ m_resolution->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT2)); }
-	void SetShadowMapSwitches(const DirectX::XMFLOAT3 _v)				{ m_shadowMapSwitches->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
-	void SetShadowMapResolution(const DirectX::XMFLOAT2 _v)			{ m_shadowMapResolution->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT2)); }
+	//void SetShadowMapSwitches(const DirectX::XMFLOAT3 _v)				{ m_shadowMapSwitches->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
+	//void SetShadowMapResolution(const DirectX::XMFLOAT2 _v)			{ m_shadowMapResolution->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT2)); }
 	//void SetGlobalLight(const DirectX::XMFLOAT3 _v)					{ m_globalLight->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
 
 	void SetAlbedoMap(ID3D11ShaderResourceView* _tex)		{ m_albedoMap->SetResource(_tex); }
 	void SetNormalSpecMap(ID3D11ShaderResourceView* _tex)    { m_normalSpecMap->SetResource(_tex); }
 	void SetDepthMap(ID3D11ShaderResourceView* _tex)			{ m_depthMap->SetResource(_tex); }
-	void SetShadowMap0(ID3D11ShaderResourceView* _tex)		{ m_shadowMap0->SetResource(_tex); }
-	void SetShadowMap1(ID3D11ShaderResourceView* _tex)		{ m_shadowMap1->SetResource(_tex); }
-	void SetShadowMap2(ID3D11ShaderResourceView* _tex)		{ m_shadowMap2->SetResource(_tex); }
-	void SetShadowMap3(ID3D11ShaderResourceView* _tex)		{ m_shadowMap3->SetResource(_tex); }
+	//void SetShadowMap0(ID3D11ShaderResourceView* _tex)		{ m_shadowMap0->SetResource(_tex); }
+	//void SetShadowMap1(ID3D11ShaderResourceView* _tex)		{ m_shadowMap1->SetResource(_tex); }
+	//void SetShadowMap2(ID3D11ShaderResourceView* _tex)		{ m_shadowMap2->SetResource(_tex); }
+	//void SetShadowMap3(ID3D11ShaderResourceView* _tex)		{ m_shadowMap3->SetResource(_tex); }
 	void SetOutputMap(ID3D11UnorderedAccessView* _tex)		{ m_outputMap->SetUnorderedAccessView(_tex); }
 	void SetDirLightMap(ID3D11ShaderResourceView* _tex)		{ m_dirLightMap->SetResource(_tex); }
 	void SetPointLightMap(ID3D11ShaderResourceView* _tex)	{ m_pointLightMap->SetResource(_tex); }
@@ -124,23 +124,23 @@ public:
 
 	ID3DX11EffectTechnique* m_basicTech;
 
-	ID3DX11EffectMatrixVariable* m_viewProjTexs;
-	ID3DX11EffectMatrixVariable* m_viewProj;
-	ID3DX11EffectMatrixVariable* m_texs;
+	//ID3DX11EffectMatrixVariable* m_viewProjTexs;
+	//ID3DX11EffectMatrixVariable* m_viewProj;
+	//ID3DX11EffectMatrixVariable* m_texs;
 	ID3DX11EffectMatrixVariable* m_invViewProj;	
 	ID3DX11EffectVectorVariable* m_camPosition;
 	ID3DX11EffectVectorVariable* m_resolution;
-	ID3DX11EffectVectorVariable* m_shadowMapSwitches;
-	ID3DX11EffectVectorVariable* m_shadowMapResolution;
+	//ID3DX11EffectVectorVariable* m_shadowMapSwitches;
+	//ID3DX11EffectVectorVariable* m_shadowMapResolution;
 	//ID3DX11EffectVectorVariable* m_globalLight;
 
 	ID3DX11EffectShaderResourceVariable* m_albedoMap;
 	ID3DX11EffectShaderResourceVariable* m_normalSpecMap;
 	ID3DX11EffectShaderResourceVariable* m_depthMap;
-	ID3DX11EffectShaderResourceVariable* m_shadowMap0;
-	ID3DX11EffectShaderResourceVariable* m_shadowMap1;
-	ID3DX11EffectShaderResourceVariable* m_shadowMap2;
-	ID3DX11EffectShaderResourceVariable* m_shadowMap3;
+	//ID3DX11EffectShaderResourceVariable* m_shadowMap0;
+	//ID3DX11EffectShaderResourceVariable* m_shadowMap1;
+	//ID3DX11EffectShaderResourceVariable* m_shadowMap2;
+	//ID3DX11EffectShaderResourceVariable* m_shadowMap3;
 	ID3DX11EffectUnorderedAccessViewVariable* m_outputMap;
 
 	ID3DX11EffectShaderResourceVariable* m_dirLightMap;
