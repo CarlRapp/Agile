@@ -33,9 +33,12 @@ class ModelLoader
 	void ParseGroup(std::ifstream& file);
 	void ParseMaterialFile(std::ifstream& file, string dir);
 
+	void CalculateTangents();
+
 	void Ltrim(std::string& str);
 	void Rtrim(std::string& str);
 	void Btrim(std::string& str);
+
 
 public:
 	ModelLoader();

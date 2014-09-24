@@ -24,10 +24,15 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 			{
 				DXVertex::PosNormalTexTan vertex;
 				//vertex.color = DirectX::XMFLOAT3(1, 1, 1);
-				vertex.tangentU = DirectX::XMFLOAT4(0, 0, 0, 0);
-				memcpy(&vertex.pos, &triangle.Vertices[i].Position, sizeof(DirectX::XMFLOAT3));
-				memcpy(&vertex.normal, &triangle.Vertices[i].Normal, sizeof(DirectX::XMFLOAT3));
-				memcpy(&vertex.tex, &triangle.Vertices[i].Texture, sizeof(DirectX::XMFLOAT2));
+				//vertex.tangentU = DirectX::XMFLOAT4(0, 0, 0, 0);
+				//memcpy(&vertex.pos, &triangle.Vertices[i].Position, sizeof(DirectX::XMFLOAT3));
+				//memcpy(&vertex.normal, &triangle.Vertices[i].Normal, sizeof(DirectX::XMFLOAT3));
+				//memcpy(&vertex.tex, &triangle.Vertices[i].Texture, sizeof(DirectX::XMFLOAT2));
+
+				vertex.tangentU = triangle.Vertices[i].Tangent;
+				vertex.pos = triangle.Vertices[i].Position;
+				vertex.normal = triangle.Vertices[i].Normal;
+				vertex.tex = triangle.Vertices[i].Texture;
 
 				Vertices.push_back(vertex);
 				Indices.push_back(index);

@@ -44,6 +44,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 		}
                 str = "";
 	}
+	CalculateTangents();
 	//ParseFace2(file);
 
 	ModelData* model = new ModelData();
@@ -54,6 +55,71 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 	return model;
 }
 
+void ModelLoader::CalculateTangents()
+{
+	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
+		int vertexCount = it->second->triangles.size() * 3;
+		VECTOR3 *tan1 = new VECTOR3[vertexCount * 2];
+		VECTOR3 *tan2 = tan1 + vertexCount;
+		//ZeroMemory(tan1, vertexCount * sizeof(VECTOR3) * 2);
+                memset(tan1,0 ,vertexCount * sizeof(VECTOR3) * 2);
+		for (int i = 0; i < it->second->triangles.size(); ++i)
+		{
+			const VECTOR3& v1 = it->second->triangles[i].Vertices[0].Position;
+			const VECTOR3& v2 = it->second->triangles[i].Vertices[1].Position;
+			const VECTOR3& v3 = it->second->triangles[i].Vertices[2].Position;
+
+			const VECTOR2& w1 = it->second->triangles[i].Vertices[0].Texture;
+			const VECTOR2& w2 = it->second->triangles[i].Vertices[1].Texture;
+			const VECTOR2& w3 = it->second->triangles[i].Vertices[2].Texture;
+
+			float x1 = v2.x - v1.x;
+			float x2 = v3.x - v1.x;
+			float y1 = v2.y - v1.y;
+			float y2 = v3.y - v1.y;
+			float z1 = v2.z - v1.z;
+			float z2 = v3.z - v1.z;
+
+			float s1 = w2.x - w1.x;
+			float s2 = w3.x - w1.x;
+			float t1 = w2.y - w1.y;
+			float t2 = w3.y - w1.y;
+
+			float r = 1.0F / (s1 * t2 - s2 * t1);
+			VECTOR3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+				(t2 * z1 - t1 * z2) * r);
+			VECTOR3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+				(s1 * z2 - s2 * z1) * r);
+
+			tan1[i * 3 + 0].x += sdir.x; tan1[i * 3 + 0].y += sdir.y; tan1[i * 3 + 0].z += sdir.z;
+			tan1[i * 3 + 1].x += sdir.x; tan1[i * 3 + 1].y += sdir.y; tan1[i * 3 + 1].z += sdir.z;
+			tan1[i * 3 + 2].x += sdir.x; tan1[i * 3 + 2].y += sdir.y; tan1[i * 3 + 2].z += sdir.z;
+
+			tan2[i * 3 + 0].x += tdir.x; tan2[i * 3 + 0].y += tdir.y; tan2[i * 3 + 0].z += tdir.z;
+			tan2[i * 3 + 1].x += tdir.x; tan2[i * 3 + 1].y += tdir.y; tan2[i * 3 + 1].z += tdir.z;
+			tan2[i * 3 + 2].x += tdir.x; tan2[i * 3 + 2].y += tdir.y; tan2[i * 3 + 2].z += tdir.z;
+			
+		}
+		
+		for (long a = 0; a < vertexCount; a++)
+		{
+			const VECTOR3& n = it->second->triangles[a / 3].Vertices[a % 3].Normal;
+			const VECTOR3& t = tan1[a];
+
+			// Gram-Schmidt orthogonalize
+			VECTOR3 tan3 = NORMALIZE((t - n * DOT(n, t)));
+			VECTOR4 *tangent = &it->second->triangles[a / 3].Vertices[a % 3].Tangent;
+			tangent->x = tan3.x;
+			tangent->y = tan3.y;
+			tangent->z = tan3.z;
+
+			// Calculate handedness
+
+			tangent->w = (DOT(CROSS(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
+		}
+	}
+}
 
 
 void ModelLoader::ParseGroup(std::ifstream& file)

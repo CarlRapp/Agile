@@ -116,3 +116,8 @@ void World::AddEntityToComponentPool(Entity* _e)
 		m_componentEntityPool[c->m_ID]->push_back(_e);
 	}
 }
+
+ISystem* World::GetSystem(int _id)
+{
+    return m_systems[_id];
+}
