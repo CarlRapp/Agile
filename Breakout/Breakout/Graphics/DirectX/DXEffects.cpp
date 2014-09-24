@@ -73,20 +73,17 @@ ObjectDeferredEffect::~ObjectDeferredEffect()
 TiledLightningEffect::TiledLightningEffect(ID3D11Device* _device, const std::wstring& _filename)
 	: DXEffect(_device, _filename)
 {
-	m_viewport1 = m_FX->GetTechniqueByName("Viewport1");
-	m_viewport2 = m_FX->GetTechniqueByName("Viewport2");
-	m_viewport3 = m_FX->GetTechniqueByName("Viewport3");
-	m_viewport4 = m_FX->GetTechniqueByName("Viewport4");
+	m_basicTech = m_FX->GetTechniqueByName("Basic");
 
 	m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
 	m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
 	m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
-	m_invViewProjs = m_FX->GetVariableByName("gInvViewProjs")->AsMatrix();
-	m_camPositions = m_FX->GetVariableByName("gCamPositions")->AsVector();
+	m_invViewProj = m_FX->GetVariableByName("gInvViewProj")->AsMatrix();
+	m_camPosition = m_FX->GetVariableByName("gCamPosition")->AsVector();
 	m_resolution = m_FX->GetVariableByName("gResolution")->AsVector();
 	m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
 	m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
-	m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
+	//m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
 
 	m_albedoMap = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
 	m_normalSpecMap = m_FX->GetVariableByName("gNormalSpecMap")->AsShaderResource();

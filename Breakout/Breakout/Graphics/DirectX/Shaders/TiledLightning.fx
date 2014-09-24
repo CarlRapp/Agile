@@ -10,8 +10,8 @@ cbuffer perFrame
 	float4x4    gLightViewProjTex[MAX_SHADOWMAPS];
 	float4x4    gLightViewProj[MAX_SHADOWMAPS];
 	float4x4    gLightTex[MAX_SHADOWMAPS];
-	float4x4	gInvViewProjs[4];
-	float4		gCamPositions[4];
+	float4x4	gInvViewProj;
+	float4		gCamPosition;
 	float3		gShadowMapSwitches;
 	float3		gGlobalLight;
 	float2		gResolution;
@@ -253,84 +253,12 @@ float CalcualteShadowFactor(SpotLight light, float4 posW)
 
 
 [numthreads(COMPUTE_SHADER_TILE_GROUP_DIM, COMPUTE_SHADER_TILE_GROUP_DIM, 1)]	//Antal trådar per grupp x,y,z
-void TiledLightningCS(	uniform int gViewportCount,
-						uint3 dispatchThreadID : SV_DispatchThreadID,
+void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 						uint3 groupThreadID    : SV_GroupThreadID
                          )
 {
 	uint groupIndex = groupThreadID.y * COMPUTE_SHADER_TILE_GROUP_DIM + groupThreadID.x;	//Lokalt trådindex
 
-	//Bästämmer vilken viewport vi är i.
-	uint viewportIndex = 0; //player 1
-	uint viewportX = 0;
-	uint viewportY = 0;
-	uint viewportWidth = gResolution.x;
-	uint viewportHeight = gResolution.y;
-	switch (gViewportCount)
-	{
-	case 2:
-		viewportWidth = gResolution.x / 2;
-		if (dispatchThreadID.x >= gResolution.x / 2)	//Högra halvan
-		{
-			viewportX = gResolution.x / 2;
-			viewportIndex = 1;	//player 2
-		}
-		break;
-
-	case 3:
-		viewportHeight	= gResolution.y / 2;
-		if (dispatchThreadID.y >= gResolution.y / 2)	//Undre halvan
-		{
-			viewportY = gResolution.y / 2;
-			viewportWidth	= gResolution.x / 2;
-			if (dispatchThreadID.x < gResolution.x / 2)	//Vänstra halvan
-				viewportIndex = 1; //player 2
-			else                                        //Högra halvan
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 2; //player 3
-			}
-		}
-		break;
-
-	case 4:
-		viewportWidth	= gResolution.x / 2;
-		viewportHeight	= gResolution.y / 2;
-		if (dispatchThreadID.y < gResolution.y / 2)		//Övre halvan
-		{
-			if (dispatchThreadID.x >= gResolution.x / 2)//Högra halvan
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 1; //player 2
-			}
-		}
-		else											//Undre halvan
-		{
-			viewportY = gResolution.y / 2;
-			if (dispatchThreadID.x < gResolution.x / 2)	//Vänstra halvan
-				viewportIndex = 2; //player 3
-			else                                        //Högra halvan.
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 3; //player 4
-			}
-		}
-		break;
-	}
-
-	float2 viewportStart = float2(viewportX, viewportY);
-	float2 viewportDim   = float2(viewportWidth, viewportHeight);
-
-	float4 viewportColor;
-
-	if (viewportIndex == 0)
-		viewportColor = float4(1,0,0,0);
-	else if (viewportIndex == 1)
-		viewportColor = float4(0,1,0,0);
-	else if (viewportIndex == 2)
-		viewportColor = float4(0,0,1,0);
-	else if (viewportIndex == 3)
-		viewportColor = float4(1,1,1,0);
 
 	//Extracting albedo, normal(world), pos(proj), material(specpower+specintesity)
 	float4 albedo		= gAlbedoMap[dispatchThreadID.xy];
@@ -346,14 +274,14 @@ void TiledLightningCS(	uniform int gViewportCount,
 	float depth			= gDepthMap[dispatchThreadID.xy].x;
 
 	float4 posW;
-	posW.xy = (dispatchThreadID.xy - viewportStart) / viewportDim;
+	posW.xy = dispatchThreadID.xy / gResolution;
 	posW.x  = posW.x * 2.0f		- 1.0f;
 	posW.y	= posW.y * -2.0f	+ 1.0f;
 	//posW.y	= posW.y * -1.0f	+ 1.0f;
 	posW.z = depth;
 	//posW.z = 0;
 	posW.w = 1.0f;
-	posW = mul(posW, gInvViewProjs[viewportIndex]);
+	posW = mul(posW, gInvViewProj);
 	posW /= posW.w;
 
 	Material mat;
@@ -361,7 +289,7 @@ void TiledLightningCS(	uniform int gViewportCount,
 	mat.SpecPower		= normalspec.w * 1000.0f;
 
 
-	float3 toEye = normalize(gCamPositions[viewportIndex].xyz - posW.xyz);
+	float3 toEye = normalize(gCamPosition.xyz - posW.xyz);
 
 	
 	// Initialize shared memory light list and Z bounds
@@ -442,23 +370,25 @@ void TiledLightningCS(	uniform int gViewportCount,
 
 	GroupMemoryBarrierWithGroupSync(); //Väntar på alla trådarna i gruppen
 
-	float4 ambient	= float4(gGlobalLight, 0.0f);
+	float4 ambient	= float4(float3(0.02f, 0.02f, 0.02f), 0.0f);
 	float4 diffuse	= float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 spec		= float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Calculate DirectionLights
 	if (depth != 1.0f)
 	{
+		
 		for(int i = 0; i < totalDirLights; ++i)
 		{
 			DirectionalLight light = gDirLightBuffer[i];			
-			float shadowFactor = CalcualteShadowFactor(light, posW, viewportIndex);
+			float shadowFactor = CalcualteShadowFactor(light, posW, 0);
 
 			float4 D, S;
 			ComputeDirectionalLight(mat, light, normalW, toEye, D, S);
   
 			diffuse += D * shadowFactor;
 			spec    += S * shadowFactor;
+
 		}
 	}
 	
@@ -536,52 +466,27 @@ void TiledLightningCS(	uniform int gViewportCount,
 	}
 	*/
 
+
 	//Final result.
 	//gOutput[dispatchThreadID.xy] = sTileNumSpotLights / 100.0f;
 	//gOutput[dispatchThreadID.xy] = sTileNumPointLights / 100.0f;
 	//gOutput[dispatchThreadID.xy] = posW.x / 4000;
 	//gOutput[dispatchThreadID.xy] = (ambient + diffuse) + spec;
-	gOutput[dispatchThreadID.xy] = albedo * (ambient + diffuse) + spec;
+	//gOutput[dispatchThreadID.xy] = albedo;
+	//gOutput[dispatchThreadID.xy] = normalW;
+	//gOutput[dispatchThreadID.xy] = normalspec;
+	//gOutput[dispatchThreadID.xy] = albedo * (ambient + diffuse);
+	gOutput[dispatchThreadID.xy] = albedo * diffuse;
 	//gOutput[dispatchThreadID.xy] = viewportColor * (albedo * (ambient + diffuse) + spec);
 }
 
 
-technique11 Viewport1
+technique11 Basic
 {
     pass P0
     {
 		SetVertexShader( NULL );
         SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(1) ) );
-    }
-}
-
-technique11 Viewport2
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(2) ) );
-    }
-}
-
-technique11 Viewport3
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(3) ) );
-    }
-}
-
-technique11 Viewport4
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(4) ) );
+		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS() ) );
     }
 }
