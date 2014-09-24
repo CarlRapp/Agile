@@ -36,8 +36,9 @@ private:
 	DXModel					*m_testmodel;
 	ModelInstance			*m_testmodelinstance;
 
-	IDXGISwapChain			*m_swapChain = NULL;
-	ID3D11RenderTargetView	*m_renderTargetView = NULL;
+	IDXGISwapChain				*m_swapChain = NULL;
+	ID3D11RenderTargetView		*m_renderTargetView = NULL;
+	ID3D11UnorderedAccessView	*m_finalUAV;
 
 	ID3D11Texture2D			*m_depthStencil = NULL;
 	ID3D11DepthStencilView	*m_depthStencilView = NULL;

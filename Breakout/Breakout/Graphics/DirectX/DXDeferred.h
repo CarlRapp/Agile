@@ -19,6 +19,8 @@
 #include "DXEffects.h"
 #include "DXVertex.h"
 #include "DXModel.h"
+#include "DXStructuredBuffer.h"
+#include "DXLightHelper.h"
 
 class DXDeferred
 {
@@ -40,9 +42,18 @@ private:
 	ID3D11RenderTargetView		*m_albedoRTV, *m_normalSpecRTV;
 	ID3D11ShaderResourceView	*m_albedoSRV, *m_normalSpecSRV, *m_depthSRV, *m_finalSRV;
 
-	ID3D11UnorderedAccessView	*m_finalUAV;
+	//ID3D11UnorderedAccessView	*m_finalUAV;
 
 	ID3D11RenderTargetView* m_GBuffer[2];
+
+	
+	vector<DirectionalLight*>			*m_dirLights;
+	vector<PointLight*>					*m_pointLights;
+	vector<SpotLight*>					*m_spotLights;
+
+	DXStructuredBuffer<GPUDirectionalLight>	*m_dirLightBuffer;
+	DXStructuredBuffer<GPUPointLight>			*m_pointLightBuffer;
+	DXStructuredBuffer<GPUSpotLight>			*m_spotLightBuffer;
 
 	//TEST
 	void					RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech);
@@ -60,6 +71,9 @@ private:
 	void					RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
 	void					RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
 
+	void					ComputeLight(ID3D11UnorderedAccessView *_renderTargetView, ICamera* _camera);
+
+	void					UpdateLights();
 
 public:
 
@@ -68,7 +82,7 @@ public:
 
 	void Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height);
 
-	void	Render(ID3D11Device *_device, ID3D11RenderTargetView *_renderTargetView, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
+	void	Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_renderTargetView, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
 
 };
 
