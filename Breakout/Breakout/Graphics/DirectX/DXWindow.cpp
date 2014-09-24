@@ -116,8 +116,6 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 		_hInstanceHandle,
 		0);
 
-	
-
 	if (m_hWndMain == 0)
 	{
 		::MessageBox(0, "Failed to create WNDCLASS", 0, MB_OK);
@@ -131,8 +129,19 @@ bool DXWindow::InitWndApp(HINSTANCE _hInstanceHandle, int _show, DisplayMode _di
 	return true;
 }
 
+
 void DXWindow::Update()
 {
+	// TEMP
+	RECT rc;
+	rc.left = 100;
+	rc.right = rc.left + 1000;
+	rc.top = 350;
+	rc.bottom = rc.top + 600;
+
+	ClipCursor(&rc);
+	ShowCursor(true);
+
 	MSG msg;
 	if (::PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{

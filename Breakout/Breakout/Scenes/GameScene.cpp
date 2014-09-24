@@ -23,43 +23,42 @@ void GameScene::Initialize()
 	m_world->AddSystem<PhysicsSystem>();
 
 
-	int xBlocks = 32;
+	int xBlocks = 16;
 	int yBlocks = 3;
 
 	Entity* e;
-	
+
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-10.0f, 0, 0));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(10.0f, 0.0f, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
-	/*
 	for (int y = 12; y > 12 - yBlocks; --y)
 	for (int x = 1; x < 1 + xBlocks; ++x)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 10, 0));
+		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
 
 		m_world->AddEntity(e);
-	}*/
+	}
 
-	/*
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0.7f, 25, 0));
 	m_world->AddEntity(e);
-	*/
+
+
+
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(8, 0, 0));
 	m_world->AddEntity(e);
-	
+
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 
