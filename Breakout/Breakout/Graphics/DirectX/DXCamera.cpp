@@ -125,15 +125,9 @@ void DXCamera::Move(float _move)
 void DXCamera::SetForward(DirectX::XMFLOAT3 _forward)
 {
 	_forward.z *= -1;
-	DirectX::XMFLOAT3 up, right, forward2, position;
 
-	memcpy(&up, &m_up, sizeof(DirectX::XMFLOAT3));
-	memcpy(&right, &m_right, sizeof(DirectX::XMFLOAT3));
-	memcpy(&forward2, &_forward, sizeof(DirectX::XMFLOAT3));
-	memcpy(&position, &m_position, sizeof(DirectX::XMFLOAT3));
-
-	DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&position);
-	DirectX::XMVECTOR direction = DirectX::XMLoadFloat3(&forward2);
+	DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&m_position);
+	DirectX::XMVECTOR direction = DirectX::XMLoadFloat3(&_forward);
 	direction = DirectX::XMVector3Normalize(direction);
 	DirectX::XMVECTOR up2 = DirectX::XMVectorSet(0, 1, 0, 0);
 
@@ -162,7 +156,7 @@ void DXCamera::SetLookAt(DirectX::XMFLOAT3 _target)
 	DirectX::XMFLOAT3 forward;
 	forward.x = _target.x - m_position.x;
 	forward.y = _target.y - m_position.y;
-	forward.z = -((-_target.z) - m_position.z);
+	forward.z = -(-_target.z - m_position.z);
 
 	SetForward(forward);
 }
