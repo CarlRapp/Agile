@@ -17,8 +17,9 @@ void GameScene::Initialize()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
-	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ModelSystem>();
+	m_world->AddSystem<MovementSystem>();
+	m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<PhysicsSystem>();
 
 
@@ -26,16 +27,18 @@ void GameScene::Initialize()
 	int yBlocks = 3;
 
 	Entity* e;
+	
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-10.0f, 0, 0));
+	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(10.0f, 0.0f, 0));
 	m_world->AddEntity(e);
+
 	/*
-	e = world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0));
-	world->AddEntity(e);
-	*/
 	for (int y = 12; y > 12 - yBlocks; --y)
 	for (int x = 1; x < 1 + xBlocks; ++x)
 	{
@@ -44,21 +47,19 @@ void GameScene::Initialize()
 		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 10, 0));
 
 		m_world->AddEntity(e);
-	}
+	}*/
 
-
+	/*
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0.7f, 25, 0));
 	m_world->AddEntity(e);
-
-
-
-	/*
-	e = world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	world->AddEntity(e);
 	*/
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	m_world->AddEntity(e);
+	
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 

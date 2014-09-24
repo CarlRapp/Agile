@@ -8,6 +8,15 @@
 #include "../Component/VelocityComponent.h"
 #include "../Component/PositionComponent.h"
 #include "../Component/CollisionComponent.h"
+#include "../EntityFactory.h"
+
+enum CollisionCategory {
+	WALL = 0x0001,
+	INVISIBLEWALL = 0x0002,
+	PAD = 0x0004,
+	BLOCK = 0x0008,
+	BALL = 0x0010,
+};
 
 class PhysicsSystem : public System<PhysicsSystem>
 {
@@ -18,17 +27,26 @@ private:
 	
 	b2World* m_b2World;
 	
-	void CreateBody(Entity* entity, CollisionComponent& _collision, const VECTOR3& _position, float rotation);
+	void CreateBody(Entity* _entity, CollisionComponent& _collision, const VECTOR3& _position, const VECTOR3& _velocity, float rotation);
 
 public:
 	PhysicsSystem(World* _world);
 	~PhysicsSystem();
 
-	void Update(float _dt);
 
+
+	void Update(float _dt);
 	void SetGravity(const b2Vec2& _gravity) { m_b2World->SetGravity(_gravity); }
 
 	b2World& GetB2World() { return *m_b2World; }
+
+	// Get the right fixture definition for the game object
+	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType);
+	/*static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution);
+	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution, uint16 maskBits);
+	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, uint16 maskBits);*/
 };
+
+
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef ENTITIYFACTORY_H
 #define ENTITIYFACTORY_H
 
-#include <Box2D.h>
-
 #include "Entity/Entity.h"
 
 
@@ -16,7 +14,7 @@
 #include "Component/LifeComponent.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
-#include "Component/CollisionComponent.h"
+#include "System/PhysicsSystem.h"
 
 
 class EntityFactory
@@ -27,6 +25,7 @@ private:
 	static EntityFactory* m_entityFactory;
 
 public:
+	~EntityFactory(void);
 
 	enum EntityType
 	{
@@ -37,11 +36,16 @@ public:
 		WALL
 	};
 
-	~EntityFactory(void);
-
 	static EntityFactory* GetInstance();
 
 	// Creates entity and required components based on EntityType
 	void CreateEntity(Entity* _entity, EntityType _entityType);
+
+
 };
+
+
+
+
 #endif
+
