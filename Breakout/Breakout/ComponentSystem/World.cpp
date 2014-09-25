@@ -19,25 +19,29 @@ void World::Start()
 
 	printf("%d Entities allocated!\n", MAX_ENTITY_COUNT);
 
-	m_systems = std::vector<ISystem*>();
+	m_activeEntities = EntityMap();
+	m_systems = SystemMap();
 }
 
 bool World::AddEntity(Entity* _e)
 {
-	for(Entity* e : m_activeEntities)
-		if (e->GetId() == _e->GetId())
-			return false;
+	if (m_activeEntities.find(_e->GetId()) == m_activeEntities.end())
+	{
+		m_activeEntities[_e->GetId()] = _e;
+		printf("Entity #%d added!\n", _e->GetId());
 
-	m_activeEntities.push_back(_e);
-	printf("Entity #%d added!\n", _e->GetId());
+		for (IComponent* c : *_e->GetComponents())
+			AddNewComponent(c->m_ID);
 
-	for(IComponent* c : *_e->GetComponents())
-		AddNewComponent(c->m_ID);
+		SystemMap::iterator sIT;
+		for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+			sIT->second->Add(_e);
 
-	for(ISystem* system : m_systems)
-		system->Add(_e);
+		AddEntityToComponentPool(_e);
+	}
 
-	AddEntityToComponentPool(_e);
+
+
 
 	return true;
 }
@@ -58,38 +62,39 @@ Entity* World::CreateEntity()
 
 void World::Update(float _dt)
 {
-	for(ISystem* system : m_systems)
-		system->Update(_dt);
+	SystemMap::iterator sIT;
+	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+		sIT->second->Update(_dt);
 
-	for (int i = m_activeEntities.size() - 1; i >= 0; --i)
+	EntityMap::iterator eIT = m_activeEntities.begin();
+	while (eIT != m_activeEntities.end())
 	{
-		Entity* e = m_activeEntities[i];
-		//m_activeEntities[i]->Reset();
+		Entity* e = eIT->second;
 
 		switch (e->GetState())
 		{
 		case Entity::CHANGED:
 			EntityChanged(e);
 			e->SetState(Entity::ALIVE);
+			++eIT;
 			break;
 
 		case Entity::DEAD:
 			KillEntity(e);
-			m_activeEntities.erase(m_activeEntities.begin() + i);
+			//EntityMap::iterator eDelete = eIT;
+			m_activeEntities.erase(eIT++);
 			break;
 
+		default:
+			++eIT;
+			break;
 		}
+		
 	}
 }
 
 void World::EntityChanged(Entity* _e)
 {
-	for(ISystem* system : m_systems)
-	{
-		system->Remove(_e);
-		system->Add(_e);
-	}
-
 }
 
 void World::KillEntity(Entity* _e)
@@ -98,8 +103,9 @@ void World::KillEntity(Entity* _e)
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);
 
-	for(ISystem* system : m_systems)
-		system->Remove(_e);
+	SystemMap::iterator sIT;
+	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+		sIT->second->Remove(_e);
 
 	printf("Entity #%d removed!\n", _e->GetId());
 }
@@ -120,7 +126,10 @@ void World::AddEntityToComponentPool(Entity* _e)
 	}
 }
 
-ISystem* World::GetSystem(int _id)
+Entity* World::GetEntity(int _id)
 {
-    return m_systems[_id];
+	if (m_activeEntities.find(_id) != m_activeEntities.end())
+		return m_activeEntities[_id];
+
+	return 0;
 }
