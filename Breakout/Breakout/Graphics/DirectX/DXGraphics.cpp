@@ -218,6 +218,11 @@ void DXGraphics::LoadModel(std::string _path)
 	m_modelManager.LoadModel(m_device, _path, m_textureManager);
 }
 
+void DXGraphics::LoadTexture(std::string _path)
+{
+	m_textureManager.CreateTexture(_path);
+}
+
 
 void DXGraphics::Update()
 {
@@ -228,29 +233,22 @@ void DXGraphics::Render(ICamera* _camera)
 {
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	m_deviceContext->ClearRenderTargetView( m_renderTargetView, ClearColor );
+	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
 
 	m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_device, m_finalUAV, m_modelInstances, _camera);
+	m_DXDeferred->Render(m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, _camera);
 
+	m_swapChain->Present(0, 0);
 
-	if (FAILED(m_swapChain->Present(0, 0)))
-	{
-		int a = 2;
-	}
 }
+
 
 void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
 {
-	//if (m_modelInstances.count(_model) == 0)
-	//{
-	//	m_modelInstances[_model] = map<int, ModelInstance*>();
-	//}
-
 
 	if (m_modelInstances[_model].count(_id) != 0)
 		return;
@@ -266,10 +264,6 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
 
-void DXGraphics::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
-{
-	printf("ERIK FIXA, HÄR FINNS INGA LJUS\n");
-}
 
 void DXGraphics::RemoveObject(int _id)
 {
@@ -279,4 +273,31 @@ void DXGraphics::RemoveObject(int _id)
 	{
 		mapIterator->second.erase(_id);
 	}
+}
+
+void DXGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
+{
+	if (m_textureInstances.count(_id) != 0)
+		return;
+
+	DX2DTextureInstance *ti = new DX2DTextureInstance();
+
+	ti->Texture = m_textureManager.CreateTexture(_path);
+	ti->X = _x;
+	ti->Y = _y;
+	ti->Width = _width;
+	ti->Height = _height;
+
+	m_textureInstances.insert(pair<int, DX2DTextureInstance*>(_id, ti));
+}
+
+void DXGraphics::Remove2DTexture(int _id)
+{
+	m_textureInstances.erase(_id);
+}
+
+
+void DXGraphics::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
+{
+	printf("ERIK FIXA, HÄR FINNS INGA LJUS\n");
 }
