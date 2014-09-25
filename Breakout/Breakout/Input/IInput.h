@@ -27,16 +27,18 @@ private:
 	bool*	m_thisFrameButtons = new bool[MOUSEBUTTONS];
 
 	int m_positionX, m_positionY;
+	int m_oldPositionX, m_oldPositionY;
 	int m_dX, m_dY;
 public:
 	Mouse();
 	void Update();
 
 	InputState GetButtonState(char _button);
-	int getX();
-	int getY();
-	int getdX();
-	int getdY();
+	int GetX();
+	int GetY();
+	int GetdX();
+	int GetdY();
+	void SetMousePosition(int _x, int _y);
 
 };
 
