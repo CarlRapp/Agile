@@ -16,6 +16,7 @@
 #include "Component/KeyboardInputComponent.h"
 #include "Component/AudioComponent.h"
 #include "Component/PlayerComponent.h"
+#include "Component/LightComponent.h"
 #include "System/PhysicsSystem.h"
 
 
@@ -38,7 +39,8 @@ public:
 		WALL,
 		INVISIBLE_WALL,
 		PROJECTILE,
-		PLAYER
+		PLAYER,
+		POINTLIGHT
 	};
 
 	static EntityFactory* GetInstance();

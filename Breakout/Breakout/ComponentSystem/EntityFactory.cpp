@@ -74,6 +74,10 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<LifeComponent>();
 		_entity->AddComponent<ScoreComponent>().m_score = 0;
 		break;
+	case EntityFactory::POINTLIGHT:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<LightComponent>();
+		break;
 	default:
 		break;
 	}

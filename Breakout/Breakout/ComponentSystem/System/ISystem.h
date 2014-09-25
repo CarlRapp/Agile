@@ -49,7 +49,7 @@ public:
 	const ComponentFilter* GetComponentFilter() const;
 	EntityMap GetEntities();
 
-	bool Add(Entity* _entity);
+	virtual bool Add(Entity* _entity);
 	virtual bool Remove(Entity* _entity);
 	void Clear(void);
 

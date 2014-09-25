@@ -156,6 +156,7 @@ public:
 	{ 
 		gpuLight->Color = *Color;
 		gpuLight->Position = *Position;
+		gpuLight->Position.z *= -1;
 		gpuLight->Range = *Range;
 		return gpuLight; 
 	}

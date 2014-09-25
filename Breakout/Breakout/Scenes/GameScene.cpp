@@ -23,6 +23,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<ScoreSystem>();
+	m_world->AddSystem<LightSystem>();
 
 
 	int xBlocks = 30;
@@ -70,6 +71,15 @@ void GameScene::Initialize()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
+
+
+
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+	m_world->AddEntity(e);
+
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 2, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));

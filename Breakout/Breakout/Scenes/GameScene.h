@@ -12,6 +12,7 @@
 #include "../ComponentSystem/System/ProjectileSystem.h"
 #include "../ComponentSystem/System/AudioSystem.h"
 #include "../ComponentSystem/System/ScoreSystem.h"
+#include "../ComponentSystem/System/LightSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"
