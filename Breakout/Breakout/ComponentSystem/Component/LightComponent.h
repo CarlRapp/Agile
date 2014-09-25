@@ -25,8 +25,8 @@ public:
 
 	LightComponent()
 	{
-		m_color = VECTOR3(1, 0, 1);
-		m_range = 1000.f;
+		m_color = VECTOR3(1, 1, 1);
+		m_range = 100.f;
 	}
 };
 

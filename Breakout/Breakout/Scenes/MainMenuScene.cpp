@@ -49,8 +49,8 @@ void MainMenuScene::Update(float _dt)
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
 		
 
-	m_x = sinf(100*m_trollCounter) * 0.02f;
-	m_y = sinf(10*m_trollCounter) * 0.02f;
+	//m_x = sinf(4*m_trollCounter) * 0.2f;
+	//m_y = sinf(2*m_trollCounter) * 0.2f;
 
 	m_trollCounter += _dt;
 }
