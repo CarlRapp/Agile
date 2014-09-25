@@ -15,6 +15,7 @@
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
 #include "Component/AudioComponent.h"
+#include "Component/PlayerComponent.h"
 #include "System/PhysicsSystem.h"
 
 

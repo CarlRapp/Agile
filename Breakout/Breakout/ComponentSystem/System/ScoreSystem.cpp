@@ -17,7 +17,7 @@ ScoreSystem::~ScoreSystem()
 
 void ScoreSystem::Update(float _dt)
 {
-	std::vector<Entity*>* player = m_world->GetEntities<LifeComponent>();
+	std::vector<Entity*>* player = m_world->GetEntities<PlayerComponent>();
 
 
 	EntityMap::iterator it;

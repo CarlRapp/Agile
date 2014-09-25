@@ -12,7 +12,6 @@ AudioSystem::AudioSystem(World* _world)
 
 AudioSystem::~AudioSystem()
 {
-
 }
 
 
@@ -37,7 +36,7 @@ void AudioSystem::Update(float _dt)
 				if (!contact->IsTouching())
 				{
 					const char* audioPath = e->GetComponent<AudioComponent>()->m_audioPath.c_str();
-					m_audioManager->PlaySoundEffect("Wowpulse.wav");
+					m_audioManager->PlaySoundEffect(audioPath);
 				}
 			}
 		}
