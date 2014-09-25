@@ -70,14 +70,14 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 		break;
 	case WM_SETFOCUS:
 		// TEMP
-		RECT rc;
+		/*RECT rc;
 		rc.left = 100;
 		rc.right = rc.left + 1000;
 		rc.top = 350;
 		rc.bottom = rc.top + 600;
 
 		ClipCursor(&rc);
-		ShowCursor(false);
+		ShowCursor(false);*/
 		break;
 	default:
 		return DefWindowProc(_hwnd, _msg, _wParam, _lParam);

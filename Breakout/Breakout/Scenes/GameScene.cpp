@@ -61,7 +61,7 @@ void GameScene::Initialize()
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 }
 
 void GameScene::LoadContent()
@@ -71,6 +71,7 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
 
