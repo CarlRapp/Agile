@@ -13,6 +13,8 @@
 #include "Component/ModelComponent.h"
 #include "Component/LifeComponent.h"
 #include "Component/DamageComponent.h"
+#include "Component/DeflectionComponent.h"
+#include "Component/BounceComponent.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
 #include "System/PhysicsSystem.h"

@@ -26,7 +26,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
-
+		_entity->AddComponent<HealthComponent>(10);
+		_entity->AddComponent<DeflectionComponent>(1.0f);
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
@@ -36,6 +37,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
+		_entity->AddComponent<DeflectionComponent>(1.0f);
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();
@@ -44,6 +46,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
+		_entity->AddComponent<DamageComponent>(10);
+		_entity->AddComponent<BounceComponent>(1.0f);
 		break;
 	case EntityFactory::POWERUP:
 		break;

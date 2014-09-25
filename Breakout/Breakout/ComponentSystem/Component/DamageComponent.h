@@ -5,15 +5,10 @@
 
 struct DamageComponent : Component<DamageComponent>
 {
-	int m_currentHealth;
-	int m_maxHealth;
+	int m_damage;
 
-	DamageComponent()
-	{
-		m_currentHealth = 0;
-		m_maxHealth = 0;
-	}
-
+	DamageComponent() : m_damage(0) { }
+	explicit DamageComponent(int _damage) : m_damage(_damage) { }
 };
 
 #endif

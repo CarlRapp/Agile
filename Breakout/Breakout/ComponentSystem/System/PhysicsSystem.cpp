@@ -1,4 +1,5 @@
 #include "PhysicsSystem.h"
+#include "../World.h"
 
 PhysicsSystem::PhysicsSystem(World* _world) 
 : Base(ComponentFilter().Requires<PositionComponent, RotationComponent, CollisionComponent>(), _world)
@@ -20,13 +21,14 @@ void PhysicsSystem::Update(float _dt)
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
-		if (e->GetState() != Entity::ALIVE)
-			continue;
-
+		auto collision = e->GetComponent<CollisionComponent>();
 		auto position = e->GetComponent<PositionComponent>();
 		auto rotation = e->GetComponent<RotationComponent>();
 		auto velocity = e->GetComponent<VelocityComponent>();
-		auto collision = e->GetComponent<CollisionComponent>();
+		collision->ResetCollisions();
+
+		if (e->GetState() != Entity::ALIVE)
+			continue;
 
 		// Add the body to world if it hasn't been added
 		if (!collision->IsAdded())
@@ -44,23 +46,32 @@ void PhysicsSystem::Update(float _dt)
 		rotation->m_rotation = VECTOR3(b2Rotation.x, b2Rotation.y, rotation->m_rotation.z);
 		if (velocity) 
 			velocity->m_velocity = VECTOR3(b2Velocity.x, b2Velocity.y, velocity->m_velocity.z);
+	}
 
-		collision->ResetCollisions();
-		// Do collisions checks
-		for (b2ContactEdge* contactEdge = b2Body->GetContactList(); contactEdge; contactEdge = contactEdge->next)
+	// Do collisions checks
+	for (b2Contact* contact = m_b2World->GetContactList(); contact; contact = contact->GetNext())
+	{
+		if (!contact->IsTouching())
+			continue;
+
+		b2Fixture* fixtureA = contact->GetFixtureA();
+		b2Fixture* fixtureB = contact->GetFixtureB();
+		Entity* entityA = 0;
+		Entity* entityB = 0;
+		for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 		{
-			b2Contact* contact = contactEdge->contact;
-			if (!contact->IsTouching())
-				continue;
-
-			b2Fixture* fixtureB = contact->GetFixtureB();
-			for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
-			{
-				Entity* collidingEntity = it->second;
-				if (collidingEntity->GetComponent<CollisionComponent>()->HasBody(fixtureB->GetBody()) && collidingEntity->GetState() == Entity::ALIVE)
-					collision->CollidingWith(collidingEntity->GetId());
-			}
+			Entity* e = it->second;
+			if (!entityA && e->GetComponent<CollisionComponent>()->HasBody(fixtureA->GetBody()))
+				entityA = e;
+			else if (!entityB && e->GetComponent<CollisionComponent>()->HasBody(fixtureB->GetBody()))
+				entityB = e;
+			if (entityA && entityB)
+				break;
 		}
+		b2WorldManifold* manifold = new b2WorldManifold();
+		contact->GetWorldManifold(manifold);
+		entityA->GetComponent<CollisionComponent>()->CollidingWith(entityB->GetId(), *manifold);
+		entityB->GetComponent<CollisionComponent>()->CollidingWith(entityA->GetId(), *manifold);
 	}
 }
 
@@ -113,6 +124,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		fixDef->shape = circleShape;
 		fixDef->density = 5000.0f;
 		fixDef->friction = 50.0f;
+		fixDef->restitution = 1.0f;
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		break;
 	case EntityFactory::PROJECTILE:

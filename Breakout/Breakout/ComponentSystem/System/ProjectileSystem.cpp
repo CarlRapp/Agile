@@ -23,7 +23,7 @@ void ProjectileSystem::Update(float _dt)
 	PositionComponent* position;
 	EntityMap::iterator it;
 
-	for (int i = 0; i < m_entites.size(); ++i)
+	for (unsigned int i = 0; i < m_entites.size(); ++i)
 	{
 		if (m_entites[i]->GetState() != Entity::ALIVE)
 		{
@@ -54,6 +54,15 @@ void ProjectileSystem::Update(float _dt)
 			position = it->second->GetComponent<PositionComponent>();
 
 			Entity* e = m_world->CreateEntity();
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x, position->GetPosition().y + 2.0f, 0));
+
+			m_world->AddEntity(e);
+			m_entites.emplace_back(e);
+
+			/*
+			Entity* e = m_world->CreateEntity();
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PROJECTILE);
 			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 10, 0);
 			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x - 2.5f, position->GetPosition().y + 2.0f, 0));
@@ -70,7 +79,7 @@ void ProjectileSystem::Update(float _dt)
 			m_world->AddEntity(e);
 			m_entites.emplace_back(e);
 
-
+			*/
 
 
 		}

@@ -17,10 +17,12 @@ void GameScene::Initialize()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
+	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<PhysicsSystem>();
+	m_world->AddSystem<BounceSystem>();
+	m_world->AddSystem<CollisionDamageSystem>();
 
 
 	int xBlocks = 16;
