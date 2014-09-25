@@ -38,16 +38,16 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(10.0f, 0.0f, 0));
 	m_world->AddEntity(e);
 
-	/*
+	
 	for (int y = 12; y > 12 - yBlocks; --y)
 	for (int x = 1; x < 1 + xBlocks; ++x)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 10, 0));
+		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (x + 1) * 0.5f, 10 + y, 0));
 
 		m_world->AddEntity(e);
-	}*/
+	}
 
 	/*
 	e = m_world->CreateEntity();
