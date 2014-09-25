@@ -25,7 +25,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<ScoreSystem>();
 
 
-	int xBlocks = 16;
+	int xBlocks = 30;
 	int yBlocks = 3;
 
 	Entity* e;
@@ -43,7 +43,12 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
-	for (int y = 12; y > 12 - yBlocks; --y)
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -15, 0));
+	m_world->AddEntity(e);
+
+	for (int y = 9; y > 9 - yBlocks; --y)
 	for (int x = 1; x < 1 + xBlocks; ++x)
 	{
 		e = m_world->CreateEntity();
@@ -55,6 +60,7 @@ void GameScene::Initialize()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
 	m_world->AddEntity(e);
 
 
@@ -62,12 +68,12 @@ void GameScene::Initialize()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(8, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 2, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 }
 
 void GameScene::LoadContent()
@@ -80,6 +86,9 @@ void GameScene::Update(float _dt)
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
+
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
+		this->Reset();
 
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
@@ -134,4 +143,14 @@ void GameScene::Update(float _dt)
 void GameScene::Render()
 {
 	GraphicsManager::GetInstance()->Render();
+}
+
+// This should be called when the player looses a life (not when game over)
+void GameScene::Reset(void)
+{
+	/*
+	All balls should be destroyed already (else the reset should not have been called)
+	We need to add one new ball.
+
+	*/
 }

@@ -20,6 +20,9 @@ using namespace SceneSystem;
 class GameScene : public Scene<GameScene>
 {
 private:
+
+	void Reset(void);
+
 	World* m_world;
 public:
 	GameScene();

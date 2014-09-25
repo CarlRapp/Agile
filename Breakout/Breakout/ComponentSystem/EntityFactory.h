@@ -36,6 +36,7 @@ public:
 		BALL,
 		POWERUP,
 		WALL,
+		INVISIBLE_WALL,
 		PROJECTILE,
 		PLAYER
 	};
