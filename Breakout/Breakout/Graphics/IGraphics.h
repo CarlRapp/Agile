@@ -30,7 +30,7 @@ public:
 	virtual void Update() = 0;
 
 	virtual void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose) = 0;
-    virtual void AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range) = 0;
+        virtual void AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range) = 0;
         
 	virtual void RemoveObject(int _id) = 0;
 

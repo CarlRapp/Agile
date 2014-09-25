@@ -146,7 +146,7 @@ void GLGraphics::LoadModel(std::string _path)
 
 
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glBufferData(GL_ARRAY_BUFFER, 16 * 5 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * 5 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);

@@ -4,6 +4,7 @@
 #include "../IGraphics.h"
 #include "GLWindow.h"
 #include "GLShader.h"
+#include "TextureManager.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -108,6 +109,7 @@ public:
         void Free();
         void Update();
         void LoadModel(std::string _path);
+        void LoadTexture(std::string _path);
         
         void AddRenderObject(std::string _path, MATRIX4 _world);
         void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);

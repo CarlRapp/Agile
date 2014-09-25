@@ -72,7 +72,8 @@ private:
 	void					RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
 	void					RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
 
-	void					Render2DTextures(map<std::string, map<int, DX2DTextureInstance*>> &_textureInstances);
+	void					Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances);
+	void					Render2DTexture(DX2DTextureInstance *_textureInstance);
 
 	void					ComputeLight(ID3D11UnorderedAccessView *_renderTargetView, ICamera* _camera);
 
@@ -88,7 +89,7 @@ public:
 	void	Render(ID3D11RenderTargetView *_renderTargetView,
 		ID3D11UnorderedAccessView *_finalUAV,
 		map<std::string, map<int, ModelInstance*>> &_modelInstances, 
-		map<std::string, map<int, DX2DTextureInstance*>> &_textureInstances,
+		map<int, DX2DTextureInstance*> &_textureInstances,
 		ICamera* _camera);
 
 };
