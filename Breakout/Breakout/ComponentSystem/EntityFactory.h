@@ -12,10 +12,14 @@
 #include "Component/ScoreComponent.h"
 #include "Component/ModelComponent.h"
 #include "Component/LifeComponent.h"
+#include "Component/DamageComponent.h"
+#include "Component/DeflectionComponent.h"
+#include "Component/BounceComponent.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
 #include "Component/AudioComponent.h"
 #include "Component/PlayerComponent.h"
+#include "Component/LightComponent.h"
 #include "System/PhysicsSystem.h"
 
 
@@ -36,8 +40,11 @@ public:
 		BALL,
 		POWERUP,
 		WALL,
+		H_WALL,
+		INVISIBLE_WALL,
 		PROJECTILE,
-		PLAYER
+		PLAYER,
+		POINTLIGHT
 	};
 
 	static EntityFactory* GetInstance();

@@ -67,9 +67,10 @@ bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
     return m_IGraphics->Init3D(_displayMode);
 }
-void GraphicsManager::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
+
+void GraphicsManager::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {
-    m_IGraphics->AddLight(_worldPos, _intensity, _color, _range);
+    m_IGraphics->AddPointLight(_id, _worldPos, _intensity, _color, _range);
 }
    
 

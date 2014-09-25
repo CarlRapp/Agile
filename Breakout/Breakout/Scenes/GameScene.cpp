@@ -18,15 +18,20 @@ void GameScene::Initialize()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
+	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<PhysicsSystem>();
-	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
+	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<CollisionDamageSystem>();
+	
+	
+	m_world->AddSystem<LightSystem>();
 
 
-	int xBlocks = 16;
+	int xBlocks = 30;
 	int yBlocks = 3;
 
 	Entity* e;
@@ -44,7 +49,17 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(xBlocks + 1 + (xBlocks + 1) * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
-	for (int y = 12; y > 12 - yBlocks; --y)
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::H_WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5 + xBlocks) * 0.5f, 15, 0));
+	m_world->AddEntity(e);
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5f + xBlocks) * 0.5f, -15, 0));
+	m_world->AddEntity(e);
+
+	for (int y = 9; y > 9 - yBlocks; --y)
 	for (int x = 1; x < 1 + xBlocks; ++x)
 	{
 		e = m_world->CreateEntity();
@@ -56,6 +71,7 @@ void GameScene::Initialize()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
 	m_world->AddEntity(e);
 
 
@@ -63,12 +79,21 @@ void GameScene::Initialize()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(8, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
+
+
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+	m_world->AddEntity(e);
+
+
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 2, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 }
 
 void GameScene::LoadContent()
@@ -85,6 +110,9 @@ void GameScene::Update(float _dt)
 		return;
 	}
 		
+
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
+		this->Reset();
 
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
@@ -154,4 +182,9 @@ void GameScene::OnInactive()
 	for (int i = 0; i < 500; ++i)
 		GraphicsManager::GetInstance()->RemoveObject(i);
 		
+}
+
+void GameScene::Reset()
+{
+
 }

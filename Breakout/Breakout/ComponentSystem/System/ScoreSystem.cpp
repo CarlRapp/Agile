@@ -19,33 +19,21 @@ void ScoreSystem::Update(float _dt)
 {
 	std::vector<Entity*>* player = m_world->GetEntities<PlayerComponent>();
 
-
-	EntityMap::iterator it;
-	for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+	for (auto entityPair : m_entityMap)
 	{
-		Entity* e = it->second;
-		if (e->GetState() != Entity::ALIVE)
+		Entity* e = entityPair.second;
+
+		if ((e->GetState() == Entity::DEAD))
 			continue;
 
-
 		auto collision = e->GetComponent<CollisionComponent>();
-
-
-		if (collision->IsAdded())
+		std::vector<int> collisions = collision->GetCollisions();
+		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
-			for (b2ContactEdge* contactEdge = collision->GetBody()->GetContactList(); contactEdge; contactEdge = contactEdge->next)
-			{
-				b2Contact* contact = contactEdge->contact;
-				if (!contact->IsTouching())
-				{
-					player->at(0)->GetComponent<ScoreComponent>()->m_score += e->GetComponent<ScoreComponent>()->m_score;
-					printf("Score: %i\n", player->at(0)->GetComponent<ScoreComponent>()->m_score);
-				}
-			}
+			//Entity* collidingEntity = m_world->GetEntity(collisions[i]);
+			player->at(0)->GetComponent<ScoreComponent>()->m_score += e->GetComponent<ScoreComponent>()->m_score;
+			printf("Score: %i\n", player->at(0)->GetComponent<ScoreComponent>()->m_score);
 		}
-
-
 	}
-
 
 }

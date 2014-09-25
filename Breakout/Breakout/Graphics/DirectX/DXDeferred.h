@@ -48,9 +48,9 @@ private:
 	ID3D11RenderTargetView* m_GBuffer[2];
 
 	
-	vector<DirectionalLight*>			*m_dirLights;
-	vector<PointLight*>					*m_pointLights;
-	vector<SpotLight*>					*m_spotLights;
+	map<int, DirectionalLight*>				*m_dirLights;
+	map<int, PointLight*>					*m_pointLights;
+	map<int, SpotLight*>					*m_spotLights;
 
 	DXStructuredBuffer<GPUDirectionalLight>	*m_dirLightBuffer;
 	DXStructuredBuffer<GPUPointLight>			*m_pointLightBuffer;
@@ -91,6 +91,8 @@ public:
 		map<std::string, map<int, ModelInstance*>> &_modelInstances, 
 		map<int, DX2DTextureInstance*> &_textureInstances,
 		ICamera* _camera);
+
+	void SetPointLightMap(map<int, PointLight*> *map) { m_pointLights = map; }
 
 };
 

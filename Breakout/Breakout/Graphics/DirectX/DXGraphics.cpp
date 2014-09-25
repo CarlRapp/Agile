@@ -42,6 +42,9 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	
 }
 
+
+
+
 //#define asd 1000
 //MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
@@ -59,6 +62,9 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_DXDeferred = new DXDeferred();
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
+	m_DXDeferred->SetPointLightMap(&m_pointLights);
+
+	
 
 	m_textureManager.Init(m_device);
 
@@ -297,7 +303,22 @@ void DXGraphics::Remove2DTexture(int _id)
 }
 
 
-void DXGraphics::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
+void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {
-	printf("ERIK FIXA, HÄR FINNS INGA LJUS\n");
+	if (m_pointLights.count(_id) != 0)
+		return;
+
+	PointLight *pl = new PointLight();
+
+	pl->Color = _color;
+	pl->Position = _worldPos;
+	pl->Range = _range;
+	pl->Intensity = _intensity;
+
+	m_pointLights.insert(pair<int, PointLight*>(_id, pl));
+}
+
+void DXGraphics::RemovePointLight(int _id)
+{
+	m_pointLights.erase(_id);
 }

@@ -8,9 +8,6 @@ class ProjectileSystem : public System<ProjectileSystem>
 {
 private:
 
-	std::vector<Entity*> m_entites;
-
-
 public:
 
 	ProjectileSystem(World* _world);
