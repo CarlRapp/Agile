@@ -94,6 +94,8 @@ Mouse::Mouse()
 
 	m_positionX = 0;
 	m_positionY = 0;
+	m_oldPositionX = 0;
+	m_oldPositionY = 0;
 	m_dX = 0;
 	m_dY = 0;
 }
@@ -110,20 +112,31 @@ void Mouse::Update()
 	//	Calculate the position of the mouse
 	//	relative to the window of the game
 	GetCursorPos(&A);
-	ScreenToClient(
-		((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle(),
-		&A
-		);
+	//ScreenToClient(
+	//	((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle(),
+	//	&A
+	//	);
 
-	m_dX = A.x - m_positionX;
-	m_dY = A.y - m_positionY;
 	m_positionX = A.x;
 	m_positionY = A.y;
+	m_dX = m_positionX - m_oldPositionX;
+	m_dY = m_oldPositionY - m_positionY;
+	m_oldPositionX = m_positionX;// = A.x;
+	m_oldPositionY = m_positionY;// = A.y;
+		
 }
-int Mouse::getdX() { return m_dX; }
-int Mouse::getdY() { return m_dY; }
-int Mouse::getX() { return m_positionX; }
-int Mouse::getY() { return m_positionY; }
+int Mouse::GetdX() { return m_dX; }
+int Mouse::GetdY() { return m_dY; }
+int Mouse::GetX() { return m_positionX; }
+int Mouse::GetY() { return m_positionY; }
+void Mouse::SetMousePosition(int _x, int _y)
+{
+	SetCursorPos(_x, _y);
+	m_positionX = _x;
+	m_positionY = _y;
+	m_oldPositionX = _x;
+	m_oldPositionY = _y;
+}
 
 InputState Mouse::GetButtonState(char _button)
 {

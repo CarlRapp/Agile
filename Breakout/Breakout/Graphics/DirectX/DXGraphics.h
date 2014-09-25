@@ -30,7 +30,7 @@ private:
 
 
 	map<std::string, map<int, ModelInstance*>>	m_modelInstances;
-	map<std::string, map<int, DX2DTextureInstance*>>	m_textureInstances;
+	map<int, DX2DTextureInstance*>	m_textureInstances;
 
 
 	DXModelManager			m_modelManager;

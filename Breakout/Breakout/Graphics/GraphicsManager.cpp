@@ -37,7 +37,6 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 
 	m_ICamera->SetViewPort(0, 0, _width, _height);
 	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
-
 }
 
 
@@ -63,10 +62,9 @@ void GraphicsManager::Update()
 	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 }
 
-
 bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
-    return m_IGraphics->Init3D(_displayMode);
+	return m_IGraphics->Init3D(_displayMode);
 }
 void GraphicsManager::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
 {
@@ -83,6 +81,18 @@ void GraphicsManager::RemoveObject(int _id)
 {
 	m_IGraphics->RemoveObject(_id);
 }
+
+
+void GraphicsManager::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
+{
+	m_IGraphics->Add2DTexture(_id, _path, _x, _y, _width, _height);
+}
+
+void GraphicsManager::Remove2DTexture(int _id)
+{
+	m_IGraphics->Remove2DTexture(_id);
+}
+
 
 ICamera* GraphicsManager::GetICamera()
 {
