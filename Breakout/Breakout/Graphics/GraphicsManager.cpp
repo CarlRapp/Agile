@@ -43,7 +43,7 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 
 void GraphicsManager::Render()
 {
-	return m_IGraphics->Render(m_ICamera);
+	m_IGraphics->Render(m_ICamera);
 }
 
 float test = 0.0f;

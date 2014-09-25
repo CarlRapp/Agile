@@ -75,23 +75,23 @@ TiledLightningEffect::TiledLightningEffect(ID3D11Device* _device, const std::wst
 {
 	m_basicTech = m_FX->GetTechniqueByName("Basic");
 
-	m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
-	m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
-	m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
+	//m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
+	//m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
+	//m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
 	m_invViewProj = m_FX->GetVariableByName("gInvViewProj")->AsMatrix();
 	m_camPosition = m_FX->GetVariableByName("gCamPosition")->AsVector();
 	m_resolution = m_FX->GetVariableByName("gResolution")->AsVector();
-	m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
-	m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
+	//m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
+	//m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
 	//m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
 
 	m_albedoMap = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
 	m_normalSpecMap = m_FX->GetVariableByName("gNormalSpecMap")->AsShaderResource();
 	m_depthMap = m_FX->GetVariableByName("gDepthMap")->AsShaderResource();
-	m_shadowMap0 = m_FX->GetVariableByName("gShadowMap0")->AsShaderResource();
-	m_shadowMap1 = m_FX->GetVariableByName("gShadowMap1")->AsShaderResource();
-	m_shadowMap2 = m_FX->GetVariableByName("gShadowMap2")->AsShaderResource();
-	m_shadowMap3 = m_FX->GetVariableByName("gShadowMap3")->AsShaderResource();
+	//m_shadowMap0 = m_FX->GetVariableByName("gShadowMap0")->AsShaderResource();
+	//m_shadowMap1 = m_FX->GetVariableByName("gShadowMap1")->AsShaderResource();
+	//m_shadowMap2 = m_FX->GetVariableByName("gShadowMap2")->AsShaderResource();
+	//m_shadowMap3 = m_FX->GetVariableByName("gShadowMap3")->AsShaderResource();
 	m_outputMap = m_FX->GetVariableByName("gOutput")->AsUnorderedAccessView();
 
 	m_dirLightMap = m_FX->GetVariableByName("gDirLightBuffer")->AsShaderResource();

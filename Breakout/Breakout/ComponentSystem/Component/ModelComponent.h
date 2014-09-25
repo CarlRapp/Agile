@@ -13,7 +13,7 @@ struct ModelComponent : Component<ModelComponent>
 	{
 		m_modelPath = "";
 
-                m_worldMatrix = GETIMATRIX();
+        m_worldMatrix = GETIMATRIX();
 	}
 
 };
