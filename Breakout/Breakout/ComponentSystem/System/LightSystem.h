@@ -11,6 +11,7 @@ class LightSystem : public System<LightSystem>
 private:
 
 	GraphicsManager* m_graphicsManager;
+	int m_lightId;
 
 public:
 
