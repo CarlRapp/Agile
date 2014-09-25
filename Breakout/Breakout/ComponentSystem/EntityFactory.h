@@ -12,6 +12,7 @@
 #include "Component/ScoreComponent.h"
 #include "Component/ModelComponent.h"
 #include "Component/LifeComponent.h"
+#include "Component/DamageComponent.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
 #include "System/PhysicsSystem.h"

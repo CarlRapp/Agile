@@ -2,6 +2,7 @@
 #define COLLISIONCOMPONENT_H
 
 #include <Box2D.h>
+#include <vector>
 
 #include "../../stdafx.h"
 #include "IComponent.h"
@@ -13,6 +14,7 @@ private:
 	b2BodyDef* m_bodyDef;
 	b2FixtureDef* m_fixDef;
 	bool m_added;
+	std::vector<int> m_collidingEntityIds;
 public:
 	CollisionComponent(b2FixtureDef* _fixDef) : m_added(false), m_fixDef(_fixDef) 
 	{
@@ -33,7 +35,12 @@ public:
 		m_added = true;
 	}
 
+	void CollidingWith(int _entityId) { m_collidingEntityIds.push_back(_entityId); }
+	const std::vector<int>& GetCollisions() const { return m_collidingEntityIds; }
+	void ResetCollisions() { m_collidingEntityIds.clear(); }
+
 	b2Body* GetBody() { if (m_added) return m_body; else return 0; }
+	bool HasBody(b2Body* _body) { return (_body == m_body); }
 	bool IsAdded() { return m_added; }
 };
 

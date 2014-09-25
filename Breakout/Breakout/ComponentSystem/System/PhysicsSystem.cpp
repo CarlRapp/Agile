@@ -14,11 +14,12 @@ PhysicsSystem::~PhysicsSystem()
 
 void PhysicsSystem::Update(float _dt)
 {
+	// Simulate worlds physics
 	m_b2World->Step(_dt, VELOCITYITERATIONS, POSITIONITERATIONS);
+
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
-
 		if (e->GetState() != Entity::ALIVE)
 			continue;
 
@@ -27,28 +28,40 @@ void PhysicsSystem::Update(float _dt)
 		auto velocity = e->GetComponent<VelocityComponent>();
 		auto collision = e->GetComponent<CollisionComponent>();
 
+		// Add the body to world if it hasn't been added
 		if (!collision->IsAdded())
 			if (velocity)
 				CreateBody(e, *collision, position->GetPosition(), velocity->m_velocity, atan2(rotation->m_rotation.x, rotation->m_rotation.y));
 			else
 				CreateBody(e, *collision, position->GetPosition(), VECTOR3(0,0,0), atan2(rotation->m_rotation.x, rotation->m_rotation.y));
-		b2Body* body = collision->GetBody();
-		b2Vec2 b2Pos = body->GetPosition();
-		b2Vec2 b2Velocity = body->GetLinearVelocity();
-		b2Vec2 b2Rotation = b2Vec2(cos(body->GetAngle()), sin(body->GetAngle()));
 
+		// Update all other components except collision
+		b2Body* b2Body = collision->GetBody();
+		b2Vec2 b2Pos = b2Body->GetPosition();
+		b2Vec2 b2Velocity = b2Body->GetLinearVelocity();
+		b2Vec2 b2Rotation = b2Vec2(cos(b2Body->GetAngle()), sin(b2Body->GetAngle()));
 		position->SetPosition(VECTOR3(b2Pos.x, b2Pos.y, position->GetPosition().z));
 		rotation->m_rotation = VECTOR3(b2Rotation.x, b2Rotation.y, rotation->m_rotation.z);
 		if (velocity) 
 			velocity->m_velocity = VECTOR3(b2Velocity.x, b2Velocity.y, velocity->m_velocity.z);
+
+		collision->ResetCollisions();
+		// Do collisions checks
+		for (b2ContactEdge* contactEdge = b2Body->GetContactList(); contactEdge; contactEdge = contactEdge->next)
+		{
+			b2Contact* contact = contactEdge->contact;
+			if (!contact->IsTouching())
+				continue;
+
+			b2Fixture* fixtureB = contact->GetFixtureB();
+			for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+			{
+				Entity* collidingEntity = it->second;
+				if (collidingEntity->GetComponent<CollisionComponent>()->HasBody(fixtureB->GetBody()) && collidingEntity->GetState() == Entity::ALIVE)
+					collision->CollidingWith(collidingEntity->GetId());
+			}
+		}
 	}
-	/*
-	if (m_b2World->GetBodyList() != 0)
-	{
-		b2Vec2 position = m_b2World->GetBodyList()->GetPosition();
-		float32 angle = m_b2World->GetBodyList()->GetAngle();
-		printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-	}*/
 }
 
 void PhysicsSystem::CreateBody(Entity* _entity, CollisionComponent& _collision, const VECTOR3& _position, const VECTOR3& _velocity, float rotation)

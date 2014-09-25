@@ -59,9 +59,8 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(8, 0, 0));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(12, 0, 50));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-
 }
 
 void GameScene::LoadContent()
