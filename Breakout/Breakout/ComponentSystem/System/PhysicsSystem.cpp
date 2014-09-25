@@ -134,7 +134,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.3f;
-		fixDef->filter.categoryBits = CollisionCategory::BALL;
+		fixDef->filter.categoryBits = CollisionCategory::WALL;
 	case EntityFactory::POWERUP:
 		break;
 	case EntityFactory::WALL:

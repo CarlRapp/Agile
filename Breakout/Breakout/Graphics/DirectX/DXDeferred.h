@@ -19,6 +19,7 @@
 #include "DXEffects.h"
 #include "DXVertex.h"
 #include "DXModel.h"
+#include "DX2DTextureInstance.h"
 #include "DXStructuredBuffer.h"
 #include "DXLightHelper.h"
 
@@ -47,9 +48,9 @@ private:
 	ID3D11RenderTargetView* m_GBuffer[2];
 
 	
-	vector<DirectionalLight*>			*m_dirLights;
-	vector<PointLight*>					*m_pointLights;
-	vector<SpotLight*>					*m_spotLights;
+	map<int, DirectionalLight*>				*m_dirLights;
+	map<int, PointLight*>					*m_pointLights;
+	map<int, SpotLight*>					*m_spotLights;
 
 	DXStructuredBuffer<GPUDirectionalLight>	*m_dirLightBuffer;
 	DXStructuredBuffer<GPUPointLight>			*m_pointLightBuffer;
@@ -64,12 +65,15 @@ private:
 	void					InitBuffers();
 
 	void					ClearBuffers();
-	void					FillGBuffer(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
+	void					FillGBuffer(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
 	void					CombineFinal(ID3D11RenderTargetView *_renderTargetView);
 
-	void					RenderModels(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
+	void					RenderModels(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
 	void					RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
-	void					RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
+	void					RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass);
+
+	void					Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances);
+	void					Render2DTexture(DX2DTextureInstance *_textureInstance);
 
 	void					ComputeLight(ID3D11UnorderedAccessView *_renderTargetView, ICamera* _camera);
 
@@ -82,7 +86,13 @@ public:
 
 	void Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height);
 
-	void	Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_renderTargetView, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera);
+	void	Render(ID3D11RenderTargetView *_renderTargetView,
+		ID3D11UnorderedAccessView *_finalUAV,
+		map<std::string, map<int, ModelInstance*>> &_modelInstances, 
+		map<int, DX2DTextureInstance*> &_textureInstances,
+		ICamera* _camera);
+
+	void SetPointLightMap(map<int, PointLight*> *map) { m_pointLights = map; }
 
 };
 

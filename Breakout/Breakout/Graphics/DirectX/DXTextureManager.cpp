@@ -23,6 +23,8 @@ ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
 {
 	ID3D11ShaderResourceView* srv = 0;
 
+	filename = TEXTURE_ROOT + filename;
+
 	// Does it already exist?
 	if( mTextureSRV.find(filename) != mTextureSRV.end() )
 	{

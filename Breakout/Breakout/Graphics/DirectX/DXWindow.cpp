@@ -65,7 +65,7 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 		PostQuitMessage(0);
 		break;
 	case WM_KILLFOCUS:
-		ClipCursor(0);
+		//ClipCursor(0);
 		ShowCursor(true);
 		break;
 	case WM_SETFOCUS:
@@ -77,7 +77,8 @@ LRESULT CALLBACK WndProc(HWND _hwnd, UINT _msg, WPARAM _wParam, LPARAM _lParam)
 		rc.bottom = rc.top + 600;
 
 		ClipCursor(&rc);
-		ShowCursor(false);*/
+		*/
+		ShowCursor(false);
 		break;
 	default:
 		return DefWindowProc(_hwnd, _msg, _wParam, _lParam);

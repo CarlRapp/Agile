@@ -23,12 +23,18 @@ void GameScene::Initialize()
 	m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
+	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<ScoreSystem>();
 
 
 	int xBlocks = 16;
 	int yBlocks = 3;
 
 	Entity* e;
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLAYER);
+	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);

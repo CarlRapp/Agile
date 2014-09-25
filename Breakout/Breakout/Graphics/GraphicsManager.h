@@ -37,9 +37,13 @@ public:
     void        Update();
     ICamera*    GetICamera();
 
-    void        AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range);
+	void        AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
     void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
     void        RemoveObject(int _id);
+
+	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
+	void Remove2DTexture(int _id);
+
 
     bool        Init3D(DisplayMode _displayMode);
 };

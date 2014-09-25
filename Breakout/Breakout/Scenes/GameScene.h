@@ -12,6 +12,8 @@
 #include "../ComponentSystem/System/ProjectileSystem.h"
 #include "../ComponentSystem/System/CollisionDamageSystem.h"
 #include "../ComponentSystem/System/BounceSystem.h"
+#include "../ComponentSystem/System/AudioSystem.h"
+#include "../ComponentSystem/System/ScoreSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"

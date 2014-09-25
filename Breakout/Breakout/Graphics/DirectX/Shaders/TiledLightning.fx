@@ -7,15 +7,15 @@
 
 cbuffer perFrame
 {
-	float4x4    gLightViewProjTex[MAX_SHADOWMAPS];
+	/*float4x4    gLightViewProjTex[MAX_SHADOWMAPS];
 	float4x4    gLightViewProj[MAX_SHADOWMAPS];
-	float4x4    gLightTex[MAX_SHADOWMAPS];
+	float4x4    gLightTex[MAX_SHADOWMAPS];*/
 	float4x4	gInvViewProj;
 	float4		gCamPosition;
-	float3		gShadowMapSwitches;
-	float3		gGlobalLight;
+	//float3		gShadowMapSwitches;
+	//float3		gGlobalLight;
 	float2		gResolution;
-	float2		gShadowMapResolution;
+	//float2		gShadowMapResolution;
 };
 
 //Lights
@@ -29,10 +29,10 @@ Texture2D gNormalSpecMap;
 Texture2D gDepthMap;
 
 //Shadowmap
-Texture2D gShadowMap0;
-Texture2D gShadowMap1;
-Texture2D gShadowMap2;
-Texture2D gShadowMap3;
+//Texture2D gShadowMap0;
+//Texture2D gShadowMap1;
+//Texture2D gShadowMap2;
+//Texture2D gShadowMap3;
 
 //Output
 RWTexture2D<float4> gOutput;
@@ -90,166 +90,142 @@ bool AABBvsSphere(float3 min, float3 max, float3 c, float r)
 	return false;
 }
 
-float SimpleShadow(int2 texCoord, float depth, uint shadowIndex)
-{
-	if (shadowIndex < gShadowMapSwitches.x)
-	{
-		if (depth > gShadowMap0[texCoord].x)
-			return 0;
-	}
-	
-	else if (shadowIndex < gShadowMapSwitches.y)
-	{
-		if (depth > gShadowMap1[texCoord].x)
-			return 0;
-	}
-	else if (shadowIndex < gShadowMapSwitches.z)
-	{
-		if (depth > gShadowMap2[texCoord].x)
-			return 0;
-	}
-	else
-	{
-		if (depth > gShadowMap3[texCoord].x)
-			return 0;
-	}
-	
-	//inte skugga
-	return 1;
-}
+//float SimpleShadow(int2 texCoord, float depth, uint shadowIndex)
+//{
+//	if (shadowIndex < gShadowMapSwitches.x)
+//	{
+//		if (depth > gShadowMap0[texCoord].x)
+//			return 0;
+//	}
+//	
+//	else if (shadowIndex < gShadowMapSwitches.y)
+//	{
+//		if (depth > gShadowMap1[texCoord].x)
+//			return 0;
+//	}
+//	else if (shadowIndex < gShadowMapSwitches.z)
+//	{
+//		if (depth > gShadowMap2[texCoord].x)
+//			return 0;
+//	}
+//	else
+//	{
+//		if (depth > gShadowMap3[texCoord].x)
+//			return 0;
+//	}
+//	
+//	return 1;
+//}
 
-float PCF(int2 texCoord, float depth, uint shadowIndex)
-{
-	const float2 offsets[9] =
-	{
-		float2(-1,  -1),	float2(0, -1),	float2(1,  -1),
-		float2(-1,   0),	float2(0,  0),	float2(1,   0), 
-		float2(-1,   1),	float2(0,  1),	float2(1,   1) 		
-	};
-	
-	
-	float percentLit = 0.0f;
-	for (int i = 0; i < 9; ++i)
-	{
-		percentLit += SimpleShadow(texCoord + offsets[i], depth, shadowIndex);
-	}
-	return percentLit /= 9.0f;
-}
-
+//float PCF(int2 texCoord, float depth, uint shadowIndex)
+//{
+//	const float2 offsets[9] =
+//	{
+//		float2(-1,  -1),	float2(0, -1),	float2(1,  -1),
+//		float2(-1,   0),	float2(0,  0),	float2(1,   0), 
+//		float2(-1,   1),	float2(0,  1),	float2(1,   1) 		
+//	};
+//	
+//	
+//	float percentLit = 0.0f;
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		percentLit += SimpleShadow(texCoord + offsets[i], depth, shadowIndex);
+//	}
+//	return percentLit /= 9.0f;
+//}
 
 
-float CalcualteShadowFactor(DirectionalLight light, float4 posW, uint viewportIndex)
-{
-	uint ShadowIndex = light.ShadowIndex[viewportIndex];
-	if (light.HasShadow && ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[ShadowIndex];
-			float4x4 VP = gLightViewProj[ShadowIndex];
-			float4x4 T = gLightTex[ShadowIndex];
 
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//float CalcualteShadowFactor(DirectionalLight light, float4 posW, uint viewportIndex)
+//{
+//	uint ShadowIndex = light.ShadowIndex[viewportIndex];
+//	if (light.HasShadow && ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[ShadowIndex];
+//			float4x4 VP = gLightViewProj[ShadowIndex];
+//			float4x4 T = gLightTex[ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
+//		}
+//	else
+//		return 1;
+//}
 
-			float4 posT = mul(posH, T);
-/*
-			float shadowDepth = gShadowMap[int2(posT.xy * gShadowMapResolution)].x;
-			
-			if (posT.z > shadowDepth)
-				return 0;
+//float CalcualteShadowFactor(PointLight light, float4 posW)
+//{
+//	uint lightShadowIndex = 0;
+//
+//	float3 dist = posW.xyz - light.Position;
+//
+//	if (abs(dist.x) > abs(dist.y) && abs(dist.x) > abs(dist.z))
+//	{
+//		if (dist.x < 0)
+//			lightShadowIndex = 3; //vänster
+//		else
+//			lightShadowIndex = 0; //höger
+//	}
+//	else if (abs(dist.y) > abs(dist.z))
+//	{
+//		if (dist.y < 0)
+//			lightShadowIndex = 4; //ner
+//		else
+//			lightShadowIndex = 1; //upp
+//	}
+//	else
+//	{
+//		if (dist.z < 0)
+//			lightShadowIndex = 5; //bak
+//		else
+//			lightShadowIndex = 2; //fram
+//	}
+//
+//	uint ShadowIndex = light.ShadowIndex[lightShadowIndex];
+//	if (light.HasShadow && ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[ShadowIndex];
+//			float4x4 VP = gLightViewProj[ShadowIndex];
+//			float4x4 T = gLightTex[ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
+//		}
+//	else
+//		return 1;
+//}
 
-			return 1;
-			*/
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
-		}
-	else
-		return 1;
-}
-
-float CalcualteShadowFactor(PointLight light, float4 posW)
-{
-	uint lightShadowIndex = 0;
-
-	float3 dist = posW.xyz - light.Position;
-
-	if (abs(dist.x) > abs(dist.y) && abs(dist.x) > abs(dist.z))
-	{
-		if (dist.x < 0)
-			lightShadowIndex = 3; //vänster
-		else
-			lightShadowIndex = 0; //höger
-	}
-	else if (abs(dist.y) > abs(dist.z))
-	{
-		if (dist.y < 0)
-			lightShadowIndex = 4; //ner
-		else
-			lightShadowIndex = 1; //upp
-	}
-	else
-	{
-		if (dist.z < 0)
-			lightShadowIndex = 5; //bak
-		else
-			lightShadowIndex = 2; //fram
-	}
-
-	uint ShadowIndex = light.ShadowIndex[lightShadowIndex];
-	if (light.HasShadow && ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[ShadowIndex];
-			float4x4 VP = gLightViewProj[ShadowIndex];
-			float4x4 T = gLightTex[ShadowIndex];
-
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-
-			float4 posT = mul(posH, T);
-
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
-		}
-	else
-		return 1;
-}
-
-float CalcualteShadowFactor(SpotLight light, float4 posW)
-{
-	if (light.HasShadow && light.ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[light.ShadowIndex];
-			float4x4 VP = gLightViewProj[light.ShadowIndex];
-			float4x4 T = gLightTex[light.ShadowIndex];
-
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-
-			float4 posT = mul(posH, T);
-
-			/*
-			float4 posT = mul(posW, VPT);
-			posT = posT / posT.w;
-			posT.xy = (posT.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-			*/
-			/*
-			float shadowDepth = gShadowMap[int2(posT.xy * gShadowMapResolution)].x;
-
-			//return posT.y;
-			//return pow(posT.z * 0.99f, 100);
-			//return shadowDepth;
-			if (posT.z > shadowDepth)
-				return 0;
-
-			return 1;
-			*/
-
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, light.ShadowIndex);
-
-		}
-	else
-		return 1;
-}
+//float CalcualteShadowFactor(SpotLight light, float4 posW)
+//{
+//	if (light.HasShadow && light.ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[light.ShadowIndex];
+//			float4x4 VP = gLightViewProj[light.ShadowIndex];
+//			float4x4 T = gLightTex[light.ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, light.ShadowIndex);
+//
+//		}
+//	else
+//		return 1;
+//}
 
 
 [numthreads(COMPUTE_SHADER_TILE_GROUP_DIM, COMPUTE_SHADER_TILE_GROUP_DIM, 1)]	//Antal trådar per grupp x,y,z
@@ -381,13 +357,13 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 		for(int i = 0; i < totalDirLights; ++i)
 		{
 			DirectionalLight light = gDirLightBuffer[i];			
-			float shadowFactor = CalcualteShadowFactor(light, posW, 0);
+			//float shadowFactor = CalcualteShadowFactor(light, posW, 0);
 
 			float4 D, S;
 			ComputeDirectionalLight(mat, light, normalW, toEye, D, S);
   
-			diffuse += D * shadowFactor;
-			spec    += S * shadowFactor;
+			diffuse += D;// *shadowFactor;
+			spec += S;// *shadowFactor;
 
 		}
 	}
@@ -398,14 +374,14 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 	{
 		PointLight light = gPointLightBuffer[sTilePointLightIndices[tileLightIndex]]; //hämtar pointlight
 
-		float shadowFactor = CalcualteShadowFactor(light, posW);
+		//float shadowFactor = CalcualteShadowFactor(light, posW);
 
 		float4 A, D, S;
 		ComputePointLight(mat, light, posW, normalW, toEye, A, D, S);
 
 		ambient += A;    
-		diffuse += D * shadowFactor;
-		spec    += S * shadowFactor;
+		diffuse += D;// * shadowFactor;
+		spec += S;// * shadowFactor;
 	}
 
 	/*
@@ -430,41 +406,16 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 		SpotLight light = gSpotLightBuffer[sTileSpotLightIndices[tileLightIndex]]; //hämtar pointlight
 		
 		
-		float shadowFactor = CalcualteShadowFactor(light, posW);
+		//float shadowFactor = CalcualteShadowFactor(light, posW);
 
 		float4 A, D, S;
 		ComputeSpotLight(mat, light, posW, normalW, toEye, A, D, S);
 		
 		ambient += A;    
-		diffuse += shadowFactor * D;
-		spec    += shadowFactor * S;
-		
-		/*
-		ambient += A;    
-		diffuse += D;
-		spec    += S;
-		*/
-		/*
-		if (D.x != 0)
-		{
-			ambient = 0;    
-			diffuse = shadowFactor;
-			spec    = 0;
-		}
-		*/
+		diffuse += D;// * shadowFactor;
+		spec    += S;// * shadowFactor;
 	}
-	
-	/*
-	for(int i = 0; i < totalSpotLights; ++i)
-	{
-		float4 A, D, S;
-		ComputeSpotLight(mat, gSpotLightBuffer[i], posW, normalW, toEye, A, D, S);
 
-		ambient += A;    
-		diffuse += D;
-		spec    += S;
-	}
-	*/
 
 
 	//Final result.

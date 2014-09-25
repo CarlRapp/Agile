@@ -17,6 +17,8 @@
 #include "Component/BounceComponent.h"
 #include "Component/MouseInputComponent.h"
 #include "Component/KeyboardInputComponent.h"
+#include "Component/AudioComponent.h"
+#include "Component/PlayerComponent.h"
 #include "System/PhysicsSystem.h"
 
 
@@ -37,7 +39,8 @@ public:
 		BALL,
 		POWERUP,
 		WALL,
-		PROJECTILE
+		PROJECTILE,
+		PLAYER
 	};
 
 	static EntityFactory* GetInstance();

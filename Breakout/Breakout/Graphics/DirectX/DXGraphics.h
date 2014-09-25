@@ -7,6 +7,7 @@
 
 #include "DXModelManager.h"
 #include "DXTextureManager.h"
+#include "DX2DTextureInstance.h"
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
@@ -29,6 +30,11 @@ private:
 
 
 	map<std::string, map<int, ModelInstance*>>	m_modelInstances;
+	map<int, DX2DTextureInstance*>	m_textureInstances;
+
+	map<int, DirectionalLight*>			m_dirLights;
+	map<int, PointLight*>				m_pointLights;
+	map<int, SpotLight*>				m_spotLights;
 
 
 
@@ -65,11 +71,16 @@ public:
 	void	Update();
 	void	Render(ICamera* _camera);
 	void LoadModel(std::string _path);
+	void LoadTexture(std::string _path);
 
 	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
-	void AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range);
 	void RemoveObject(int _id);
 
+	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
+	void Remove2DTexture(int _id);
+
+	void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
+	void RemovePointLight(int _id);
 };
 
 

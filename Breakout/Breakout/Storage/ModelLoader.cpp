@@ -267,37 +267,37 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ka = dir + str;
+			material->Map_Ka = str;
 		}
 		else if (str == "map_Kd")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Kd = dir + str;
+			material->Map_Kd = str;
 		}
 		else if (str == "map_Ks")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ks = dir + str;
+			material->Map_Ks = str;
 		}
 		else if (str == "map_Ns")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ns = dir + str;
+			material->Map_Ns = str;
 		}
 		else if (str == "map_Tf")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Tf = dir + str;
+			material->Map_Tf = str;
 		}
 		else if (str == "map_bump")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_bump = dir + str;
+			material->Map_bump = str;
 		}
 	}
 }

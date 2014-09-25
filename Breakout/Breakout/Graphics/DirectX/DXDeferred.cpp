@@ -11,44 +11,53 @@
 
 static const int INSTANCEDBUFFERSIZE = 200;
 
+
 DXDeferred::DXDeferred(void)
 {
 	m_dirLightBuffer = NULL;
 	m_pointLightBuffer = NULL;
 	m_spotLightBuffer = NULL;
 
-	m_dirLights = new std::vector<DirectionalLight*>();
+	m_dirLights = NULL;
 
-	DirectionalLight* sun = new DirectionalLight();
-	sun->GetGPULight()->Color = DirectX::XMFLOAT4(0.5, 0.5, 0.5, 1);
-	sun->GetGPULight()->Direction = DirectX::XMFLOAT4(0, -3, 1, 0);
-	sun->GetGPULight()->HasShadow = false;
+	//DirectionalLight* sun = new DirectionalLight();
+	//sun->GetGPULight()->Color = DirectX::XMFLOAT3(0.5, 0.5, 0.5);
+	//sun->GetGPULight()->Direction = DirectX::XMFLOAT4(0, -3, 1, 0);
+	//sun->GetGPULight()->HasShadow = false;
 
-	m_dirLights->push_back(sun);
+	//m_dirLights->push_back(sun);
 
 	
-	m_pointLights = new std::vector<PointLight*>();
+	m_pointLights = NULL;
 
-	PointLight* pl = new PointLight();
-	pl->GetGPULight()->Color = DirectX::XMFLOAT4(0.5, 0, 0, 1);
-	pl->GetGPULight()->Position = DirectX::XMFLOAT3(-5, 10, -10);
+	//PointLight* pl = new PointLight();
+	//pl->Color = &color;
+	//pl->Position = &pos;
+	//pl->Range = &range;
+	//pl->GetGPULight()->HasShadow = false;
+
+	//m_pointLights->push_back(pl);
+
+	/*pl = new PointLight();
+	pl->GetGPULight()->Color = DirectX::XMFLOAT3(0.0, 0, 1.0);
+	pl->GetGPULight()->Position = DirectX::XMFLOAT3(5, 10, -10);
 	pl->GetGPULight()->Range = 50;
-	pl->GetGPULight()->HasShadow = false;
+	pl->GetGPULight()->HasShadow = false;*/
 
-	m_pointLights->push_back(pl);
+	//m_pointLights->push_back(pl);
 
 
-	m_spotLights = new std::vector<SpotLight*>();
+	m_spotLights = NULL;
 
-	SpotLight* sl = new SpotLight();
-	sl->GetGPULight()->Color = DirectX::XMFLOAT4(0, 1, 0, 1);
-	sl->GetGPULight()->Position = DirectX::XMFLOAT3(50, 10, -10);
-	sl->GetGPULight()->Direction = DirectX::XMFLOAT3(-5, 0, 1);
-	sl->GetGPULight()->angle = 50;
-	sl->GetGPULight()->Range = 50;
-	sl->GetGPULight()->HasShadow = false;
+	//SpotLight* sl = new SpotLight();
+	//sl->GetGPULight()->Color = DirectX::XMFLOAT3(0, 1, 0);
+	//sl->GetGPULight()->Position = DirectX::XMFLOAT3(50, 10, -10);
+	//sl->GetGPULight()->Direction = DirectX::XMFLOAT3(-5, 0, 1);
+	//sl->GetGPULight()->angle = 50;
+	//sl->GetGPULight()->Range = 50;
+	//sl->GetGPULight()->HasShadow = false;
 
-	m_spotLights->push_back(sl);
+	//m_spotLights->push_back(sl);
 }
 
 DXDeferred::~DXDeferred(void)
@@ -65,9 +74,9 @@ DXDeferred::~DXDeferred(void)
 	ReleaseCOM(m_fullSceenQuad);
 	ReleaseCOM(m_instanceBuffer);
 
-	SafeDelete(m_dirLights);
+	/*SafeDelete(m_dirLights);
 	SafeDelete(m_pointLights);
-	SafeDelete(m_spotLights);
+	SafeDelete(m_spotLights);*/
 
 	SafeDelete(m_dirLightBuffer);
 	SafeDelete(m_pointLightBuffer);
@@ -93,7 +102,6 @@ void DXDeferred::Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext
 	InitFullScreenQuad();
 	InitBuffers();
 
-	UpdateLights();
 
 }
 
@@ -210,7 +218,7 @@ void DXDeferred::ClearBuffers()
 
 }
 
-void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+void DXDeferred::FillGBuffer(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
@@ -220,7 +228,7 @@ void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, Mo
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	//RenderTestTriangle(_camera);
-	RenderModels(_device, _modelInstances, _camera);
+	RenderModels(_modelInstances, _camera);
 
 	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
@@ -292,7 +300,30 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+void DXDeferred::Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances)
+{
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+	map<int, DX2DTextureInstance*>::iterator texIterator;
+	for (texIterator = _textureInstances.begin(); texIterator != _textureInstances.end(); ++texIterator)
+	{
+		Render2DTexture(texIterator->second);
+	}
+}
+
+void DXDeferred::Render2DTexture(DX2DTextureInstance *_textureInstance)
+{
+	D3D11_VIEWPORT vp;
+	vp.TopLeftX = *_textureInstance->X * m_width;
+	vp.TopLeftY = (1 - (*_textureInstance->Y + *_textureInstance->Height)) * m_height;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.Width = *_textureInstance->Width * m_width;
+	vp.Height = *_textureInstance->Height * m_height;
+
+	RenderQuad(vp, _textureInstance->Texture, DXEffects::m_combineFinalFX->m_alphaTransparencyColorTech);
+}
+
+void DXDeferred::RenderModels(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
 	m_deviceContext->RSSetViewports(1, vp);
@@ -355,7 +386,7 @@ void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, M
 
 				for (UINT p = 0; p < techDesc.Passes; ++p)
 				{
-					RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+					RenderModelInstanced(&mapIterator->second, view, proj, tech, p);
 				}
 			}
 		}
@@ -415,7 +446,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 
 }
 
-void DXDeferred::RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
+void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
 {
 	if (_mi->empty())
 		return;
@@ -689,9 +720,13 @@ void DXDeferred::UpdateLights()
 			if (m_pointLightBuffer->Size() > 0)
 			{
 				GPUPointLight* pointLight = m_pointLightBuffer->MapDiscard(m_deviceContext);
-				for (unsigned int i = 0; i < m_pointLights->size(); ++i)
+
+				map<int, PointLight*>::iterator lightIterator;
+				int i = 0;
+				for (lightIterator = m_pointLights->begin(); lightIterator != m_pointLights->end(); ++lightIterator)
 				{
-					pointLight[i] = *m_pointLights->at(i)->GetGPULight();
+					pointLight[i] = *lightIterator->second->GetGPULight();
+					i++;
 				}
 				m_pointLightBuffer->Unmap(m_deviceContext);
 			}
@@ -744,21 +779,37 @@ void DXDeferred::UpdateLights()
 }
 
 
-void DXDeferred::Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_finalUAV, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+float ddda = 0.0f;
+void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, 
+	ID3D11UnorderedAccessView *_finalUAV,
+	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
+	map<int, DX2DTextureInstance*> &_textureInstances,
+	ICamera* _camera)
 {
+
+	ddda += 0.004;
+	//pos.x = 15 + 10 * sinf(ddda);
+	//pos.z = 10 * cosf(ddda);
+
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();
 
 
-	//UpdateLights();
-	FillGBuffer(_device, _modelInstances, _camera);
+	UpdateLights();
+	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
+
+	Render2DTextures(_renderTargetView, _textureInstances);
+
+
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
 }
 
 void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 {
+	
+
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
