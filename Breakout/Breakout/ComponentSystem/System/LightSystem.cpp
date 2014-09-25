@@ -17,6 +17,7 @@ bool LightSystem::Add(Entity* _entity)
 	if (Base::Add(_entity))
 	{
 		VECTOR3* position	= &_entity->GetComponent<PositionComponent>()->GetPosition();
+                VECTOR3* intensity      = &_entity->GetComponent<LightComponent>()->GetIntensity();
 		VECTOR3* color		= &_entity->GetComponent<LightComponent>()->GetColor();
 		float* range		= &_entity->GetComponent<LightComponent>()->GetRange();
 
