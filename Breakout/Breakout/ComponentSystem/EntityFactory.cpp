@@ -26,6 +26,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		_entity->AddComponent<ScoreComponent>().m_score = 1;
 
 		break;
 	case EntityFactory::PAD:
@@ -62,6 +64,11 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ModelComponent>().m_modelPath = "projectile";
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
+		break;
+	case EntityFactory::PLAYER:
+		_entity->AddComponent<PlayerComponent>();
+		_entity->AddComponent<LifeComponent>();
+		_entity->AddComponent<ScoreComponent>().m_score = 0;
 		break;
 	}
 }

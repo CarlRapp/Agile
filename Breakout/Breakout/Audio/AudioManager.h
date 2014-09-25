@@ -9,26 +9,16 @@ class AudioManager
 private:
 
 	AudioManager();
-	~AudioManager();
+	
 
-	bool m_initialized;
+	static AudioManager* m_imInstance;
 
 	IAudio* m_audio;
 
 public:
 
-	// Returns an AudioManager instance.
-	static AudioManager& GetInstance()
-	{
-		static AudioManager* instance = new AudioManager();
-		return *instance;
-	}
-	
-	
-
-	// Initialize the AudioManager, only needed to do once.
-	// Returns true on success.
-	bool Initialize();
+	~AudioManager();
+	static AudioManager* GetInstance();
 
 	/*
 	Play an audio chunk.
