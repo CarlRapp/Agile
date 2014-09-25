@@ -1,10 +1,10 @@
-#version 440
-layout (location = 0) in vec3 m_position;
-layout (location = 1) in float pad1;
-layout (location = 2) in vec3 m_normal;
-layout (location = 3) in float pad2;
-layout (location = 4) in vec4 m_color;
-layout (location = 5) in mat4 m_matModel;
+#version 430
+layout (location = 0) in vec3   m_position;
+layout (location = 1) in float  pad1;
+layout (location = 2) in vec3   m_normal;
+layout (location = 3) in float  pad2;
+layout (location = 4) in vec4   m_color;
+layout (location = 5) in mat4   m_matModel;
 
 
 uniform mat4 m_matView;
@@ -14,9 +14,11 @@ varying mat4 modelView;
 
 out VERTEX
 {
-   vec3    worldPos;
-   vec3    normal;
-   vec4    color;
+    vec3    worldPos;
+    float   pad1;
+    vec3    normal;
+    float   pad2;
+    vec4    color;
 } vertex;
 
 

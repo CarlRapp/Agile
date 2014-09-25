@@ -22,8 +22,8 @@ public:
 	virtual bool Init3D(DisplayMode _displayMode) = 0;
 	//IGraphics* GetIGraphics();
 
-	virtual void LoadModel(std::string _path) = 0;
-	//virtual void LoadTexture(std::string _path) = 0;
+	virtual void LoadModel(std::string _path)=0;
+	virtual void LoadTexture(std::string _path){};
 
 
 	virtual void Render(ICamera* _camera) = 0;
@@ -34,8 +34,8 @@ public:
         
 	virtual void RemoveObject(int _id) = 0;
 
-//	virtual void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height) = 0;
-//	virtual void Remove2DTexture(int _id) = 0;
+	virtual void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height){};
+	virtual void Remove2DTexture(int _id){};
 
 
 	static IGraphics* GetIGraphics();

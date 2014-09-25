@@ -7,7 +7,9 @@ varying mat4 modelView;
 in VERTEX
 {
     vec3    worldPos;
+    float   pad1;
     vec3    normal;
+    float   pad2;
     vec4    color;
 
 } vertex;
