@@ -1,7 +1,15 @@
 #ifndef COLLISIONCOMPONENT_H
 #define COLLISIONCOMPONENT_H
 
+#ifdef LINUX
 #include <Box2D/Box2D.h>
+#else
+
+#include <Box2D.h>
+#endif
+#include <vector>
+#include <map>
+
 
 #include "../../stdafx.h"
 #include "IComponent.h"
@@ -13,6 +21,8 @@ private:
 	b2BodyDef* m_bodyDef;
 	b2FixtureDef* m_fixDef;
 	bool m_added;
+	std::vector<int> m_collidingEntityIds;
+	std::map<int, b2WorldManifold*> m_collidingManifolds;
 public:
 	CollisionComponent(b2FixtureDef* _fixDef) : m_added(false), m_fixDef(_fixDef) 
 	{
@@ -33,7 +43,13 @@ public:
 		m_added = true;
 	}
 
+	void CollidingWith(int _entityId, b2WorldManifold& _manifold) { m_collidingEntityIds.push_back(_entityId); m_collidingManifolds[_entityId] = &_manifold; }
+	const std::vector<int>& GetCollisions() const { return m_collidingEntityIds; }
+	const b2WorldManifold* GetManifold(int _entityId) { if (m_collidingManifolds.find(_entityId) != m_collidingManifolds.end()) return m_collidingManifolds[_entityId]; return 0; }
+	void ResetCollisions() { m_collidingEntityIds.clear(); m_collidingManifolds.clear(); }
+
 	b2Body* GetBody() { if (m_added) return m_body; else return 0; }
+	bool HasBody(b2Body* _body) { return (_body == m_body); }
 	bool IsAdded() { return m_added; }
 };
 

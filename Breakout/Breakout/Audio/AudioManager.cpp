@@ -7,32 +7,31 @@
 #include "../stdafx.h"
 
 AudioManager::AudioManager()
-:m_initialized(false)
 {
+#ifdef WINDOWS
+	m_audio = new WinAudio();
+#else
+	m_audio = new LinAudio();
+#endif
+
+	m_audio->Initialize();
 }
 
 AudioManager::~AudioManager()
 {
 }
 
-bool AudioManager::Initialize()
+
+
+AudioManager* AudioManager::m_imInstance = 0;
+AudioManager* AudioManager::GetInstance()
 {
-	if (m_initialized)
-		return true;
+	if (m_imInstance)
+		return m_imInstance;
 
+	m_imInstance = new AudioManager();
 
-#ifdef WINDOWS
-	m_audio = new WinAudio();
-#else
-	m_audio = new LinAudio();
-#endif
-	
-	if (!m_audio->Initialize())
-		return false;
-
-	m_initialized = true;
-
-	return true;
+	return m_imInstance;
 }
 
 bool AudioManager::PlayMusic(const char* _fileName, int _loop)

@@ -17,7 +17,8 @@ namespace SceneSystem
 		virtual void Update(float _dt){};
 		virtual void Render(){};
 
-		virtual void Reset(){};
+		virtual void OnActive(){};
+		virtual void OnInactive(){};
 	};
 
 	template <typename C>

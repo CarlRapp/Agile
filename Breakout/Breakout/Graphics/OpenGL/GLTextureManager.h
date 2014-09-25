@@ -1,7 +1,7 @@
 #ifndef GLTEXTUREMANAGER_H_
 #define GLTEXTUREMANAGER_H_
 #include "../../stdafx.h"
-#include "SOIL.h"
+#include "../../../../External/include/SOIL.h"
 #include <GL/glew.h> 
 #include <map>
 

@@ -10,7 +10,7 @@ struct ScoreComponent : Component<ScoreComponent>
 
 	ScoreComponent()
 	{
-		m_score = 1;
+		m_score = 0;
 		wasHit = false;
 	}
 

@@ -88,6 +88,8 @@ static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis
 {
 	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&_axis);
 	DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&_mat);
+
+	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
 	temp = DirectX::XMMatrixRotationAxis(vec, _angle);
 	DirectX::XMStoreFloat4x4(&_mat, temp);
 	return _mat;

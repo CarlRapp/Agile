@@ -23,14 +23,14 @@ class PhysicsSystem : public System<PhysicsSystem>
 private:
 	const int VELOCITYITERATIONS = 8;
 	const int POSITIONITERATIONS = 2;
-	const b2Vec2 DEFAULTGRAVITY = b2Vec2(0, -10.0f);
+	const b2Vec2 DEFAULTGRAVITY = b2Vec2(0, 0.0f);
 	
 	b2World* m_b2World;
 	
 	void CreateBody(Entity* _entity, CollisionComponent& _collision, const VECTOR3& _position, const VECTOR3& _velocity, float rotation);
 
 public:
-	PhysicsSystem(World* _world);
+	explicit PhysicsSystem(World* _world);
 	~PhysicsSystem();
 
 

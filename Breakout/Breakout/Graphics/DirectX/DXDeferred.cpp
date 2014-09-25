@@ -11,44 +11,53 @@
 
 static const int INSTANCEDBUFFERSIZE = 200;
 
+
 DXDeferred::DXDeferred(void)
 {
 	m_dirLightBuffer = NULL;
 	m_pointLightBuffer = NULL;
 	m_spotLightBuffer = NULL;
 
-	m_dirLights = new std::vector<DirectionalLight*>();
+	m_dirLights = NULL;
 
-	DirectionalLight* sun = new DirectionalLight();
-	sun->GetGPULight()->Color = DirectX::XMFLOAT4(0.5, 0.5, 0.5, 1);
-	sun->GetGPULight()->Direction = DirectX::XMFLOAT4(0, -3, 1, 0);
-	sun->GetGPULight()->HasShadow = false;
+	//DirectionalLight* sun = new DirectionalLight();
+	//sun->GetGPULight()->Color = DirectX::XMFLOAT3(0.5, 0.5, 0.5);
+	//sun->GetGPULight()->Direction = DirectX::XMFLOAT4(0, -3, 1, 0);
+	//sun->GetGPULight()->HasShadow = false;
 
-	m_dirLights->push_back(sun);
+	//m_dirLights->push_back(sun);
 
 	
-	m_pointLights = new std::vector<PointLight*>();
+	m_pointLights = NULL;
 
-	PointLight* pl = new PointLight();
-	pl->GetGPULight()->Color = DirectX::XMFLOAT4(0.5, 0, 0, 1);
-	pl->GetGPULight()->Position = DirectX::XMFLOAT3(-5, 10, -10);
+	//PointLight* pl = new PointLight();
+	//pl->Color = &color;
+	//pl->Position = &pos;
+	//pl->Range = &range;
+	//pl->GetGPULight()->HasShadow = false;
+
+	//m_pointLights->push_back(pl);
+
+	/*pl = new PointLight();
+	pl->GetGPULight()->Color = DirectX::XMFLOAT3(0.0, 0, 1.0);
+	pl->GetGPULight()->Position = DirectX::XMFLOAT3(5, 10, -10);
 	pl->GetGPULight()->Range = 50;
-	pl->GetGPULight()->HasShadow = false;
+	pl->GetGPULight()->HasShadow = false;*/
 
-	m_pointLights->push_back(pl);
+	//m_pointLights->push_back(pl);
 
 
-	m_spotLights = new std::vector<SpotLight*>();
+	m_spotLights = NULL;
 
-	SpotLight* sl = new SpotLight();
-	sl->GetGPULight()->Color = DirectX::XMFLOAT4(0, 1, 0, 1);
-	sl->GetGPULight()->Position = DirectX::XMFLOAT3(50, 10, -10);
-	sl->GetGPULight()->Direction = DirectX::XMFLOAT3(-5, 0, 1);
-	sl->GetGPULight()->angle = 50;
-	sl->GetGPULight()->Range = 50;
-	sl->GetGPULight()->HasShadow = false;
+	//SpotLight* sl = new SpotLight();
+	//sl->GetGPULight()->Color = DirectX::XMFLOAT3(0, 1, 0);
+	//sl->GetGPULight()->Position = DirectX::XMFLOAT3(50, 10, -10);
+	//sl->GetGPULight()->Direction = DirectX::XMFLOAT3(-5, 0, 1);
+	//sl->GetGPULight()->angle = 50;
+	//sl->GetGPULight()->Range = 50;
+	//sl->GetGPULight()->HasShadow = false;
 
-	m_spotLights->push_back(sl);
+	//m_spotLights->push_back(sl);
 }
 
 DXDeferred::~DXDeferred(void)
@@ -65,9 +74,9 @@ DXDeferred::~DXDeferred(void)
 	ReleaseCOM(m_fullSceenQuad);
 	ReleaseCOM(m_instanceBuffer);
 
-	SafeDelete(m_dirLights);
+	/*SafeDelete(m_dirLights);
 	SafeDelete(m_pointLights);
-	SafeDelete(m_spotLights);
+	SafeDelete(m_spotLights);*/
 
 	SafeDelete(m_dirLightBuffer);
 	SafeDelete(m_pointLightBuffer);
@@ -305,7 +314,7 @@ void DXDeferred::Render2DTexture(DX2DTextureInstance *_textureInstance)
 {
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = *_textureInstance->X * m_width;
-	vp.TopLeftY = *_textureInstance->Y * m_height;
+	vp.TopLeftY = (1 - (*_textureInstance->Y + *_textureInstance->Height)) * m_height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.Width = *_textureInstance->Width * m_width;
@@ -711,9 +720,13 @@ void DXDeferred::UpdateLights()
 			if (m_pointLightBuffer->Size() > 0)
 			{
 				GPUPointLight* pointLight = m_pointLightBuffer->MapDiscard(m_deviceContext);
-				for (unsigned int i = 0; i < m_pointLights->size(); ++i)
+
+				map<int, PointLight*>::iterator lightIterator;
+				int i = 0;
+				for (lightIterator = m_pointLights->begin(); lightIterator != m_pointLights->end(); ++lightIterator)
 				{
-					pointLight[i] = *m_pointLights->at(i)->GetGPULight();
+					pointLight[i] = *lightIterator->second->GetGPULight();
+					i++;
 				}
 				m_pointLightBuffer->Unmap(m_deviceContext);
 			}
@@ -775,8 +788,8 @@ void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView,
 {
 
 	ddda += 0.004;
-	m_pointLights->at(0)->GetGPULight()->Position.x = 15 + 10 * sinf(ddda);
-	m_pointLights->at(0)->GetGPULight()->Position.z = 10 * cosf(ddda);
+	//pos.x = 15 + 10 * sinf(ddda);
+	//pos.z = 10 * cosf(ddda);
 
 	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	ClearBuffers();

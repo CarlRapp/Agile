@@ -86,8 +86,11 @@ namespace SceneSystem
 	template <typename T>
 	bool SceneManager::ChangeScene()
 	{
+		if (m_activeScene)
+			m_activeScene->OnInactive();
 		m_activeScene = m_scenes[T::GetSceneID()];
-
+		if (m_activeScene)
+			m_activeScene->OnActive();
 		return true;
 	}
 

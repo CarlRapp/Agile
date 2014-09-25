@@ -37,7 +37,8 @@ static int ShadowTileSize(DirectX::XMFLOAT2 resolution)
 struct GPULight
 {
 	GPULight(void) { ZeroMemory(this, sizeof(this)); }
-	DirectX::XMFLOAT4 Color;
+	DirectX::XMFLOAT3 Color;
+	float pad0;
 };
 
 struct GPUDirectionalLight : GPULight
@@ -56,6 +57,10 @@ struct GPUPointLight : GPULight
 	// Packed into 4D vector: (Position, Range)
 	DirectX::XMFLOAT3 Position;
 	float Range;
+
+	//DirectX::XMFLOAT3 Intensity;
+	//float pad1;
+
 	//shadow info	
 	UINT	 ShadowIndex[6];
 	DirectX::XMFLOAT2 Resolution;
@@ -80,6 +85,9 @@ class Light
 {
 protected:
 public:
+	DirectX::XMFLOAT3 *Color;
+	DirectX::XMFLOAT3 *Intensity;
+
 	Light(void) { }
 	virtual ~Light(){ }
 	//GPULight* GetGPULight() { return gpuLight; }
@@ -96,7 +104,10 @@ public:
 
 	void GetViewProjOBB(DirectX::BoundingFrustum& frustum, float offset, DirectX::XMFLOAT4X4& View, DirectX::XMFLOAT4X4& Proj, DirectX::BoundingOrientedBox& OBB);
 
-	GPUDirectionalLight* GetGPULight() { return gpuLight; }
+	GPUDirectionalLight* GetGPULight() 
+	{ 
+		return gpuLight; 
+	}
 	/*
 	BoundingFrustum GetBoundingOrientedBox(BoundingFrustum& frustum, float offset)
 	{
@@ -111,6 +122,10 @@ class PointLight : public Light
 {
 	GPUPointLight* gpuLight;
 public:
+
+	DirectX::XMFLOAT3 *Position;
+	float *Range;
+
 	PointLight(void) { gpuLight = new GPUPointLight(); }
 
 	std::vector<DirectX::XMFLOAT4X4> GetViewMatrixes();
@@ -137,7 +152,14 @@ public:
 		return DirectX::BoundingSphere(gpuLight->Position, gpuLight->Range);
 	}
 
-	GPUPointLight* GetGPULight() { return gpuLight; }
+	GPUPointLight* GetGPULight()
+	{ 
+		gpuLight->Color = *Color;
+		gpuLight->Position = *Position;
+		gpuLight->Position.z *= -1;
+		gpuLight->Range = *Range;
+		return gpuLight; 
+	}
 };
 
 class SpotLight : public Light

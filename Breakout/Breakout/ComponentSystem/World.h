@@ -5,12 +5,12 @@
 #include "System/ISystem.h"
 
 #include <map>
-
+typedef std::map<TypeID, Entity*> EntityMap;
+typedef std::map<TypeID, ISystem*> SystemMap;
 class World
 {
 private:
-	typedef std::map<TypeID, Entity*> EntityMap;
-	typedef std::map<TypeID, ISystem*> SystemMap;
+
 	Entity** m_entityPool;
 	EntityMap m_activeEntities;
 	std::vector<Entity*> m_changedEntities;
@@ -33,6 +33,8 @@ public:
 
 	bool AddEntity(Entity* _e);
 	Entity* CreateEntity();
+
+	EntityMap* GetAllEntities(){ return &m_activeEntities; }
 
 	template <typename T>
 	std::vector<Entity*>* GetEntities();

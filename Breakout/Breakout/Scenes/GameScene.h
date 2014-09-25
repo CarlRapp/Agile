@@ -10,6 +10,11 @@
 #include "../ComponentSystem/System/InputSystem.h"
 #include "../ComponentSystem/System/PhysicsSystem.h"
 #include "../ComponentSystem/System/ProjectileSystem.h"
+#include "../ComponentSystem/System/CollisionDamageSystem.h"
+#include "../ComponentSystem/System/BounceSystem.h"
+#include "../ComponentSystem/System/AudioSystem.h"
+#include "../ComponentSystem/System/ScoreSystem.h"
+#include "../ComponentSystem/System/LightSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"
@@ -18,6 +23,9 @@ using namespace SceneSystem;
 class GameScene : public Scene<GameScene>
 {
 private:
+
+	void Reset(void);
+
 	World* m_world;
 public:
 	GameScene();
@@ -27,6 +35,9 @@ public:
 	void LoadContent();
 	void Update(float _dt);
 	void Render();
+
+	void OnActive();
+	void OnInactive();
 };
 
 
