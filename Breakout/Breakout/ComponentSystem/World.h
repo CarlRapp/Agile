@@ -9,12 +9,14 @@
 class World
 {
 private:
+	typedef std::map<TypeID, Entity*> EntityMap;
+	typedef std::map<TypeID, ISystem*> SystemMap;
 	Entity** m_entityPool;
-	std::vector<Entity*> m_activeEntities;
+	EntityMap m_activeEntities;
 	std::vector<Entity*> m_changedEntities;
 	std::map<TypeID, std::vector<Entity*>*> m_componentEntityPool;
 
-	std::vector<ISystem*> m_systems;
+	SystemMap m_systems;
 
 	void Start();
 	void EntityChanged(Entity* _e);
@@ -34,15 +36,18 @@ public:
 
 	template <typename T>
 	std::vector<Entity*>* GetEntities();
+	Entity* GetEntity(int _id);
 
 	template <typename T>
 	void AddNewComponent();
 
 	template <typename T>
 	T* AddSystem();
-        
-        //TODO map systems with id instead of vector
-        ISystem* GetSystem(int _id);
+
+	template <typename T>
+	T* GetSystem();
+
+	
 };
 
 template <typename T>
@@ -65,13 +70,20 @@ void World::AddNewComponent()
 template <typename T>
 T* World::AddSystem()
 {
+	if (m_systems.find(T::GetTypeID()) != m_systems.end())
+		return 0;
 
-	if (std::is_base_of<ISystem, T>())
-	{
-		T* t = new T(this);
-		m_systems.push_back(t);
-		return t;
-	}
+	T* t = new T(this);
+	m_systems[T::GetTypeID()] = t;
+
+	return t;
+}
+
+template <typename T>
+T* World::GetSystem()
+{
+	if (m_systems.find(T::GetTypeID()) != m_systems.end())
+		return m_systems[T::GetTypeID()];
 
 	return 0;
 }
