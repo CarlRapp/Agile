@@ -305,7 +305,7 @@ void DXDeferred::Render2DTexture(DX2DTextureInstance *_textureInstance)
 {
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = *_textureInstance->X * m_width;
-	vp.TopLeftY = *_textureInstance->Y * m_height;
+	vp.TopLeftY = (1 - (*_textureInstance->Y + *_textureInstance->Height)) * m_height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.Width = *_textureInstance->Width * m_width;
