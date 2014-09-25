@@ -90,7 +90,7 @@ bool GLWindow::InitGL()
         printf( "\033[31mError initializing OpenGL!\033[30m\n");
         return false;
     }
-
+    
     std::cout << "\033[32mOpenGL Initialize Success\n\033[30m";
 
     return true;

@@ -69,17 +69,15 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
         return 0;
     }
     
-    std::cout << "Initialize 3D Finish";
-        if(glGetError())
-    std::cout << "\033[31m with error: " << glGetError();
-    std::cout << "\n\033[30m";
+    int err = glGetError();
     
-    //LoadModel("sphere");
+    std::cout << "Initialize 3D Finish";
+        if(err)
+    std::cout << "\033[31m with error: " << err;
+    std::cout << "\n\033[30m";
     
     return true; 
 } 
-
-int kk=1;
 
 void GLGraphics::LoadModel(std::string _path)
 {
@@ -131,28 +129,28 @@ void GLGraphics::LoadModel(std::string _path)
         GLuint VBOHandles[4];
 	glGenBuffers(4, VBOHandles);
         float padData = 0;
+ 
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]); 
-	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_READ);
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
         //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
         
 	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
-	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_READ);
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]); 
         //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
+
 
         glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glBufferData(GL_ARRAY_BUFFER, 16 * 500 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 16 * 5 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
-
-
         
 	// enable "vertex attribute arrays"
 	glEnableVertexAttribArray(pos);         // position     1
@@ -203,9 +201,11 @@ void GLGraphics::LoadModel(std::string _path)
         glUseProgram(0); // disable shader programme
     }
     
+    int err = glGetError();
+    
     std::cout << "Loadmodel finish: " << _path;
-    if(glGetError())
-    std::cout << "\033[31m with error: " << glGetError();
+    if(err)
+    std::cout << "\033[31m with error: " << err;
     std::cout << "\n\033[30m";
 }
 
@@ -226,8 +226,6 @@ void GLGraphics::Free()
 {
     for(int i = m_models.size()-1; i > -1;i--)
     {
-       // glDeleteBuffers(1, &m_models[i]->bufferNormalID);
-       // glDeleteBuffers(1, &m_models[i]->bufferVertexID);
         m_models[i]->instances.clear();
         glDeleteBuffers(5,&m_models[i]->bufferVAOID);
         m_models.pop_back();
@@ -239,6 +237,8 @@ void GLGraphics::Free()
     }
     
     glDeleteProgram(m_program);
+    
+    printf("Graphics memory cleared\n");
 }
 
 float t;
@@ -385,7 +385,6 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
         if(m_models[i]->name == _model)
         {
             newModelID = i;
-            printf("Model exists %s , skipping LoadModel\n",_model.c_str());
             break;
         }
     }

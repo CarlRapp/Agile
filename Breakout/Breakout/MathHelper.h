@@ -1,8 +1,6 @@
 #ifndef _MATHHELPER_H_
 #define _MATHHELPER_H_
 
-
-
 #ifdef __linux__
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
