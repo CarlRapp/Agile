@@ -10,19 +10,15 @@ GLGraphics::GLGraphics(void)
 GLGraphics::~GLGraphics(void)
 {
     Free();
-    while(m_shaders.size() > 0)
-        m_shaders.pop_back();
 }
 
 bool GLGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
-    
     m_screenHeight = _height;
     m_screenWidth = _width;
     m_window = new GLWindow();
     return m_window->InitWindow(_width, _height);
 }
-
 
 
 bool GLGraphics::Init3D(DisplayMode _displayMode) 
@@ -46,13 +42,11 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     GLint link_ok = GL_FALSE;
     GLuint vs, fs;
     
+//-----------Creating shader programs----------------------------------------------
     m_program = glCreateProgram();
     
     Shader* a = new Shader("standard_vertex.glsl",GL_VERTEX_SHADER);
     Shader* b = new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
-    
-    //m_shaders.push_back(new Shader("standard_vertex.glsl",GL_VERTEX_SHADER));
-
     
     glAttachShader(m_program, a->GetShaderID());
     glAttachShader(m_program, b->GetShaderID());
@@ -68,11 +62,34 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
         printf("\033[31mUnable to link shader\n\033[30m");
         return 0;
     }
+//------------------------------------------------------------------------------------
+     m_shader2Dprogram = glCreateProgram();
+    
+    a = new Shader("2Dshader_vertex.glsl",GL_VERTEX_SHADER);
+    b = new Shader("2Dshader_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    glAttachShader(m_shader2Dprogram, a->GetShaderID());
+    glAttachShader(m_shader2Dprogram, b->GetShaderID());
+    
+    a=NULL;
+    b=NULL;
+
+    glLinkProgram(m_shader2Dprogram);
+    glGetProgramiv(m_shader2Dprogram, GL_LINK_STATUS, &link_ok);
+    
+    if (!link_ok) 
+    {
+        printf("\033[31mUnable to link shader\n\033[30m");
+        return 0;
+    }
+//-----------------------------------------------------------------------------------------
     
     std::cout << "Initialize 3D Finish";
         if(glGetError())
     std::cout << "\033[31m with error: " << glGetError();
     std::cout << "\n\033[30m";
+    
+    glEnable(GL_BLEND);
     
     //LoadModel("sphere");
     
@@ -209,12 +226,31 @@ void GLGraphics::LoadModel(std::string _path)
     std::cout << "\n\033[30m";
 }
 
+void GLGraphics::LoadTexture(std::string _path)
+{
+    //m_texManager.Load2DTexture(_path, GL_TEXTURE0);
+}
+
+void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
+{
+    if(mTextureInstances.find(_id) == mTextureInstances.end())
+    {
+        return;
+    }
+    
+    
+    m_texManager.Load2DTexture(_path, GL_TEXTURE0);
+    mTextureInstances.insert(pair<int, TextureInfo>(_id, TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
+    
+    //buffra datan till 2D shader
+}
+
 void GLGraphics::Update() 
 {
 
 }
 
-
+//
 void GLGraphics::Resize(int _width, int _height) 
 {
     m_screenWidth = _width;
@@ -253,6 +289,8 @@ void GLGraphics::Render(ICamera* _camera)
     
     
     glUseProgram(m_program);
+    
+    glViewport(0, 0, m_screenWidth, m_screenHeight);
     
     //LightsToRender();
     UpdateLights();

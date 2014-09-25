@@ -4,7 +4,7 @@
 #include "../IGraphics.h"
 #include "GLWindow.h"
 #include "GLShader.h"
-#include "TextureManager.h"
+#include "GLTextureManager.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -71,17 +71,19 @@ private:
         int m_screenWidth;
         int m_screenHeight;
         
+        GLTextureManager m_texManager;
         GLuint m_program; //shaderID
+        GLuint m_shader2Dprogram;
         
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
-        std::vector<Shader*> m_shaders;
         
         std::vector<LightInfo*> m_lights;
                                             
         std::vector<glm::mat4> m_testMatrices;
-        glm::vec4 m_testColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+        
+        std::map<int, TextureInfo> mTextureInstances;
         
         //std::map<int, ModelInstance*> m_modelInstances;
         
@@ -110,6 +112,8 @@ public:
         void Update();
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
+        
+        void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
         
         void AddRenderObject(std::string _path, MATRIX4 _world);
         void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
