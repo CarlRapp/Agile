@@ -4,7 +4,7 @@
 
 
 #ifdef __linux__
-
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -13,6 +13,11 @@
 #define VECTOR4 glm::vec4
 #define VECTOR3 glm::vec3
 #define VECTOR2 glm::vec2
+
+static glm::mat4 GetIdentityMatrix()
+{
+    return glm::mat4();
+}
 
 static glm::mat4 MacroTranslate(glm::vec3 vector)
 {
@@ -61,6 +66,13 @@ static glm::vec3 MacroNormalize(glm::vec3 vector)
 #define VECTOR4 DirectX::XMFLOAT4
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
+
+static DirectX::XMFLOAT4X4 GetIdentityMatrix()
+{
+	DirectX::XMFLOAT4X4 temp;
+    DirectX::XMStoreFloat4x4(&temp,DirectX::XMMatrixIdentity());
+    return temp;
+}
 
 static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 {
@@ -130,6 +142,8 @@ DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r);
 
 
 #endif
+
+#define GETIMATRIX() GetIdentityMatrix()
 
 #define TRANSLATE(vector) MacroTranslate(vector)
 #define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)

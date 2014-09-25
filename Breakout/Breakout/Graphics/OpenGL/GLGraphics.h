@@ -17,7 +17,12 @@
 
 #include <vector>
 #include <map>
-//#include <string>
+#include <string>
+#include <stdio.h>
+#include <stdlib.h>
+
+using glm::vec3;
+using glm::vec4;
 
 class GLGraphics : public IGraphics
 {
@@ -45,35 +50,51 @@ class GLGraphics : public IGraphics
       
     };
     
+    struct LightInfo
+    {
+        LightInfo(vec3 pos, vec3 intens, vec3 col, float range)
+        {
+            Position = pos;
+            Intensity = intens;
+            Color = col;
+            Range = range;
+        }
+        vec3 Position; // Light position world coords.
+	vec3 Intensity; // La, Ld and Ls intensity
+	vec3 Color;
+	float Range;
+    };
+    
 private:
 	GLWindow *m_window;
         int m_screenWidth;
         int m_screenHeight;
         
-        GLuint m_program;
+        GLuint m_program; //shaderID
         
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
         std::vector<Shader*> m_shaders;
         
-        glm::vec3 m_testLightPos = glm::vec3(0,3,0);
+        std::vector<LightInfo*> m_lights;
                                             
         std::vector<glm::mat4> m_testMatrices;
         glm::vec4 m_testColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
         
         //std::map<int, ModelInstance*> m_modelInstances;
         
-//        int SetUniformV(const char* variable,float value);
-//        int SetUniformV(const char* variable,glm::vec3 value);
-//        int SetUniformV(const char* variable,glm::vec4 value);
-//        int SetUniformV(const char* variable,glm::mat3 value);
-//        int SetUniformV(const char* variable,glm::mat4 value);
-//        int SetUniformV(const char* variable,int value);
+        int SetUniformV(GLuint shaderProg, const char* variable,float value);
+        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
+        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec4 value);
+        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat3 value);
+        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat4 value);
+        int SetUniformV(GLuint shaderProg, const char* variable,int value);
         
         int RenderInstanced();
         int RenderStandard();
-        void LightsToRender();
+        void AddLight(vec3 worldPos, vec3 intensity, vec3 color, float range);
+        void UpdateLights();
         void CameraToRender(ICamera* _camera);
 public:
 

@@ -16,7 +16,7 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-float lol = 0;
+
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -25,8 +25,6 @@ void ModelSystem::Update(float _dt)
 	RotationComponent* rotation;
 	ScaleComponent* scale;
 	ModelComponent* model;
-
-	lol += _dt;
 
 	EntityMap::iterator it;
 
