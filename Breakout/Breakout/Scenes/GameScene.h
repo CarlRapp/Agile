@@ -29,6 +29,9 @@ public:
 	void LoadContent();
 	void Update(float _dt);
 	void Render();
+
+	void OnActive();
+	void OnInactive();
 };
 
 

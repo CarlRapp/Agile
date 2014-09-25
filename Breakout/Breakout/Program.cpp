@@ -7,6 +7,7 @@
 #include "Input/InputManager.h"
 #include "Storage/FileManager.h"
 
+#include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 
 #ifdef WINDOWS
@@ -46,7 +47,11 @@ int main(int argc, char** argv)
 
 	/*	CREATE SCENE MANAGER HERE	*/
 	m_SceneManager = SceneManager::GetInstance();
-	if (!m_SceneManager->AddScene<GameScene>(true))
+	m_SceneManager->AddScene<MainMenuScene>(false);
+	m_SceneManager->AddScene<GameScene>(false);
+
+	m_SceneManager->ChangeScene<MainMenuScene>();
+
 		printf("Could not add scene!\n");
 
 	/*	START HERE	*/

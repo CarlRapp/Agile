@@ -75,9 +75,9 @@ void SceneManager::Start()
 		lol += dt;
 		if (lol > 0.5f)
 		{
-                    printf("FPS: %f | Delta: %f\n" , 1.0f / dt,dt);
+            printf("FPS: %f | Delta: %f\n" , 1.0f / dt,dt);
 
-                    lol = 0;
+            lol = 0;
 		}
 	}
 

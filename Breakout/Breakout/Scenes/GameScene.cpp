@@ -1,4 +1,5 @@
 #include "GameScene.h"
+#include "MainMenuScene.h"
 
 GameScene::GameScene()
 {
@@ -79,7 +80,11 @@ void GameScene::Update(float _dt)
 {
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
-		SceneManager::GetInstance()->Quit();
+	{
+		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+		return;
+	}
+		
 
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
@@ -134,4 +139,19 @@ void GameScene::Update(float _dt)
 void GameScene::Render()
 {
 	GraphicsManager::GetInstance()->Render();
+}
+
+void GameScene::OnActive()
+{
+}
+void GameScene::OnInactive()
+{
+	EntityMap::iterator eIT;
+	for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
+	{
+		eIT->second->SetInitialized(false);
+	}
+	for (int i = 0; i < 500; ++i)
+		GraphicsManager::GetInstance()->RemoveObject(i);
+		
 }
