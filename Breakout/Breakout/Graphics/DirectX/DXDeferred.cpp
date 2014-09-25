@@ -209,7 +209,7 @@ void DXDeferred::ClearBuffers()
 
 }
 
-void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+void DXDeferred::FillGBuffer(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
 
@@ -219,7 +219,7 @@ void DXDeferred::FillGBuffer(ID3D11Device *_device, map<std::string, map<int, Mo
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	//RenderTestTriangle(_camera);
-	RenderModels(_device, _modelInstances, _camera);
+	RenderModels(_modelInstances, _camera);
 
 	m_deviceContext->OMSetRenderTargets(0, 0, 0);
 }
@@ -291,7 +291,12 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+void Render2DTextures(map<std::string, map<int, DX2DTextureInstance*>> &_textureInstances)
+{
+
+}
+
+void DXDeferred::RenderModels(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
 	D3D11_VIEWPORT* vp = (D3D11_VIEWPORT*)_camera->GetViewPort();
 	m_deviceContext->RSSetViewports(1, vp);
@@ -354,7 +359,7 @@ void DXDeferred::RenderModels(ID3D11Device *_device, map<std::string, map<int, M
 
 				for (UINT p = 0; p < techDesc.Passes; ++p)
 				{
-					RenderModelInstanced(_device, &mapIterator->second, view, proj, tech, p);
+					RenderModelInstanced(&mapIterator->second, view, proj, tech, p);
 				}
 			}
 		}
@@ -414,7 +419,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 
 }
 
-void DXDeferred::RenderModelInstanced(ID3D11Device *_device, map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
+void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
 {
 	if (_mi->empty())
 		return;
@@ -744,7 +749,11 @@ void DXDeferred::UpdateLights()
 
 
 float ddda = 0.0f;
-void DXDeferred::Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_finalUAV, map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
+void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, 
+	ID3D11UnorderedAccessView *_finalUAV,
+	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
+	map<std::string, map<int, DX2DTextureInstance* >> &_textureInstances, 
+	ICamera* _camera)
 {
 
 	ddda += 0.004;
@@ -756,8 +765,11 @@ void DXDeferred::Render(ID3D11Device *_device, ID3D11UnorderedAccessView *_final
 
 
 	UpdateLights();
-	FillGBuffer(_device, _modelInstances, _camera);
+	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
+
+
+
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
 }
