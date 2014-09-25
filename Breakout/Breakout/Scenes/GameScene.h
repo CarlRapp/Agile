@@ -10,6 +10,8 @@
 #include "../ComponentSystem/System/InputSystem.h"
 #include "../ComponentSystem/System/PhysicsSystem.h"
 #include "../ComponentSystem/System/ProjectileSystem.h"
+#include "../ComponentSystem/System/CollisionDamageSystem.h"
+#include "../ComponentSystem/System/BounceSystem.h"
 #include "../ComponentSystem/System/AudioSystem.h"
 #include "../ComponentSystem/System/ScoreSystem.h"
 #include "../ComponentSystem/System/LightSystem.h"

@@ -17,12 +17,16 @@ void GameScene::Initialize()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
+	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<PhysicsSystem>();
-	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
+	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<CollisionDamageSystem>();
+	
+	
 	m_world->AddSystem<LightSystem>();
 
 
@@ -45,8 +49,13 @@ void GameScene::Initialize()
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::H_WALL);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5 + xBlocks) * 0.5f, 15, 0));
+	m_world->AddEntity(e);
+
+	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -15, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5f + xBlocks) * 0.5f, -15, 0));
 	m_world->AddEntity(e);
 
 	for (int y = 9; y > 9 - yBlocks; --y)
