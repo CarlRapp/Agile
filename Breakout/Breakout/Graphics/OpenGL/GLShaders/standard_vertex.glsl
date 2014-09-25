@@ -1,4 +1,4 @@
-#version 420
+#version 440
 layout (location = 0) in vec3 m_position;
 layout (location = 1) in float pad1;
 layout (location = 2) in vec3 m_normal;

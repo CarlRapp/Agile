@@ -68,6 +68,11 @@ bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
     return m_IGraphics->Init3D(_displayMode);
 }
+void GraphicsManager::AddLight(VECTOR3 _worldPos, VECTOR3 _intensity, VECTOR3 _color, float _range)
+{
+    m_IGraphics->AddLight(_worldPos, _intensity, _color, _range);
+}
+   
 
 void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
 {

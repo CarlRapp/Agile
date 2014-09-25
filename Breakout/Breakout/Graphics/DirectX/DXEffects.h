@@ -4,6 +4,8 @@
 
 #include "../../stdafx.h"
 
+#include "DXLightHelper.h"
+
 #include <D3D11.h>
 #include <d3dCompiler.h>
 #include <string>
@@ -52,7 +54,7 @@ public:
 	void SetTexTransform(DirectX::CXMMATRIX _M)					{ m_texTransform->SetMatrix(reinterpret_cast<const float*>(&_M)); }
 	void SetBoneTransforms(const DirectX::XMFLOAT4X4* _M, int _cnt){ m_boneTransforms->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
 
-	//void SetMaterial(const Material& mat)               { Mat->SetRawValue(&mat, 0, sizeof(Material)); }
+	void SetMaterial(const DXMaterial& mat)               { m_mat->SetRawValue(&mat, 0, sizeof(DXMaterial)); }
 
 	void SetDiffuseMap(ID3D11ShaderResourceView* _tex)   { m_diffuseMap->SetResource(_tex); }
 	void SetNormalMap(ID3D11ShaderResourceView* _tex)    { m_normalMap->SetResource(_tex); }
@@ -101,12 +103,12 @@ public:
 	void SetViewProjTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)		{ m_viewProjTexs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
 	void SetViewProj(const DirectX::XMFLOAT4X4* _M, int _cnt)			{ m_viewProj->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
 	void SetTexs(const DirectX::XMFLOAT4X4* _M, int _cnt)				{ m_texs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
-	void SetInvViewProjs(const DirectX::XMFLOAT4X4* _M, int _cnt)		{ m_invViewProjs->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
-	void SetCamPositions(const DirectX::XMFLOAT4* _V, int _cnt)		{ m_camPositions->SetFloatVectorArray(reinterpret_cast<const float*>(_V), 0, _cnt); }
+	void SetInvViewProj(const DirectX::XMFLOAT4X4* _M)					{ m_invViewProj->SetMatrix(reinterpret_cast<const float*>(_M)); }
+	void SetCamPosition(const DirectX::XMFLOAT4* _V)					{ m_camPosition->SetFloatVector(reinterpret_cast<const float*>(_V)); }
 	void SetResolution(const DirectX::XMFLOAT2 _v)					{ m_resolution->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT2)); }
 	void SetShadowMapSwitches(const DirectX::XMFLOAT3 _v)				{ m_shadowMapSwitches->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
 	void SetShadowMapResolution(const DirectX::XMFLOAT2 _v)			{ m_shadowMapResolution->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT2)); }
-	void SetGlobalLight(const DirectX::XMFLOAT3 _v)					{ m_globalLight->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
+	//void SetGlobalLight(const DirectX::XMFLOAT3 _v)					{ m_globalLight->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
 
 	void SetAlbedoMap(ID3D11ShaderResourceView* _tex)		{ m_albedoMap->SetResource(_tex); }
 	void SetNormalSpecMap(ID3D11ShaderResourceView* _tex)    { m_normalSpecMap->SetResource(_tex); }
@@ -120,20 +122,17 @@ public:
 	void SetPointLightMap(ID3D11ShaderResourceView* _tex)	{ m_pointLightMap->SetResource(_tex); }
 	void SetSpotLightMap(ID3D11ShaderResourceView* _tex)		{ m_spotLightMap->SetResource(_tex); }
 
-	ID3DX11EffectTechnique* m_viewport1;
-	ID3DX11EffectTechnique* m_viewport2;
-	ID3DX11EffectTechnique* m_viewport3;
-	ID3DX11EffectTechnique* m_viewport4;
+	ID3DX11EffectTechnique* m_basicTech;
 
 	ID3DX11EffectMatrixVariable* m_viewProjTexs;
 	ID3DX11EffectMatrixVariable* m_viewProj;
 	ID3DX11EffectMatrixVariable* m_texs;
-	ID3DX11EffectMatrixVariable* m_invViewProjs;	
-	ID3DX11EffectVectorVariable* m_camPositions;
+	ID3DX11EffectMatrixVariable* m_invViewProj;	
+	ID3DX11EffectVectorVariable* m_camPosition;
 	ID3DX11EffectVectorVariable* m_resolution;
 	ID3DX11EffectVectorVariable* m_shadowMapSwitches;
 	ID3DX11EffectVectorVariable* m_shadowMapResolution;
-	ID3DX11EffectVectorVariable* m_globalLight;
+	//ID3DX11EffectVectorVariable* m_globalLight;
 
 	ID3DX11EffectShaderResourceVariable* m_albedoMap;
 	ID3DX11EffectShaderResourceVariable* m_normalSpecMap;
