@@ -277,7 +277,7 @@ void DXGraphics::RemoveObject(int _id)
 
 void DXGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
 {
-	if (m_textureInstances[_path].count(_id) != 0)
+	if (m_textureInstances.count(_id) != 0)
 		return;
 
 	DX2DTextureInstance *ti = new DX2DTextureInstance();
@@ -288,16 +288,12 @@ void DXGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
 	ti->Width = _width;
 	ti->Height = _height;
 
-	m_textureInstances[_path].insert(pair<int, DX2DTextureInstance*>(_id, ti));
+	m_textureInstances.insert(pair<int, DX2DTextureInstance*>(_id, ti));
 }
 
 void DXGraphics::Remove2DTexture(int _id)
 {
-	map<std::string, map<int, DX2DTextureInstance*>>::iterator	mapIterator;
-	for (mapIterator = m_textureInstances.begin(); mapIterator != m_textureInstances.end(); ++mapIterator)
-	{
-		mapIterator->second.erase(_id);
-	}
+	m_textureInstances.erase(_id);
 }
 
 

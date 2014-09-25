@@ -10,6 +10,7 @@
 
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
+#define TEXTURE_ROOT "/../../Data/Textures/"
 
 #else
 #define WINDOWS
@@ -17,6 +18,7 @@
 
 #define MODEL_ROOT "../../Data/Models/"
 #define AUDIO_ROOT "../../Data/Audio/"
+#define TEXTURE_ROOT "../../Data/Textures/"
 
 #include <Windows.h>
 

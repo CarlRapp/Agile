@@ -291,9 +291,27 @@ void DXDeferred::InitFullScreenQuad()
 	m_device->CreateBuffer(&vbd, &vinitData, &m_fullSceenQuad);
 }
 
-void Render2DTextures(map<std::string, map<int, DX2DTextureInstance*>> &_textureInstances)
+void DXDeferred::Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances)
 {
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+	map<int, DX2DTextureInstance*>::iterator texIterator;
+	for (texIterator = _textureInstances.begin(); texIterator != _textureInstances.end(); ++texIterator)
+	{
+		Render2DTexture(texIterator->second);
+	}
+}
 
+void DXDeferred::Render2DTexture(DX2DTextureInstance *_textureInstance)
+{
+	D3D11_VIEWPORT vp;
+	vp.TopLeftX = *_textureInstance->X * m_width;
+	vp.TopLeftY = *_textureInstance->Y * m_height;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.Width = *_textureInstance->Width * m_width;
+	vp.Height = *_textureInstance->Height * m_height;
+
+	RenderQuad(vp, _textureInstance->Texture, DXEffects::m_combineFinalFX->m_alphaTransparencyColorTech);
 }
 
 void DXDeferred::RenderModels(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
@@ -752,7 +770,7 @@ float ddda = 0.0f;
 void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, 
 	ID3D11UnorderedAccessView *_finalUAV,
 	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
-	map<std::string, map<int, DX2DTextureInstance* >> &_textureInstances, 
+	map<int, DX2DTextureInstance*> &_textureInstances,
 	ICamera* _camera)
 {
 
@@ -768,6 +786,7 @@ void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView,
 	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
 
+	Render2DTextures(_renderTargetView, _textureInstances);
 
 
 	//shadowmap->Render();
