@@ -61,6 +61,9 @@ void GameScene::Initialize()
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 8, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
+        
+        GraphicsManager::GetInstance()->AddLight(VECTOR3(0.0, 18.0, 15.0), VECTOR3(0.2, 0.9, 0.9), VECTOR3(1.0, 0.3, 0.3), 50.0);
+        GraphicsManager::GetInstance()->AddLight(VECTOR3(20.0, 18.0, 15.0), VECTOR3(0.2, 2.9, 2.9), VECTOR3(0.3, 0.3, 1.0), 50.0);
 
 }
 
@@ -74,14 +77,14 @@ void GameScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
 
-	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
-	//	GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
-	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('d') == InputState::Down)
-	//	GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(50 * _dt, 0, 0));
-	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('w') == InputState::Down)
-	//	GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
-	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
-	//	GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
+		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('d') == InputState::Down)
+		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(50 * _dt, 0, 0));
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('w') == InputState::Down)
+		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
+		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 	/*
 	left arrow: 37
 	up arrow: 38

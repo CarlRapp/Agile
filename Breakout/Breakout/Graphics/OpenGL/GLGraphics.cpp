@@ -247,7 +247,7 @@ void GLGraphics::Render(ICamera* _camera)
 { 
     int instances = 2;
     
-    glClearColor(0.1, 0.1, 0.2, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     
@@ -333,10 +333,10 @@ void GLGraphics::UpdateLights()
             //-----Send all the lights values------
             const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
             char positionStr[25], intensityStr[25], colorStr[25], rangeStr[25];
-            strcpy(positionStr, "Lights[");	 	strcat(positionStr, indexStr);		strcat(positionStr, "].Position");
+            strcpy(positionStr, "Lights[");	strcat(positionStr, indexStr);		strcat(positionStr, "].Position");
             strcpy(intensityStr, "Lights[");	strcat(intensityStr, indexStr);		strcat(intensityStr, "].Intensity");
-            strcpy(colorStr, "Lights[");		strcat(colorStr, indexStr);			strcat(colorStr, "].Color");
-            strcpy(rangeStr, "Lights[");		strcat(rangeStr, indexStr);			strcat(rangeStr, "].Range");
+            strcpy(colorStr, "Lights[");	strcat(colorStr, indexStr);		strcat(colorStr, "].Color");
+            strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
 
             SetUniformV(m_program, positionStr, LightPosition);
             SetUniformV(m_program, intensityStr, m_lights[i]->Intensity);

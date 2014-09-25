@@ -13,7 +13,7 @@ in VERTEX
 } vertex;
 
 
-const int nrOfLights = 2;
+const int nrOfLights = 5;
 
 struct LightInfo{
 	vec4 Position; // Light position world coords.
@@ -34,14 +34,15 @@ MaterialInfo Material;
 vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
 
                 //tmp material
-                Material.Ka = vec3(0.3);
-                Material.Kd = vec3(0.6);
-                Material.Ks = vec3(1.0);
-                Material.Shininess = 190.0;
+                Material.Ka = vec3(0.2);
+                Material.Kd = vec3(0.9);
+                Material.Ks = vec3(0.9);
+                Material.Shininess = 3.0;
 
 		vec3 s = normalize(vec3(lightPos - vertex.worldPos));
-		vec3 v = normalize(-vertex.worldPos.xyz);	
-		vec3 h = normalize(v + s);
+		vec3 v = normalize(vertex.worldPos.xyz);	
+		//vec3 h = normalize(v + s);
+                vec3 h = reflect( s, vertex.normal);
 
 		float sDotN = max( dot(s, vertex.normal), 0.0 );
 	
@@ -56,12 +57,12 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
 		if( sDotN > 0.0 )
 			specular = vec3(Lights[index].Intensity.z) * Lights[index].Color * Ks * pow( max( dot(h,v), 0.0 ), Material.Shininess ) * strength;
 		
-		return vec3(diffuse + specular);
+		return vec3(diffuse);// + specular);
 }
 
 void main(void) 
 {   
-    vec3 ambient = vec3(0.2f,0.2f,0.2f);
+    vec3 ambient = vec3(0.0); // = vec3(0.2f,0.2f,0.2f);
     vec3 diffAndSpec = vec3(0.0);
 
     for(int index = 0; index < nrOfLights; index++)
@@ -80,4 +81,5 @@ void main(void)
         //gl_FragColor = vec4(vertex.normal.x, vertex.normal.y, vertex.normal.z, 1.0);
 
     gl_FragColor = vec4(diffAndSpec + ambient, 1.0);
+    //gl_FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
 }
