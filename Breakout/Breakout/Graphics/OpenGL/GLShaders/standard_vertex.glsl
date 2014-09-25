@@ -14,10 +14,9 @@ varying mat4 modelView;
 
 out VERTEX
 {
-    vec3    worldPos;
-    float   pad1;
+    vec4    worldPos;
     vec3    normal;
-    float   pad2;
+    float   pad;
     vec4    color;
 } vertex;
 
@@ -25,8 +24,10 @@ out VERTEX
 void main(void) 
 {
     mat3 normalMatrix = transpose(inverse(mat3(m_matModel)));
-    vertex.worldPos = mat3(m_matModel) * m_position;
-    vertex.normal = normalize(normalMatrix * m_normal);
+    vertex.worldPos = m_matModel * vec4(m_position, 1.0);
+    //WorldPos = m_matModel * vec4(m_position, 1.0);
+    //TNormal = mat3(m_matModel) * m_normal;
+    vertex.normal = mat3(m_matModel) * m_normal; // normalize(normalMatrix * m_normal);
 
     //modelView = m_matView * m_matModel;
 

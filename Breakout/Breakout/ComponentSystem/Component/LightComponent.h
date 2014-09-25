@@ -32,7 +32,7 @@ public:
 
 	LightComponent()
 	{
-            m_intensity = VECTOR3(0.0, 0.9, 0.9);
+            m_intensity = VECTOR3(0.2, 1.9, 1.9);
 		m_color = VECTOR3(1, 1, 1);
 		m_range = 100.f;
 	}
