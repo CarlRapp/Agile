@@ -1,16 +1,16 @@
-#include "GameScene.h"
+#include "MenuScene.h"
 
-GameScene::GameScene()
+MenuScene::MenuScene()
 {
 	printf("Game Scene created!\n");
 }
 
-GameScene::~GameScene()
+MenuScene::~MenuScene()
 {
 
 }
 
-void GameScene::Initialize()
+void MenuScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 
@@ -18,17 +18,17 @@ void GameScene::Initialize()
 	m_world = new World();
 }
 
-void GameScene::LoadContent()
+void MenuScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 }
 
-void GameScene::Update(float _dt)
+void MenuScene::Update(float _dt)
 {
 	m_world->Update(_dt);
 }
 
-void GameScene::Render()
+void MenuScene::Render()
 {
 	GraphicsManager::GetInstance()->Render();
 }
