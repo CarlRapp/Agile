@@ -233,6 +233,7 @@ void GLGraphics::LoadTexture(std::string _path)
 
 void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
 {
+    return;
     if(mTextureInstances.find(_id) == mTextureInstances.end())
     {
         return;
@@ -243,6 +244,11 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
     mTextureInstances.insert(pair<int, TextureInfo>(_id, TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
     
     //buffra datan till 2D shader
+}
+
+void GLGraphics::Remove2DTexture(int _id)
+{
+    return;
 }
 
 void GLGraphics::Update() 
@@ -356,9 +362,14 @@ int GLGraphics::RenderInstanced()
     return 1;
 }
 
-void GLGraphics::AddLight(vec3 worldPos, vec3 intensity, vec3 color, float range)
+void GLGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {   
-    m_lights.push_back(new LightInfo(worldPos, intensity, color, range));
+    m_lights.push_back(new LightInfo(_worldPos, _intensity, _color, _range));
+}
+
+void GLGraphics::RemovePointLight(int _id)
+{
+    return;
 }
 
 void GLGraphics::UpdateLights()
@@ -366,7 +377,7 @@ void GLGraphics::UpdateLights()
     for(int i = 0; i < m_lights.size(); i++)
 	{
             //Light properties
-            vec4 LightPosition = vec4(m_lights[i]->Position, 1.0f);	// Light position
+            vec4 LightPosition = vec4(*m_lights[i]->Position, 1.0f);	// Light position
             
             //-----Send all the lights values------
             const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
@@ -377,9 +388,9 @@ void GLGraphics::UpdateLights()
             strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
 
             SetUniformV(m_program, positionStr, LightPosition);
-            SetUniformV(m_program, intensityStr, m_lights[i]->Intensity);
-            SetUniformV(m_program, colorStr, m_lights[i]->Color);
-            SetUniformV(m_program, rangeStr, m_lights[i]->Range);
+            SetUniformV(m_program, intensityStr, *m_lights[i]->Intensity);
+            SetUniformV(m_program, colorStr, *m_lights[i]->Color);
+            SetUniformV(m_program, rangeStr, *m_lights[i]->Range);
 	}
 }
 
