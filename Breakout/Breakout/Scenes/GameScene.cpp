@@ -69,10 +69,10 @@ void GameScene::Initialize()
 		m_world->AddEntity(e);
 	}
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
+	//m_world->AddEntity(e);
 
 
 
@@ -82,16 +82,19 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
 
-
-
-
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((28 + 28 * 0.5f)*0.5f, 5, 20));
+	m_world->AddEntity(e);
+
+	/*	PLANE	*/
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0,-15,5));
 	m_world->AddEntity(e);
 
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 2, 35));
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 1.10f, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 }
@@ -99,6 +102,8 @@ void GameScene::Initialize()
 void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
+
+	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)

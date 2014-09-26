@@ -91,6 +91,12 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<LightComponent>();
 		break;
+	case EntityFactory::PLANE:
+		_entity->AddComponent<PositionComponent>().SetPosition(VECTOR3(0, 0, 0));
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "coolPlane";
+		break;
 	default:
 		break;
 	}

@@ -44,7 +44,8 @@ public:
 		INVISIBLE_WALL,
 		PROJECTILE,
 		PLAYER,
-		POINTLIGHT
+		POINTLIGHT,
+		PLANE
 	};
 
 	static EntityFactory* GetInstance();
