@@ -69,10 +69,10 @@ void GameScene::Initialize()
 		m_world->AddEntity(e);
 	}
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
-	m_world->AddEntity(e);
+//	e = m_world->CreateEntity();
+//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
+//	m_world->AddEntity(e);
 
 
 
@@ -82,12 +82,10 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
 
-
-
-
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+        e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(5, 0, 3));
 	m_world->AddEntity(e);
 
         

@@ -21,7 +21,7 @@ bool LightSystem::Add(Entity* _entity)
 		VECTOR3* color		= &_entity->GetComponent<LightComponent>()->GetColor();
 		float* range		= &_entity->GetComponent<LightComponent>()->GetRange();
 
-		m_graphicsManager->AddPointLight(m_lightId++, position, NULL, color, range);
+		m_graphicsManager->AddPointLight(m_lightId++, position, intensity, color, range);
 		return true;
 	}
 
