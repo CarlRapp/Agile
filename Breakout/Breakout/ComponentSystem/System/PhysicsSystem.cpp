@@ -105,7 +105,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		polygonShape->SetAsBox(0.5f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-		fixDef->friction = 0.3f;
+		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
 		break;
 	case EntityFactory::PAD:
@@ -123,7 +123,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		circleShape->m_radius = 1.0f;
 		fixDef->shape = circleShape;
 		fixDef->density = 5000.0f;
-		fixDef->friction = 50.0f;
+		fixDef->friction = 0.0f;
 		fixDef->restitution = 1.0f;
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		break;
@@ -133,7 +133,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		polygonShape->SetAsBox(0.1f, 1.0f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-		fixDef->friction = 0.3f;
+		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::WALL;
 	case EntityFactory::POWERUP:
 		break;
@@ -143,7 +143,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		polygonShape->SetAsBox(0.5f, 15.0f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-		fixDef->friction = 0.3f;
+		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::WALL;
 		break;
 	case EntityFactory::INVISIBLE_WALL:
@@ -152,7 +152,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 		polygonShape->SetAsBox(24.f, 0.f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-		fixDef->friction = 0.3f;
+		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::WALL;
 	default:
 		break;
