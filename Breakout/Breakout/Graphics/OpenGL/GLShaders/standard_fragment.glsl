@@ -6,10 +6,9 @@ varying mat4 modelView;
 
 in VERTEX
 {
-    vec3    worldPos;
-    float   pad1;
+    vec4    worldPos;
     vec3    normal;
-    float   pad2;
+    float   pad;
     vec4    color;
 
 } vertex;
@@ -39,10 +38,10 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
                 Material.Ka = vec3(0.2);
                 Material.Kd = vec3(0.9);
                 Material.Ks = vec3(0.9);
-                Material.Shininess = 3.0;
+                Material.Shininess = 30.0;
 
-		vec3 s = normalize(vec3(lightPos - vertex.worldPos));
-		vec3 v = normalize(vertex.worldPos.xyz);	
+		vec3 s = normalize(vec3(lightPos - vertex.worldPos.xyz));
+		vec3 v = normalize(-vertex.worldPos.xyz);	
 		//vec3 h = normalize(v + s);
                 vec3 h = reflect( s, vertex.normal);
 
@@ -69,7 +68,7 @@ void main(void)
 
     for(int index = 0; index < nrOfLights; index++)
     {
-        float lightDist = abs(length(vertex.worldPos - vec3(Lights[index].Position)));
+        float lightDist = abs(length(vertex.worldPos.xyz - vec3(Lights[index].Position)));
         float lightStrength = 0;
         if( lightDist < Lights[index].Range )
 			lightStrength = 1.0-(lightDist / Lights[index].Range);
