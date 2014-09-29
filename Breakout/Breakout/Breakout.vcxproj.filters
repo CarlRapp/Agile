@@ -145,6 +145,9 @@
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
     <ClCompile Include="aac.cpp">
+          <Filter>Source Files\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="aab.cpp">
       <Filter>Source Files\Audio</Filter>
     </ClCompile>
   </ItemGroup>
