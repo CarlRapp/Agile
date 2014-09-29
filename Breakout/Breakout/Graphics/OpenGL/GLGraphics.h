@@ -2,13 +2,14 @@
 #define GLGRAPHICS_H
 
 #include "../IGraphics.h"
-#include "GLWindow.h"
-#include "GLShader.h"
-#include "GLTextureManager.h"
+//#include "GLTextureManager.h"
 
-#include <GL/glew.h> 
-#include <GL/gl.h> 
-#include <GL/glu.h>
+#include <GL/glxew.h>
+#include <GL/glew.h>
+#include <GL/glx.h>
+//#include "../../../../External/include/glew.c"
+//#include <GL/gl.h> 
+//#include <GL/glu.h>
 
 #include <SDL/SDL.h>
 
@@ -21,6 +22,10 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "GLWindow.h"
+#include "GLShader.h"
+//#include "../../../../External/include/glew.c"
 
 using glm::vec3;
 using glm::vec4;
@@ -71,10 +76,14 @@ private:
         int m_screenWidth;
         int m_screenHeight;
         
-        GLTextureManager m_texManager;
+        //GLTextureManager m_texManager;
         GLuint m_program; //shaderID
         GLuint m_shader2Dprogram;
-        
+        GLuint m_computeTexture;
+        GLuint m_computeProgram;
+        GLuint m_frameBuffer;
+        GLuint depth_rb;
+        GLuint m_computeQuad;
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
@@ -83,9 +92,12 @@ private:
                                             
         std::vector<glm::mat4> m_testMatrices;
         
-        std::map<int, TextureInfo> mTextureInstances;
+        //std::map<int, TextureInfo> mTextureInstances;
         
         //std::map<int, ModelInstance*> m_modelInstances;
+        
+        int m_workSizeX,m_workSizeY;
+        
         
         int SetUniformV(GLuint shaderProg, const char* variable,float value);
         int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
@@ -98,6 +110,9 @@ private:
         int RenderStandard();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
+        void GenTexture();
+        void RenderCompute();
+        void SendComputeData();
 public:
 
 	GLGraphics(void);

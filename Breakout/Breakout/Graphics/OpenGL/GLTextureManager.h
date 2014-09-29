@@ -2,6 +2,7 @@
 #define GLTEXTUREMANAGER_H_
 #include "../../stdafx.h"
 #include "../../../../External/include/SOIL.h"
+#define GLEW_STATIC
 #include <GL/glew.h> 
 #include <map>
 

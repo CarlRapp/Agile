@@ -102,15 +102,15 @@ void ModelSystem::RunEvents()
 
 void ModelSystem::LoadModel(int _entityID)
 {
-    EntityMap::iterator it;
-    ModelComponent* model;
-    
-    Entity* e = m_entityMap.find(_entityID)->second;
-
-    model = e->GetComponent<ModelComponent>();
-    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
-
-	e->SetInitialized(true);
+//    EntityMap::iterator it;
+//    ModelComponent* model;
+//    
+//    Entity* e = m_entityMap.find(_entityID)->second;
+//
+//    model = e->GetComponent<ModelComponent>();
+//    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+//
+//	e->SetInitialized(true);
 }
 
 bool ModelSystem::Remove(Entity* _entity)

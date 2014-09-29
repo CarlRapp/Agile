@@ -1,6 +1,39 @@
 #include "GLGraphics.h"
 #include <iostream>
 #include "../../Storage/FileManager.h"
+//#include <GL/glcorearb.h>
+//#include <GL/glut.h>
+//#include <GL/glext.h>
+#include <random>
+#define COMPUTE_WORKGROUPS 16
+
+#define CONST_CAST(x) (*(GLboolean*)&x)
+
+#  define GLEW_CONTEXT_ARG_DEF_INIT void
+#  define GLEW_CONTEXT_ARG_VAR_INIT
+#  define GLEW_CONTEXT_ARG_DEF_LIST void
+#  define WGLEW_CONTEXT_ARG_DEF_INIT void
+#  define WGLEW_CONTEXT_ARG_DEF_LIST void
+#  define GLXEW_CONTEXT_ARG_DEF_INIT void
+#  define GLXEW_CONTEXT_ARG_DEF_LIST void
+GLboolean __GLEW_ARB_compute_shader = GL_TRUE;
+
+#  define glewGetProcAddress(name) (*glXGetProcAddressARB)(name)
+
+PFNGLDISPATCHCOMPUTEPROC __glewDispatchCompute = NULL;
+PFNGLDISPATCHCOMPUTEINDIRECTPROC __glewDispatchComputeIndirect = NULL;
+
+PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC __glewDispatchComputeGroupSizeARB = NULL;
+
+static GLboolean _glewInit_GL_ARB_compute_shader (GLEW_CONTEXT_ARG_DEF_INIT)
+{
+  GLboolean r = GL_FALSE;
+
+  r = ((glDispatchCompute = (PFNGLDISPATCHCOMPUTEPROC)glewGetProcAddress((const GLubyte*)"glDispatchCompute")) == NULL) || r;
+  r = ((glDispatchComputeIndirect = (PFNGLDISPATCHCOMPUTEINDIRECTPROC)glewGetProcAddress((const GLubyte*)"glDispatchComputeIndirect")) == NULL) || r;
+
+  return r;
+}
 
 GLGraphics::GLGraphics(void)
 {
@@ -20,11 +53,63 @@ bool GLGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
     return m_window->InitWindow(_width, _height);
 }
 
+static GLuint _glewStrLen (const GLubyte* s)
+{
+  GLuint i=0;
+  if (s == NULL) return 0;
+  while (s[i] != '\0') i++;
+  return i;
+}
+
+static GLuint _glewStrCLen (const GLubyte* s, GLubyte c)
+{
+  GLuint i=0;
+  if (s == NULL) return 0;
+  while (s[i] != '\0' && s[i] != c) i++;
+  return (s[i] == '\0' || s[i] == c) ? i : 0;
+}
+
+static GLboolean _glewStrSame (const GLubyte* a, const GLubyte* b, GLuint n)
+{
+  GLuint i=0;
+  if(a == NULL || b == NULL)
+    return (a == NULL && b == NULL && n == 0) ? GL_TRUE : GL_FALSE;
+  while (i < n && a[i] != '\0' && b[i] != '\0' && a[i] == b[i]) i++;
+  return i == n ? GL_TRUE : GL_FALSE;
+}
+
+static GLboolean _glewSearchExtension (const char* name, const GLubyte *start, const GLubyte *end)
+{
+  const GLubyte* p;
+  GLuint len = _glewStrLen((const GLubyte*)name);
+  p = start;
+  while (p < end)
+  {
+    GLuint n = _glewStrCLen(p, ' ');
+    if (len == n && _glewStrSame((const GLubyte*)name, p, n)) return GL_TRUE;
+    p += n+1;
+  }
+  return GL_FALSE;
+}
+
+
 
 bool GLGraphics::Init3D(DisplayMode _displayMode) 
 { 
     m_window->InitGL();
 
+    const GLubyte* extStart;
+    const GLubyte* extEnd;
+    
+    extStart = glGetString(GL_EXTENSIONS);
+    if (extStart == 0)
+        extStart = (const GLubyte*)"";
+    extEnd = extStart + _glewStrLen(extStart);
+    
+    CONST_CAST(GLEW_ARB_compute_shader) = _glewSearchExtension("GL_ARB_compute_shader", extStart, extEnd);
+    CONST_CAST(GLEW_ARB_compute_shader) = !_glewInit_GL_ARB_compute_shader(GLEW_CONTEXT_ARG_VAR_INIT);
+
+    
     const GLubyte *renderer = glGetString( GL_RENDERER );
     const GLubyte *vendor = glGetString( GL_VENDOR );
     const GLubyte *version = glGetString( GL_VERSION );
@@ -39,14 +124,22 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     printf("\033[35mGL Version (integer) : %d.%d\n", major, minor);
     printf("\033[35mGLSL Version : %s\n\033[30m", glslVersion);
     
+//    int extCount;
+//    glGetIntegerv(GL_NUM_EXTENSIONS, &extCount);
+//    bool found = false;
+//    for (int i = 0; i < extCount; ++i)
+//        printf("%s\n",(const char*)glGetStringi(GL_EXTENSIONS, i));
+
     GLint link_ok = GL_FALSE;
     GLuint vs, fs;
     
 //-----------Creating shader programs----------------------------------------------
     m_program = glCreateProgram();
     
-    Shader* a = new Shader("standard_vertex.glsl",GL_VERTEX_SHADER);
-    Shader* b = new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
+    GenTexture();
+    
+    Shader* a = new Shader("postCompute_vs.glsl",GL_VERTEX_SHADER);
+    Shader* b = new Shader("postCompute_fs.glsl",GL_FRAGMENT_SHADER);
     
     glAttachShader(m_program, a->GetShaderID());
     glAttachShader(m_program, b->GetShaderID());
@@ -54,6 +147,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     a=NULL;
     b=NULL;
 
+    //glBindFragDataLocation(m_program, 0, "color");
+    
     glLinkProgram(m_program);
     glGetProgramiv(m_program, GL_LINK_STATUS, &link_ok);
     
@@ -62,27 +157,81 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
         printf("\033[31mUnable to link shader\n\033[30m");
         return 0;
     }
+    
+    //--------------------------------QUAD--------------------------------//
+    glUseProgram(m_program);
+    glUniform1i(glGetUniformLocation(m_program, "srcTex"), 0);
+    
+    float vertexArray[8] = {   1.0f,1.0f,
+                                1.0f,-1.0f,
+                                -1.0f,-1.0f,
+                                -1.0f,1.0f};
+
+    GLuint VBOHandle[1];
+    glGenBuffers(1, VBOHandle);
+ 
+    glBindBuffer(GL_ARRAY_BUFFER, *VBOHandle); 
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), vertexArray, GL_STREAM_DRAW);
+    
+    int pos             = glGetAttribLocation(m_program, "pos");
+    glGenVertexArrays(1, &m_computeQuad);
+    glBindVertexArray(m_computeQuad);
+        
+    glEnableVertexAttribArray(pos);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, *VBOHandle);
+    glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glUseProgram(0);
+    //--------------------------------QUAD--------------------------------//
 //------------------------------------------------------------------------------------
-     m_shader2Dprogram = glCreateProgram();
     
-    a = new Shader("2Dshader_vertex.glsl",GL_VERTEX_SHADER);
-    b = new Shader("2Dshader_fragment.glsl",GL_FRAGMENT_SHADER);
     
-    glAttachShader(m_shader2Dprogram, a->GetShaderID());
-    glAttachShader(m_shader2Dprogram, b->GetShaderID());
+     m_computeProgram = glCreateProgram();
+    
+    a = new Shader("Compute.glsl",GL_COMPUTE_SHADER);
+    
+    glAttachShader(m_computeProgram, a->GetShaderID());
     
     a=NULL;
-    b=NULL;
-
-    glLinkProgram(m_shader2Dprogram);
-    glGetProgramiv(m_shader2Dprogram, GL_LINK_STATUS, &link_ok);
     
+    glLinkProgram(m_computeProgram);
+
+    glGetProgramiv(m_computeProgram, GL_LINK_STATUS, &link_ok);
+
     if (!link_ok) 
     {
-        printf("\033[31mUnable to link shader\n\033[30m");
+        GLint maxLength = 0;
+	glGetProgramiv(m_computeProgram, GL_INFO_LOG_LENGTH, &maxLength);
+ 
+	//The maxLength includes the NULL character
+	std::vector<GLchar> infoLog(maxLength);
+	glGetProgramInfoLog(m_computeProgram, maxLength, &maxLength, &infoLog[0]);
+        for(int i=0; i< maxLength;i++)
+        cout << infoLog[i];
+       
+        infoLog.clear();
+        
+	glDeleteProgram(m_computeProgram);
+        
+        printf("\033[31mUnable to link shader %d\n\033[30m",glGetError());
+        exit(32);
         return 0;
     }
+    //printf("%d\n",glGetError());
+    //glUniform1i(m_computeTexture, 0);
+    glUseProgram(m_computeProgram);
+
+    int loc = glGetUniformLocation(m_computeProgram, "destTex[0]");
+
+    glUniform1i(loc, 0);
+    glUseProgram(0);
+
 //-----------------------------------------------------------------------------------------
+    
+    m_workSizeX = (m_screenWidth/COMPUTE_WORKGROUPS);
+    m_workSizeY = (m_screenHeight/COMPUTE_WORKGROUPS);
     
     int err = glGetError();
     
@@ -95,6 +244,19 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     
     return true; 
 } 
+
+void GLGraphics::GenTexture() 
+{
+    m_computeTexture = 0;
+    
+    glGenTextures(1, &m_computeTexture);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_computeTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_screenWidth, m_screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+}
 
 void GLGraphics::LoadModel(std::string _path)
 {
@@ -136,12 +298,12 @@ void GLGraphics::LoadModel(std::string _path)
         
         m_testMatrices.push_back(glm::mat4(1.0f));
         
-        int pos             = glGetAttribLocation(m_program, "m_position");
-        int pad1            = glGetAttribLocation(m_program, "pad1");
-        int normal          = glGetAttribLocation(m_program, "m_normal");
-        int pad2            = glGetAttribLocation(m_program, "pad2");
-        int color           = glGetAttribLocation(m_program, "m_color");
-        int matrix          = glGetAttribLocation(m_program, "m_matModel");
+        int pos             = glGetAttribLocation(m_computeProgram, "m_position");
+        int pad1            = glGetAttribLocation(m_computeProgram, "pad1");
+        int normal          = glGetAttribLocation(m_computeProgram, "m_normal");
+        int pad2            = glGetAttribLocation(m_computeProgram, "pad2");
+        int color           = glGetAttribLocation(m_computeProgram, "m_color");
+        int matrix          = glGetAttribLocation(m_computeProgram, "m_matModel");
         
         GLuint VBOHandles[4];
 	glGenBuffers(4, VBOHandles);
@@ -215,7 +377,7 @@ void GLGraphics::LoadModel(std::string _path)
 
 
         glBindVertexArray(0); // disable VAO
-        glUseProgram(0); // disable shader programme
+        //glUseProgram(0); // disable shader programme
     }
     
     int err = glGetError();
@@ -234,16 +396,16 @@ void GLGraphics::LoadTexture(std::string _path)
 void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
 {
     return;
-    if(mTextureInstances.find(_id) == mTextureInstances.end())
-    {
-        return;
-    }
-    
-    
-    m_texManager.Load2DTexture(_path, GL_TEXTURE0);
-    mTextureInstances.insert(pair<int, TextureInfo>(_id, TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
-    
-    //buffra datan till 2D shader
+//    if(mTextureInstances.find(_id) == mTextureInstances.end())
+//    {
+//        return;
+//    }
+//    
+//    
+//    m_texManager.Load2DTexture(_path, GL_TEXTURE0);
+//    mTextureInstances.insert(pair<int, TextureInfo>(_id, TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
+//    
+//    //buffra datan till 2D shader
 }
 
 void GLGraphics::Remove2DTexture(int _id)
@@ -278,6 +440,8 @@ void GLGraphics::Free()
         m_testMatrices.pop_back();
     }
     
+    glDeleteTextures(1,&m_computeTexture);
+    glDeleteBuffers(1,&m_computeQuad);
     glDeleteProgram(m_program);
     
     printf("Graphics memory cleared\n");
@@ -287,29 +451,65 @@ float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    int instances = 2;
-    
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+
+    glClearColor(0.4, 0.4, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+    //glUseProgram(m_program);
     
-    
-    
-    glUseProgram(m_program);
-    
-    glViewport(0, 0, m_screenWidth, m_screenHeight);
+    //glViewport(0, 0, m_screenWidth, m_screenHeight);
     
     //LightsToRender();
-    UpdateLights();
+    //UpdateLights();
     
-    CameraToRender(_camera);
+    //CameraToRender(_camera);
     
-    RenderInstanced();
+    //RenderInstanced();
     
     //RenderStandard();
     
-    glUseProgram(0);
+    RenderCompute();
+    
+    //glUseProgram(0);
     
     SDL_GL_SwapBuffers( );
+    
+    
+    
+}
+
+void GLGraphics::RenderCompute()
+{
+    t+=5.0f;
+    glUseProgram(m_computeProgram);
+    
+    //SendComputeData();
+    
+//    for(int i=0;i< 32;i++)
+//    {
+//        std::string index = std::to_string(i).c_str();
+//        std::string pos = "roll["+index+"]";
+//
+//        glUniform1f(glGetUniformLocation(m_computeProgram, pos.c_str()), (rand()%1000)*0.001f);
+//    }
+
+   glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+
+    glUniform1f(glGetUniformLocation(m_computeProgram, "roll"),t);// (rand(t)%1000)*0.001f);
+    
+    glDispatchCompute(32, 32, 1);
+    glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+    
+    glUseProgram(m_program);
+    glBindVertexArray(m_computeQuad);
+    glDrawArrays(GL_QUADS,0,4);
+
+   glUseProgram(0);
+    
+}
+
+void GLGraphics::SendComputeData()
+{
     
 }
 
@@ -319,6 +519,7 @@ int GLGraphics::RenderStandard()
     {
         glBindVertexArray(m_models[i]->bufferVAOID);
 
+        
         glDrawArrays(GL_TRIANGLES,0,m_models[i]->vertices);
     
         glBindVertexArray(0);
@@ -400,7 +601,6 @@ void GLGraphics::CameraToRender(ICamera* _camera)
     
     GLint projection = glGetUniformLocation(m_program, "m_matProj" );
     glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
-    
     temp1 = _camera->GetView();
 
     GLint view = glGetUniformLocation(m_program, "m_matView" );

@@ -2,6 +2,7 @@
 
 #include "GLCamera.h"
 #include <string>
+#define GLEW_STATIC
 #include <GL/glew.h>
 
 GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _farZ)

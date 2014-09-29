@@ -36,7 +36,7 @@ int main(int argc, char** argv)
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 350, 1000, 600, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 512, 512, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
         
-	m_SceneManager->ChangeScene<MainMenuScene>();
+	m_SceneManager->ChangeScene<GameScene>();
 
 	/*	START HERE	*/
 	m_SceneManager->Start();

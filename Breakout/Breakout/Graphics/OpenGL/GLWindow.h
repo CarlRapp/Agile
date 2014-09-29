@@ -25,7 +25,9 @@ public:
 	~GLWindow(void);
 
 	bool InitWindow(int width, int height);
+        bool InitGLX();
         bool InitGL();
+        void SwapBuffersX();
 	
 };
 
