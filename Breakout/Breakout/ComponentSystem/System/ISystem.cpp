@@ -34,6 +34,7 @@ bool ISystem::Add(Entity* _entity)
 		return false;
 
 	m_entityMap[_entity->GetId()] = _entity;
+	OnEntityAdded(_entity);
 	return true;
 }
 
@@ -43,6 +44,7 @@ bool ISystem::Remove(Entity* _entity)
 		return false;
 
 	m_entityMap.erase(_entity->GetId());
+	OnEntityRemove(_entity);
 	return true;
 }
 

@@ -10,7 +10,7 @@ typedef std::map<TypeID, ISystem*> SystemMap;
 class World
 {
 private:
-
+	bool m_running;
 	Entity** m_entityPool;
 	EntityMap m_activeEntities;
 	std::vector<Entity*> m_changedEntities;
@@ -49,7 +49,8 @@ public:
 	template <typename T>
 	T* GetSystem();
 
-	
+	void Kill(){ m_running = false; }
+	bool IsAlive(){ return m_running; }
 };
 
 template <typename T>

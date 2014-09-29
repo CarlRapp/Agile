@@ -21,6 +21,8 @@ void World::Start()
 
 	m_activeEntities = EntityMap();
 	m_systems = SystemMap();
+
+	m_running = true;
 }
 
 bool World::AddEntity(Entity* _e)
@@ -81,7 +83,6 @@ void World::Update(float _dt)
 
 		case Entity::DEAD:
 			KillEntity(e);
-			//EntityMap::iterator eDelete = eIT;
 			m_activeEntities.erase(eIT++);
 			break;
 
@@ -95,6 +96,7 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
+	printf("!!!THIS IS NOT IMPLEMENTED!!! [World::EntityChanged(Entity* _e]\n");
 }
 
 void World::KillEntity(Entity* _e)

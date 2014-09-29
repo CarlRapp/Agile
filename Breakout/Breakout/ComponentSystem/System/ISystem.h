@@ -24,20 +24,17 @@ public:
     
 private:
 	virtual void Initialize(){}
-	virtual void OnEntityAdded(){}
-	virtual void OnEntityRemove(){}
+	virtual void OnEntityAdded(Entity* _e){}
+	virtual void OnEntityRemove(Entity* _e){}
 
 	ComponentFilter m_componentFilter;
-
-	
-
 
 protected:
 	
 	EntityMap m_entityMap;
 	World* m_world;
-        EVENT m_nextEvent;
-        virtual void RunEvents(){};
+    EVENT m_nextEvent;
+	virtual void RunEvents(){};
 
 public:
     

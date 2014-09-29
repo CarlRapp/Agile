@@ -144,6 +144,9 @@
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\PlayerLifeSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -333,6 +336,36 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\AudioComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BounceComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\DamageComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\InputComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\KeyboardInputComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\PlayerComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\PlayerLifeSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
