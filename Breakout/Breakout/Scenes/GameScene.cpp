@@ -1,6 +1,9 @@
 #include "GameScene.h"
 #include "MainMenuScene.h"
 
+#include "../ComponentSystem/Component/RotationComponent.h"
+#include "../ComponentSystem/System/PlayerLifeSystem.h"
+
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -26,7 +29,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
-	
+	m_world->AddSystem<PlayerLifeSystem>();
 	
 	m_world->AddSystem<LightSystem>();
 
@@ -65,14 +68,15 @@ void GameScene::Initialize()
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
 		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
-
+		e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 5));
 		m_world->AddEntity(e);
 	}
 
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0)); 
+	e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 15));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
@@ -84,12 +88,19 @@ void GameScene::Initialize()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0,-15,5));
+	//e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 15));
 	m_world->AddEntity(e);
 
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3((xBlocks + 1 + (xBlocks + 1)*0.5f)*0.5f, 1.10f, 35));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
+
+	m_x = 0;
+	m_y = 0;
+	m_width = 1.f;
+	m_height = 1.f;
+	m_isPaused = false;
 }
 
 void GameScene::LoadContent()
@@ -101,13 +112,27 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
-		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+		m_isPaused = !m_isPaused;
+		GraphicsManager* GM = GraphicsManager::GetInstance();
+
+		if (m_isPaused)
+			GM->Add2DTexture(1338, "Pause.png", &m_x, &m_y, &m_width, &m_height);
+		else
+			GM->Remove2DTexture(1338);
+		return;
+	}
+	if (m_isPaused)
+	{
+		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+
 		return;
 	}
 		
+
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
 
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 		this->Reset();
@@ -120,28 +145,6 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
-
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('o') == InputState::Pressed && !m_ball)
-	{
-		Entity* e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(30, 0, 0));
-		e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(5, 25, 0);
-		m_world->AddEntity(e);
-		m_ball = e;
-	}
-
-	if (m_ball)
-	{
-		PositionComponent* pos = m_ball->GetComponent<PositionComponent>();
-		if (pos->GetPosition().y < -20)
-		{
-			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
-			return;
-		}
-
-	}
-
 	/*
 	left arrow: 37
 	up arrow: 38
@@ -182,6 +185,11 @@ void GameScene::Update(float _dt)
 
 	}*/
 	m_world->Update(_dt);
+
+	if (!m_world->IsAlive())
+	{
+		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+	}
 }
 
 void GameScene::Render()
@@ -191,11 +199,7 @@ void GameScene::Render()
 
 void GameScene::OnActive()
 {
-	if (m_ball)
-	{
-		m_ball->SetState(Entity::DEAD);
-		m_ball = NULL;
-	}
+
 }
 void GameScene::OnInactive()
 {
@@ -206,7 +210,9 @@ void GameScene::OnInactive()
 	}
 	for (int i = 0; i < 500; ++i)
 		GraphicsManager::GetInstance()->RemoveObject(i);
-		
+	
+	GraphicsManager::GetInstance()->Remove2DTexture(1338);
+	m_isPaused = false;
 }
 
 void GameScene::Reset()
