@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{45C90DB7-5B2B-4AEE-AC5F-C7BE5A1C1E61}</ProjectGuid>
+    <RootNamespace>Breakout</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)/../External/include/GL;$(SolutionDir)/../External/include/glm;$(SolutionDir)/../External/include/SDL2;$(SolutionDir)/../External/D3D/Include;$(SolutionDir)/../External/include/;$(SolutionDir)/../External/include/Box2D;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/../External/lib/SDL2/x86;$(SolutionDir)/../External/D3D/Lib/x86;$(SolutionDir)/../External/lib/Box2D;$(LibraryPath)</LibraryPath>
+    <ExcludePath>$(ExcludePath)</ExcludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\GL;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\glm;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\SDL2;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\lib\SDL2\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11D.lib;Box2Dd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Audio\AudioManager.cpp" />
+    <ClCompile Include="Audio\LinAudio.cpp" />
+    <ClCompile Include="Audio\WinAudio.cpp" />
+    <ClCompile Include="ComponentSystem\EntityFactory.cpp" />
+    <ClCompile Include="ComponentSystem\Entity\Entity.cpp" />
+    <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
+    <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\BounceSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\InputSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\ISystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\LightSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
+    <ClCompile Include="ComponentSystem\World.cpp" />
+    <ClCompile Include="Game\GameplayManager.cpp" />
+    <ClCompile Include="Game\Simulation.cpp" />
+    <ClCompile Include="Game\UserInterface.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXCamera.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXEffects.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXMesh.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXModel.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXModelManager.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXRenderStates.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXShadowMap.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXTextureManager.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXVertex.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
+    <ClCompile Include="Graphics\GraphicsManager.cpp" />
+    <ClCompile Include="Graphics\ICamera.cpp" />
+    <ClCompile Include="Graphics\IGraphics.cpp" />
+    <ClCompile Include="Input\InputManager.cpp" />
+    <ClCompile Include="Input\Windows\WindowsInput.cpp" />
+    <ClCompile Include="MathHelper.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Scenes\GameScene.cpp" />
+    <ClCompile Include="Scenes\MainMenuScene.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="Storage\ModelData.cpp" />
+    <ClCompile Include="Storage\ModelLoader.cpp" />
+    <ClCompile Include="Storage\MusicLoader.cpp" />
+    <ClCompile Include="Storage\WavLoader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Audio\AudioManager.h" />
+    <ClInclude Include="Audio\IAudio.h" />
+    <ClInclude Include="Audio\LinAudio.h" />
+    <ClInclude Include="Audio\WinAudio.h" />
+    <ClInclude Include="ComponentSystem\ClassTypeID.h" />
+    <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\HealthComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\IComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\LifeComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\LightComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\RotationComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\ScaleComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\ScoreComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\VelocityComponent.h" />
+    <ClInclude Include="ComponentSystem\EntityFactory.h" />
+    <ClInclude Include="ComponentSystem\Entity\Entity.h" />
+    <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
+    <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
+    <ClInclude Include="ComponentSystem\System\BounceSystem.h" />
+    <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
+    <ClInclude Include="ComponentSystem\System\InputSystem.h" />
+    <ClInclude Include="ComponentSystem\System\ISystem.h" />
+    <ClInclude Include="ComponentSystem\System\LightSystem.h" />
+    <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
+    <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
+    <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
+    <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
+    <ClInclude Include="ComponentSystem\World.h" />
+    <ClInclude Include="Game\GameplayManager.h" />
+    <ClInclude Include="Game\Simulation.h" />
+    <ClInclude Include="Game\UserInterface.h" />
+    <ClInclude Include="Graphics\DirectX\DXCamera.h" />
+    <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
+    <ClInclude Include="Graphics\DirectX\DXEffects.h" />
+    <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
+    <ClInclude Include="Graphics\DirectX\DXMesh.h" />
+    <ClInclude Include="Graphics\DirectX\DXModel.h" />
+    <ClInclude Include="Graphics\DirectX\DXModelManager.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXRenderStates.h" />
+    <ClInclude Include="Graphics\DirectX\DXShadowMap.h" />
+    <ClInclude Include="Graphics\DirectX\DXTextureManager.h" />
+    <ClInclude Include="Graphics\DirectX\DXVertex.h" />
+    <ClInclude Include="Graphics\DirectX\DXWindow.h" />
+    <ClInclude Include="Graphics\GraphicsManager.h" />
+    <ClInclude Include="Graphics\ICamera.h" />
+    <ClInclude Include="Graphics\IGraphics.h" />
+    <ClInclude Include="Input\IInput.h" />
+    <ClInclude Include="Input\InputManager.h" />
+    <ClInclude Include="Input\Windows\WindowsInput.h" />
+    <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Scenes\GameScene.h" />
+    <ClInclude Include="Scenes\MainMenuScene.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="Storage\ModelData.h" />
+    <ClInclude Include="Storage\ModelLoader.h" />
+    <ClInclude Include="Storage\MusicLoader.h" />
+    <ClInclude Include="Storage\WavLoader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Graphics\DirectX\Shaders\BuildShadowMap.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ClearGBuffer.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\CombineFinal.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\LightHelper.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ObjectDeferred.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ShadowMap.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\TiledLightning.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -56,7 +56,7 @@ void GameScene::Initialize()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5f + xBlocks) * 0.5f, -15, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16.5f + xBlocks) * 0.5f, -25, 0));
 	m_world->AddEntity(e);
 
 	for (int y = 9; y > 9 - yBlocks; --y)
@@ -68,13 +68,6 @@ void GameScene::Initialize()
 
 		m_world->AddEntity(e);
 	}
-
-	//e = m_world->CreateEntity();
-	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -8, 0));
-	//m_world->AddEntity(e);
-
-
 
 
 	e = m_world->CreateEntity();
@@ -127,6 +120,28 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
+
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('o') == InputState::Pressed && !m_ball)
+	{
+		Entity* e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(30, 0, 0));
+		e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(5, 25, 0);
+		m_world->AddEntity(e);
+		m_ball = e;
+	}
+
+	if (m_ball)
+	{
+		PositionComponent* pos = m_ball->GetComponent<PositionComponent>();
+		if (pos->GetPosition().y < -20)
+		{
+			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+			return;
+		}
+
+	}
+
 	/*
 	left arrow: 37
 	up arrow: 38
@@ -176,6 +191,11 @@ void GameScene::Render()
 
 void GameScene::OnActive()
 {
+	if (m_ball)
+	{
+		m_ball->SetState(Entity::DEAD);
+		m_ball = NULL;
+	}
 }
 void GameScene::OnInactive()
 {

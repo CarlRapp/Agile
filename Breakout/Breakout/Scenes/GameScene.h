@@ -27,6 +27,7 @@ private:
 	void Reset(void);
 
 	World* m_world;
+	Entity* m_ball;
 public:
 	GameScene();
 	~GameScene();
