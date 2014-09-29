@@ -73,7 +73,7 @@ private:
         
         GLTextureManager m_texManager;
         GLuint m_program; //shaderID
-        GLuint m_shader2Dprogram;
+        GLuint m_shader2Dprogram, m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
         
@@ -83,7 +83,7 @@ private:
                                             
         std::vector<glm::mat4> m_testMatrices;
         
-        std::map<int, TextureInfo> mTextureInstances;
+        std::map<int, TextureInfo*> m_TextureInstances;
         
         //std::map<int, ModelInstance*> m_modelInstances;
         
@@ -96,6 +96,7 @@ private:
         
         int RenderInstanced();
         int RenderStandard();
+        void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
 public:
