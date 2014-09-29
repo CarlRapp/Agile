@@ -89,6 +89,7 @@
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="ComponentSystem\System\LightSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
