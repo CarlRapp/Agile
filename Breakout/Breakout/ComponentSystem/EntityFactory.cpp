@@ -51,6 +51,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		_entity->AddComponent<DamageComponent>(10);
 		_entity->AddComponent<BounceComponent>(1.0f);
+		_entity->AddComponent<PlayerLifeComponent>();
 		break;
 	case EntityFactory::POWERUP:
 		break;
@@ -91,7 +92,16 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<LightComponent>();
 		break;
+	case EntityFactory::PLANE:
+		_entity->AddComponent<PositionComponent>().SetPosition(VECTOR3(0, 0, 0));
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "coolPlane";
+		break;
 	default:
 		break;
 	}
+
+	if (_entity)
+		_entity->SetState(Entity::ALIVE);
 }
