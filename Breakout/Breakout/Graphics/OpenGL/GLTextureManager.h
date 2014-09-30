@@ -5,7 +5,7 @@
 #include <GL/glew.h> 
 #include <map>
 
-    struct TextureInfo
+struct TextureInfo
 {
 public:
     GLuint TexHandle;
@@ -25,51 +25,60 @@ public:
 class GLTextureManager{
     
 private:
-     std::map<std::string, GLuint> mTextureMap;
+     std::map<std::string, GLuint> m_TextureMap;
     
 public:
     
     GLuint GetTexture(std::string _name)
     {
-        return mTextureMap[_name];
+        return m_TextureMap[_name];
+    }
+    void Free()
+    {
+        m_TextureMap.clear();
     }
 
-void Load2DTexture(std::string _name, GLenum textureSlot)
+void Load2DTexture(std::string _name, GLenum _textureSlot)
 {
-//    if(mTextureMap.find(_name) == mTextureMap.end())
-//    {
-//        
-//        GLuint texHandle = LoadTexture(_name, textureSlot);
-//    
-//        mTextureMap[_name] = texHandle;
-//    }
-//    else
-//    {
-//        printf("Texture already loaded");
-//        //printf(_name);
-//    }
+    if(m_TextureMap.find(_name) == m_TextureMap.end())
+    {
+        GLuint texHandle = LoadTexture(_name, _textureSlot);
+    
+        m_TextureMap[_name] = texHandle;
+    }
+    else
+    {
+        printf("Texture already loaded: %s \n", _name.c_str());
+    }
 }
 
-GLuint LoadTexture(std::string name, GLenum textureSlot)
+GLuint LoadTexture(std::string _name, GLenum _textureSlot)
 {
     // LOAD THE TEXTURE
-//    std::string filename = TEXTURE_ROOT + name;
-//    int width, height, channels;
-//            // Load texture file and convert to openGL format
-//    unsigned char* imgData = SOIL_load_image(filename.c_str(), &width, &height, &channels, 4 );
-//
-//    GLuint texHandle;
-//    // Copy file to OpenGL
-//    glActiveTexture(textureSlot);
-//    glGenTextures(1, &texHandle);
-//    glBindTexture(GL_TEXTURE_2D, texHandle);
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//
-//    //gluBuild2DMipmaps(GL_TEXTURE_2D, channels, width, height, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
-//    
-//    return texHandle;
+    
+    std::string filename = GetFile(_name, TEXTURE_ROOT);
+    
+    printf("Filename: %s \n", filename.c_str());
+    
+    int width, height, channels;
+    // Load texture file and convert to openGL format
+    unsigned char* imgData = SOIL_load_image((const char*)filename.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA );
+    
+    if(!imgData)
+        printf("Texture data NULL when loading texture: %s \n", _name.c_str());
+
+    GLuint texHandle;
+    // Copy file to OpenGL
+    glActiveTexture(_textureSlot);
+    glGenTextures(1, &texHandle);
+    glBindTexture(GL_TEXTURE_2D, texHandle);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    //gluBuild2DMipmaps(GL_TEXTURE_2D, channels, width, height, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
+    
+    return texHandle;
 }
 
 };

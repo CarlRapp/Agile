@@ -52,16 +52,15 @@ void ModelSystem::Update(float _dt)
 
 		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
-		else if (!ISZERO(rotation->m_deltaRotation))
+		else if (!ISZERO(rotation->GetDeltaRotation()))
 			change = true;
-		else if (!ISZERO(scale->m_deltaScale))
+		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
 
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(position->GetPosition());
-
+			model->m_worldMatrix = ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) * TRANSLATE(position->GetPosition());
 			//TEMP
 			position->Reset();
 			rotation->Reset();

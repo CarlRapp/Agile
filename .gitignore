@@ -205,5 +205,5 @@ UpgradeLog*.htm
 FakesAssemblies/
 /Breakout/Breakout/dist/
 
-Breakout/Breakout/Breakout.vcxproj
-Breakout/Breakout/Breakout.vcxproj.filters
+#Breakout/Breakout/Breakout.vcxproj
+#Breakout/Breakout/Breakout.vcxproj.filters

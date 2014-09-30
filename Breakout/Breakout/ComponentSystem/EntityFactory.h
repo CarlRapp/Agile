@@ -21,6 +21,7 @@
 #include "Component/PlayerComponent.h"
 #include "Component/LightComponent.h"
 #include "System/PhysicsSystem.h"
+#include "Component/PlayerLifeComponent.h"
 
 
 class EntityFactory
@@ -44,7 +45,8 @@ public:
 		INVISIBLE_WALL,
 		PROJECTILE,
 		PLAYER,
-		POINTLIGHT
+		POINTLIGHT,
+		PLANE
 	};
 
 	static EntityFactory* GetInstance();
