@@ -92,6 +92,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     std::cout << "\n\033[30m";
     
     glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
     
     return true; 
 } 
@@ -128,6 +129,8 @@ void GLGraphics::LoadModel(std::string _path)
             memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(glm::vec3));
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(glm::vec3));
+            
+            //memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec3));
 
             i += 3;
         }
@@ -242,54 +245,57 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
     m_texManager.Load2DTexture(_path, GL_TEXTURE0);
     m_TextureInstances.insert(pair<int, TextureInfo*>(_id, new TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
     
-    //buffra datan till 2D shader
-    float positionData[] = {
-	-1.0, -1.0,
-	-1.0, 1.0,
-	1.0, -1.0,
-	-1.0, 1.0,
-	1.0, 1.0,
-	1.0, -1.0 };
-    
-    float texCoordData[] = {
-	0.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f };
+    if(m_TextureInstances.size() <= 1)
+    {
+        //buffra datan till 2D shader
+        float positionData[] = {
+            -1.0, -1.0,
+            -1.0, 1.0,
+            1.0, -1.0,
+            -1.0, 1.0,
+            1.0, 1.0,
+            1.0, -1.0 };
 
-    int nrOfPoints = 12;
-    
-    GLuint m_2DVBOs[2];
-    glGenBuffers(2, m_2DVBOs);
+        float texCoordData[] = {
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f };
 
-    // "Bind" (switch focus to) first buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]); 
-    glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), positionData, GL_STATIC_DRAW);
+        int nrOfPoints = 12;
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), texCoordData, GL_STATIC_DRAW);
+        GLuint m_2DVBOs[2];
+        glGenBuffers(2, m_2DVBOs);
 
-    // create 1 VAO
-    glGenVertexArrays(1, &m_2DVAO);
-    glBindVertexArray(m_2DVAO);
+        // "Bind" (switch focus to) first buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]); 
+        glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), positionData, GL_STATIC_DRAW);
 
-    // enable "vertex attribute arrays"
-    glEnableVertexAttribArray(0); // position
-    glEnableVertexAttribArray(1); // texCoord
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
+        glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), texCoordData, GL_STATIC_DRAW);
 
-    // map index 0 to position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        // create 1 VAO
+        glGenVertexArrays(1, &m_2DVAO);
+        glBindVertexArray(m_2DVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        // enable "vertex attribute arrays"
+        glEnableVertexAttribArray(0); // position
+        glEnableVertexAttribArray(1); // texCoord
 
-    
-    glBindVertexArray(0); // disable VAO
-    glUseProgram(0); // disable shader programme
-    glDeleteBuffers(2, m_2DVBOs);
+        // map index 0 to position buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+
+        glBindVertexArray(0); // disable VAO
+        glUseProgram(0); // disable shader programme
+        glDeleteBuffers(2, m_2DVBOs);
+    }
 }
 
 void GLGraphics::Remove2DTexture(int _id)
@@ -352,7 +358,6 @@ void GLGraphics::Render(ICamera* _camera)
     
     glViewport(0, 0, m_screenWidth, m_screenHeight);
     
-    //LightsToRender();
     UpdateLights();
     
     CameraToRender(_camera);
@@ -362,6 +367,7 @@ void GLGraphics::Render(ICamera* _camera)
     //RenderStandard();
     
     Render2D();
+    
     
     glUseProgram(0);
     
@@ -377,6 +383,7 @@ void GLGraphics::Render2D()
     
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
         //printf("it->second->TexHandle: %d \n", it->second->TexHandle);
@@ -384,8 +391,9 @@ void GLGraphics::Render2D()
         glBindVertexArray(m_2DVAO);
         glBindTexture(GL_TEXTURE_2D, it->second->TexHandle);
         //set viewPort (resterande TextureInfo-variabler)
-        glViewport((GLint)*it->second->X, (GLint)*it->second->Y, (GLsizei)*it->second->Width * m_screenWidth, (GLsizei)*it->second->Height * m_screenHeight);
-        //printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)*it->second->X, (GLint)*it->second->Y, (GLsizei)*it->second->Width * m_screenWidth, (GLsizei)*it->second->Height * m_screenHeight);
+        glViewport((GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
+
+        printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
     
@@ -411,6 +419,7 @@ int GLGraphics::RenderInstanced()
     ModelRenderInfo* MRI;
     
     glUseProgram(m_program);
+    glEnable(GL_DEPTH_TEST);
     
     for(int i=0; i< m_models.size();i++)
     {

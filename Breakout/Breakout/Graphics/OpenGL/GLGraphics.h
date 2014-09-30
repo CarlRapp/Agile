@@ -43,6 +43,7 @@ class GLGraphics : public IGraphics
             
         int vertices;
         GLuint bufferVAOID;
+        GLuint texHandle;
         std::string name;
         std::map<int, ModelInstance*> instances;
         //std::vector<ModelInstance> instances;

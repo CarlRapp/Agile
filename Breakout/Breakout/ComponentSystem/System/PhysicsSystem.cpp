@@ -4,7 +4,7 @@
 PhysicsSystem::PhysicsSystem(World* _world) 
 : Base(ComponentFilter().Requires<PositionComponent, RotationComponent, CollisionComponent>(), _world)
 {
-	m_b2World = new b2World(DEFAULTGRAVITY,false);
+	m_b2World = new b2World(DEFAULTGRAVITY);
 }
 
 

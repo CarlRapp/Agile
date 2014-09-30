@@ -27,7 +27,7 @@ void main(void)
     vertex.worldPos = m_matModel * vec4(m_position, 1.0);
     //WorldPos = m_matModel * vec4(m_position, 1.0);
     //TNormal = mat3(m_matModel) * m_normal;
-    vertex.normal = mat3(m_matModel) * m_normal; // normalize(normalMatrix * m_normal);
+    vertex.normal = normalize(normalMatrix * m_normal);  //mat3(m_matModel) * m_normal;
 
     //modelView = m_matView * m_matModel;
 
