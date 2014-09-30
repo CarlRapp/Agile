@@ -21,6 +21,7 @@
 #include "Component/PlayerComponent.h"
 #include "Component/LightComponent.h"
 #include "System/PhysicsSystem.h"
+#include "Component/PlayerLifeComponent.h"
 
 
 class EntityFactory
