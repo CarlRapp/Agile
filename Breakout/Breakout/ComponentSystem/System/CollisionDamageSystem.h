@@ -7,6 +7,7 @@
 #include "../Component/DamageComponent.h"
 #include "../Component/HealthComponent.h"
 #include "../Component/CollisionComponent.h"
+#include "../Component/ModelComponent.h"
 
 class CollisionDamageSystem : public System<CollisionDamageSystem>
 {

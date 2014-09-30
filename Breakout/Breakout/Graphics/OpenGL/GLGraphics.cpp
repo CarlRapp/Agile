@@ -47,19 +47,23 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     
     Shader* a = new Shader("standard_vertex.glsl",GL_VERTEX_SHADER);
     Shader* b = new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
+    Shader* c = new Shader("explode_geometry.glsl",GL_GEOMETRY_SHADER);
     
     glAttachShader(m_program, a->GetShaderID());
     glAttachShader(m_program, b->GetShaderID());
+    glAttachShader(m_program, c->GetShaderID());
     
     a=NULL;
     b=NULL;
-
+    c = NULL;
+    
     glLinkProgram(m_program);
     glGetProgramiv(m_program, GL_LINK_STATUS, &link_ok);
     
     if (!link_ok) 
     {
         printf("\033[31mUnable to link shader\n\033[30m");
+        exit(0);
         return 0;
     }
 //------------------------------------------------------------------------------------
@@ -143,31 +147,29 @@ void GLGraphics::LoadModel(std::string _path)
         int pos             = glGetAttribLocation(m_program, "m_position");
         int pad1            = glGetAttribLocation(m_program, "pad1");
         int normal          = glGetAttribLocation(m_program, "m_normal");
-        int pad2            = glGetAttribLocation(m_program, "pad2");
+        int explosion       = glGetAttribLocation(m_program, "m_explosion");
         int color           = glGetAttribLocation(m_program, "m_color");
         int matrix          = glGetAttribLocation(m_program, "m_matModel");
         
-        GLuint VBOHandles[4];
-	glGenBuffers(4, VBOHandles);
-        float padData = 0;
+	glGenBuffers(5, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]); 
+	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_READ);
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
         //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
         
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_READ);
-        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]); 
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]); 
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
 
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * 200 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
+        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
@@ -177,7 +179,7 @@ void GLGraphics::LoadModel(std::string _path)
 	glEnableVertexAttribArray(pos);         // position     1
         glEnableVertexAttribArray(pos+1);       // pad          2
 	glEnableVertexAttribArray(normal);      // normal       3
-        glEnableVertexAttribArray(normal+1);    // pad          4
+        glEnableVertexAttribArray(explosion);    // explosion   4
         glEnableVertexAttribArray(color);       // color        5
 
         glEnableVertexAttribArray(matrix);      //matrix        6
@@ -187,27 +189,29 @@ void GLGraphics::LoadModel(std::string _path)
         
 
 	// vertex
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[0]);
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
         //pad
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
         glVertexAttribPointer(pos+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
 
         //normal
-	glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
-	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        //pad
-        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
-        glVertexAttribPointer(normal+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
+	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
+	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+        
+        //explosion
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]);
+        glVertexAttribPointer(explosion, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+        glVertexAttribDivisor(explosion, 1);
 
         //color
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[2]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
         glVertexAttribDivisor(color, 1);
 
         //model matrix
-        glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[3]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
         glVertexAttribPointer(matrix, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 0));
         glVertexAttribDivisor(matrix, 1);
         glVertexAttribPointer(matrix+1, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 1));
@@ -348,8 +352,6 @@ float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    int instances = 2;
-    
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
@@ -425,12 +427,10 @@ int GLGraphics::RenderInstanced()
     {
         MRI = m_models[i];
         int instances = m_models[i]->instances.size();
-        //printf("%s\n",m_models[i]->name.c_str());
-        glBindBuffer(GL_ARRAY_BUFFER,(i+1)*4);
-
+        
+        //Update matrix buffer//
+        glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[4]);
         glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-        //std::cout << "Mapping error: " << glGetError() << "\n";
-
         int j = 0;
 
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
@@ -438,15 +438,32 @@ int GLGraphics::RenderInstanced()
             matrices[j] = *insIt->second->world;
             j++;
         }
-
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glBindBuffer(GL_ARRAY_BUFFER,0);
+        //Update matrix buffer//
+        
+        //Update explosion buffer//
+        glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[2]);
+        float* explosion = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
+        j = 0;
+
+        for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
+        {
+            explosion[j] = *insIt->second->explosion;
+            
+            j++;
+        }
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+        //Update explosion buffer<//
+        
         glBindVertexArray(MRI->bufferVAOID);
 
         glDrawArraysInstanced(GL_TRIANGLES,0,MRI->vertices,instances);
 
         glBindVertexArray(0);
+        
     }
     
     return 1;
@@ -502,7 +519,7 @@ void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
     
 }
 
-void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion)
 {
 
     for(int i=0; i < m_models.size();i++)
@@ -515,15 +532,25 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
     
     for(int i=0; i < m_models.size();i++)
     {
-//        if(!(i == m_models.size()-1))
-//        if(m_models[i]->name != _model)
-//        {
-//            continue;
-//        }
-//        
         if(m_models[i]->name == _model)
         {
             newModelID = i;
+            int size = 0;
+            
+            //Resize instance buffers only
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]); 
+            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+            glBufferData(GL_ARRAY_BUFFER, size + sizeof(float), NULL, GL_DYNAMIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+            glBufferData(GL_ARRAY_BUFFER, size + 4 * sizeof(float), NULL, GL_STATIC_READ);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[4]);
+            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+            glBufferData(GL_ARRAY_BUFFER, size + 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER,0);
             break;
         }
     }
@@ -538,7 +565,7 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
     ModelInstance *mi = new ModelInstance();
 
     mi->world = _world;
-    
+    mi->explosion = _explosion;
     mi->worldInverseTranspose = _worldInverseTranspose;
 
     m_models[newModelID]->instances.insert(pair<int, ModelInstance*>(_id, mi));

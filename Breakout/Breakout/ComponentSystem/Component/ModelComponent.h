@@ -6,14 +6,15 @@
 
 struct ModelComponent : Component<ModelComponent>
 {
-	std::string m_modelPath;
-	MATRIX4 m_worldMatrix;
+	std::string m_modelPath= "";
+	MATRIX4 m_worldMatrix= GETIMATRIX();
+        float m_explosion = 0.0f;
 
 	ModelComponent()
 	{
-		m_modelPath = "";
-
-        m_worldMatrix = GETIMATRIX();
+//          m_modelPath = "";
+//          m_worldMatrix = GETIMATRIX();
+//          m_explosion = 1.0f;
 	}
 
 };
