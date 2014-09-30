@@ -1,15 +1,15 @@
-#version 440
+#version 430
 
 uniform vec3 m_testLight;
 
 varying mat4 modelView;
 
-in VERTEX
+in GS_FS
 {
     vec4    worldPos;
+    vec4    color;
     vec3    normal;
     float   pad;
-    vec4    color;
 
 } vertex;
 

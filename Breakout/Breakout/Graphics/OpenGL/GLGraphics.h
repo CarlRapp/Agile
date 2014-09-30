@@ -33,6 +33,7 @@ class GLGraphics : public IGraphics
 
         public:
 
+            float       *explosion;
         glm::mat4	*world;
         glm::mat4	*worldInverseTranspose;
     };
@@ -45,7 +46,8 @@ class GLGraphics : public IGraphics
         GLuint bufferVAOID;
         std::string name;
         std::map<int, ModelInstance*> instances;
-        //std::vector<ModelInstance> instances;
+        
+        GLuint buffers[5];
         
         ModelRenderInfo(){}
       
@@ -119,7 +121,7 @@ public:
         void Remove2DTexture(int _id);
         
         void AddRenderObject(std::string _path, MATRIX4 _world);
-        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
         void RemoveObject(int _id);
         
 

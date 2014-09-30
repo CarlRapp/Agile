@@ -108,7 +108,7 @@ void ModelSystem::LoadModel(int _entityID)
     Entity* e = m_entityMap.find(_entityID)->second;
 
     model = e->GetComponent<ModelComponent>();
-    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &model->m_explosion);
 
 	e->SetInitialized(true);
 }
