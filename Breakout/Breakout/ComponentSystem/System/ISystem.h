@@ -36,6 +36,11 @@ protected:
     EVENT m_nextEvent;
 	virtual void RunEvents(){};
 
+
+
+	//Checks if the entity can enter the system by
+	//checking its components with the systems filter
+	bool CanEnter(Entity* _entity);
 public:
     
 	ISystem();
@@ -46,8 +51,17 @@ public:
 	const ComponentFilter* GetComponentFilter() const;
 	EntityMap GetEntities();
 
+	//Tries to add the entity to the system
 	virtual bool Add(Entity* _entity);
+	//Tries to remove the entity from the system
 	virtual bool Remove(Entity* _entity);
+	//If the entity is changed this method is called
+	//and rechecks if the entity can still be in the system.
+	virtual bool CheckChangedEntity(Entity* _entity);
+
+	//Checks if the entity is in the system
+	bool HasEntity(Entity* _e);
+
 	void Clear(void);
 
 	virtual void Update(float _dt) = 0;

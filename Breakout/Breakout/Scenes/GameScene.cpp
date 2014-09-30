@@ -145,45 +145,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
-	/*
-	left arrow: 37
-	up arrow: 38
-	right arrow: 39
-	down arrow: 40
-	*/
-	/*	float speed = 15.0f;
-	float xbounds = 16 + 1 + (16 + 1)*0.5f - 1;
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(37) == InputState::Down)
-	{
-	VECTOR3 pos = player->GetComponent<PositionComponent>()->m_position;
-	if (pos.x -15*_dt < 2)
-	player->GetComponent<PositionComponent>()->m_position = VECTOR3(2, pos.y, pos.z);
-	else
-	player->GetComponent<PositionComponent>()->m_position = VECTOR3(pos.x - 15 * _dt, pos.y, pos.z);
-	player->GetComponent<PositionComponent>()->m_deltaPosition = VECTOR3(1, 0, 0);
-	}
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(39) == InputState::Down)
-	{
-	VECTOR3 pos = player->GetComponent<PositionComponent>()->m_position;
-	if (pos.x + 15 * _dt > xbounds)
-	player->GetComponent<PositionComponent>()->m_position = VECTOR3(xbounds, pos.y, pos.z);
-	else
-	player->GetComponent<PositionComponent>()->m_position = VECTOR3(pos.x + 15 * _dt, pos.y, pos.z);
-	player->GetComponent<PositionComponent>()->m_deltaPosition = VECTOR3(1, 0, 0);
-	}
 
-	if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::LeftMB) == InputState::Down)
-	printf("LOL");
-	if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::RightMB) == InputState::Down)
-	printf("LOL");
-	if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::MiddleMB) == InputState::Down)
-	printf("LOL");
-
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(32) == InputState::Pressed)
-	{
-	player->GetComponent<VelocityComponent>()->m_velocity.y *= -1;
-
-	}*/
 	m_world->Update(_dt);
 
 	if (!m_world->IsAlive())
@@ -199,7 +161,7 @@ void GameScene::Render()
 
 void GameScene::OnActive()
 {
-
+	m_world->SetAlive();
 }
 void GameScene::OnInactive()
 {

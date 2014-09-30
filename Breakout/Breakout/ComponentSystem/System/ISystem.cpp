@@ -30,7 +30,7 @@ bool ISystem::Add(Entity* _entity)
 		return false;
 
 	//	Check filter
-	if (!m_componentFilter.DoesFilterPass(_entity->GetComponents()))
+	if (!CanEnter(_entity))
 		return false;
 
 	m_entityMap[_entity->GetId()] = _entity;
@@ -46,6 +46,25 @@ bool ISystem::Remove(Entity* _entity)
 	m_entityMap.erase(_entity->GetId());
 	OnEntityRemove(_entity);
 	return true;
+}
+
+bool ISystem::HasEntity(Entity* _e)
+{
+	return m_entityMap.find(_e->GetId()) != m_entityMap.end();
+}
+
+bool ISystem::CheckChangedEntity(Entity* _entity)
+{
+	if (!HasEntity(_entity))
+		return false;
+
+
+	return CanEnter(_entity);
+}
+
+bool ISystem::CanEnter(Entity* _entity)
+{
+	return m_componentFilter.DoesFilterPass(_entity->GetComponents());
 }
 
 void ISystem::Clear(void)

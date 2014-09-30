@@ -96,7 +96,21 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	printf("!!!THIS IS NOT IMPLEMENTED!!! [World::EntityChanged(Entity* _e]\n");
+	printf("Entity #%d changed!\n");
+	SystemMap::iterator sIT;
+	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+	{
+		if (sIT->second->HasEntity(_e))
+		{
+			if (!sIT->second->CheckChangedEntity(_e))
+				sIT->second->Remove(_e);
+			else
+				sIT->second->Add(_e);
+		}
+		else
+			sIT->second->Add(_e);
+
+	}
 }
 
 void World::KillEntity(Entity* _e)

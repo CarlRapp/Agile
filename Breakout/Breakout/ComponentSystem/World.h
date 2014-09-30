@@ -51,6 +51,7 @@ public:
 
 	void Kill(){ m_running = false; }
 	bool IsAlive(){ return m_running; }
+	void SetAlive(){ m_running = true; }
 };
 
 template <typename T>
