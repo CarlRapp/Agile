@@ -12,9 +12,7 @@ struct ModelComponent : Component<ModelComponent>
 
 	ModelComponent()
 	{
-//          m_modelPath = "";
-//          m_worldMatrix = GETIMATRIX();
-//          m_explosion = 1.0f;
+
 	}
 
 };

@@ -78,6 +78,14 @@ GLuint LoadTexture(std::string _name, GLenum _textureSlot)
     //gluBuild2DMipmaps(GL_TEXTURE_2D, channels, width, height, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
     
+        
+    int err = glGetError();
+    
+    printf("LoadTexture ");
+    if(err)
+    printf("\033[31m with error: %d", err);
+    printf("\n\033[30m");
+    
     return texHandle;
 }
 

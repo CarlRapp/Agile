@@ -60,7 +60,7 @@ void ModelSystem::Update(float _dt)
 		//TRANSLATE(model->m_worldMatrix,position->
 		if (change)
 		{
-			model->m_worldMatrix = ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) * TRANSLATE(position->GetPosition());
+			model->m_worldMatrix = TRANSLATE(position->GetPosition());//*ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) ;
 			//TEMP
 			position->Reset();
 			rotation->Reset();
