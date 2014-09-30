@@ -74,10 +74,16 @@ void GameScene::Initialize()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0));
 	m_world->AddEntity(e);
 
-
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 25));
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 10));
+        e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(5, 10, 5));
+
+
+//	e = m_world->CreateEntity();
+//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, 0, 25));
+
 	m_world->AddEntity(e);
 
         
