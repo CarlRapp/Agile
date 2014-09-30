@@ -25,8 +25,7 @@ void MovementSystem::Update(float _dt)
 
 		velocity->m_velocity = VECTOR3(mouse->m_controls.MouseDX, mouse->m_controls.MouseDY, 0);
 
-		if (collision->IsAdded())
-			collision->GetBody()->SetLinearVelocity(b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y));
+		collision->GetBody()->SetLinearVelocity(b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y));
 	}
 	
 }

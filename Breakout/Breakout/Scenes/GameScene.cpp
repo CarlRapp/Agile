@@ -22,7 +22,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<BounceSystem>();
+	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();

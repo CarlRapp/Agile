@@ -1,14 +1,20 @@
 #ifndef DEFLECTIONCOMPONENT_H
 #define DEFLECTIONCOMPONENT_H
 
+#include "../../stdafx.h"
 #include "IComponent.h"
 
 struct DeflectionComponent : Component<DeflectionComponent>
 {
-	float m_deflectionFactor;
+private:
+	float m_deflection;
+public:
+	DeflectionComponent() : m_deflection(0) { }
+	DeflectionComponent(float _deflection) : m_deflection(_deflection) { }
+	~DeflectionComponent() { }
 
-	DeflectionComponent() : m_deflectionFactor(0.0f) { }
-	explicit DeflectionComponent(float _deflectionFactor) : m_deflectionFactor(_deflectionFactor) { }
+	float GetDeflection() const { return m_deflection; }
+	void SetDeflection(const float _deflection) { m_deflection = _deflection; }
 };
 
 #endif

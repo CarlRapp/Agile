@@ -27,21 +27,19 @@ private:
 	
 	b2World* m_b2World;
 	
-	void CreateBody(Entity* _entity, CollisionComponent& _collision, const VECTOR3& _position, const VECTOR3& _velocity, float rotation);
-
 public:
 	explicit PhysicsSystem(World* _world);
 	~PhysicsSystem();
 
-
-
 	void Update(float _dt);
+	bool Add(Entity* _entity);
+
 	void SetGravity(const b2Vec2& _gravity) { m_b2World->SetGravity(_gravity); }
 
 	b2World& GetB2World() { return *m_b2World; }
 
 	// Get the right fixture definition for the game object
-	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType);
+	static void GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, b2FixtureDef* _b2FixtureDef);
 	/*static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution);
 	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution, uint16 maskBits);
 	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, uint16 maskBits);*/
