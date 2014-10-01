@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
 	m_SceneManager->AddScene<GameOverScene>(false);
-
+        
 	m_SceneManager->ChangeScene<MainMenuScene>();
 
 	/*	START HERE	*/

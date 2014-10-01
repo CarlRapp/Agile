@@ -2,7 +2,7 @@
 #define _PHYSICSSYSTEM_H_
 
 #include <vector>
-#include <Box2D.h>
+#include <Box2D/Box2D.h>
 
 #include "ISystem.h"
 #include "../Component/VelocityComponent.h"
