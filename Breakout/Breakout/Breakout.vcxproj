@@ -82,6 +82,7 @@
     <ClCompile Include="ComponentSystem\Entity\Entity.cpp" />
     <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
     <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BounceSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\InputSystem.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
     <ClCompile Include="Graphics\DirectX\DXEffects.cpp" />
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp" />
     <ClCompile Include="Graphics\DirectX\DXMesh.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModel.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModelManager.cpp">
@@ -157,6 +159,7 @@
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
     <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
     <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
+    <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
     <ClInclude Include="ComponentSystem\System\BounceSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
     <ClInclude Include="ComponentSystem\System\InputSystem.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
     <ClInclude Include="Graphics\DirectX\DXEffects.h" />
     <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
+    <ClInclude Include="Graphics\DirectX\DXLightHelper.h" />
     <ClInclude Include="Graphics\DirectX\DXMesh.h" />
     <ClInclude Include="Graphics\DirectX\DXModel.h" />
     <ClInclude Include="Graphics\DirectX\DXModelManager.h">

@@ -426,6 +426,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 	DXEffects::m_objectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
 	DXEffects::m_objectDeferredFX->SetTexTransform(tex);
 	DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
+	DXEffects::m_objectDeferredFX->SetExplodeTime(*_mi->explodeTime);
 
 
 	for (UINT subset = 0; subset < _mi->model->SubsetCount; ++subset)
@@ -478,6 +479,7 @@ void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CX
 	{
 		DXInstance::World data;
 		data.world = *modelIterator->second->world;
+		data.ExplodeTime = *modelIterator->second->explodeTime;
 		instancedData.push_back(data);
 	}
 

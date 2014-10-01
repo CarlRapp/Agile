@@ -30,7 +30,7 @@ bool World::AddEntity(Entity* _e)
 	if (m_activeEntities.find(_e->GetId()) == m_activeEntities.end())
 	{
 		m_activeEntities[_e->GetId()] = _e;
-		printf("Entity #%d added!\n", _e->GetId());
+		//printf("Entity #%d added!\n", _e->GetId());
 
 		for (IComponent* c : *_e->GetComponents())
 			AddNewComponent(c->m_ID);
@@ -96,7 +96,7 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	printf("Entity #%d changed!\n");
+	printf("Entity # changed!\n");
 	SystemMap::iterator sIT;
 	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 	{

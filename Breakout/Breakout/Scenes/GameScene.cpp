@@ -2,6 +2,7 @@
 #include "MainMenuScene.h"
 #include "GameOverScene.h"
 
+#include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/System/PlayerLifeSystem.h"
 
@@ -32,6 +33,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<PlayerLifeSystem>();
 	m_world->AddSystem<LightSystem>();
+	m_world->AddSystem<BlockSystem>();
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -47,7 +49,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -143,8 +145,9 @@ void GameScene::Reset()
 		{
 			e = m_world->CreateEntity();
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2*x, 2*y , 0));
 			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0 ,0, 0));
+			e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 			m_world->AddEntity(e);
 		}
 

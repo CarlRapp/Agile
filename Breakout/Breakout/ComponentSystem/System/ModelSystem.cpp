@@ -16,7 +16,6 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -107,7 +106,7 @@ void ModelSystem::LoadModel(int _entityID)
     Entity* e = m_entityMap.find(_entityID)->second;
 
     model = e->GetComponent<ModelComponent>();
-    GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+    GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &model->m_explosion);
 
 	e->SetInitialized(true);
 }

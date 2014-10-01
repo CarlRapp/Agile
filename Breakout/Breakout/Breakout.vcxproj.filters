@@ -138,8 +138,14 @@
     <ClCompile Include="ComponentSystem\System\PlayerLifeSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
     <ClCompile Include="Scenes\GameOverScene.cpp">
       <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\BlockSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -322,6 +328,9 @@
     <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXLightHelper.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
@@ -357,6 +366,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\BlockSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

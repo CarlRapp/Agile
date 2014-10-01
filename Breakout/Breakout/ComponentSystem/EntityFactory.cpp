@@ -107,3 +107,33 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	if (_entity)
 		_entity->SetState(Entity::ALIVE);
 }
+
+void EntityFactory::CreateBlockField(World* _world)
+{
+	/*	New Implementation	*/
+	Entity* e;
+	int xBlock, yBlock;
+	int	startX, startY;
+
+	startX = -20;
+	xBlock = 2 * -startX;
+	startY = 6;
+	yBlock = 4;
+
+	for (int y = startY; y < startY + yBlock; ++y)
+		for (int x = startX; x < startX + xBlock; ++x)
+		{
+			e = _world->CreateEntity();
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
+			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0, 0, 0));
+			BlockComponent* bc = e->GetComponent<BlockComponent>();
+
+
+			_world->AddEntity(e);
+		}
+
+
+
+
+}

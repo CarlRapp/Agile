@@ -4,6 +4,7 @@
 #include "../IGraphics.h"
 #include "GLWindow.h"
 #include "GLShader.h"
+#include "GLTextureManager.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -32,6 +33,7 @@ class GLGraphics : public IGraphics
 
         public:
 
+            float       *explosion;
         glm::mat4	*world;
         glm::mat4	*worldInverseTranspose;
     };
@@ -44,7 +46,8 @@ class GLGraphics : public IGraphics
         GLuint bufferVAOID;
         std::string name;
         std::map<int, ModelInstance*> instances;
-        //std::vector<ModelInstance> instances;
+        
+        GLuint buffers[5];
         
         ModelRenderInfo(){}
       
@@ -52,17 +55,17 @@ class GLGraphics : public IGraphics
     
     struct LightInfo
     {
-        LightInfo(vec3 pos, vec3 intens, vec3 col, float range)
+        LightInfo(vec3 *pos, vec3 *intens, vec3 *col, float *range)
         {
             Position = pos;
             Intensity = intens;
             Color = col;
             Range = range;
         }
-        vec3 Position; // Light position world coords.
-	vec3 Intensity; // La, Ld and Ls intensity
-	vec3 Color;
-	float Range;
+        vec3 *Position; // Light position world coords.
+	vec3 *Intensity; // La, Ld and Ls intensity
+	vec3 *Color;
+	float *Range;
     };
     
 private:
@@ -70,17 +73,19 @@ private:
         int m_screenWidth;
         int m_screenHeight;
         
+        GLTextureManager m_texManager;
         GLuint m_program; //shaderID
+        GLuint m_shader2Dprogram, m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
-        std::vector<Shader*> m_shaders;
         
         std::vector<LightInfo*> m_lights;
                                             
         std::vector<glm::mat4> m_testMatrices;
-        glm::vec4 m_testColor = glm::vec4(1.0f,1.0f,1.0f,1.0f);
+        
+        std::map<int, TextureInfo*> m_TextureInstances;
         
         //std::map<int, ModelInstance*> m_modelInstances;
         
@@ -93,7 +98,7 @@ private:
         
         int RenderInstanced();
         int RenderStandard();
-        void AddLight(vec3 worldPos, vec3 intensity, vec3 color, float range);
+        void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
 public:
@@ -108,9 +113,16 @@ public:
         void Free();
         void Update();
         void LoadModel(std::string _path);
+        void LoadTexture(std::string _path);
+        
+        void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
+        void RemovePointLight(int _id);
+        
+        void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
+        void Remove2DTexture(int _id);
         
         void AddRenderObject(std::string _path, MATRIX4 _world);
-        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
         void RemoveObject(int _id);
         
 

@@ -22,6 +22,7 @@ struct PointLight
 	float3 Position;
 	float Range;
 
+	float4 Intensity;
 
 	//shadow info
 	uint   ShadowIndex[6];
