@@ -56,8 +56,21 @@ void ModelSystem::Update(float _dt)
 			change = true;
 		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
-
-		//TRANSLATE(model->m_worldMatrix,position->
+                
+                //Explosioner Start
+                //TODO: Flytta till effektsystem, gamerules, whatever
+                ModelComponent::ExplosionState exState = model->IsExploding();
+                
+		if(exState > 0)
+                {
+                    
+                    if(exState == ModelComponent::ExplosionState::DONE)
+                    {
+                        e->SetState(Entity::DEAD);
+                    }
+                }
+                //Explosioner Slut
+                
 		if (change)
 		{
 			model->m_worldMatrix = SCALE(scale->GetScale()) * ROTATE(rotation->GetRotation()) * TRANSLATE(position->GetPosition());
