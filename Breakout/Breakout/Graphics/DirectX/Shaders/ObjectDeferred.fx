@@ -277,7 +277,7 @@ void GS(triangle VertexOut gin[3],
 		{
 			float delta = min(1, gin[0].ExplodeTime * 0.3);
 
-			//float3 pos = gin[i].PosL + (centerPos - gin[i].PosL) * delta * 0.0f;
+			//float3 pos = gin[i].PosL + (centerPos - gin[i].PosL) * delta * 0.5f;
 			float3 pos = gin[i].PosL;
 
 				p[i].PosH = float4(pos, 1.0f) + float4(ExplodeAmt, 0);
