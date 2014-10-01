@@ -19,7 +19,9 @@ EntityFactory* EntityFactory::GetInstance()
 void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 {
 	b2BodyDef* bodyDef = new b2BodyDef();
-	b2FixtureDef* fixDef = new b2FixtureDef();
+	std::vector<b2FixtureDef*>* fixDefs = new std::vector<b2FixtureDef*>();
+	b2PolygonShape* polyShapes;
+	int polyCount;
 
 	switch (_entityType)
 	{
@@ -28,9 +30,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
-		_entity->AddComponent<DeflectionComponent>(15.0f);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<DeflectionComponent>(30.0f);
 		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
@@ -42,9 +44,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
 		_entity->AddComponent<MouseInputComponent>();
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		//_entity->AddComponent<DeflectionComponent>(30.0f);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		//_entity->AddComponent<DeflectionComponent>(0.0f);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
 		break;
 	case EntityFactory::BALL:
@@ -53,9 +55,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
 		_entity->AddComponent<VelocityComponent>();
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
-		_entity->AddComponent<CollisionStatsComponent>(0.0f, 40.0f);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<CollisionStatsComponent>(0.0f, 100.0f, 40.0f, 20.0f);
 		_entity->AddComponent<DamageComponent>(10);
 		break;
 	case EntityFactory::POWERUP:
@@ -65,24 +67,24 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
-		//_entity->AddComponent<DeflectionComponent>(5.0f);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<DeflectionComponent>(50.0f);
 		break;
 	case EntityFactory::H_WALL:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
-		PhysicsSystem::GenerateBody(INVISIBLE_WALL, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
+		PhysicsSystem::GenerateBody(INVISIBLE_WALL, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		break;
 	case EntityFactory::INVISIBLE_WALL:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		break;
 	case EntityFactory::PROJECTILE:
 		_entity->AddComponent<PositionComponent>();
@@ -90,8 +92,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "projectile";
 		_entity->AddComponent<VelocityComponent>();
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDef);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDef);
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		break;
 	case EntityFactory::PLAYER:
 		_entity->AddComponent<PlayerComponent>();

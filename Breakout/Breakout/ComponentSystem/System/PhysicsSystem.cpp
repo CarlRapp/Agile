@@ -15,8 +15,7 @@ PhysicsSystem::~PhysicsSystem()
 
 void PhysicsSystem::Update(float _dt)
 {
-	m_b2World->SetGravity(b2Vec2(0, -15));
-	// Set speed between min/max
+	// Update velocity manually
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -30,7 +29,15 @@ void PhysicsSystem::Update(float _dt)
 
 		if (velocity && stats)
 		{
+			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)
+				b2Body->SetLinearVelocity(b2Vec2(b2Body->GetLinearVelocity().x, -3.0f));
+
+			// Speed cant be 0
 			float speed = b2Body->GetLinearVelocity().Length();
+			if (speed == 0)
+				continue;
+
+			// Set speed between min/max
 			if (speed < stats->GetMinSpeed())
 			{
 				b2Body->SetLinearVelocity(b2Vec2((b2Body->GetLinearVelocity().x / speed) * stats->GetMinSpeed(), (b2Body->GetLinearVelocity().y / speed) * stats->GetMinSpeed()));
@@ -38,6 +45,15 @@ void PhysicsSystem::Update(float _dt)
 			if (speed > stats->GetMaxSpeed())
 			{
 				b2Body->SetLinearVelocity(b2Vec2((b2Body->GetLinearVelocity().x / speed) * stats->GetMaxSpeed(), (b2Body->GetLinearVelocity().y / speed) * stats->GetMaxSpeed()));
+			}
+			
+			// Deaccelerate
+			if (speed > stats->GetMaxDampingSpeed())
+			{
+				float newSpeed = speed - (stats->GetDampingAcceleration() * _dt);
+				if (speed < stats->GetMaxDampingSpeed())
+					newSpeed = stats->GetMaxDampingSpeed();
+				b2Body->SetLinearVelocity(b2Vec2((b2Body->GetLinearVelocity().x / speed) * newSpeed, (b2Body->GetLinearVelocity().y / speed) * newSpeed));
 			}
 		}
 	}
@@ -74,10 +90,8 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			b2Vec2 b2Rotation = b2Vec2(cos(b2Body->GetAngle()), sin(b2Body->GetAngle()));
-			rotation->m_rotation = VECTOR3(b2Rotation.x, b2Rotation.y, rotation->m_rotation.z);
+			rotation->SetRotation(VECTOR3(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
 		}
-			
 	}
 
 	// Do collisions checks
@@ -85,7 +99,7 @@ void PhysicsSystem::Update(float _dt)
 	{
 		if (!contact->IsTouching())
 			continue;
-		
+
 		b2Fixture* fixtureA = contact->GetFixtureA();
 		b2Fixture* fixtureB = contact->GetFixtureB();
 		Entity* entityA = 0;
@@ -102,10 +116,10 @@ void PhysicsSystem::Update(float _dt)
 			if (entityA && entityB)
 				break;
 		}
-		b2WorldManifold* manifold = new b2WorldManifold();
-		contact->GetWorldManifold(manifold);
-		entityA->GetComponent<CollisionComponent>()->CollidingWith(entityB->GetId(), *manifold);
-		entityB->GetComponent<CollisionComponent>()->CollidingWith(entityA->GetId(), *manifold);
+		CollisionContact collisionContact = CollisionContact(contact, fixtureA, fixtureB, entityB->GetId());
+		entityA->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
+		collisionContact = CollisionContact(contact, fixtureB, fixtureA, entityA->GetId());
+		entityB->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
 	}
 }
 
@@ -128,7 +142,7 @@ bool PhysicsSystem::Add(Entity* _entity)
 	if (velComponent)
 		velocity = b2Vec2(velComponent->m_velocity.x, velComponent->m_velocity.y);
 	if (rotComponent)
-		rotation = atan2(rotComponent->m_rotation.x, rotComponent->m_rotation.y);
+		rotation = rotComponent->GetRotation().z;
 	
 	collision->GetBody()->SetTransform(b2Vec2(position.x, position.y), rotation);
 	collision->GetBody()->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
@@ -136,68 +150,81 @@ bool PhysicsSystem::Add(Entity* _entity)
 	return true;
 }
 
-void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, b2FixtureDef* _b2FixtureDef)
+void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, vector<b2FixtureDef*>& _b2FixtureDefs)
 {
 	b2PolygonShape* polygonShape;
 	b2CircleShape* circleShape;
+	b2FixtureDef* fixDef;
 
 	switch (_entityType)
 	{
 	case EntityFactory::BLOCK:
+		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);
-		_b2FixtureDef->shape = polygonShape;
-		_b2FixtureDef->density = 1.0f;
-		_b2FixtureDef->friction = 0.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::BLOCK;
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 		break;
 	case EntityFactory::PAD:
+		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(2.5f, 0.5f);
-		_b2FixtureDef->shape = polygonShape;
-		_b2FixtureDef->friction = 1.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::PAD;
+		fixDef->shape = polygonShape;
+		fixDef->friction = .5f;
+		fixDef->filter.categoryBits = CollisionCategory::PAD;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_kinematicBody;
 		break;
 	case EntityFactory::BALL:
+		fixDef = new b2FixtureDef();
 		circleShape = new b2CircleShape();
 		circleShape->m_p.Set(0, 0);
 		circleShape->m_radius = 1.0f;
-		_b2FixtureDef->shape = circleShape;
-		_b2FixtureDef->density = 5000.0f;
-		_b2FixtureDef->friction = 1.0f;
-		_b2FixtureDef->restitution = 1.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::BALL;
+		fixDef->shape = circleShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 1.0f;
+		fixDef->restitution = 1.0f;
+		fixDef->filter.categoryBits = CollisionCategory::BALL;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
 		_b2BodyDef->fixedRotation = true;
 		break;
 	case EntityFactory::PROJECTILE:
+		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.1f, 1.0f);
-		_b2FixtureDef->shape = polygonShape;
-		_b2FixtureDef->density = 1.0f;
-		_b2FixtureDef->friction = 0.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::BALL;
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::BALL;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
 	case EntityFactory::POWERUP:
 		break;
 	case EntityFactory::WALL:
+		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 15.0f);
-		_b2FixtureDef->shape = polygonShape;
-		_b2FixtureDef->density = 1.0f;
-		_b2FixtureDef->friction = 0.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::WALL;
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::WALL;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 		break;
 	case EntityFactory::INVISIBLE_WALL:
+		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(24.f, 0.f);
-		_b2FixtureDef->shape = polygonShape;
-		_b2FixtureDef->density = 1.0f;
-		_b2FixtureDef->friction = 0.0f;
-		_b2FixtureDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
+		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 	default:
 		break;

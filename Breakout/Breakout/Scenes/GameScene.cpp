@@ -68,7 +68,6 @@ void GameScene::Initialize()
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
 		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x + x*0.5f, y + y*0.5f, 0));
-		e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 5));
 		m_world->AddEntity(e);
 	}
 
@@ -76,7 +75,6 @@ void GameScene::Initialize()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3((16 + xBlocks) * 0.5f, -10, 0)); 
-	e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 15));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();

@@ -9,8 +9,8 @@ struct DeflectionComponent : Component<DeflectionComponent>
 private:
 	float m_deflection;
 public:
-	DeflectionComponent() : m_deflection(0) { }
-	DeflectionComponent(float _deflection) : m_deflection(_deflection) { }
+	DeflectionComponent() : m_deflection(0.0f) { }
+	DeflectionComponent(float _deflection) : m_deflection(_deflection) {}
 	~DeflectionComponent() { }
 
 	float GetDeflection() const { return m_deflection; }

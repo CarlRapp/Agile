@@ -25,44 +25,24 @@ void CollisionDeflectionSystem::Update(float _dt)
 		b2Body* b2Body = collision->GetBody();
 
 		// Update bounce
-		std::vector<int> collisions = collision->GetCollisions();
+		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
-			Entity* otherEntity = m_world->GetEntity(collisions[i]);
+			Entity* otherEntity = m_world->GetEntity(collisions[i].m_otherId);
 			if (otherEntity->GetState() == Entity::DEAD)
 				continue;
 			auto otherDeflection = otherEntity->GetComponent<DeflectionComponent>();
 			if (otherDeflection)
 			{
 				float speed = b2Body->GetLinearVelocity().Length();
-				if (speed < otherDeflection->GetDeflection())
+				if (speed < otherDeflection->GetDeflection() && speed != 0)
 				{
 					b2Body->SetLinearVelocity(b2Vec2
-					(
-					(b2Body->GetLinearVelocity().x / speed) * otherDeflection->GetDeflection(),
-					(b2Body->GetLinearVelocity().y / speed) * otherDeflection->GetDeflection()
-					));
+						(
+						(b2Body->GetLinearVelocity().x / speed) * otherDeflection->GetDeflection(),
+						(b2Body->GetLinearVelocity().y / speed) * otherDeflection->GetDeflection()
+						));
 				}
-
-				/*if (b2Body->GetLinearVelocity().x >= 0)
-					velocityX = b2Body->GetLinearVelocity().x + otherDeflection->GetDeflection();
-				else
-					velocityX = b2Body->GetLinearVelocity().x - otherDeflection->GetDeflection();
-				if (b2Body->GetLinearVelocity().y >= 0)
-					velocityY = b2Body->GetLinearVelocity().y + otherDeflection->GetDeflection();
-				else
-					velocityY = b2Body->GetLinearVelocity().y - otherDeflection->GetDeflection();
-				*/
-				
-
-				//b2Body->SetLinearVelocity(b2Vec2(b2Body->GetLinearVelocity().x * manifold.normal.x, b2Body->GetLinearVelocity().y * -manifold.normal.y));
-
-				// STUDSA MANUELLT
-
-				/*
-
-				b2Body->SetLinearVelocity(b2Vec2(velocityX, velocityY));
-				*/
 			}
 		}
 	}

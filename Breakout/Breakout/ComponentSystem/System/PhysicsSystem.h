@@ -39,12 +39,11 @@ public:
 	b2World& GetB2World() { return *m_b2World; }
 
 	// Get the right fixture definition for the game object
-	static void GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, b2FixtureDef* _b2FixtureDef);
+	static void GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, vector<b2FixtureDef*>& _b2FixtureDefs);
 	/*static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution);
 	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution, uint16 maskBits);
 	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, uint16 maskBits);*/
 };
-
 
 
 #endif
