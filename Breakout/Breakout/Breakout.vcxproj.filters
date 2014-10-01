@@ -11,15 +11,6 @@
     <ClCompile Include="Audio\LinAudio.cpp">
       <Filter>Source Files\Audio\Linux</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameplayManager.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Simulation.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UserInterface.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
@@ -163,15 +154,6 @@
     </ClInclude>
     <ClInclude Include="Audio\LinAudio.h">
       <Filter>Source Files\Audio\Linux</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameplayManager.h">
-      <Filter>Source Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Simulation.h">
-      <Filter>Source Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\UserInterface.h">
-      <Filter>Source Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
       <Filter>Source Files\Graphics\DirectX</Filter>

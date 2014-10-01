@@ -95,9 +95,6 @@
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
-    <ClCompile Include="Game\GameplayManager.cpp" />
-    <ClCompile Include="Game\Simulation.cpp" />
-    <ClCompile Include="Game\UserInterface.cpp" />
     <ClCompile Include="Graphics\DirectX\DXCamera.cpp" />
     <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
     <ClCompile Include="Graphics\DirectX\DXEffects.cpp" />
@@ -173,9 +170,6 @@
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />
-    <ClInclude Include="Game\GameplayManager.h" />
-    <ClInclude Include="Game\Simulation.h" />
-    <ClInclude Include="Game\UserInterface.h" />
     <ClInclude Include="Graphics\DirectX\DXCamera.h" />
     <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
     <ClInclude Include="Graphics\DirectX\DXEffects.h" />
