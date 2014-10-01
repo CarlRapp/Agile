@@ -32,7 +32,11 @@ void CollisionDamageSystem::Update(float _dt)
 				DealDamage(*damage, *collidingHealth);
 				if (collidingHealth->m_currentHealth <= 0)
 				{
-					collidingEntity->SetState(Entity::DEAD);
+                                    
+                                    auto model = collidingEntity->GetComponent<ModelComponent>();
+                                    model->m_explosion += 1;
+                                    
+					//collidingEntity->SetState(Entity::DEAD);
 					break;
 				}
 			}

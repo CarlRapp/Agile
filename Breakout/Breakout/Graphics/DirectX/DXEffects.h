@@ -54,6 +54,8 @@ public:
 	void SetTexTransform(DirectX::CXMMATRIX _M)					{ m_texTransform->SetMatrix(reinterpret_cast<const float*>(&_M)); }
 	void SetBoneTransforms(const DirectX::XMFLOAT4X4* _M, int _cnt){ m_boneTransforms->SetMatrixArray(reinterpret_cast<const float*>(_M), 0, _cnt); }
 
+	void SetExplodeTime(float _f)                        { m_ExplodeTime->SetFloat(_f); }
+
 	void SetMaterial(const DXMaterial& mat)               { m_mat->SetRawValue(&mat, 0, sizeof(DXMaterial)); }
 
 	void SetDiffuseMap(ID3D11ShaderResourceView* _tex)   { m_diffuseMap->SetResource(_tex); }
@@ -84,6 +86,8 @@ public:
 	ID3DX11EffectMatrixVariable* m_worldInvTranspose;
 	ID3DX11EffectMatrixVariable* m_texTransform;
 	ID3DX11EffectMatrixVariable* m_boneTransforms;
+
+	ID3DX11EffectScalarVariable* m_ExplodeTime;
 
 	ID3DX11EffectVariable* m_mat;
 

@@ -103,6 +103,7 @@
     <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
     <ClCompile Include="Graphics\DirectX\DXEffects.cpp" />
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp" />
     <ClCompile Include="Graphics\DirectX\DXMesh.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModel.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModelManager.cpp">
@@ -182,6 +183,7 @@
     <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
     <ClInclude Include="Graphics\DirectX\DXEffects.h" />
     <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
+    <ClInclude Include="Graphics\DirectX\DXLightHelper.h" />
     <ClInclude Include="Graphics\DirectX\DXMesh.h" />
     <ClInclude Include="Graphics\DirectX\DXModel.h" />
     <ClInclude Include="Graphics\DirectX\DXModelManager.h">

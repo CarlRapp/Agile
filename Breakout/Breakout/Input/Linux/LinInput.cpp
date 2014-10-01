@@ -181,10 +181,17 @@ void Mouse::Update()
     
     sdlEvents.clear();
 }
-int Mouse::getdX() { return m_dX; }
-int Mouse::getdY() { return m_dY; }
-int Mouse::getX() { return m_positionX; }
-int Mouse::getY() { return m_positionY; }
+int Mouse::GetdX() { return m_dX; }
+int Mouse::GetdY() { return m_dY; }
+int Mouse::GetX() { return m_positionX; }
+int Mouse::GetY() { return m_positionY; }
+
+void Mouse::SetMousePosition(int _x, int _y){
+    SDL_WarpMouse(_x, _y);
+    m_positionX = _x;
+    m_positionY = _y;
+    SDL_ShowCursor(SDL_DISABLE);
+}
 
 InputState Mouse::GetButtonState(char _button)
 {

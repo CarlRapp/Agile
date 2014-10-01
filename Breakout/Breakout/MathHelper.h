@@ -1,8 +1,6 @@
 #ifndef _MATHHELPER_H_
 #define _MATHHELPER_H_
 
-
-
 #ifdef __linux__
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
@@ -13,6 +11,7 @@
 #define VECTOR4 glm::vec4
 #define VECTOR3 glm::vec3
 #define VECTOR2 glm::vec2
+#define QUAT    glm::quat
 
 static glm::mat4 GetIdentityMatrix()
 {
@@ -25,9 +24,9 @@ static glm::mat4 MacroTranslate(glm::vec3 vector)
 	return glm::translate(glm::mat4(1.0f), vector);
 }
 
-static glm::mat4 MacroRotate(glm::mat4 matrix, float angle, glm::vec3 axis)
+static glm::mat4 MacroRotate(glm::quat _q)
 {
-	return glm::rotate(matrix, angle, axis);
+	return glm::mat4_cast(_q);//rotate(glm::mat4(1.0), angle, axis);
 }
 
 static bool MacroIsZero(glm::vec3 _vec)
@@ -38,29 +37,59 @@ static bool MacroIsZero(glm::vec3 _vec)
 	return false;
 }
 
-static float MacroDot(glm::vec3, glm::vec3)
+static float MacroDot(glm::vec3 _v1, glm::vec3 _v2)
 {
-	//FIXA!
-	return 1.0f;
+	
+	return glm::dot(_v1,_v2);
 }
 
-static glm::vec3 MacroCross(glm::vec3 vector1, glm::vec3 vector2)
+static glm::vec3 MacroCross(glm::vec3 _v1, glm::vec3 _v2)
 {
-	//FIXA!
-	VECTOR3 a;
-	return a;
+	return glm::cross(_v1,_v2);
 }
 
-static glm::vec3 MacroNormalize(glm::vec3 vector)
+static glm::vec3 MacroNormalize(glm::vec3 _v1)
 {
-	//FIXA!
-	VECTOR3 a;
-	return a;
+	return glm::normalize(_v1);
 }
+
+static glm::quat MacroRotateYawPitchRollFromVector(glm::vec3 _rot)
+{
+   glm::quat rotateX( std::cos( _rot.y ), std::sin( _rot.y), 0.f, 0.f );  
+    glm::quat rotateY( std::cos( _rot.x ), 0.f, std::sin( _rot.x ), 0.f );  
+    glm::quat rotateZ( std::cos( _rot.z ), 0.f, 0.f, std::sin( _rot.z ) );    
+    return rotateZ * rotateY * rotateX;
+
+}
+
+static void MacroPrintMatrix(glm::mat4* _m)
+{
+    for(int i=0;i< 4;i++)
+    {
+        for(int j=0;j< 4;j++)
+        {
+            printf("%f  ",(*_m)[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+//static DirectX::XMFLOAT4 MacroRotateYawPitchRollFromVector(VECTOR3 _rotation)
+//{
+//	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
+//	DirectX::XMVECTOR rot = DirectX::XMLoadFloat3(&_rotation);
+//	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYawFromVector(rot);
+//
+//	DirectX::XMFLOAT4 q;
+//	DirectX::XMStoreFloat4(&q, quat);
+//	return q;
+//}
 
 #else
 
 #include <DirectXMath.h>
+#include <iostream>
 
 #define MATRIX4 DirectX::XMFLOAT4X4
 #define VECTOR4 DirectX::XMFLOAT4
@@ -180,6 +209,15 @@ static DirectX::XMFLOAT4X4 MacroScale(VECTOR3 scale)
 }
 
 
+static void MacroPrintMatrix(DirectX::XMFLOAT4X4* _m)
+{
+	std::printf("%f  %f  %f  %f\n", _m->_11, _m->_12, _m->_13, _m->_14);
+	std::printf("%f  %f  %f  %f\n", _m->_21, _m->_22, _m->_23, _m->_24);
+	std::printf("%f  %f  %f  %f\n", _m->_31, _m->_32, _m->_33, _m->_34);
+	std::printf("%f  %f  %f  %f\n\n", _m->_41, _m->_42, _m->_43, _m->_44);
+}
+
+
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
 DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
@@ -209,6 +247,8 @@ DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 _inM1, DirectX::XMFLOAT4X4 _in
 #define DOT(vector1, vector2) MacroDot(vector1, vector2)
 #define CROSS(vector1, vector2) MacroCross(vector1, vector2)
 #define NORMALIZE(vector) MacroNormalize(vector)
+
+#define PRINTMATRIX(matrix) MacroPrintMatrix(matrix)
 
 #endif
 

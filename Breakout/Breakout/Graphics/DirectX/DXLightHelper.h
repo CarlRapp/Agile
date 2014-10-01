@@ -58,8 +58,8 @@ struct GPUPointLight : GPULight
 	DirectX::XMFLOAT3 Position;
 	float Range;
 
-	//DirectX::XMFLOAT3 Intensity;
-	//float pad1;
+	DirectX::XMFLOAT3 Intensity;
+	float pad1;
 
 	//shadow info	
 	UINT	 ShadowIndex[6];
@@ -158,6 +158,7 @@ public:
 		gpuLight->Position = *Position;
 		gpuLight->Position.z *= -1;
 		gpuLight->Range = *Range;
+		gpuLight->Intensity = *Intensity;
 		return gpuLight; 
 	}
 };
