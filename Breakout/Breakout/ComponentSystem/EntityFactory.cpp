@@ -25,7 +25,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1";
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<DeflectionComponent>(1.0f);
