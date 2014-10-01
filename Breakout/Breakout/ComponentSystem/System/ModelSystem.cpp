@@ -16,7 +16,6 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
