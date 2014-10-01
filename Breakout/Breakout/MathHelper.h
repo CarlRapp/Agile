@@ -89,6 +89,7 @@ static void MacroPrintMatrix(glm::mat4* _m)
 #else
 
 #include <DirectXMath.h>
+#include <iostream>
 
 #define MATRIX4 DirectX::XMFLOAT4X4
 #define VECTOR4 DirectX::XMFLOAT4
@@ -195,17 +196,12 @@ static VECTOR3 MacroNormalize(VECTOR3 vector)
 	return res;
 }
 
-static void MacroPrintMatrix(DirectX::XMMATRIX* _m)
+static void MacroPrintMatrix(DirectX::XMFLOAT4X4* _m)
 {
-    for(int i=0;i< 4;i++)
-    {
-        for(int j=0;j< 4;j++)
-        {
-            printf("%f  ",(*_m)[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+	std::printf("%f  %f  %f  %f\n", _m->_11, _m->_12, _m->_13, _m->_14);
+	std::printf("%f  %f  %f  %f\n", _m->_21, _m->_22, _m->_23, _m->_24);
+	std::printf("%f  %f  %f  %f\n", _m->_31, _m->_32, _m->_33, _m->_34);
+	std::printf("%f  %f  %f  %f\n\n", _m->_41, _m->_42, _m->_43, _m->_44);
 }
 
 
