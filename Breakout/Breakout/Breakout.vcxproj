@@ -136,6 +136,7 @@
     <ClInclude Include="Audio\WinAudio.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BounceComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
