@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 
 #include "EntityFactory.h"
+#include "Component/BlockComponent.h"
 
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
@@ -30,6 +31,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<DeflectionComponent>(1.0f);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
+		_entity->AddComponent<BlockComponent>();
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
