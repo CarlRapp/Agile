@@ -5,6 +5,7 @@
 #include "GLWindow.h"
 #include "GLShader.h"
 #include "GLTextureManager.h"
+#include "GLText.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -87,7 +88,9 @@ private:
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        //std::map<int, ModelInstance*> m_modelInstances;
+        std::vector<const GLbyte(*)[64]> m_letters;
+        
+        float m_textFontSize = 3;
         
         int SetUniformV(GLuint shaderProg, const char* variable,float value);
         int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
@@ -101,6 +104,7 @@ private:
         void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
+        void LoadLetters();
 public:
 
 	GLGraphics(void);
@@ -124,6 +128,7 @@ public:
         void AddRenderObject(std::string _path, MATRIX4 _world);
         void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
         void RemoveObject(int _id);
+        void DrawText(std::string _text);
         
 
 };

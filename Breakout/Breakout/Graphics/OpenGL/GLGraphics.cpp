@@ -88,6 +88,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     }
 //-----------------------------------------------------------------------------------------
     glEnable(GL_BLEND);
+    
+    LoadLetters();
       
     int err = glGetError();
     
@@ -344,17 +346,16 @@ void GLGraphics::Free()
     glDeleteVertexArrays(1, &m_2DVAO);
     
     glDeleteProgram(m_program);
-    
+ 
     printf("Graphics memory cleared\n");
 }
 
-float t;
+    float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.2, 0.2, 0.8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    
     
     glUseProgram(m_program);
     
@@ -373,8 +374,22 @@ void GLGraphics::Render(ICamera* _camera)
     
     glUseProgram(0);
     
+    //DrawText("ABCDE");
+    
     SDL_GL_SwapBuffers( );
     
+}
+
+void GLGraphics::DrawText(std::string _text)
+{
+    GLvoid* v;
+    glPixelZoom(m_textFontSize,  m_textFontSize);
+    for(int i=0; i< _text.size();i++)
+    {
+        v = (GLvoid*)m_letters[_text.at(i)-65];
+        glRasterPos2i(10+i*8*m_textFontSize,  10*m_textFontSize);
+        glDrawPixels(8,8,  GL_RED, GL_BYTE,  v);
+    }
 }
 
 
@@ -671,4 +686,16 @@ int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, int _value
 	else return 1;
 
 	return 0;
+}
+
+void GLGraphics::LoadLetters()
+{
+
+    //m_letters.push_back(&G);
+    m_letters.push_back(&S);
+    m_letters.push_back(&C);
+    m_letters.push_back(&O);
+    m_letters.push_back(&R);
+    m_letters.push_back(&E);
+    
 }
