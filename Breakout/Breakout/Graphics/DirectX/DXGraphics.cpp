@@ -253,7 +253,7 @@ void DXGraphics::Render(ICamera* _camera)
 }
 
 
-void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float *_explosionTime)
 {
 
 	if (m_modelInstances[_model].count(_id) != 0)
@@ -266,6 +266,7 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->model = m_modelManager.GetModel(_model);
 	mi->world = _world;
 	mi->worldInverseTranspose = _worldInverseTranspose;
+	mi->explodeTime = _explosionTime;
 
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
