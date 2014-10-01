@@ -73,7 +73,7 @@ public:
 	void LoadModel(std::string _path);
 	void LoadTexture(std::string _path);
 
-	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+	void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion);
 	void RemoveObject(int _id);
 
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);

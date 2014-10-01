@@ -253,7 +253,7 @@ void DXGraphics::Render(ICamera* _camera)
 }
 
 
-void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion)
 {
 
 	if (m_modelInstances[_model].count(_id) != 0)
