@@ -39,7 +39,6 @@ void ModelSystem::Update(float _dt)
 		if (!e->GetInitialized())
 		{
 			LoadModel(e->GetId());
-                        printf("%d bAJS\n", e->GetId());
 		}
 
 
@@ -57,11 +56,12 @@ void ModelSystem::Update(float _dt)
 			change = true;
 		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
+                
 
 		//TRANSLATE(model->m_worldMatrix,position->
 		//if (change)
 		//{
-			model->m_worldMatrix = TRANSLATE(position->GetPosition());//*ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) ;
+			model->m_worldMatrix = TRANSLATE(position->GetPosition()) *ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) ;
 			//TEMP
 			position->Reset();
 			rotation->Reset();

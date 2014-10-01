@@ -48,7 +48,7 @@ class GLGraphics : public IGraphics
         std::string name;
         std::map<int, ModelInstance*> instances;
         
-        GLuint buffers[5];
+        GLuint buffers[6];
         
         ModelRenderInfo(){}
       

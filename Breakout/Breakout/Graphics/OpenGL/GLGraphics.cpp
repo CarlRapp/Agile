@@ -121,17 +121,24 @@ void GLGraphics::LoadModel(std::string _path)
         
         float* vertexArray = new float[floatCount];
         float* normalArray = new float[floatCount];
-
+        float* texCoordArray = new float[(int)(*groupIt)->triangles->size() * 3 * 2];
+        
+        
         int i = 0;
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles->begin(); triangleIt != (*groupIt)->triangles->end(); ++triangleIt)
         {
             //Dest,Source,Size
             memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*i], &(*triangleIt).Vertices[0].Texture, sizeof(glm::vec2));
+            
             memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*(i+1)], &(*triangleIt).Vertices[1].Texture, sizeof(glm::vec2));
+            
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec2));
             
             //memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec3));
 
@@ -141,6 +148,15 @@ void GLGraphics::LoadModel(std::string _path)
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
         
+        if((*groupIt)->material)
+        {
+            m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE0);
+            m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
+            printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
+        }
+        else
+            printf("NO MATERIAL FILE \n");
+        
         m_testMatrices.push_back(glm::mat4(1.0f));
         
         int pos             = glGetAttribLocation(m_program, "m_position");
@@ -149,8 +165,9 @@ void GLGraphics::LoadModel(std::string _path)
         int explosion       = glGetAttribLocation(m_program, "m_explosion");
         int color           = glGetAttribLocation(m_program, "m_color");
         int matrix          = glGetAttribLocation(m_program, "m_matModel");
+        int texCoord        = glGetAttribLocation(m_program, "m_texCoord");
         
-	glGenBuffers(5, m_models[index]->buffers);
+	glGenBuffers(6, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
@@ -170,22 +187,26 @@ void GLGraphics::LoadModel(std::string _path)
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
         glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]); 
+        glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
+        
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
         
-	// enable "vertex attribute arrays"
-	glEnableVertexAttribArray(pos);         // position     1
-        glEnableVertexAttribArray(pos+1);       // pad          2
-	glEnableVertexAttribArray(normal);      // normal       3
-        glEnableVertexAttribArray(explosion);    // explosion   4
-        glEnableVertexAttribArray(color);       // color        5
+	// enable "vertex attribute arrays"     
+	glEnableVertexAttribArray(pos);         // position     0
+        glEnableVertexAttribArray(pos+1);       // pad          1
+	glEnableVertexAttribArray(normal);      // normal       2
+        glEnableVertexAttribArray(explosion);    // explosion   3
+        glEnableVertexAttribArray(color);       // color        4
 
-        glEnableVertexAttribArray(matrix);      //matrix        6
-        glEnableVertexAttribArray(matrix+1);    //matrix        7
-        glEnableVertexAttribArray(matrix+2);    //matrix        8
-        glEnableVertexAttribArray(matrix+3);    //matrix        9
+        glEnableVertexAttribArray(matrix);      //matrix        5
+        glEnableVertexAttribArray(matrix+1);    //matrix        6
+        glEnableVertexAttribArray(matrix+2);    //matrix        7
+        glEnableVertexAttribArray(matrix+3);    //matrix        8
         
+        glEnableVertexAttribArray(texCoord);    //matrix        9
 
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
@@ -208,6 +229,7 @@ void GLGraphics::LoadModel(std::string _path)
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
         glVertexAttribDivisor(color, 1);
+        
 
         //model matrix
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
@@ -219,6 +241,9 @@ void GLGraphics::LoadModel(std::string _path)
         glVertexAttribDivisor(matrix+2, 1);
         glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
         glVertexAttribDivisor(matrix+3, 1);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]);
+	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 
         glBindVertexArray(0); // disable VAO
@@ -332,7 +357,7 @@ void GLGraphics::Free()
     for(int i = m_models.size()-1; i > -1;i--)
     {
         m_models[i]->instances.clear();
-        glDeleteBuffers(5,&m_models[i]->bufferVAOID);
+        glDeleteBuffers(6,&m_models[i]->bufferVAOID);
         m_models.pop_back();
     }
     
@@ -433,6 +458,9 @@ int GLGraphics::RenderInstanced()
     {
         MRI = m_models[i];
         int instances = m_models[i]->instances.size();
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_models[i]->texHandle);
         
         //Update matrix buffer//
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[4]);

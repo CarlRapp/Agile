@@ -25,27 +25,29 @@ out GS_FS
     vec4    color;
     vec3    normal;
     float   pad;
-    vec2    texCoord
+    vec2    texCoord;
 
 } GSOut;
 
 void main() 
 {
     mat4 localMatModel = GSIn[0].matModel;
-    float localExp  = GSIn[0].explode;
+
+    vec3 faceEdgeA = vec3(GSIn[1].worldPos - GSIn[0].worldPos);
+    vec3 faceEdgeB = vec3(GSIn[2].worldPos - GSIn[0].worldPos);
+    vec3 faceNormal = normalize( cross(faceEdgeA, faceEdgeB) );
+    vec3 explodeVec = faceNormal;
 
     for (int i = 0; i < 3; i++) 
     {
-        //vec3 norm = GSIn[i].normal;
-        //float ex = GSIn[i].explode;
-        //gl_Position = GSIn[i].worldPos;// * vec4(norm.x*ex,norm.y*ex,norm.z*ex,1.0);
         GSOut.normal = GSIn[i].normal;
         GSOut.texCoord = GSIn[i].texCoord;
-        GSOut.worldPos = GSIn[i].worldPos +(vec4(GSOut.normal,1.0)*localExp);//gl_Position;
-        
+        GSOut.worldPos = GSIn[i].worldPos + vec4(faceNormal*GSIn[0].explode,0);//explodeVec;
+        //GSOut.worldPos = localMatModel * GSOut.worldPos;
+
         GSOut.color = GSIn[i].color;
 
-        gl_Position = m_matProj*m_matView*localMatModel*GSOut.worldPos;
+        gl_Position = m_matProj*m_matView*GSOut.worldPos;
 
         EmitVertex();
     }
