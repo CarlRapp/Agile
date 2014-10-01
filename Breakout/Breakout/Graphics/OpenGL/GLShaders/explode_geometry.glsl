@@ -31,8 +31,8 @@ void main()
 {
     mat4 localMatModel = GSIn[0].matModel;
 
-    vec3 faceEdgeA = vec3(GSIn[1].worldPos - GSIn[0].worldPos);
-    vec3 faceEdgeB = vec3(GSIn[2].worldPos - GSIn[0].worldPos);
+    vec3 faceEdgeB = vec3(GSIn[1].worldPos - GSIn[0].worldPos);
+    vec3 faceEdgeA = vec3(GSIn[2].worldPos - GSIn[0].worldPos);
     vec3 faceNormal = normalize( cross(faceEdgeA, faceEdgeB) );
     vec3 explodeVec = faceNormal;
 
