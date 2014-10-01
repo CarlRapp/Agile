@@ -144,6 +144,9 @@
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -333,6 +336,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXLightHelper.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
