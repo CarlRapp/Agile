@@ -15,6 +15,7 @@ in VS_GS
     float   explode;
     vec4    color;
     mat4    matModel;
+    vec2    texCoord;
 
 } GSIn[];
 
@@ -24,6 +25,7 @@ out GS_FS
     vec4    color;
     vec3    normal;
     float   pad;
+    vec2    texCoord
 
 } GSOut;
 
@@ -38,6 +40,7 @@ void main()
         //float ex = GSIn[i].explode;
         //gl_Position = GSIn[i].worldPos;// * vec4(norm.x*ex,norm.y*ex,norm.z*ex,1.0);
         GSOut.normal = GSIn[i].normal;
+        GSOut.texCoord = GSIn[i].texCoord;
         GSOut.worldPos = GSIn[i].worldPos +(vec4(GSOut.normal,1.0)*localExp);//gl_Position;
         
         GSOut.color = GSIn[i].color;

@@ -96,7 +96,7 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	printf("Entity #%d changed!\n");
+	printf("Entity # changed!\n");
 	SystemMap::iterator sIT;
 	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 	{

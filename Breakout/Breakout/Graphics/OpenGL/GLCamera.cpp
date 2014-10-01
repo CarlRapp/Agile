@@ -96,14 +96,6 @@ void GLCamera::UpdateView()
 	m_view[2][3] = 0.0f;
 	m_view[3][3] = 1.0f;
         
-        //m_view = m_identityMatrix;
-//            for(int i=0;i< 4;i++)
-//    {
-//        for(int j=0; j < 4;j++)
-//            printf("%f ",m_view[i][j]);
-//        printf("\n");
-//    }
-//    printf("VIEW SECOND\n");
 }
 
 void GLCamera::UpdateProjection()
@@ -218,13 +210,6 @@ void GLCamera::SetForward(glm::vec3 forward)
         
 	UpdateView();
         
-//    for(int i=0;i< 4;i++)
-//    {
-//        for(int j=0; j < 4;j++)
-//            printf("%f ",m_view[i][j]);
-//        printf("\n");
-//    }
-//    printf("VIEW FIRST\n");
 }
 
 void GLCamera::Move(glm::vec3 _move)

@@ -87,7 +87,7 @@ void GameScene::Initialize()
 	/*	PLANE	*/
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0,-15,5));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0,-15,-5));
 	//e->GetComponent<RotationComponent>()->SetRotation(VECTOR3(0, 0, 15));
 	m_world->AddEntity(e);
 
@@ -107,7 +107,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)

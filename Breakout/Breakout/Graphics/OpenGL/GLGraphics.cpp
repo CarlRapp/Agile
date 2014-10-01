@@ -87,17 +87,16 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
         return 0;
     }
 //-----------------------------------------------------------------------------------------
-    
+    glEnable(GL_BLEND);
+      
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
         if(err)
     std::cout << "\033[31m with error: " << err;
     std::cout << "\n\033[30m";
-    
-    glEnable(GL_BLEND);
+
     glEnable(GL_DEPTH_TEST);
-    
     return true; 
 } 
 
@@ -298,7 +297,15 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
 
         glBindVertexArray(0); // disable VAO
         glUseProgram(0); // disable shader programme
+    //glBindBuffer(GL_ARRAY_BUFFER,0);
         glDeleteBuffers(2, m_2DVBOs);
+    
+    int err = glGetError();
+    
+    std::cout << "Add2DTexture ";
+    if(err)
+    std::cout << "\033[31m with error: " << err;
+    std::cout << "\n\033[30m";
     }
 }
 
@@ -313,7 +320,6 @@ void GLGraphics::Update()
 
 }
 
-//
 void GLGraphics::Resize(int _width, int _height) 
 {
     m_screenWidth = _width;
@@ -395,10 +401,10 @@ void GLGraphics::Render2D()
         //set viewPort (resterande TextureInfo-variabler)
         glViewport((GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
 
-        printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
+        //printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
-    
+    glBindVertexArray(0);
     glActiveTexture(0);
 }
 
@@ -436,6 +442,7 @@ int GLGraphics::RenderInstanced()
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
         {
             matrices[j] = *insIt->second->world;
+            //PRINTMATRIX(&matrices[j]);
             j++;
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -521,7 +528,14 @@ void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
 
 void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion)
 {
-
+//
+//    int err = glGetError();
+//    
+//    std::cout << "Addobject ";
+//    if(err)
+//    std::cout << "\033[31m with error: " << err;
+//    std::cout << "\n\033[30m";
+//    
     for(int i=0; i < m_models.size();i++)
     {
         if (m_models[0]->instances.count(_id) !=0)
