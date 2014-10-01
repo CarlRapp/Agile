@@ -29,8 +29,7 @@ private:
 	World* m_world;
 
 	// Pause Screen settings
-	float m_x, m_y;
-	float m_width, m_height;
+	Texture2DData*	m_pauseBackground;
 	bool m_isPaused;
 public:
 	GameScene();

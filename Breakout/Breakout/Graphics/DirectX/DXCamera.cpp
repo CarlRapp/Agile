@@ -117,7 +117,7 @@ void DXCamera::Move(float _move)
 {
 	m_position.x += (m_forward.x)*_move;
 	m_position.y += (m_forward.y)*_move;
-	m_position.z -= (m_forward.z)*_move;
+	m_position.z += (m_forward.z)*_move;
 
 	UpdateView();
 }

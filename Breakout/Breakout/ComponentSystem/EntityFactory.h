@@ -2,7 +2,7 @@
 #define ENTITIYFACTORY_H
 
 #include "Entity/Entity.h"
-
+#include "World.h"
 
 #include "Component/PositionComponent.h"
 #include "Component/RotationComponent.h"
@@ -53,6 +53,9 @@ public:
 
 	// Creates entity and required components based on EntityType
 	void CreateEntity(Entity* _entity, EntityType _entityType);
+
+
+	void CreateBlockField(World* _world);
 
 
 };

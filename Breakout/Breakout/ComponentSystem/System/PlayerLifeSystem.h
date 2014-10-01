@@ -7,7 +7,6 @@
 class PlayerLifeSystem : public System<PlayerLifeSystem>
 {
 private:
-	int m_ballCounter;
 	void OnEntityAdded(Entity* _e);
 	void OnEntityRemove(Entity* _e);
 

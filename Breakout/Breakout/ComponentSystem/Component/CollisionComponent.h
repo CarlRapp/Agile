@@ -1,9 +1,15 @@
 #ifndef COLLISIONCOMPONENT_H
 #define COLLISIONCOMPONENT_H
 
+#ifdef LINUX
+#include <Box2D/Box2D.h>
+#else
+
 #include <Box2D.h>
+#endif
 #include <vector>
 #include <map>
+
 
 #include "../../stdafx.h"
 #include "IComponent.h"

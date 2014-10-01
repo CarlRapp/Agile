@@ -16,7 +16,6 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -52,15 +51,28 @@ void ModelSystem::Update(float _dt)
 
 		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
-		else if (!ISZERO(rotation->GetDeltaRotation()))
+		else if (!rotation->HasChanged())
 			change = true;
 		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
-
-		//TRANSLATE(model->m_worldMatrix,position->
+                
+                //Explosioner Start
+                //TODO: Flytta till effektsystem, gamerules, whatever
+                ModelComponent::ExplosionState exState = model->IsExploding(_dt);
+                
+		if(exState > 0)
+                {
+                    
+                    if(exState == ModelComponent::ExplosionState::DONE)
+                    {
+                        e->SetState(Entity::DEAD);
+                    }
+                }
+                //Explosioner Slut
+                
 		if (change)
 		{
-			model->m_worldMatrix = ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) * TRANSLATE(position->GetPosition());
+			model->m_worldMatrix = SCALE(scale->GetScale()) * ROTATE(rotation->GetRotation()) * TRANSLATE(position->GetPosition());
 			//TEMP
 			position->Reset();
 			rotation->Reset();
@@ -107,13 +119,13 @@ void ModelSystem::LoadModel(int _entityID)
     Entity* e = m_entityMap.find(_entityID)->second;
 
     model = e->GetComponent<ModelComponent>();
-    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
+    GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &model->m_explosion);
 
 	e->SetInitialized(true);
 }
 
 bool ModelSystem::Remove(Entity* _entity)
 {
-	GraphicsManager::GetInstance()->RemoveObject(_entity->GetId());
+	GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_entity));
 	return ISystem::Remove(_entity);
 }

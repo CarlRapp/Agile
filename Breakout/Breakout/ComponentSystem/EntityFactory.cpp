@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 
 #include "EntityFactory.h"
+#include "Component/BlockComponent.h"
 
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
@@ -29,13 +30,14 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "box";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, *fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.0f);
 		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
+		_entity->AddComponent<BlockComponent>();
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
@@ -113,4 +115,34 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	default:
 		break;
 	}
+}
+
+void EntityFactory::CreateBlockField(World* _world)
+{
+	/*	New Implementation	*/
+	Entity* e;
+	int xBlock, yBlock;
+	int	startX, startY;
+
+	startX = -20;
+	xBlock = 2 * -startX;
+	startY = 6;
+	yBlock = 4;
+
+	for (int y = startY; y < startY + yBlock; ++y)
+		for (int x = startX; x < startX + xBlock; ++x)
+		{
+			e = _world->CreateEntity();
+			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
+			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0, 0, 0));
+			BlockComponent* bc = e->GetComponent<BlockComponent>();
+
+
+			_world->AddEntity(e);
+		}
+
+
+
+
 }
