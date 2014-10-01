@@ -19,8 +19,8 @@ struct ModelComponent : Component<ModelComponent>
         ///-------------------------___EXPLOSIONS___-------------------------///
         
         float m_explosion = 0.0f;
-        float m_maxExplosionTime = 3.0f;
-        float m_expansionRate = 0.05f;
+        float m_maxExplosionTime = 1.2f;
+        float m_expansionRate = 20.0f;
         
         enum ExplosionState
         {
@@ -31,13 +31,13 @@ struct ModelComponent : Component<ModelComponent>
         
         ExplosionState m_explosionState = NONE;
 
-        ExplosionState IsExploding()
+        ExplosionState IsExploding(float _dt)
         {
             if(m_explosionState == EXPLODING)
             {
-                m_explosion += m_expansionRate;
+                m_explosion += _dt * m_expansionRate;
                 
-                if(m_explosion > m_maxExplosionTime)
+				if (m_explosion > m_maxExplosionTime * m_expansionRate)
                 {
                     m_explosionState = DONE;
                     printf("Entity done exploding, remove\n");

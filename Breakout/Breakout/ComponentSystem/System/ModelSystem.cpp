@@ -59,7 +59,7 @@ void ModelSystem::Update(float _dt)
                 
                 //Explosioner Start
                 //TODO: Flytta till effektsystem, gamerules, whatever
-                ModelComponent::ExplosionState exState = model->IsExploding();
+                ModelComponent::ExplosionState exState = model->IsExploding(_dt);
                 
 		if(exState > 0)
                 {
