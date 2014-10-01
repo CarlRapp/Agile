@@ -66,6 +66,7 @@ static glm::vec3 MacroNormalize(glm::vec3 vector)
 #define VECTOR4 DirectX::XMFLOAT4
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
+#define QUAT DirectX::XMFLOAT4
 
 static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 {
@@ -77,7 +78,7 @@ static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
-	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
+	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, -_vector.z);
 
 	DirectX::XMFLOAT4X4 float4x4;
 	DirectX::XMStoreFloat4x4(&float4x4, temp);
@@ -85,16 +86,51 @@ static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 	return float4x4;
 }
 
-
-static DirectX::XMFLOAT4X4 MacroRotate(MATRIX4 _mat, float _angle, VECTOR3 _axis)
+static DirectX::XMFLOAT4 MacroRotateAxis(VECTOR3 _axis, float angle)
 {
-	DirectX::XMVECTOR vec = DirectX::XMLoadFloat3(&_axis);
-	DirectX::XMMATRIX temp = DirectX::XMLoadFloat4x4(&_mat);
+	DirectX::XMVECTOR axis = DirectX::XMLoadFloat3(&_axis);
 
 	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
-	temp = DirectX::XMMatrixRotationAxis(vec, _angle);
-	DirectX::XMStoreFloat4x4(&_mat, temp);
-	return _mat;
+	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationAxis(axis, angle);
+
+	DirectX::XMFLOAT4 q;
+	DirectX::XMStoreFloat4(&q, quat);
+	return q;
+}
+
+
+static DirectX::XMFLOAT4 MacroRotateYawPitchRoll(float yaw, float pitch, float roll)
+{
+	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
+	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(yaw, pitch, roll);
+
+	DirectX::XMFLOAT4 q;
+	DirectX::XMStoreFloat4(&q, quat);
+	return q;
+}
+
+static DirectX::XMFLOAT4 MacroRotateYawPitchRollFromVector(VECTOR3 _rotation)
+{
+	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
+	DirectX::XMVECTOR rot = DirectX::XMLoadFloat3(&_rotation);
+	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYawFromVector(rot);
+
+	DirectX::XMFLOAT4 q;
+	DirectX::XMStoreFloat4(&q, quat);
+	return q;
+}
+
+static DirectX::XMFLOAT4X4 MacroRotate(VECTOR4 _quat)
+{
+	DirectX::XMVECTOR quat = DirectX::XMLoadFloat4(&_quat);
+	DirectX::XMMATRIX temp;
+
+	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
+	temp = DirectX::XMMatrixRotationQuaternion(quat);
+
+	DirectX::XMFLOAT4X4 mat;
+	DirectX::XMStoreFloat4x4(&mat, temp);
+	return mat;
 }
 
 static bool MacroIsZero(VECTOR3 _vec)
@@ -132,6 +168,17 @@ static VECTOR3 MacroNormalize(VECTOR3 vector)
 	return res;
 }
 
+static DirectX::XMFLOAT4X4 MacroScale(VECTOR3 scale)
+{
+	DirectX::XMMATRIX temp;
+	temp = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+
+	DirectX::XMFLOAT4X4 float4x4;
+	DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
+}
+
 
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
@@ -139,7 +186,8 @@ DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
 DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
-DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r);
+DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r); 
+DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 _inM1, DirectX::XMFLOAT4X4 _inM2);
 
 
 
@@ -148,7 +196,14 @@ DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r);
 #define GETIMATRIX() GetIdentityMatrix()
 
 #define TRANSLATE(vector) MacroTranslate(vector)
-#define ROTATE(matrix,angle,axis) MacroRotate(matrix,angle,axis)
+#define ROTATE(quat) MacroRotate(quat)
+
+#define ROTATEAXIS(axis, angle) MacroRotateAxis(axis, angle)
+#define ROTATEYAWPITCHROLL(yaw, pitch, roll) MacroRotateYawPitchRoll(yaw, pitch, roll)
+#define ROTATEYAWPITCHROLLFROMVECTOR(rot) MacroRotateYawPitchRollFromVector(rot)
+
+#define SCALE(scale) MacroScale(scale)
+
 #define ISZERO(vector) MacroIsZero(vector)
 
 #define DOT(vector1, vector2) MacroDot(vector1, vector2)

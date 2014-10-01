@@ -27,7 +27,10 @@ private:
 	void Reset(void);
 
 	World* m_world;
-	Entity* m_ball;
+
+	// Pause Screen settings
+	Texture2DData*	m_pauseBackground;
+	bool m_isPaused;
 public:
 	GameScene();
 	~GameScene();

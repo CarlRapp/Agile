@@ -67,9 +67,10 @@ static std::string GetFile(std::string _path, std::string _root)
 }
 
 
-
-
-
-
-
+//Returns the memory adress as INT
+//of the given pointer
+static int GetMemoryID(void* _pointer)
+{
+	return (int)_pointer;
+}
 #endif

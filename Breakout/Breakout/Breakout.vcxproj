@@ -91,6 +91,7 @@
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PlayerLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Scenes\GameOverScene.cpp" />
     <ClCompile Include="Scenes\GameScene.cpp" />
     <ClCompile Include="Scenes\MainMenuScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -134,12 +136,21 @@
     <ClInclude Include="Audio\LinAudio.h" />
     <ClInclude Include="Audio\WinAudio.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
+    <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\BounceComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\HealthComponent.h" />
     <ClInclude Include="ComponentSystem\Component\IComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\InputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\KeyboardInputComponent.h" />
     <ClInclude Include="ComponentSystem\Component\LifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\LightComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\RotationComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScaleComponent.h" />
@@ -158,6 +169,7 @@
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
     <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PlayerLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />
@@ -186,6 +198,7 @@
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Input\Windows\WindowsInput.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Scenes\GameOverScene.h" />
     <ClInclude Include="Scenes\GameScene.h" />
     <ClInclude Include="Scenes\MainMenuScene.h" />
     <ClInclude Include="Scene\Scene.h" />

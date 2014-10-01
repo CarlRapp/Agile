@@ -13,7 +13,20 @@
 #include <d3dCompiler.h>
 #endif
 
+struct Texture2DData
+{
+public:
+	Texture2DData()
+	{
+		m_imageWidth = m_imageHeight = 0;
+		m_positionX = m_positionY = 0;
+		m_textureName = "";
+	}
 
+	float m_imageWidth, m_imageHeight;
+	float m_positionX, m_positionY;
+	std::string m_textureName;
+};
 
 class GraphicsManager
 {
