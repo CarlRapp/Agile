@@ -132,13 +132,19 @@ void GLGraphics::LoadModel(std::string _path)
             memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(glm::vec3));
             memcpy(&texCoordArray[2*i], &(*triangleIt).Vertices[0].Texture, sizeof(glm::vec2));
             
+            texCoordArray[2*i +1] = -texCoordArray[2*i +1];
+            
             memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(glm::vec3));
             memcpy(&texCoordArray[2*(i+1)], &(*triangleIt).Vertices[1].Texture, sizeof(glm::vec2));
             
+            texCoordArray[2*(i+1) + 1] = -texCoordArray[2*(i+1) + 1];
+            
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(glm::vec3));
             memcpy(&texCoordArray[2*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec2));
+            
+            texCoordArray[2*(i+2) + 1] = -texCoordArray[2*(i+2) + 1];
             
             //memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec3));
 
@@ -383,7 +389,7 @@ float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.2, 0.2, 0.4, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     
