@@ -52,6 +52,9 @@ public:
 	void Kill(){ m_running = false; }
 	bool IsAlive(){ return m_running; }
 	void SetAlive(){ m_running = true; }
+
+	//Resets all entites to empty/DEAD
+	void Clear();
 };
 
 template <typename T>

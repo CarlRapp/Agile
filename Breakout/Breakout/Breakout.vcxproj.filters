@@ -147,6 +147,9 @@
     <ClCompile Include="ComponentSystem\System\PlayerLifeSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\GameOverScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -366,6 +369,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\GameOverScene.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -66,6 +66,7 @@ static glm::vec3 MacroNormalize(glm::vec3 vector)
 #define VECTOR4 DirectX::XMFLOAT4
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
+#define QUAT DirectX::XMFLOAT4
 
 static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 {
@@ -77,7 +78,7 @@ static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
-	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
+	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, -_vector.z);
 
 	DirectX::XMFLOAT4X4 float4x4;
 	DirectX::XMStoreFloat4x4(&float4x4, temp);
@@ -167,6 +168,17 @@ static VECTOR3 MacroNormalize(VECTOR3 vector)
 	return res;
 }
 
+static DirectX::XMFLOAT4X4 MacroScale(VECTOR3 scale)
+{
+	DirectX::XMMATRIX temp;
+	temp = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+
+	DirectX::XMFLOAT4X4 float4x4;
+	DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
+}
+
 
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
@@ -189,6 +201,8 @@ DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 _inM1, DirectX::XMFLOAT4X4 _in
 #define ROTATEAXIS(axis, angle) MacroRotateAxis(axis, angle)
 #define ROTATEYAWPITCHROLL(yaw, pitch, roll) MacroRotateYawPitchRoll(yaw, pitch, roll)
 #define ROTATEYAWPITCHROLLFROMVECTOR(rot) MacroRotateYawPitchRollFromVector(rot)
+
+#define SCALE(scale) MacroScale(scale)
 
 #define ISZERO(vector) MacroIsZero(vector)
 

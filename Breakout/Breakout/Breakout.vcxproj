@@ -119,6 +119,7 @@
     <ClCompile Include="Input\Windows\WindowsInput.cpp" />
     <ClCompile Include="MathHelper.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Scenes\GameOverScene.cpp" />
     <ClCompile Include="Scenes\GameScene.cpp" />
     <ClCompile Include="Scenes\MainMenuScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="Input\InputManager.h" />
     <ClInclude Include="Input\Windows\WindowsInput.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Scenes\GameOverScene.h" />
     <ClInclude Include="Scenes\GameScene.h" />
     <ClInclude Include="Scenes\MainMenuScene.h" />
     <ClInclude Include="Scene\Scene.h" />

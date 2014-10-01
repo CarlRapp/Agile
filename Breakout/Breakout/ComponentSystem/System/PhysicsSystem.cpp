@@ -43,7 +43,7 @@ void PhysicsSystem::Update(float _dt)
 		b2Vec2 b2Velocity = b2Body->GetLinearVelocity();
 		b2Vec2 b2Rotation = b2Vec2(cos(b2Body->GetAngle()), sin(b2Body->GetAngle()));
 		position->SetPosition(VECTOR3(b2Pos.x, b2Pos.y, position->GetPosition().z));
-		rotation->SetRotation(VECTOR3(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
+		rotation->SetRotation(MacroRotateYawPitchRoll(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
 		if (velocity) 
 			velocity->m_velocity = VECTOR3(b2Velocity.x, b2Velocity.y, velocity->m_velocity.z);
 	}
@@ -140,7 +140,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 15.0f);
+		polygonShape->SetAsBox(0.5f, 30.0f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
@@ -149,7 +149,7 @@ b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(unsigned int _entityType)
 	case EntityFactory::INVISIBLE_WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(24.f, 0.f);
+		polygonShape->SetAsBox(94.f, 0.f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;

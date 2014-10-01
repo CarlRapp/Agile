@@ -9,6 +9,7 @@
 
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
+#include "Scenes/GameOverScene.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -49,6 +50,7 @@ int main(int argc, char** argv)
 	m_SceneManager = SceneManager::GetInstance();
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
+	m_SceneManager->AddScene<GameOverScene>(false);
 
 	m_SceneManager->ChangeScene<MainMenuScene>();
 
