@@ -34,9 +34,8 @@ void CollisionDamageSystem::Update(float _dt)
 				{
                                     
                                     auto model = collidingEntity->GetComponent<ModelComponent>();
-                                    model->m_explosion += 1;
                                     
-					//collidingEntity->SetState(Entity::DEAD);
+                                    model->Explode();
 					break;
 				}
 			}
