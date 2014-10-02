@@ -132,19 +132,13 @@
     <ClCompile Include="Scenes\MainMenuScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\BounceSystem.cpp">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentSystem\System\PlayerLifeSystem.cpp">
+    <ClCompile Include="ComponentSystem\System\CollisionDeflectionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp">
@@ -154,6 +148,12 @@
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -331,9 +331,6 @@
     <ClInclude Include="Scenes\MainMenuScene.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\System\BounceSystem.h">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
@@ -343,7 +340,13 @@
     <ClInclude Include="ComponentSystem\Component\LightComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+    <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\CollisionDeflectionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXLightHelper.h">
@@ -373,12 +376,6 @@
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\System\PlayerLifeSystem.h">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h">
-      <Filter>Source Files\ComponentSystem\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Scenes\GameOverScene.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
@@ -386,6 +383,18 @@
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\BlockSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
