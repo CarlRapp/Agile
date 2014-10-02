@@ -403,6 +403,9 @@
     <ClInclude Include="ComponentSystem\Component\TextComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXParticleSystem.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
