@@ -12,13 +12,15 @@ private:
 
 	GraphicsManager* m_graphicsManager;
 	int m_lightId;
+	void OnEntityAdded(Entity* _entity);
+	void OnEntityRemove(Entity* _entity);
 
 public:
 
 	LightSystem(World* _world);
 	~LightSystem();
 
-	bool Add(Entity* _entity);
+
 	void Update(float _dt);
 };
 #endif

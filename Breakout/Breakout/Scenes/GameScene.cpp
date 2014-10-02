@@ -5,7 +5,6 @@
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/System/PlayerLifeSystem.h"
-
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -49,7 +48,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -132,24 +131,13 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	int xBlock, yBlock;
-	int	startX, startY;
-
-	startX = -20;
-	xBlock = 2 * -startX;
-	startY = 6;
-	yBlock = 4;
-
-	for (int y = startY; y < startY + yBlock; ++y)
-		for (int x = startX; x < startX + xBlock; ++x)
-		{
-			e = m_world->CreateEntity();
-			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2*x, 2*y , 0));
-			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0 ,0, 0));
-			e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-			m_world->AddEntity(e);
-		}
+	for (int i = 0; i < 10; ++i)
+	{
+		e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		m_world->AddEntity(e);
+	}
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
@@ -212,7 +200,7 @@ void GameScene::Reset()
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 0, 70));
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 
