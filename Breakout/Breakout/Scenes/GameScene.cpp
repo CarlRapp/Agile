@@ -102,9 +102,9 @@ void GameScene::Update(float _dt)
 	}
 }
 
-void GameScene::Render()
+void GameScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
+	GraphicsManager::GetInstance()->Render(_dt);
 }
 
 void GameScene::OnActive()

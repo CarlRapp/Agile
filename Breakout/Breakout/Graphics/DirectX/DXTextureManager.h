@@ -22,6 +22,20 @@
 
 class DXTextureManager
 {
+private:
+	DXTextureManager(const DXTextureManager& rhs);
+	DXTextureManager& operator=(const DXTextureManager& rhs);
+
+	ID3D11Device* md3dDevice;
+	std::map<std::string, ID3D11ShaderResourceView*> mTextureSRV;
+
+	ID3D11ShaderResourceView* m_RandomTex;
+
+	void buildRandomTex(ID3D11Device *Device);
+
+	float RandF();
+	float RandF(float a, float b);
+
 public:
 	DXTextureManager();
 	~DXTextureManager();
@@ -29,14 +43,7 @@ public:
 	void Init(ID3D11Device* device);
 
 	ID3D11ShaderResourceView* CreateTexture(std::string filename);
-
-private:
-	DXTextureManager(const DXTextureManager& rhs);
-	DXTextureManager& operator=(const DXTextureManager& rhs);
-	
-private:
-	ID3D11Device* md3dDevice;
-	std::map<std::string, ID3D11ShaderResourceView*> mTextureSRV;
+	ID3D11ShaderResourceView* GetRandomTexture() { return m_RandomTex; }
 };
 
 #endif

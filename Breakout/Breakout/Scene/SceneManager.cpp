@@ -70,7 +70,7 @@ void SceneManager::Start()
 		IM->Update();
 
 		m_activeScene->Update(dt);
-		m_activeScene->Render();
+		m_activeScene->Render(dt);
                 //setbuf(stdout, NULL);
 		lol += dt;
 		if (lol > 0.5f)

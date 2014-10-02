@@ -55,7 +55,7 @@ void MainMenuScene::Update(float _dt)
 	m_trollCounter += _dt;
 }
 
-void MainMenuScene::Render()
+void MainMenuScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
+	GraphicsManager::GetInstance()->Render(_dt);
 }

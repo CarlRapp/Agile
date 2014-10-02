@@ -22,6 +22,7 @@
 #include "DX2DTextureInstance.h"
 #include "DXStructuredBuffer.h"
 #include "DXLightHelper.h"
+#include "DXParticleSystem.h"
 
 class DXDeferred
 {
@@ -75,6 +76,8 @@ private:
 	void					Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances);
 	void					Render2DTexture(DX2DTextureInstance *_textureInstance);
 
+	void					RenderParticleSystems(float _dt, ID3D11RenderTargetView *_renderTargetView, map<int, DXParticleSystem*> &_particleSystems, ICamera* _camera);
+
 	void					ComputeLight(ID3D11UnorderedAccessView *_renderTargetView, ICamera* _camera);
 
 	void					UpdateLights();
@@ -86,10 +89,12 @@ public:
 
 	void Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height);
 
-	void	Render(ID3D11RenderTargetView *_renderTargetView,
+	void	Render(float _dt,
+		ID3D11RenderTargetView *_renderTargetView,
 		ID3D11UnorderedAccessView *_finalUAV,
 		map<std::string, map<int, ModelInstance*>> &_modelInstances, 
 		map<int, DX2DTextureInstance*> &_textureInstances,
+		map<int, DXParticleSystem*>		&_particleSystems,
 		ICamera* _camera);
 
 	void SetPointLightMap(map<int, PointLight*> *map) { m_pointLights = map; }

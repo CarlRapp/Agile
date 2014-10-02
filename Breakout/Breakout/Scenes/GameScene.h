@@ -38,7 +38,7 @@ public:
 	void Initialize();
 	void LoadContent();
 	void Update(float _dt);
-	void Render();
+	void Render(float _dt);
 
 	void OnActive();
 	void OnInactive();

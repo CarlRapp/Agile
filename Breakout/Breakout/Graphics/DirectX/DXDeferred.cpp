@@ -331,12 +331,9 @@ void DXDeferred::RenderModels(map<std::string, map<int, ModelInstance*>> &_model
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX proj;
 
-	DirectX::XMFLOAT4X4 view4x4, proj4x4;
-	memcpy(&view4x4, _camera->GetView(), sizeof(DirectX::XMFLOAT4X4));
-	memcpy(&proj4x4, _camera->GetProjection(), sizeof(DirectX::XMFLOAT4X4));
 
-	view = DirectX::XMLoadFloat4x4(&view4x4);
-	proj = DirectX::XMLoadFloat4x4(&proj4x4);
+	view = DirectX::XMLoadFloat4x4(_camera->GetView());
+	proj = DirectX::XMLoadFloat4x4(_camera->GetProjection());
 
 	ID3DX11EffectTechnique* tech;
 	D3DX11_TECHNIQUE_DESC techDesc;
@@ -782,10 +779,12 @@ void DXDeferred::UpdateLights()
 
 
 float ddda = 0.0f;
-void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView, 
+void DXDeferred::Render(float _dt,
+	ID3D11RenderTargetView *_renderTargetView,
 	ID3D11UnorderedAccessView *_finalUAV,
 	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
 	map<int, DX2DTextureInstance*> &_textureInstances,
+	map<int, DXParticleSystem*>		&_particleSystems,
 	ICamera* _camera)
 {
 
@@ -801,11 +800,36 @@ void DXDeferred::Render(ID3D11RenderTargetView *_renderTargetView,
 	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
 
+	RenderParticleSystems(_dt, _renderTargetView, _particleSystems, _camera);
+
 	Render2DTextures(_renderTargetView, _textureInstances);
+
+
 
 
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
+}
+
+void DXDeferred::RenderParticleSystems(float _dt, ID3D11RenderTargetView *_renderTargetView, map<int, DXParticleSystem*> &_particleSystems, ICamera* _camera)
+{
+	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_noDSS, 0);
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
+	//m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+
+	DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(_camera->GetView());
+	DirectX::XMMATRIX proj = DirectX::XMLoadFloat4x4(_camera->GetProjection());	
+
+	DirectX::XMFLOAT4X4 viewProj;
+	DirectX::XMStoreFloat4x4(&viewProj, XMMatrixMultiply(view, proj));
+
+	map<int, DXParticleSystem*>::iterator psIterator;
+	for (psIterator = _particleSystems.begin(); psIterator != _particleSystems.end(); ++psIterator)
+	{
+		psIterator->second->Render(m_deviceContext, _dt, viewProj, _camera->GetPosition());
+	}
 }
 
 void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
