@@ -4,8 +4,9 @@
 
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
-#include "../ComponentSystem/System/PlayerLifeSystem.h"
+#include "../ComponentSystem/System/LoseLifeSystem.h"
 
+float counter;
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -27,13 +28,16 @@ void GameScene::Initialize()
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
-	m_world->AddSystem<PlayerLifeSystem>();
+	m_world->AddSystem<CollisionDeflectionSystem>();
+	//m_world->AddSystem<LoseLifeSystem>();
+	//m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<BlockSystem>();
+	
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -42,6 +46,8 @@ void GameScene::Initialize()
 	m_pauseBackground->m_imageHeight = 1;
 	m_pauseBackground->m_textureName = "Pause.png";
 
+	counter = 0;
+
 	m_isPaused = false;
 }
 
@@ -49,7 +55,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -79,7 +85,7 @@ void GameScene::Update(float _dt)
 		
 
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
-
+        
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 		this->Reset();
 
@@ -94,12 +100,40 @@ void GameScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
+	counter += _dt;
+	if (counter > .5f)
+	{
+		Entity* e;
+		e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		m_world->AddEntity(e);
+		counter = 0;
+	}
+
 	m_world->Update(_dt);
 
 	if (!m_world->IsAlive())
 	{
 		SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
+
+        UpdateFPS(_dt);
+        
+}
+
+void GameScene::UpdateFPS(float _dt)
+{
+  //      
+  //      float fps = 1.0f / _dt;
+  //      std::string fpsString= "FPS: ";
+  //      fpsString.append(std::to_string(fps));
+  //      fpsString += " DT: ";
+  //      fpsString.append(std::to_string(_dt));
+  //      Entity* e = m_world->GetEntity(m_fpsCounterID);
+  //      auto TC = e->GetComponent<TextComponent>();
+		//if(TC)
+		//	TC->SetText(fpsString);
 }
 
 void GameScene::Render(float _dt)
@@ -132,25 +166,13 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	int xBlock, yBlock;
-	int	startX, startY;
-
-	startX = -20;
-	xBlock = 2 * -startX;
-	startY = 6;
-	yBlock = 4;
-
-	for (int y = startY; y < startY + yBlock; ++y)
-		for (int x = startX; x < startX + xBlock; ++x)
-		{
-			e = m_world->CreateEntity();
-			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2*x, 2*y , 0));
-			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0 ,0, 0));
-			e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-			m_world->AddEntity(e);
-		}
-
+	for (int i = 0; i < 10; ++i)
+	{
+		e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		m_world->AddEntity(e);
+	}
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
@@ -212,7 +234,7 @@ void GameScene::Reset()
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 0, 70));
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 

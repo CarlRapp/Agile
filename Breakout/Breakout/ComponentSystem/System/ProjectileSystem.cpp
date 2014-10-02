@@ -29,20 +29,17 @@ void ProjectileSystem::Update(float _dt)
 		if (e->GetState() != Entity::ALIVE)
 			continue;
 
-		mouse = it->second->GetComponent<MouseInputComponent>();
+		mouse = e->GetComponent<MouseInputComponent>();
 		if (mouse->m_controls.LeftButton == InputState::Pressed)
 		{
 			position = it->second->GetComponent<PositionComponent>();
 
 			Entity* e = m_world->CreateEntity();
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(5, 25, 0);
+			e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, 40, 0);
 			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x, position->GetPosition().y + 2.0f, 0));
 
 			m_world->AddEntity(e);
-
 		}
-
-
 	}
 }

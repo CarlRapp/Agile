@@ -22,20 +22,16 @@ void CollisionDamageSystem::Update(float _dt)
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();
-		std::vector<int> collisions = collision->GetCollisions();
+		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
-			Entity* collidingEntity = m_world->GetEntity(collisions[i]);
+			Entity* collidingEntity = m_world->GetEntity(collisions[i].m_otherId);
 			auto collidingHealth = collidingEntity->GetComponent<HealthComponent>();
 			if (collidingHealth)
 			{
 				DealDamage(*damage, *collidingHealth);
 				if (collidingHealth->m_currentHealth <= 0)
 				{
-                                    
-                                    auto model = collidingEntity->GetComponent<ModelComponent>();
-                                    
-                                    model->Explode();
 					break;
 				}
 			}

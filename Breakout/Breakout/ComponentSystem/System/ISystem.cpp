@@ -44,7 +44,7 @@ bool ISystem::Remove(Entity* _entity)
 		return false;
 
 	m_entityMap.erase(_entity->GetId());
-	OnEntityRemove(_entity);
+	OnEntityRemoved(_entity);
 	return true;
 }
 
