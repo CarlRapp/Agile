@@ -15,6 +15,7 @@
 #include "../ComponentSystem/System/AudioSystem.h"
 #include "../ComponentSystem/System/ScoreSystem.h"
 #include "../ComponentSystem/System/LightSystem.h"
+#include "../ComponentSystem/System/RespawnBallSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"

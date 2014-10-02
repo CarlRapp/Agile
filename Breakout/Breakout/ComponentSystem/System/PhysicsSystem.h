@@ -32,7 +32,8 @@ public:
 	~PhysicsSystem();
 
 	void Update(float _dt);
-	bool Add(Entity* _entity);
+	void OnEntityAdded(Entity* _entity);
+	void OnEntityRemoved(Entity* _entity);
 
 	void SetGravity(const b2Vec2& _gravity) { m_b2World->SetGravity(_gravity); }
 
@@ -40,9 +41,6 @@ public:
 
 	// Get the right fixture definition for the game object
 	static void GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, vector<b2FixtureDef*>& _b2FixtureDefs);
-	/*static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution);
-	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, float size, float density, float friction, float restitution, uint16 maskBits);
-	static b2FixtureDef* GenerateFixtureDefinition(unsigned int _entityType, uint16 maskBits);*/
 };
 
 

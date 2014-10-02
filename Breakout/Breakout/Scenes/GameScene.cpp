@@ -4,7 +4,7 @@
 
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
-#include "../ComponentSystem/System/PlayerLifeSystem.h"
+#include "../ComponentSystem/System/LoseLifeSystem.h"
 
 GameScene::GameScene()
 {
@@ -27,11 +27,12 @@ void GameScene::Initialize()
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
-	m_world->AddSystem<PlayerLifeSystem>();
+	m_world->AddSystem<CollisionDeflectionSystem>();
+	//m_world->AddSystem<LoseLifeSystem>();
+	//m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<BlockSystem>();
 

@@ -90,7 +90,7 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			rotation->SetRotation(VECTOR3(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
+			rotation->SetRotation(MacroRotateYawPitchRoll(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
 		}
 	}
 
@@ -123,31 +123,48 @@ void PhysicsSystem::Update(float _dt)
 	}
 }
 
-bool PhysicsSystem::Add(Entity* _entity)
+void PhysicsSystem::OnEntityAdded(Entity* _entity)
 {
-	if (!Base::Add(_entity))
-		return false;
-
 	auto collision = _entity->GetComponent<CollisionComponent>();
-	auto posComponent = _entity->GetComponent<PositionComponent>();
-	auto velComponent = _entity->GetComponent<VelocityComponent>();
-	auto rotComponent = _entity->GetComponent<RotationComponent>();
+	auto position = _entity->GetComponent<PositionComponent>();
+	auto velocity = _entity->GetComponent<VelocityComponent>();
+	auto rotation = _entity->GetComponent<RotationComponent>();
+	auto scale = _entity->GetComponent<ScaleComponent>();
 
-	collision->CreateBody(m_b2World);
-
-	b2Vec2 position, velocity;
-	float rotation;
-	if (posComponent)
-		position = b2Vec2(posComponent->GetPosition().x, posComponent->GetPosition().y);
-	if (velComponent)
-		velocity = b2Vec2(velComponent->m_velocity.x, velComponent->m_velocity.y);
-	if (rotComponent)
-		rotation = rotComponent->GetRotation().z;
+	if (scale && (scale->GetScale().x != 1 || scale->GetScale().y != 1))
+	{
+		auto fixDefs = collision->GetFixtureDefs();
+		for (auto it = fixDefs.begin(); it != fixDefs.end(); ++it)
+		{
+			b2FixtureDef* fix = *it;
+			if (fix->shape->m_type == b2Shape::Type::e_polygon)
+			{
+				b2PolygonShape* polygonShape = (b2PolygonShape*)fix->shape;
+				for (int i = 0; i < polygonShape->m_count; ++i)
+					polygonShape->m_vertices[i] = b2Vec2(polygonShape->m_vertices[i].x * scale->GetScale().x, polygonShape->m_vertices[i].y * scale->GetScale().y);
+			}
+			else if (fix->shape->m_type == b2Shape::Type::e_circle)
+			{
+				b2CircleShape* circleShape = (b2CircleShape*)fix->shape;
+				if (scale->GetScale().x > scale->GetScale().y)
+					circleShape->m_radius *= scale->GetScale().x;
+				else
+					circleShape->m_radius *= scale->GetScale().y;
+			}
+		}
+	}
+	if (position)
+		collision->GetBodyDef()->position = b2Vec2(position->GetPosition().x, position->GetPosition().y);
+	if (velocity)
+		collision->GetBodyDef()->linearVelocity = b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y);
+	if (rotation)
+		collision->GetBodyDef()->angle = rotation->GetRotation().z;
 	
-	collision->GetBody()->SetTransform(b2Vec2(position.x, position.y), rotation);
-	collision->GetBody()->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
+	collision->CreateBody(m_b2World);
+}
 
-	return true;
+void PhysicsSystem::OnEntityRemoved(Entity* _entity)
+{
 }
 
 void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef, vector<b2FixtureDef*>& _b2FixtureDefs)
@@ -208,7 +225,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 15.0f);
+		polygonShape->SetAsBox(0.5f, 30.0f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
@@ -219,9 +236,10 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::INVISIBLE_WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(24.f, 0.f);
+		polygonShape->SetAsBox(47.f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
+	
 		fixDef->friction = 0.0f;
 		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
 		_b2FixtureDefs.push_back(fixDef);
@@ -230,17 +248,3 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		break;
 	}
 }
-/*
-b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(EntityFactory::EntityType _entityType, float size, float density, float friction, float restitution)
-{
-	return 0;
-}
-b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(EntityFactory::EntityType _entityType, float size, float density, float friction, float restitution, uint16 maskBits)
-{
-	return 0;
-}
-b2FixtureDef* PhysicsSystem::GenerateFixtureDefinition(EntityFactory::EntityType _entityType, uint16 maskBits)
-{
-	return 0;
-}
-*/

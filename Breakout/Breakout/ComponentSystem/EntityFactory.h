@@ -20,9 +20,9 @@
 #include "Component/AudioComponent.h"
 #include "Component/PlayerComponent.h"
 #include "Component/LightComponent.h"
+#include "Component/LoseLifeComponent.h"
+#include "Component/SpawnEntityComponent.h"
 #include "System/PhysicsSystem.h"
-#include "Component/PlayerLifeComponent.h"
-
 
 class EntityFactory
 {
