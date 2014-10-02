@@ -4,7 +4,7 @@
 
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
-#include "../ComponentSystem/System/PlayerLifeSystem.h"
+#include "../ComponentSystem/System/LoseLifeSystem.h"
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -26,11 +26,12 @@ void GameScene::Initialize()
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<ProjectileSystem>();
-	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
-	m_world->AddSystem<PlayerLifeSystem>();
+	m_world->AddSystem<CollisionDeflectionSystem>();
+	//m_world->AddSystem<LoseLifeSystem>();
+	//m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<BlockSystem>();
 
@@ -138,7 +139,6 @@ void GameScene::Reset()
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
-
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));

@@ -346,7 +346,7 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 
 	GroupMemoryBarrierWithGroupSync(); //Väntar på alla trådarna i gruppen
 
-	float4 ambient	= float4(float3(0.02f, 0.02f, 0.02f), 0.0f);
+	float4 ambient	= float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 diffuse	= float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 spec		= float4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -359,9 +359,10 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 			DirectionalLight light = gDirLightBuffer[i];			
 			//float shadowFactor = CalcualteShadowFactor(light, posW, 0);
 
-			float4 D, S;
-			ComputeDirectionalLight(mat, light, normalW, toEye, D, S);
-  
+			float4 A, D, S;
+			ComputeDirectionalLight(mat, light, normalW, toEye, A, D, S);
+
+			ambient += A;
 			diffuse += D;// *shadowFactor;
 			spec += S;// *shadowFactor;
 
