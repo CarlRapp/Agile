@@ -68,11 +68,11 @@ static void MacroPrintMatrix(glm::mat4* _m)
     {
         for(int j=0;j< 4;j++)
         {
-            printf("%f  ",(*_m)[i][j]);
+            //printf("%f  ",(*_m)[i][j]);
         }
-        printf("\n");
+        //printf("\n");
     }
-    printf("\n");
+   // printf("\n");
 }
 
 //static DirectX::XMFLOAT4 MacroRotateYawPitchRollFromVector(VECTOR3 _rotation)

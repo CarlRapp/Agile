@@ -11,15 +11,6 @@
     <ClCompile Include="Audio\LinAudio.cpp">
       <Filter>Source Files\Audio\Linux</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameplayManager.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Simulation.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\UserInterface.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
@@ -138,7 +129,7 @@
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\CollisionDeflectionSystem.cpp">
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp">
@@ -150,10 +141,16 @@
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp">
+    <ClCompile Include="ComponentSystem\System\EffectSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\CollisionDeflectionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
   </ItemGroup>
@@ -169,15 +166,6 @@
     </ClInclude>
     <ClInclude Include="Audio\LinAudio.h">
       <Filter>Source Files\Audio\Linux</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameplayManager.h">
-      <Filter>Source Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Simulation.h">
-      <Filter>Source Files\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\UserInterface.h">
-      <Filter>Source Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXGraphics.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
@@ -340,19 +328,16 @@
     <ClInclude Include="ComponentSystem\Component\LightComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h">
-      <Filter>Source Files\ComponentSystem\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h">
-      <Filter>Source Files\ComponentSystem\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentSystem\System\CollisionDeflectionSystem.h">
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXLightHelper.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BounceComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h">
@@ -373,6 +358,9 @@
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Scenes\GameOverScene.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
@@ -382,17 +370,35 @@
     <ClInclude Include="ComponentSystem\System\BlockSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\EffectComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\EffectSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\ShatterComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\CollisionDeflectionSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h">
+    <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h">
-      <Filter>Source Files\ComponentSystem\System</Filter>
+    <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\TextComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -458,6 +464,9 @@
     </Filter>
     <Filter Include="Source Files\Scenes">
       <UniqueIdentifier>{4c964eb1-e759-48fe-9eb9-e0977bec6656}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentSystem\Component\Effects">
+      <UniqueIdentifier>{3221115b-2046-44ed-b70c-00894fe85b5c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
