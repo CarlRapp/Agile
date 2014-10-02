@@ -15,7 +15,6 @@ PhysicsSystem::~PhysicsSystem()
 
 void PhysicsSystem::Update(float _dt)
 {
-	// Update velocity manually
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -24,9 +23,37 @@ void PhysicsSystem::Update(float _dt)
 
 		auto collision = e->GetComponent<CollisionComponent>();
 		auto stats = e->GetComponent<CollisionStatsComponent>();
+		auto position = e->GetComponent<PositionComponent>();
 		auto velocity = e->GetComponent<VelocityComponent>();
+		auto rotation = e->GetComponent<RotationComponent>();
 		b2Body* b2Body = collision->GetBody();
-
+		
+		// Update position, velocity and rotation after the components
+		if (position && rotation)
+		{
+			b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
+			if (collision->GetBody()->GetPosition().x != b2Pos.x || collision->GetBody()->GetPosition().y != b2Pos.y || collision->GetBody()->GetAngle() != rotation->GetRotation().z)
+				collision->GetBody()->SetTransform(b2Pos, rotation->GetRotation().z);
+		}
+		else if (position)
+		{
+			b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
+			if (collision->GetBody()->GetPosition().x != b2Pos.x || collision->GetBody()->GetPosition().y != b2Pos.y)
+				collision->GetBody()->SetTransform(b2Pos, collision->GetBody()->GetAngle());
+		}
+		else if (rotation)
+		{
+			if (collision->GetBody()->GetAngle() != rotation->GetRotation().z)
+				collision->GetBody()->SetTransform(collision->GetBody()->GetPosition(), collision->GetBody()->GetAngle());
+		}
+		if (velocity)
+		{
+			b2Vec2 b2Velocity = b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y);
+			if (collision->GetBody()->GetLinearVelocity().x != b2Velocity.x || collision->GetBody()->GetLinearVelocity().y != b2Velocity.y)
+				collision->GetBody()->SetLinearVelocity(b2Velocity);
+		}
+		
+		// Update velocity manually
 		if (velocity && stats)
 		{
 			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)
