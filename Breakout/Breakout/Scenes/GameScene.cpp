@@ -96,6 +96,7 @@ void GameScene::Initialize()
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 
+        //FPS COUNTER
         e = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
         auto TC = e->GetComponent<TextComponent>();

@@ -71,14 +71,14 @@ void ModelSystem::Update(float _dt)
                 }
                 //Explosioner Slut
                 
-		if (change)
-		{
+		//if (change)
+		//{
 			model->m_worldMatrix = TRANSLATE(position->GetPosition()) *ROTATE(ROTATEYAWPITCHROLLFROMVECTOR(rotation->GetRotation())) ;
 			//TEMP
 			position->Reset();
 			rotation->Reset();
 			scale->Reset();
-		}
+		//}
 	}
         
         RunEvents();

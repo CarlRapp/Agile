@@ -45,10 +45,11 @@ class GLGraphics : public IGraphics
             
         int vertices;
         GLuint bufferVAOID;
+        GLuint texHandle;
         std::string name;
         std::map<int, ModelInstance*> instances;
         
-        GLuint buffers[5];
+        GLuint buffers[6];
         
         ModelRenderInfo(){}
       
@@ -91,7 +92,7 @@ private:
         
         std::vector<ModelRenderInfo*> m_models;
         
-        std::vector<LightInfo*> m_lights;
+        std::map<int, LightInfo*> m_lights;
                                             
         std::vector<glm::mat4> m_testMatrices;
         
