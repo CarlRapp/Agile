@@ -142,7 +142,7 @@ void EntityFactory::CreateBlockField(World* _world)
 			e = _world->CreateEntity();
 			EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
 			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
-			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0, 0, 0));
+			e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLL(0, 0, 0));
 			BlockComponent* bc = e->GetComponent<BlockComponent>();
 
 

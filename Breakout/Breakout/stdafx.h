@@ -15,7 +15,7 @@
 typedef signed char         INT8, *PINT8;
 typedef signed short        INT16, *PINT16;
 typedef signed int          INT32, *PINT32;
-typedef signed __int64      INT64, *PINT64;
+//typedef signed __int64      INT64, *PINT64;
 
 template <size_t S>
 struct _ENUM_FLAG_INTEGER_FOR_SIZE;
@@ -39,14 +39,6 @@ struct _ENUM_FLAG_INTEGER_FOR_SIZE<4>
 };
 
 // used as an approximation of std::underlying_type<T>
-template <class T>
-struct _ENUM_FLAG_SIZED_INTEGER
-{
-	typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
-};
-
-
-
 template <class T>
 struct _ENUM_FLAG_SIZED_INTEGER
 {

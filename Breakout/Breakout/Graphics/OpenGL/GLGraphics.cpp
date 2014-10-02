@@ -540,6 +540,7 @@ int GLGraphics::RenderInstanced()
         //Update matrix buffer//
         
         //Update explosion buffer//
+
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[2]);
         float* explosion = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
@@ -547,14 +548,17 @@ int GLGraphics::RenderInstanced()
 
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
         {
-            explosion[j] = *insIt->second->explosion;
-            
+            if(insIt->second->explosion)
+                explosion[j] = *insIt->second->explosion;
+            else
+                explosion[j] = 0.0f;
+
             j++;
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glBindBuffer(GL_ARRAY_BUFFER,0);
         //Update explosion buffer<//
-        
+
         glBindVertexArray(MRI->bufferVAOID);
 
         glDrawArraysInstanced(GL_TRIANGLES,0,MRI->vertices,instances);

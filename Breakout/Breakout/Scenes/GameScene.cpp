@@ -48,19 +48,19 @@ void GameScene::Initialize()
 
 	counter = 0;
 
-        //FPS COUNTER
-        e = m_world->CreateEntity();
-        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
-        auto TC = e->GetComponent<TextComponent>();
-        TC->Initialize("FPS: ",2.f,0x1904 ,10,10);
-        m_fpsCounterID = e->GetId();
-        m_world->AddEntity(e);
-        GraphicsManager::GetInstance()->AddTextObject(&TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
-        
-	m_x = 0;
-	m_y = 0;
-	m_width = 1.f;
-	m_height = 1.f;
+//        //FPS COUNTER
+//        e = m_world->CreateEntity();
+//        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+//        auto TC = e->GetComponent<TextComponent>();
+//        TC->Initialize("FPS: ",2.f,0x1904 ,10,10);
+//        m_fpsCounterID = e->GetId();
+//        m_world->AddEntity(e);
+//        GraphicsManager::GetInstance()->AddTextObject(&TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+//        
+//	m_x = 0;
+//	m_y = 0;
+//	m_width = 1.f;
+//	m_height = 1.f;
 
 	m_isPaused = false;
 }
