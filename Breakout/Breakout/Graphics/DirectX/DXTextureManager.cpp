@@ -12,12 +12,14 @@ DXTextureManager::~DXTextureManager()
     }
 
 	mTextureSRV.clear();
+
+	ReleaseCOM(m_RandomTex);
 }
 
 void DXTextureManager::Init(ID3D11Device* device)
 {
 	md3dDevice = device;
-	//buildRandomTex(device);
+	buildRandomTex(device);
 }
 
 ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
@@ -86,6 +88,8 @@ void DXTextureManager::buildRandomTex(ID3D11Device *Device)
 	viewDesc.Texture1D.MipLevels = texDesc.MipLevels;
 	viewDesc.Texture1D.MostDetailedMip = 0;
 	HRESULT(Device->CreateShaderResourceView(randomTex, &viewDesc, &m_RandomTex));
+
+	ReleaseCOM(randomTex);
 }
 
 // Returns random float in [0, 1).
