@@ -220,12 +220,11 @@ void DXDeferred::ClearBuffers()
 
 void DXDeferred::FillGBuffer(map<std::string, map<int, ModelInstance*>> &_modelInstances, ICamera* _camera)
 {
+	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
 	m_deviceContext->OMSetRenderTargets(2, m_GBuffer, m_depthStencilView);
-
-
 	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_lessDSS, 0);
-
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+
 	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	//RenderTestTriangle(_camera);
 	RenderModels(_modelInstances, _camera);
@@ -234,30 +233,7 @@ void DXDeferred::FillGBuffer(map<std::string, map<int, ModelInstance*>> &_modelI
 }
 
 
-void DXDeferred::RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech)
-{
-	m_deviceContext->RSSetViewports(1, &_vp);
-	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	m_deviceContext->IASetInputLayout(DXInputLayouts::m_quad);
 
-	D3DX11_TECHNIQUE_DESC techDesc;
-	_tech->GetDesc(&techDesc);
-
-	DXEffects::m_combineFinalFX->SetTexture(_SRV);
-
-	for (UINT p = 0; p < techDesc.Passes; ++p)
-	{
-		_tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
-
-		UINT offset = 0;
-		UINT vertexStride = sizeof(DXVertex::Quad);
-		m_deviceContext->IASetVertexBuffers(0, 1, &m_fullSceenQuad, &vertexStride, &offset);
-		m_deviceContext->Draw(4, 0);
-	}
-
-	DXEffects::m_combineFinalFX->SetTexture(NULL);
-	_tech->GetPassByIndex(0)->Apply(0, m_deviceContext);
-}
 
 
 
@@ -302,7 +278,12 @@ void DXDeferred::InitFullScreenQuad()
 
 void DXDeferred::Render2DTextures(ID3D11RenderTargetView *_renderTargetView, map<int, DX2DTextureInstance*> &_textureInstances)
 {
+
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_noDSS, 0);
+
 	map<int, DX2DTextureInstance*>::iterator texIterator;
 	for (texIterator = _textureInstances.begin(); texIterator != _textureInstances.end(); ++texIterator)
 	{
@@ -599,14 +580,16 @@ void DXDeferred::ComputeLight(ID3D11UnorderedAccessView *_finalUAV, ICamera* _ca
 		//}
 
 
+
 		ID3D11ShaderResourceView* dirLightMap = m_dirLightBuffer == NULL ? NULL : m_dirLightBuffer->GetShaderResource();
 		ID3D11ShaderResourceView* pointLightMap = m_pointLightBuffer == NULL ? NULL : m_pointLightBuffer->GetShaderResource();
 		ID3D11ShaderResourceView* spotLightMap = m_spotLightBuffer == NULL ? NULL : m_spotLightBuffer->GetShaderResource();
 
-		DXEffects::m_tiledLightningFX->SetDirLightMap(dirLightMap);
+		//DXEffects::m_tiledLightningFX->SetDirLightMap(dirLightMap);
 		DXEffects::m_tiledLightningFX->SetPointLightMap(pointLightMap);
-		DXEffects::m_tiledLightningFX->SetSpotLightMap(spotLightMap);
+		//DXEffects::m_tiledLightningFX->SetSpotLightMap(spotLightMap);
 		//DXEffects::m_tiledLightningFX->SetGlobalLight(*m_GlobalLight);
+
 
 		tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
 
@@ -801,7 +784,7 @@ void DXDeferred::Render(float _dt,
 	//pos.x = 15 + 10 * sinf(ddda);
 	//pos.z = 10 * cosf(ddda);
 
-	m_deviceContext->OMSetBlendState(DXRenderStates::m_opaqueBS, NULL, 0xffffffff);
+	
 	ClearBuffers();
 
 
@@ -863,4 +846,30 @@ void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 
 
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
+}
+
+
+void DXDeferred::RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech)
+{
+	m_deviceContext->RSSetViewports(1, &_vp);
+	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	m_deviceContext->IASetInputLayout(DXInputLayouts::m_quad);
+
+	D3DX11_TECHNIQUE_DESC techDesc;
+	_tech->GetDesc(&techDesc);
+
+	DXEffects::m_combineFinalFX->SetTexture(_SRV);
+
+	for (UINT p = 0; p < techDesc.Passes; ++p)
+	{
+		_tech->GetPassByIndex(p)->Apply(0, m_deviceContext);
+
+		UINT offset = 0;
+		UINT vertexStride = sizeof(DXVertex::Quad);
+		m_deviceContext->IASetVertexBuffers(0, 1, &m_fullSceenQuad, &vertexStride, &offset);
+		m_deviceContext->Draw(4, 0);
+	}
+
+	DXEffects::m_combineFinalFX->SetTexture(NULL);
+	_tech->GetPassByIndex(0)->Apply(0, m_deviceContext);
 }

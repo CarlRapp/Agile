@@ -97,7 +97,9 @@ public:
 		map<int, DXParticleSystem*>		&_particleSystems,
 		ICamera* _camera);
 
+	void SetDirectionLightMap(map<int, DirectionalLight*> *map) { m_dirLights = map; }
 	void SetPointLightMap(map<int, PointLight*> *map) { m_pointLights = map; }
+	void SetSpotLightMap(map<int, SpotLight*> *map) { m_spotLights = map; }
 
 };
 
