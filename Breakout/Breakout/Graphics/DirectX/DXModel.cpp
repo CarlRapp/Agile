@@ -7,6 +7,8 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	//ModelLoader loader;
 	//loader.Load(modelFilename, Vertices, Indices, Subsets, mats, SkinnedData);
 
+	//DirectX::XMMATRIX rot = DirectX::XMMatrixRotationRollPitchYaw(0, PI, 0);
+
 	int index = 0;
 	int id = 0;
 	for (Group* group : data->Groups)
@@ -31,7 +33,19 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 
 				vertex.tangentU = triangle.Vertices[i].Tangent;
 				vertex.pos = triangle.Vertices[i].Position;
+				vertex.pos.z *= -1;
+
+				//DirectX::XMVECTOR pos = DirectX::XMLoadFloat3(&triangle.Vertices[i].Position);
+				//pos = DirectX::XMVector3TransformCoord(pos, rot);
+				//DirectX::XMStoreFloat3(&vertex.pos, pos);
+
 				vertex.normal = triangle.Vertices[i].Normal;
+				vertex.normal.z *= -1;
+
+				//DirectX::XMVECTOR normal = DirectX::XMLoadFloat3(&triangle.Vertices[i].Normal);
+				//normal = DirectX::XMVector3TransformCoord(normal, rot);
+				//DirectX::XMStoreFloat3(&vertex.normal, normal);
+
 				vertex.tex = triangle.Vertices[i].Texture;
 
 				Vertices.push_back(vertex);
