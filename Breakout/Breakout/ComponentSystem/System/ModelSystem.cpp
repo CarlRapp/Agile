@@ -35,6 +35,8 @@ void ModelSystem::Update(float _dt)
 			GraphicsManager::GetInstance()->RemoveObject(e->GetId());
 			continue;
 		}
+
+
 		if (!e->GetInitialized())
 		{
 			LoadModel(e->GetId());
@@ -47,7 +49,6 @@ void ModelSystem::Update(float _dt)
 		rotation = e->GetComponent<RotationComponent>();
 		scale = e->GetComponent<ScaleComponent>();
 		model = e->GetComponent<ModelComponent>();
-
 
 		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;

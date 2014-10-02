@@ -32,6 +32,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER | EffectFlags::EXPLORE;
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
@@ -43,6 +44,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(PhysicsSystem::GenerateFixtureDefinition(_entityType));
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
 		_entity->AddComponent<DeflectionComponent>(1.0f);
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();

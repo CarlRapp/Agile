@@ -85,6 +85,7 @@
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BounceSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\EffectSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\InputSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ISystem.cpp" />
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\EffectComponent.h" />
     <ClInclude Include="ComponentSystem\Component\HealthComponent.h" />
     <ClInclude Include="ComponentSystem\Component\IComponent.h" />
     <ClInclude Include="ComponentSystem\Component\InputComponent.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
     <ClInclude Include="ComponentSystem\System\BounceSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
+    <ClInclude Include="ComponentSystem\System\EffectSystem.h" />
     <ClInclude Include="ComponentSystem\System\InputSystem.h" />
     <ClInclude Include="ComponentSystem\System\ISystem.h" />
     <ClInclude Include="ComponentSystem\System\LightSystem.h" />

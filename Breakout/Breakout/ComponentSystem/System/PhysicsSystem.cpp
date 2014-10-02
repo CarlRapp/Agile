@@ -70,8 +70,11 @@ void PhysicsSystem::Update(float _dt)
 		}
 		b2WorldManifold* manifold = new b2WorldManifold();
 		contact->GetWorldManifold(manifold);
-		entityA->GetComponent<CollisionComponent>()->CollidingWith(entityB->GetId(), *manifold);
-		entityB->GetComponent<CollisionComponent>()->CollidingWith(entityA->GetId(), *manifold);
+		if (entityA && entityB)
+		{
+			entityA->GetComponent<CollisionComponent>()->CollidingWith(entityB->GetId(), *manifold);
+			entityB->GetComponent<CollisionComponent>()->CollidingWith(entityA->GetId(), *manifold);
+		}
 	}
 }
 

@@ -45,7 +45,11 @@ static std::string GetFile(std::string _path, std::string _root)
 
 #else
 
-
+	template <class T>
+	struct _ENUM_FLAG_SIZED_INTEGER
+	{
+		typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+	};
 
 	std::string temp = _root;
 

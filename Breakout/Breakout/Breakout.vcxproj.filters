@@ -147,6 +147,9 @@
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\EffectSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -368,6 +371,12 @@
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\BlockSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\EffectComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\EffectSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>

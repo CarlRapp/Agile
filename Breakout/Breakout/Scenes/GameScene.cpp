@@ -30,10 +30,12 @@ void GameScene::Initialize()
 	m_world->AddSystem<BounceSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<PlayerLifeSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<BlockSystem>();
+	
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;

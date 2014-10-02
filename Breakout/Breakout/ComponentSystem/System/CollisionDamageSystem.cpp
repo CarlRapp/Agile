@@ -32,10 +32,6 @@ void CollisionDamageSystem::Update(float _dt)
 				DealDamage(*damage, *collidingHealth);
 				if (collidingHealth->m_currentHealth <= 0)
 				{
-                                    
-                                    auto model = collidingEntity->GetComponent<ModelComponent>();
-                                    
-                                    model->Explode();
 					break;
 				}
 			}
