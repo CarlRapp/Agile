@@ -347,6 +347,16 @@ void GLGraphics::Free()
     
     glDeleteProgram(m_program);
  
+    for(int i=0;i < m_letters.size(); i++)
+    {
+        m_letters.pop_back();
+    }
+    
+    for(int i=0; i < m_textObjects.size();i++)
+    {
+        m_textObjects.pop_back();
+    }
+    
     printf("Graphics memory cleared\n");
 }
 
@@ -373,23 +383,46 @@ void GLGraphics::Render(ICamera* _camera)
     Render2D();
     
     glUseProgram(0);
+
+    for(int i=0; i < m_textObjects.size();i++)
+    {
+        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y);
+    }
     
-    //DrawText("ABCDE");
     
     SDL_GL_SwapBuffers( );
-    
 }
 
-void GLGraphics::DrawText(std::string _text)
+void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
 {
     GLvoid* v;
-    glPixelZoom(m_textFontSize,  m_textFontSize);
-    for(int i=0; i< _text.size();i++)
+    
+    std::string text = (*_text);
+    float scale = (*_scale);
+    unsigned int color = (*_color);
+    int x = (*_x);
+    int y = (*_y);
+    
+    glPixelZoom(scale,  scale);
+    for(int i=0; i< text.size();i++)
     {
-        v = (GLvoid*)m_letters[_text.at(i)-65];
-        glRasterPos2i(10+i*8*m_textFontSize,  10*m_textFontSize);
-        glDrawPixels(8,8,  GL_RED, GL_BYTE,  v);
+        v = (GLvoid*)m_letters[text.at(i)-32];
+        glRasterPos2i(x+i*8*scale,  y*scale);
+        glDrawPixels(8,8,  color, GL_BYTE,  v);
     }
+}
+
+void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+{
+    TextObject textObject;
+    textObject.text = _text;
+    textObject.scale = _scale;
+    textObject.color = _color;
+    textObject.x = _x;
+    textObject.y = _y;
+    
+    m_textObjects.push_back(textObject);
+    
 }
 
 
@@ -534,14 +567,6 @@ void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
 
 void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion)
 {
-//
-//    int err = glGetError();
-//    
-//    std::cout << "Addobject ";
-//    if(err)
-//    std::cout << "\033[31m with error: " << err;
-//    std::cout << "\n\033[30m";
-//    
     for(int i=0; i < m_models.size();i++)
     {
         if (m_models[0]->instances.count(_id) !=0)
@@ -690,12 +715,67 @@ int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, int _value
 
 void GLGraphics::LoadLetters()
 {
+    m_letters.push_back(&_space);
+    m_letters.push_back(&_exclamation);
+    m_letters.push_back(&_quote);
+    m_letters.push_back(&_number);
+    m_letters.push_back(&_dollar);
+    m_letters.push_back(&_percent);
+    m_letters.push_back(&_ampersand);
+    m_letters.push_back(&_apostrophe);
+    m_letters.push_back(&_leftbrace);
+    m_letters.push_back(&_rightbrace);
+    m_letters.push_back(&_asterisk);
+    m_letters.push_back(&_plus);
+    m_letters.push_back(&_comma);
+    m_letters.push_back(&_minus);
+    m_letters.push_back(&_dot);
+    m_letters.push_back(&_slash);
 
-    //m_letters.push_back(&G);
-    m_letters.push_back(&S);
+    m_letters.push_back(&_0);
+    m_letters.push_back(&_1);
+    m_letters.push_back(&_2);
+    m_letters.push_back(&_3);
+    m_letters.push_back(&_4);
+    m_letters.push_back(&_5);
+    m_letters.push_back(&_6);
+    m_letters.push_back(&_7);
+    m_letters.push_back(&_8);
+    m_letters.push_back(&_9);
+
+    m_letters.push_back(&_colon);
+    m_letters.push_back(&_semicolon);
+    m_letters.push_back(&_lessthan);
+    m_letters.push_back(&_equal);
+    m_letters.push_back(&_morethan);
+    m_letters.push_back(&_question);
+    m_letters.push_back(&_at);
+
+    m_letters.push_back(&A);
+    m_letters.push_back(&B);
     m_letters.push_back(&C);
-    m_letters.push_back(&O);
-    m_letters.push_back(&R);
+    m_letters.push_back(&D);
     m_letters.push_back(&E);
+    m_letters.push_back(&F);
+    m_letters.push_back(&G);
+    m_letters.push_back(&H);
+    m_letters.push_back(&I);
+    m_letters.push_back(&J);
+    m_letters.push_back(&K);
+    m_letters.push_back(&L);
+    m_letters.push_back(&M);
+    m_letters.push_back(&N);
+    m_letters.push_back(&O);
+    m_letters.push_back(&P);
+    m_letters.push_back(&Q);
+    m_letters.push_back(&R);
+    m_letters.push_back(&S);
+    m_letters.push_back(&T);
+    m_letters.push_back(&U);
+    m_letters.push_back(&V);
+    m_letters.push_back(&W);
+    m_letters.push_back(&X);
+    m_letters.push_back(&Y);
+    m_letters.push_back(&Z);
     
 }
