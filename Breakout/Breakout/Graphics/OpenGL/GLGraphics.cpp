@@ -158,10 +158,14 @@ void GLGraphics::LoadModel(std::string _path)
         {
             m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE0);
             m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
-            printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
+          //  printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
         }
         else
-            printf("NO MATERIAL FILE \n");
+        {
+            m_texManager.Load2DTexture("whitePixel.png", GL_TEXTURE0);
+            m_models[index]->texHandle = m_texManager.GetTexture("whitePixel.png");
+           // printf("NO MATERIAL FILE: using %s \n", "whitePixel.png");
+        }
         
         m_testMatrices.push_back(glm::mat4(1.0f));
         
