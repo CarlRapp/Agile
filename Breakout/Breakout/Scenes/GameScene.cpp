@@ -96,6 +96,15 @@ void GameScene::Initialize()
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 
+        //FPS COUNTER
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->Initialize("FPS: ",2.f,0x1904 ,10,10);
+        m_fpsCounterID = e->GetId();
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(&TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+        
 	m_x = 0;
 	m_y = 0;
 	m_width = 1.f;
@@ -133,7 +142,7 @@ void GameScene::Update(float _dt)
 		
 
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
-
+        
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 		this->Reset();
 
@@ -152,11 +161,28 @@ void GameScene::Update(float _dt)
 	{
 		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 	}
+
+        UpdateFPS(_dt);
+        
 }
 
-void GameScene::Render()
+void GameScene::UpdateFPS(float _dt)
+{
+        
+        float fps = 1.0f / _dt;
+        std::string fpsString= "FPS: ";
+        fpsString.append(std::to_string(fps));
+        fpsString += " DT: ";
+        fpsString.append(std::to_string(_dt));
+        Entity* e = m_world->GetEntity(m_fpsCounterID);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->SetText(fpsString);
+}
+
+void GameScene::Render(float _dt)
 {
 	GraphicsManager::GetInstance()->Render();
+        
 }
 
 void GameScene::OnActive()

@@ -22,6 +22,7 @@
 #include "Component/LightComponent.h"
 #include "System/PhysicsSystem.h"
 #include "Component/PlayerLifeComponent.h"
+#include "Component/TextComponent.h"
 
 
 class EntityFactory
@@ -46,7 +47,8 @@ public:
 		PROJECTILE,
 		PLAYER,
 		POINTLIGHT,
-		PLANE
+		PLANE,
+                TEXT
 	};
 
 	static EntityFactory* GetInstance();

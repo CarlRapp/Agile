@@ -5,6 +5,7 @@
 #include "GLWindow.h"
 #include "GLShader.h"
 #include "GLTextureManager.h"
+#include "GLText.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -69,6 +70,15 @@ class GLGraphics : public IGraphics
 	float *Range;
     };
     
+    struct TextObject
+    {
+        std::string* text;
+        float* scale;
+        unsigned int* color;
+        int* x;
+        int* y;
+    };
+    
 private:
 	GLWindow *m_window;
         int m_screenWidth;
@@ -88,7 +98,11 @@ private:
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        //std::map<int, ModelInstance*> m_modelInstances;
+        std::vector<const GLbyte(*)[64]> m_letters;
+        
+        std::vector<TextObject> m_textObjects;
+        
+        float m_textFontSize = 3;
         
         int SetUniformV(GLuint shaderProg, const char* variable,float value);
         int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
@@ -102,6 +116,8 @@ private:
         void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
+        void LoadLetters();
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y);
 public:
 
 	GLGraphics(void);
@@ -125,6 +141,9 @@ public:
         void AddRenderObject(std::string _path, MATRIX4 _world);
         void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
         void RemoveObject(int _id);
+        
+        
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
         
 
 };
