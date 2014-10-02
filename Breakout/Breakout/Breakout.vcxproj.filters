@@ -397,6 +397,9 @@
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\TextComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

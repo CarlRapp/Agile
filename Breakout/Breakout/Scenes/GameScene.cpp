@@ -124,15 +124,16 @@ void GameScene::Update(float _dt)
 
 void GameScene::UpdateFPS(float _dt)
 {
-        
-        float fps = 1.0f / _dt;
-        std::string fpsString= "FPS: ";
-        fpsString.append(std::to_string(fps));
-        fpsString += " DT: ";
-        fpsString.append(std::to_string(_dt));
-        Entity* e = m_world->GetEntity(m_fpsCounterID);
-        auto TC = e->GetComponent<TextComponent>();
-        TC->SetText(fpsString);
+  //      
+  //      float fps = 1.0f / _dt;
+  //      std::string fpsString= "FPS: ";
+  //      fpsString.append(std::to_string(fps));
+  //      fpsString += " DT: ";
+  //      fpsString.append(std::to_string(_dt));
+  //      Entity* e = m_world->GetEntity(m_fpsCounterID);
+  //      auto TC = e->GetComponent<TextComponent>();
+		//if(TC)
+		//	TC->SetText(fpsString);
 }
 
 void GameScene::Render(float _dt)
