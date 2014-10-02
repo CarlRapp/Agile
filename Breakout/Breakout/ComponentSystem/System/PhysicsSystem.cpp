@@ -143,10 +143,15 @@ void PhysicsSystem::Update(float _dt)
 			if (entityA && entityB)
 				break;
 		}
-		CollisionContact collisionContact = CollisionContact(contact, fixtureA, fixtureB, entityB->GetId());
-		entityA->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
-		collisionContact = CollisionContact(contact, fixtureB, fixtureA, entityA->GetId());
-		entityB->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
+
+		if (entityA && entityB)
+		{
+			CollisionContact collisionContact = CollisionContact(contact, fixtureA, fixtureB, entityB->GetId());
+			entityA->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
+			collisionContact = CollisionContact(contact, fixtureB, fixtureA, entityA->GetId());
+			entityB->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
+		}
+
 	}
 }
 

@@ -8,7 +8,7 @@ BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent>(), _world)
 {
 	m_blockGrid = 0;
-	SetSettings(40, 20, 20, 0);
+	SetSettings(20, 20, 20, 0);
 }
 
 BlockSystem::~BlockSystem()
@@ -75,9 +75,68 @@ void BlockSystem::OnEntityAdded(Entity* _e)
 }
 
 
-void BlockSystem::OnEntityRemove(Entity* _e)
+void BlockSystem::OnEntityRemoved(Entity* _e)
 {
 	printf("Block %d Removed!\n", _e->GetId());
+	int X, Y;
+	FindBlock(_e, X, Y);
+
+	Entity* tAdjacent[4];
+	tAdjacent[Up] = 0; // Up
+	tAdjacent[Right] = 0; // Right
+	tAdjacent[Down] = 0; // Down
+	tAdjacent[Left] = 0; // Left
+
+	if (X > 0)
+		tAdjacent[Left] = m_blockGrid[Y][X - 1];
+	if (X < m_dimensionX - 1)
+		tAdjacent[Right] = m_blockGrid[Y][X + 1];
+	if (Y > 0)
+		tAdjacent[Up] = m_blockGrid[Y - 1][X];
+	if (Y < m_dimensionY - 1)
+		tAdjacent[Down] = m_blockGrid[Y + 1][X];
+
+	for (int i = 0; i < DIRECTIONS; ++i)
+	{
+		Entity* e = tAdjacent[i];
+		if (e)
+		{
+			BlockComponent* bC = e->GetComponent<BlockComponent>();
+			bC->RemoveDependency(_e->GetId());
+
+			if (bC->GetSize() == 0)
+			{
+				// DÖ
+			}
+			else if (bC->GetSize() == 1)
+			{
+
+			}
+			else
+			{
+
+			}
+
+		}
+	}
+
+	m_blockGrid[Y][X] = 0;
+}
+
+void BlockSystem::FindBlock(Entity* _e, int& _x, int& _y)
+{
+	_x = -1;
+	_y = -1;
+
+	for (int y = 0; y < m_dimensionY; ++y)
+		for (int x = 0; x < m_dimensionX; ++x)
+			if (m_blockGrid[y][x])
+				if (m_blockGrid[y][x]->GetId() == _e->GetId())
+				{
+					_x = x;
+					_y = y;
+					return;
+				}
 }
 
 void BlockSystem::UpdateBlockDependencies(int _x, int _y)
@@ -114,6 +173,7 @@ void BlockSystem::UpdateBlockDependencies(int _x, int _y)
 	}
 	else
 	{
+		// NOT IMPLEMENTED YET
 		int a = 2;
 	}
 

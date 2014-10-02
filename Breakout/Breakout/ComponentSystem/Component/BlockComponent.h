@@ -34,6 +34,19 @@ public:
 
 		m_adjacentBlocks[_i] = _dependency;
 	}
+	void RemoveDependency(TypeID _i)
+	{
+		if (m_adjacentBlocks.find(_i) != m_adjacentBlocks.end())
+			return;
+
+		m_adjacentBlocks.erase(_i);
+	}
+
+	int GetSize()
+	{
+		return m_adjacentBlocks.size();
+	}
+
 };
 
 #endif
