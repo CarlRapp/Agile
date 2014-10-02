@@ -12,6 +12,46 @@
 #define AUDIO_ROOT "/../../Data/Audio/"
 #define TEXTURE_ROOT "/../../Data/Textures/"
 
+
+
+template <size_t S>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE;
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<1>
+{
+	typedef INT8 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<2>
+{
+	typedef INT16 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<4>
+{
+	typedef INT32 type;
+};
+
+// used as an approximation of std::underlying_type<T>
+template <class T>
+struct _ENUM_FLAG_SIZED_INTEGER
+{
+	typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+};
+
+
+
+template <class T>
+struct _ENUM_FLAG_SIZED_INTEGER
+{
+	typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+};
+
+
+
 #else
 #define WINDOWS
 #define DIRECTX
@@ -44,12 +84,6 @@ static std::string GetFile(std::string _path, std::string _root)
 	return _root + _path;
 
 #else
-
-	template <class T>
-	struct _ENUM_FLAG_SIZED_INTEGER
-	{
-		typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
-	};
 
 	std::string temp = _root;
 
