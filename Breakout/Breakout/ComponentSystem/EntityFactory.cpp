@@ -116,6 +116,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "coolPlane";
 		break;
+        case EntityFactory::TEXT:
+		_entity->AddComponent<TextComponent>();
+		break;
 	default:
 		break;
 	}

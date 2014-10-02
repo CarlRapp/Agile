@@ -15,7 +15,7 @@ namespace SceneSystem
 		virtual void LoadContent(){};
 
 		virtual void Update(float _dt){};
-		virtual void Render(){};
+		virtual void Render(float _dt){};
 
 		virtual void OnActive(){};
 		virtual void OnInactive(){};

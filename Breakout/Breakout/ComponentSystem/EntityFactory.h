@@ -26,6 +26,7 @@
 #include "Component/EffectComponent.h"
 #include "Component/ShatterComponent.h"
 #include "Component/BlockComponent.h"
+#include "Component/TextComponent.h"
 
 class EntityFactory
 {
@@ -49,7 +50,8 @@ public:
 		PROJECTILE,
 		PLAYER,
 		POINTLIGHT,
-		PLANE
+		PLANE,
+                TEXT
 	};
 
 	static EntityFactory* GetInstance();
