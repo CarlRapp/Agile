@@ -1,6 +1,5 @@
 #include "BlockSystem.h"
 #include "../Component/PositionComponent.h"
-#include "../Component/CollisionComponent.h"
 #include "../World.h"
 
 
@@ -253,5 +252,5 @@ void BlockSystem::PushDownRec(int _x, int _y)
 
 void BlockSystem::MoveBlockTo(Entity* _e, int _x, int _y)
 {
-	_e->GetComponent<CollisionComponent>()->GetBody()->SetTransform(b2Vec2(_x, _y), 0);
+	_e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(_x, _y, 0));
 }
