@@ -832,5 +832,6 @@ void GLGraphics::LoadLetters()
     m_letters.push_back(&X);
     m_letters.push_back(&Y);
     m_letters.push_back(&Z);
+   
     
 }

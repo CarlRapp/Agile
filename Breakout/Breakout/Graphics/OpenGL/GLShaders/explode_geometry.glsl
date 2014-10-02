@@ -43,7 +43,6 @@ void main()
         GSOut.normal = GSIn[i].normal;
         GSOut.texCoord = GSIn[i].texCoord;
         GSOut.worldPos = GSIn[i].worldPos + vec4(faceNormal*GSIn[0].explode,0);//explodeVec;
-        //GSOut.worldPos = localMatModel * GSOut.worldPos;
 
         GSOut.color = GSIn[i].color;
 
