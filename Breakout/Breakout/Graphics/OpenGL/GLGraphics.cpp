@@ -399,7 +399,7 @@ float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    glClearColor(0.2, 0.2, 0.4, 1.0);
+    glClearColor(0.05, 0.05, 0.05, 1.0);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     
