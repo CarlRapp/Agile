@@ -45,14 +45,17 @@ class DXParticleSystem
 	ID3DX11EffectMatrixVariable* mfxViewProjVar;
 	ID3DX11EffectScalarVariable* mfxTimeVar;
 	ID3DX11EffectScalarVariable* mfxDeltaTimeVar;
-	ID3DX11EffectScalarVariable* mfxNsVar;
-	ID3DX11EffectScalarVariable* mfxKsVar;
 	ID3DX11EffectVectorVariable* mfxCameraPosVar;
 	ID3DX11EffectVectorVariable* mfxEmitPosVar;
 	ID3DX11EffectVectorVariable* mfxEmitVelVar;
+	ID3DX11EffectShaderResourceVariable *mfxTexture;
+	ID3DX11EffectShaderResourceVariable *mfxRandomTex;
 
 	ID3D11ShaderResourceView*	RandomTexRV;
 	ID3D11ShaderResourceView*	TextureRV;
+
+	ID3DX11Effect* m_effect;
+
 public:
 	float	Ks;
 	float	Ns;
