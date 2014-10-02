@@ -25,7 +25,7 @@ void AudioSystem::Update(float _dt)
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();
-		std::vector<int> collisions = collision->GetCollisions();
+		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
 			const char* audioPath = e->GetComponent<AudioComponent>()->m_audioPath.c_str();

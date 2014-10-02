@@ -23,10 +23,9 @@ void MovementSystem::Update(float _dt)
 		auto velocity = e->GetComponent<VelocityComponent>();
 		auto collision = e->GetComponent<CollisionComponent>();
 
-		velocity->m_velocity = VECTOR3(mouse->m_controls.MouseDX, mouse->m_controls.MouseDY, 0);
+		velocity->m_velocity = VECTOR3(mouse->m_controls.MouseDX, 0, 0);
 
-		if (collision->IsAdded())
-			collision->GetBody()->SetLinearVelocity(b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y));
+		collision->GetBody()->SetLinearVelocity(b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y));
 	}
 	
 }

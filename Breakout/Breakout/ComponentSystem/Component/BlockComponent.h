@@ -15,7 +15,10 @@ private:
 	std::map<TypeID, bool> m_adjacentBlocks;
 
 public:
-	BlockComponent(){}
+	BlockComponent()
+	{
+		m_adjacentBlocks = std::map<TypeID, bool>();
+	}
 
 	void AddToAdjacentList(TypeID _i, bool _dependency = false)
 	{

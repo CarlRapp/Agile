@@ -34,16 +34,12 @@ void EffectSystem::Update(float _dt)
 		auto collision = e->GetComponent<CollisionComponent>();
 		if (collision)
 		{
-			std::vector<int> collisions = collision->GetCollisions();
-			for (unsigned int i = 0; i < collisions.size(); ++i)
+			if (collision->GetCollisions().size() > 0)
 			{
 				auto effect = e->GetComponent<EffectComponent>()->m_effects;
 
-				if (((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER))
-				{
+				if ((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER)
 					e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
-				}
-
 			}
 		}
 
