@@ -100,7 +100,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > 1.5f)
+	if (counter > .5f)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();

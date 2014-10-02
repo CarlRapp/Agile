@@ -34,10 +34,11 @@ private:
 	BlockGrid m_blockGrid;
 
 	void OnEntityAdded(Entity* _e);
-	void OnEntityRemove(Entity* _e);
+	void OnEntityRemoved(Entity* _e);
 
 	void UpdateBlockDependencies(int _x, int _y);
 	BlockComponent* GetBlockComponent(Entity* _e);
+	void FindBlock(Entity* _e, int& _x, int& _y);
 
 	void PushDown(Entity* _newBlock, int _x);
 	void PushDownRec(int _x, int _y);
