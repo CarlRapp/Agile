@@ -55,7 +55,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -154,6 +154,7 @@ void GameScene::OnInactive()
 	{
 		eIT->second->SetInitialized(false);
 		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 	}	
 	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
