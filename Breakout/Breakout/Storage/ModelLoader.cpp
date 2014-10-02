@@ -315,7 +315,7 @@ void ModelLoader::ParsePosition(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	VECTOR3 pos(x, y, -z);
+	VECTOR3 pos(x, y, z);
 
 	m_positions.push_back(pos);
 }
@@ -326,7 +326,7 @@ void ModelLoader::ParseNormal(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	VECTOR3 normal(x, y, -z);
+	VECTOR3 normal(x, y, z);
 
 	m_normals.push_back(normal);
 }
@@ -336,7 +336,7 @@ void ModelLoader::ParseTexCoord(std::ifstream& file)
 	file >> x;
 	file >> y;
 
-	VECTOR2 texCoord(x, 1 - y);
+	VECTOR2 texCoord(x, y);
 
 	m_texCoords.push_back(texCoord);
 }
