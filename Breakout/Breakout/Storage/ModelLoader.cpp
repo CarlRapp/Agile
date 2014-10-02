@@ -201,7 +201,7 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	//str = dir + str;
 	ifstream mfile;
 	mfile.open(str.c_str());
-        printf("MTL-fil: %s \n", str.c_str());
+        //printf("MTL-fil: %s \n", str.c_str());
 
 	if (!mfile)
 	{

@@ -82,7 +82,7 @@ private:
         
         std::vector<ModelRenderInfo*> m_models;
         
-        std::vector<LightInfo*> m_lights;
+        std::map<int, LightInfo*> m_lights;
                                             
         std::vector<glm::mat4> m_testMatrices;
         

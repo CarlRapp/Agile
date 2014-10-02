@@ -376,6 +376,12 @@ void GLGraphics::Free()
         m_testMatrices.pop_back();
     }
     
+    for(std::map<int,LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it)
+    {
+        delete(it->second);
+    }
+    m_lights.clear();
+    
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
         delete(it->second);
@@ -429,13 +435,10 @@ void GLGraphics::Render2D()
     glDisable(GL_DEPTH_TEST);
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
-        //printf("it->second->TexHandle: %d \n", it->second->TexHandle);
-        //printf("Looop \n");
         glBindVertexArray(m_2DVAO);
         glBindTexture(GL_TEXTURE_2D, it->second->TexHandle);
         //set viewPort (resterande TextureInfo-variabler)
         glViewport((GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
-
         //printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -516,20 +519,22 @@ int GLGraphics::RenderInstanced()
 
 void GLGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {   
-    m_lights.push_back(new LightInfo(_worldPos, _intensity, _color, _range));
+    m_lights.insert(pair<int, LightInfo*>(_id, new LightInfo(_worldPos, _intensity, _color, _range)));
 }
 
 void GLGraphics::RemovePointLight(int _id)
 {
-    return;
+    delete(m_lights[_id]);
+    m_lights.erase(_id);
 }
 
 void GLGraphics::UpdateLights()
 {
-    for(int i = 0; i < m_lights.size(); i++)
+    int i = 0;
+    for(std::map<int,LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it)
 	{
             //Light properties
-            vec4 LightPosition = vec4(*m_lights[i]->Position, 1.0f);	// Light position
+            vec4 LightPosition = vec4(*it->second->Position, 1.0f);	// Light position
             
             //-----Send all the lights values------
             const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
@@ -540,9 +545,11 @@ void GLGraphics::UpdateLights()
             strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
 
             SetUniformV(m_program, positionStr, LightPosition);
-            SetUniformV(m_program, intensityStr, *m_lights[i]->Intensity);
-            SetUniformV(m_program, colorStr, *m_lights[i]->Color);
-            SetUniformV(m_program, rangeStr, *m_lights[i]->Range);
+            SetUniformV(m_program, intensityStr, *it->second->Intensity);
+            SetUniformV(m_program, colorStr, *it->second->Color);
+            SetUniformV(m_program, rangeStr, *it->second->Range);
+            
+            i++;
 	}
 }
 
