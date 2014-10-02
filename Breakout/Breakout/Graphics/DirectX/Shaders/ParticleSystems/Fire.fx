@@ -2,6 +2,7 @@ cbuffer cbPerFrame
 {
 	float4		gCameraPos;
 	float4		gEmitPosW;
+	float4		gEmitVelW;
 	float		gTime;
 	float		gDeltaTime;
 	matrix		gViewProjection;
@@ -253,9 +254,9 @@ void StreamOutGS(point Particle input[1], inout PointStream<Particle> ptStream)
 	input[0].age += gDeltaTime;	//gör partiklen äldre.
 	if( input[0].type == PT_EMITTER )//om partiklen är en emit-partikel
 	{
-		if( input[0].age > 0.075f )	//om det är dags för att skapa nya partiklar.
+		if( input[0].age > 0.033f )	//om det är dags för att skapa nya partiklar.
 		{
-			for (int i = 0; i < 12; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				float3 velocity = RandUnitVec3(0.001f * i);	//slumpar hastighet.
 				
