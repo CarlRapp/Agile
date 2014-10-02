@@ -52,7 +52,6 @@ void BlockSystem::Update(float _dt)
 
 void BlockSystem::OnEntityAdded(Entity* _e)
 {
-	
 	int xPos = rand() % m_dimensionX;
 	int yPos = m_topCenterY;
 
@@ -64,6 +63,7 @@ void BlockSystem::OnEntityAdded(Entity* _e)
 		MoveBlockTo(_e, 2 * (int)(xPos - m_dimensionX*0.5f) + m_topCenterX, yPos);
 		m_blockGrid[0][xPos] = _e;
 
+		_e->GetComponent<BlockComponent>()->AddToAdjacentList(-1, true);
 		UpdateBlockDependencies(xPos, 0);
 	}
 	else
@@ -71,6 +71,7 @@ void BlockSystem::OnEntityAdded(Entity* _e)
 		printf("Position [%d, %d] taken, pushing down!\n", yPos, xPos);
 		PushDown(_e, xPos);
 	}
+
 }
 
 
@@ -101,20 +102,7 @@ void BlockSystem::OnEntityRemoved(Entity* _e)
 		if (e)
 		{
 			BlockComponent* bC = e->GetComponent<BlockComponent>();
-			bC->RemoveDependency(_e->GetId());
-
-			if (bC->GetSize() == 0)
-			{
-				// DÖ
-			}
-			else if (bC->GetSize() == 1)
-			{
-
-			}
-			else
-			{
-
-			}
+			bC->RemoveNeighbour(_e->GetId());
 
 		}
 	}
@@ -175,20 +163,65 @@ void BlockSystem::UpdateBlockDependencies(int _x, int _y)
 		// NOT IMPLEMENTED YET
 		int a = 2;
 	}
+	int c = 3;
+}
 
+void BlockSystem::UpdateDependencyRec(std::map<GridPosition, bool>* _closedList, Entity* _comingFrom, int _x, int _y)
+{
+	//	Check if this position already is calculated
+	if (_closedList->find(GridPosition(_x, _y)) != _closedList->end())
+		return;
+
+	//	Set this positions as visited
+	(*_closedList)[GridPosition(_x, _y)] = true;
+
+	Entity* e = m_blockGrid[_y][_x];
+	BlockComponent* bC = e->GetComponent<BlockComponent>();
+	bC->ChangeDependency(_comingFrom->GetId(), false);
+
+	if (bC->GetSizeDependent() > 1)
+		return;
+
+	if (_x > 0)
+		if (m_blockGrid[_y][_x - 1])
+			UpdateDependencyRec(_closedList, e, _x - 1, _y);
+	if (_x < m_dimensionX - 1)
+		if (m_blockGrid[_y][_x + 1])
+			UpdateDependencyRec(_closedList, e, _x + 1, _y);
+	if (_y > 0)
+		if (m_blockGrid[_y - 1][_x])
+			UpdateDependencyRec(_closedList, e, _x, _y - 1);
+	if (_y < m_dimensionY - 1)
+		if (m_blockGrid[_y + 1][_x])
+			UpdateDependencyRec(_closedList, e, _x, _y + 1);
 }
 
 void BlockSystem::PushDown(Entity* _newBlock, int _x)
 {
-	std::map<GridPosition, bool> visitedPositions = std::map<GridPosition, bool>();
-
 	//	Start by connecting the new block with the one already in its position
 	Entity* A = _newBlock;
 	Entity* B = m_blockGrid[0][_x];
-	A->GetComponent<BlockComponent>()->AddToAdjacentList(B->GetId(), true);
+	A->GetComponent<BlockComponent>()->AddToAdjacentList(B->GetId(), false);
 	B->GetComponent<BlockComponent>()->AddToAdjacentList(A->GetId(), true);
-	VisitAdjacentRec(&visitedPositions, _x, 0);
+	
 
+	std::map<GridPosition, bool> visitedPositions = std::map<GridPosition, bool>();
+	std::vector<Entity*> checkBlocks = std::vector<Entity*>();
+	DisconnectFromTop(&checkBlocks, _x);
+
+	for (int i = 0; i < checkBlocks.size(); ++i)
+	{
+		int X, Y;
+		FindBlock(checkBlocks[i], X, Y);
+
+		if (X != -1 && Y != -1)
+			UpdateDependencyRec(&visitedPositions, checkBlocks[i], X, Y);
+	}
+	visitedPositions.clear();
+	visitedPositions = std::map<GridPosition, bool>();
+
+
+	VisitAdjacentRec(&visitedPositions, _x, 0);
 	GridQueue sortedPositions = GridQueue();
 
 	std::map<GridPosition, bool>::iterator gIT;
@@ -253,4 +286,41 @@ void BlockSystem::PushDownRec(int _x, int _y)
 void BlockSystem::MoveBlockTo(Entity* _e, int _x, int _y)
 {
 	_e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(_x, _y, 0));
+}
+
+void BlockSystem::DisconnectFromTop(std::vector<Entity*>* _checkBlocks, int _x)
+{
+	// Disconnect all to the left
+	int tX = _x;
+	while (tX > 0)
+	{
+		Entity* e = m_blockGrid[0][tX];
+		if (e)
+		{
+			BlockComponent* bC = e->GetComponent<BlockComponent>();
+			bC->RemoveNeighbour(-1);
+
+			if (bC->GetSizeDependent() == 1)
+				_checkBlocks->push_back(e);
+		}
+		else
+			break;
+		--tX;
+	}
+	tX = _x + 1;
+	while (tX < m_dimensionX)
+	{
+		Entity* e = m_blockGrid[0][tX];
+		if (e)
+		{
+			BlockComponent* bC = e->GetComponent<BlockComponent>();
+			bC->RemoveNeighbour(-1);
+
+			if (bC->GetSizeDependent() == 1)
+				_checkBlocks->push_back(e);
+		}
+		else
+			break;
+		++tX;
+	}
 }

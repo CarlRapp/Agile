@@ -148,7 +148,7 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
