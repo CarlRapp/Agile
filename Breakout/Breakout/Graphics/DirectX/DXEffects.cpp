@@ -56,6 +56,8 @@ ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wst
 	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
 	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();
 
+	m_ExplodeTime = m_FX->GetVariableByName("gExplodeTime")->AsScalar();
+
 	m_mat = m_FX->GetVariableByName("gMaterial");
 
 	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();

@@ -13,48 +13,6 @@ struct ModelComponent : Component<ModelComponent>
 	{
 
 	}
-        
-        // TODO: Flytta till Explosionskomponent eller effektkomponent
-        
-        ///-------------------------___EXPLOSIONS___-------------------------///
-        
-        float m_explosion = 0.0f;
-        float m_maxExplosionTime = 3.0f;
-        float m_expansionRate = 0.05f;
-        
-        enum ExplosionState
-        {
-            NONE = 0,
-            EXPLODING,
-            DONE
-        };
-        
-        ExplosionState m_explosionState = NONE;
-
-        ExplosionState IsExploding()
-        {
-            if(m_explosionState == EXPLODING)
-            {
-                m_explosion += m_expansionRate;
-                
-                if(m_explosion > m_maxExplosionTime)
-                {
-                    m_explosionState = DONE;
-                    printf("Entity done exploding, remove\n");
-                }
-            }
-            
-            return m_explosionState;
-        }
-        
-        void Explode()
-        {
-            m_explosionState = EXPLODING;
-            printf("Explode Entity\n");
-        }
-
-        ///-------------------------___EXPLOSIONS___-------------------------///
-
 
 };
 

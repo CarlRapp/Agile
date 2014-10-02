@@ -11,11 +11,12 @@
 #include "../ComponentSystem/System/PhysicsSystem.h"
 #include "../ComponentSystem/System/ProjectileSystem.h"
 #include "../ComponentSystem/System/CollisionDamageSystem.h"
-#include "../ComponentSystem/System/BounceSystem.h"
+#include "../ComponentSystem/System/CollisionDeflectionSystem.h"
 #include "../ComponentSystem/System/AudioSystem.h"
 #include "../ComponentSystem/System/ScoreSystem.h"
 #include "../ComponentSystem/System/LightSystem.h"
-
+#include "../ComponentSystem/System/EffectSystem.h"
+#include "../ComponentSystem/System/RespawnBallSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "../ComponentSystem/EntityFactory.h"
@@ -30,8 +31,7 @@ private:
 	World* m_world;
 
 	// Pause Screen settings
-	float m_x, m_y;
-	float m_width, m_height;
+	Texture2DData*	m_pauseBackground;
 	bool m_isPaused;
         int m_fpsCounterID;
 public:

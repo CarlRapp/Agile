@@ -75,25 +75,37 @@ static void MacroPrintMatrix(glm::mat4* _m)
    // printf("\n");
 }
 
-//static DirectX::XMFLOAT4 MacroRotateYawPitchRollFromVector(VECTOR3 _rotation)
-//{
-//	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
-//	DirectX::XMVECTOR rot = DirectX::XMLoadFloat3(&_rotation);
-//	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYawFromVector(rot);
-//
+static glm::quat MacroRotateYawPitchRoll(float yaw, float pitch, float roll)
+{
+	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
+//	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(yaw, pitch, roll);
+//        
 //	DirectX::XMFLOAT4 q;
 //	DirectX::XMStoreFloat4(&q, quat);
-//	return q;
-//}
+	return glm::quat(1.0f,1.0f,1.0f,1.0f);
+}
+
+static glm::mat4 MacroScale(VECTOR3 scale)
+{
+	//DirectX::XMMATRIX temp;
+	//temp = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+
+	glm::mat4 float4x4;
+	//DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
+}
 
 #else
 
 #include <DirectXMath.h>
+#include <iostream>
 
 #define MATRIX4 DirectX::XMFLOAT4X4
 #define VECTOR4 DirectX::XMFLOAT4
 #define VECTOR3 DirectX::XMFLOAT3
 #define VECTOR2 DirectX::XMFLOAT2
+#define QUAT DirectX::XMFLOAT4
 
 static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 {
@@ -105,7 +117,7 @@ static DirectX::XMFLOAT4X4 GetIdentityMatrix()
 static DirectX::XMFLOAT4X4 MacroTranslate(VECTOR3 _vector)
 {
 	DirectX::XMMATRIX temp;
-	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, _vector.z);
+	temp = DirectX::XMMatrixTranslation(_vector.x, _vector.y, -_vector.z);
 
 	DirectX::XMFLOAT4X4 float4x4;
 	DirectX::XMStoreFloat4x4(&float4x4, temp);
@@ -195,17 +207,24 @@ static VECTOR3 MacroNormalize(VECTOR3 vector)
 	return res;
 }
 
-static void MacroPrintMatrix(DirectX::XMMATRIX* _m)
+static DirectX::XMFLOAT4X4 MacroScale(VECTOR3 scale)
 {
-    for(int i=0;i< 4;i++)
-    {
-        for(int j=0;j< 4;j++)
-        {
-            printf("%f  ",(*_m)[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+	DirectX::XMMATRIX temp;
+	temp = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
+
+	DirectX::XMFLOAT4X4 float4x4;
+	DirectX::XMStoreFloat4x4(&float4x4, temp);
+
+	return float4x4;
+}
+
+
+static void MacroPrintMatrix(DirectX::XMFLOAT4X4* _m)
+{
+	std::printf("%f  %f  %f  %f\n", _m->_11, _m->_12, _m->_13, _m->_14);
+	std::printf("%f  %f  %f  %f\n", _m->_21, _m->_22, _m->_23, _m->_24);
+	std::printf("%f  %f  %f  %f\n", _m->_31, _m->_32, _m->_33, _m->_34);
+	std::printf("%f  %f  %f  %f\n\n", _m->_41, _m->_42, _m->_43, _m->_44);
 }
 
 
@@ -230,6 +249,8 @@ DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 _inM1, DirectX::XMFLOAT4X4 _in
 #define ROTATEAXIS(axis, angle) MacroRotateAxis(axis, angle)
 #define ROTATEYAWPITCHROLL(yaw, pitch, roll) MacroRotateYawPitchRoll(yaw, pitch, roll)
 #define ROTATEYAWPITCHROLLFROMVECTOR(rot) MacroRotateYawPitchRollFromVector(rot)
+
+#define SCALE(scale) MacroScale(scale)
 
 #define ISZERO(vector) MacroIsZero(vector)
 

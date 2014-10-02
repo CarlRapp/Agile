@@ -12,6 +12,41 @@
 #define AUDIO_ROOT "/../../Data/Audio/"
 #define TEXTURE_ROOT "/../../Data/Textures/"
 
+typedef signed char         INT8, *PINT8;
+typedef signed short        INT16, *PINT16;
+typedef signed int          INT32, *PINT32;
+//typedef signed __int64      INT64, *PINT64;
+
+template <size_t S>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE;
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<1>
+{
+	typedef INT8 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<2>
+{
+	typedef INT16 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<4>
+{
+	typedef INT32 type;
+};
+
+// used as an approximation of std::underlying_type<T>
+template <class T>
+struct _ENUM_FLAG_SIZED_INTEGER
+{
+	typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+};
+
+
+
 #else
 #define WINDOWS
 #define DIRECTX
@@ -36,7 +71,6 @@ static char    m_cwd[FILENAME_MAX];
 
 typedef unsigned int        UINT;
 
-
 static std::string GetFile(std::string _path, std::string _root)
 {
 #ifdef WINDOWS
@@ -44,9 +78,6 @@ static std::string GetFile(std::string _path, std::string _root)
 	return _root + _path;
 
 #else
-
-
-
 	std::string temp = _root;
 
 	if (!getcwd(m_cwd, sizeof(m_cwd)))
@@ -67,9 +98,10 @@ static std::string GetFile(std::string _path, std::string _root)
 }
 
 
-
-
-
-
-
+//Returns the memory adress as INT
+//of the given pointer
+static int GetMemoryID(void* _pointer)
+{
+	return (int)_pointer;
+}
 #endif

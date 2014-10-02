@@ -25,7 +25,7 @@ public:
 private:
 	virtual void Initialize(){}
 	virtual void OnEntityAdded(Entity* _e){}
-	virtual void OnEntityRemove(Entity* _e){}
+	virtual void OnEntityRemoved(Entity* _e){}
 
 	ComponentFilter m_componentFilter;
 
@@ -64,8 +64,8 @@ public:
 
 	void Clear(void);
 
-	virtual void Update(float _dt) = 0;
-        void SetEvent(EVENT _event){m_nextEvent = _event;}
+	virtual void Update(float _dt) { }
+    void SetEvent(EVENT _event){m_nextEvent = _event;}
 };
 
 template<typename T>

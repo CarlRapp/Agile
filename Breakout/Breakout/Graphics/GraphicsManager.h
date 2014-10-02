@@ -13,7 +13,20 @@
 #include <d3dCompiler.h>
 #endif
 
+struct Texture2DData
+{
+public:
+	Texture2DData()
+	{
+		m_imageWidth = m_imageHeight = 0;
+		m_positionX = m_positionY = 0;
+		m_textureName = "";
+	}
 
+	float m_imageWidth, m_imageHeight;
+	float m_positionX, m_positionY;
+	std::string m_textureName;
+};
 
 class GraphicsManager
 {
@@ -41,8 +54,11 @@ public:
     void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
     void        RemoveObject(int _id);
 
+
+
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
+void RemovePointLight(int _id);
         void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
 
 
