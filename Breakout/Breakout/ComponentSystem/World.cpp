@@ -149,3 +149,15 @@ Entity* World::GetEntity(int _id)
 
 	return 0;
 }
+
+void World::Clear()
+{
+	EntityMap::iterator eIT;
+	for (eIT = m_activeEntities.begin(); eIT != m_activeEntities.end(); ++eIT)
+		KillEntity(eIT->second);
+
+	m_activeEntities.clear();
+	m_changedEntities.clear();
+	m_componentEntityPool.clear();
+	printf("World cleared!\n");
+}

@@ -35,7 +35,11 @@ static char    m_cwd[FILENAME_MAX];
 #define MAX_ENTITY_COUNT 500
 
 typedef unsigned int        UINT;
-
+//	template <class T>
+//	struct _ENUM_FLAG_SIZED_INTEGER
+//	{
+//		typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+//	};
 
 static std::string GetFile(std::string _path, std::string _root)
 {
@@ -67,9 +71,10 @@ static std::string GetFile(std::string _path, std::string _root)
 }
 
 
-
-
-
-
-
+//Returns the memory adress as INT
+//of the given pointer
+static int GetMemoryID(void* _pointer)
+{
+	return (int)_pointer;
+}
 #endif

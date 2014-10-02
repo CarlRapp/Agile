@@ -40,7 +40,11 @@ void Entity::RemoveComponent(int _componentTypeId)
 	{
 		if (_componentTypeId == m_components[i]->m_ID)
 		{
+			//delete m_components[i];
+			auto component = m_components[i];
 			m_components.erase(m_components.begin() + i);
+			delete component;
+
 			m_state = Entity::CHANGED;
 			break;
 		}
@@ -78,10 +82,9 @@ bool Entity::RemoveAllComponents()
 {
 	for (int i = m_components.size() - 1; i >= 0; --i)
 	{
-		IComponent* iComponent = m_components[i];
-		delete iComponent;
-
+		auto component = m_components[i];
 		m_components.erase(m_components.begin() + i);
+		delete component;
 	}
 
 	return true;
@@ -95,11 +98,6 @@ std::vector<IComponent*>* Entity::GetComponents()
 int Entity::GetId(void)
 {
 	return m_id;
-}
-
-void Entity::Kill(void)
-{
-	m_state = LIMBO;
 }
 
 void Entity::Reset(void)

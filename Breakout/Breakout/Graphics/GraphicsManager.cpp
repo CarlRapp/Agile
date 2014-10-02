@@ -72,6 +72,10 @@ void GraphicsManager::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_inten
 {
     m_IGraphics->AddPointLight(_id, _worldPos, _intensity, _color, _range);
 }
+void GraphicsManager::RemovePointLight(int _id)
+{
+	m_IGraphics->RemovePointLight(_id);
+}
    
 
 void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion)

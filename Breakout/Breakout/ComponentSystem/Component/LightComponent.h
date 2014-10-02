@@ -26,15 +26,28 @@ public:
 	{
 		return m_range;
 	}
-        
-        
+
+	void SetIntensity(VECTOR3 _intensity)
+	{
+		m_intensity = _intensity;
+	}
+
+	void SetColor(VECTOR3 _color)
+	{
+		m_color = _color;
+	}
+
+	void SetRange(float _range)
+	{
+		m_range = _range;
+	}
 
 
 	LightComponent()
 	{
-            m_intensity = VECTOR3(0.2, 1.9, 1.9);
+        m_intensity = VECTOR3(0.2, 0.8, 1.0);
 		m_color = VECTOR3(1, 1, 1);
-		m_range = 100.f;
+		m_range = 200.f;
 	}
 };
 

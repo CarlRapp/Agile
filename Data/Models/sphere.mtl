@@ -1,2 +1,3 @@
 newmtl Default_Smoothing
 map_Kd texture.png
+map_bump normal.png

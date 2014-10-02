@@ -39,6 +39,9 @@ struct GPULight
 	GPULight(void) { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 Color;
 	float pad0;
+
+	DirectX::XMFLOAT3 Intensity;
+	float pad1;
 };
 
 struct GPUDirectionalLight : GPULight
@@ -58,8 +61,6 @@ struct GPUPointLight : GPULight
 	DirectX::XMFLOAT3 Position;
 	float Range;
 
-	//DirectX::XMFLOAT3 Intensity;
-	//float pad1;
 
 	//shadow info	
 	UINT	 ShadowIndex[6];
@@ -69,6 +70,7 @@ struct GPUPointLight : GPULight
 
 struct GPUSpotLight : GPULight
 {
+	GPUSpotLight(void) { ZeroMemory(this, sizeof(this)); }
 	DirectX::XMFLOAT3 Position;
 	float Range;
 	// Packed into 4D vector: (Direction, Spot)
@@ -158,6 +160,7 @@ public:
 		gpuLight->Position = *Position;
 		gpuLight->Position.z *= -1;
 		gpuLight->Range = *Range;
+		gpuLight->Intensity = *Intensity;
 		return gpuLight; 
 	}
 };
