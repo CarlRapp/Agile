@@ -47,6 +47,7 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 				//DirectX::XMStoreFloat3(&vertex.normal, normal);
 
 				vertex.tex = triangle.Vertices[i].Texture;
+				vertex.tex.y = 1.0f - vertex.tex.y;
 
 				Vertices.push_back(vertex);
 				Indices.push_back(index);
