@@ -1,5 +1,6 @@
 #include "BlockSystem.h"
 #include "../Component/PositionComponent.h"
+#include "../Component/CollisionComponent.h"
 #include "../World.h"
 
 
@@ -60,7 +61,8 @@ void BlockSystem::OnEntityAdded(Entity* _e)
 
 	if (m_blockGrid[0][xPos] == 0)
 	{
-		_e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2 * (int)(xPos - m_dimensionX*0.5f) + m_topCenterX, yPos, 0));
+		//_e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2 * (int)(xPos - m_dimensionX*0.5f) + m_topCenterX, yPos, 0));
+		MoveBlockTo(_e, 2 * (int)(xPos - m_dimensionX*0.5f) + m_topCenterX, yPos);
 		m_blockGrid[0][xPos] = _e;
 
 		UpdateBlockDependencies(xPos, 0);
@@ -149,10 +151,10 @@ void BlockSystem::PushDown(Entity* _newBlock, int _x)
 		GridPosition GP = gIT->first;
 		Entity* e = m_blockGrid[GP.second+1][GP.first];
 		if (e)
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2 * (int)(GP.first - m_dimensionX*0.5f) + m_topCenterX, m_topCenterY - 2 * (GP.second + 1), 0));
+			MoveBlockTo(e, 2 * (int)(GP.first - m_dimensionX*0.5f) + m_topCenterX, m_topCenterY - 2 * (GP.second + 1));
 	}
-		
-	_newBlock->GetComponent<PositionComponent>()->SetPosition(VECTOR3(2 * (int)(_x - m_dimensionX*0.5f) + m_topCenterX, m_topCenterY, 0));
+
+	MoveBlockTo(_newBlock, 2 * (int)(_x - m_dimensionX*0.5f) + m_topCenterX, m_topCenterY);
 	m_blockGrid[0][_x] = _newBlock;
 	
 }
@@ -187,4 +189,9 @@ void BlockSystem::PushDownRec(int _x, int _y)
 			PushDownRec(_x, _y + 1);
 
 	int a = 2;
+}
+
+void BlockSystem::MoveBlockTo(Entity* _e, int _x, int _y)
+{
+	_e->GetComponent<CollisionComponent>()->GetBody()->SetTransform(b2Vec2(_x, _y), 0);
 }

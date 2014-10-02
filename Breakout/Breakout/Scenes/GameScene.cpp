@@ -5,6 +5,8 @@
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/System/LoseLifeSystem.h"
+
+float counter;
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -34,6 +36,7 @@ void GameScene::Initialize()
 	//m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<BlockSystem>();
+	
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -41,6 +44,8 @@ void GameScene::Initialize()
 	m_pauseBackground->m_imageWidth = 1;
 	m_pauseBackground->m_imageHeight = 1;
 	m_pauseBackground->m_textureName = "Pause.png";
+
+	counter = 0;
 
 	m_isPaused = false;
 }
@@ -93,6 +98,17 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+
+	counter += _dt;
+	if (counter > 1.5f)
+	{
+		Entity* e;
+		e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		m_world->AddEntity(e);
+		counter = 0;
+	}
 
 	m_world->Update(_dt);
 
