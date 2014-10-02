@@ -1,8 +1,10 @@
 #include "EffectSystem.h"
 #include "../Component/CollisionComponent.h"
 #include "../Component/EffectComponent.h"
+#include "../Component/ShatterComponent.h"
 #include "../World.h"
 #include "../EntityFactory.h"
+#include "../../Graphics/GraphicsManager.h"
 
 EffectSystem::EffectSystem(World* _world)
 : Base(ComponentFilter().Requires<EffectComponent>(), _world)
@@ -14,7 +16,6 @@ EffectSystem::~EffectSystem()
 
 }
 
-float r = 0.f;
 void EffectSystem::Update(float _dt)
 {
 	EffectFlags effectFlags;
@@ -38,31 +39,26 @@ void EffectSystem::Update(float _dt)
 			{
 				auto effect = e->GetComponent<EffectComponent>()->m_effects;
 
-				if ( ((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER))
+				if (((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER))
 				{
-					// Presume the entity has an modelComponent since it should shatter
-					//e->SetState(Entity::EXPLODE);
-					e->GetComponent<ModelComponent>()->Explode();
-					//e->RemoveComponent<CollisionComponent>();
+					e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
 				}
-
-				if ((effectFlags & EffectFlags::INVISIBLE) == EffectFlags::INVISIBLE)
-				{
-					if (e->HasComponent<ModelComponent>())
-					{
-						e->RemoveComponent<ModelComponent>();
-					}
-					else
-					{
-						e->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1";
-					}
-				}
-
 
 			}
 		}
 
-
+		UpdateComponents(e, _dt);
 	}
 
+}
+
+void EffectSystem::UpdateComponents(Entity* _e, float _dt)
+{
+	// Shatter
+	auto shatter = _e->GetComponent<ShatterComponent>();
+	if (shatter)
+	{
+		if (shatter->IsExploding(_dt) == ShatterComponent::DONE)
+			_e->SetState(Entity::DEAD);
+	}
 }

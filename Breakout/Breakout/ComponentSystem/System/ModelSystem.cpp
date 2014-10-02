@@ -5,6 +5,7 @@
 #include "../Component/PositionComponent.h"
 #include "../Component/RotationComponent.h"
 #include "../Component/ScaleComponent.h"
+#include "../Component/ShatterComponent.h"
 
 
 ModelSystem::ModelSystem(World* _world)
@@ -56,21 +57,7 @@ void ModelSystem::Update(float _dt)
 			change = true;
 		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
-                
-                //Explosioner Start
-                //TODO: Flytta till effektsystem, gamerules, whatever
-                ModelComponent::ExplosionState exState = model->IsExploding(_dt);
-                
-		if(exState > 0)
-                {
-                    
-                    if(exState == ModelComponent::ExplosionState::DONE)
-                    {
-                        e->SetState(Entity::DEAD);
-                    }
-                }
-                //Explosioner Slut
-                
+                                
 		if (change)
 		{
 			model->m_worldMatrix = SCALE(scale->GetScale()) * ROTATE(rotation->GetRotation()) * TRANSLATE(position->GetPosition());
@@ -120,7 +107,12 @@ void ModelSystem::LoadModel(int _entityID)
     Entity* e = m_entityMap.find(_entityID)->second;
 
     model = e->GetComponent<ModelComponent>();
-    GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &model->m_explosion);
+
+	auto shatter = e->GetComponent<ShatterComponent>();
+	if(shatter)
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+	else
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
 
 	e->SetInitialized(true);
 }

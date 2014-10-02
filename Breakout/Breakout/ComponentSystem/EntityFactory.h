@@ -23,7 +23,8 @@
 #include "System/PhysicsSystem.h"
 #include "Component/PlayerLifeComponent.h"
 #include "Component/EffectComponent.h"
-
+#include "Component/ShatterComponent.h"
+#include "Component/BlockComponent.h"
 
 class EntityFactory
 {

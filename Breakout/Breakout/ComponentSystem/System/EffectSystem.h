@@ -7,6 +7,8 @@ class EffectSystem : public System<EffectSystem>
 {
 private:
 
+	void UpdateComponents(Entity* _entity, float _dt);
+
 public:
 
 	EffectSystem(World* _world);

@@ -156,6 +156,7 @@
     <ClInclude Include="ComponentSystem\Component\RotationComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScaleComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScoreComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ComponentSystem\EntityFactory.h" />
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
