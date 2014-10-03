@@ -1,4 +1,17 @@
 #version 430
+layout (location = 0) in vec3   m_position;
+layout (location = 1) in float  pad1;
+layout (location = 2) in vec3   m_normal;
+layout (location = 3) in float  pad2;
+layout (location = 4) in vec4   m_color;
+layout (location = 5) in mat4   m_matModel;
+
+
+uniform mat4 m_matView;
+uniform mat4 m_matProj;
+
+varying mat4 modelView;
+
 uniform float roll;
 
 writeonly uniform image2D destTex;

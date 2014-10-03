@@ -464,7 +464,7 @@ void GLGraphics::Render(ICamera* _camera)
     
     //CameraToRender(_camera);
     
-    //RenderInstanced();
+    RenderInstanced();
     
     //RenderStandard();
     
@@ -493,7 +493,7 @@ void GLGraphics::RenderCompute()
 //        glUniform1f(glGetUniformLocation(m_computeProgram, pos.c_str()), (rand()%1000)*0.001f);
 //    }
 
-   glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+    glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 
     glUniform1f(glGetUniformLocation(m_computeProgram, "roll"),t);// (rand(t)%1000)*0.001f);
     
