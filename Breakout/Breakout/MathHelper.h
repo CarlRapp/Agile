@@ -75,25 +75,22 @@ static void MacroPrintMatrix(glm::mat4* _m)
    // printf("\n");
 }
 
-static glm::quat MacroRotateYawPitchRoll(float yaw, float pitch, float roll)
+static glm::quat MacroRotateYawPitchRoll(float _yaw, float _pitch, float _roll)
 {
-	// If Axis is a normalized vector, it is faster to use the XMMatrixRotationNormal function to build this type of matrix.
-//	DirectX::XMVECTOR quat = DirectX::XMQuaternionRotationRollPitchYaw(yaw, pitch, roll);
-//        
-//	DirectX::XMFLOAT4 q;
-//	DirectX::XMStoreFloat4(&q, quat);
-	return glm::quat(1.0f,1.0f,1.0f,1.0f);
+	glm::quat rotateX( std::cos( _pitch ), std::sin( _pitch), 0.f, 0.f );
+	glm::quat rotateY( std::cos( _yaw ), 0.f, std::sin( _yaw ), 0.f );
+	glm::quat rotateZ( std::cos( _roll ), 0.f, 0.f, std::sin( _roll ) );
+	return rotateZ * rotateY * rotateX;
 }
 
-static glm::mat4 MacroScale(VECTOR3 scale)
+static glm::mat4 MacroScale(VECTOR3 _scale)
 {
 	//DirectX::XMMATRIX temp;
 	//temp = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 
-	glm::mat4 float4x4;
 	//DirectX::XMStoreFloat4x4(&float4x4, temp);
 
-	return float4x4;
+	return glm::scale(glm::mat4(1.0f),_scale);
 }
 
 #else
