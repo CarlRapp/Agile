@@ -108,12 +108,13 @@ void World::EntityChanged(Entity* _e)
 
 void World::KillEntity(Entity* _e)
 {
-	_e->RemoveAllComponents();
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);
 
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
+
+	_e->RemoveAllComponents();
 }
 
 void World::AddNewComponent(TypeID _id)
