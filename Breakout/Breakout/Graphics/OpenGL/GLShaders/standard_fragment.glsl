@@ -1,16 +1,18 @@
-#version 440
+#version 430
 
 uniform vec3 m_testLight;
 
 varying mat4 modelView;
 
-in VERTEX
+uniform sampler2D m_standardTex;
+
+in GS_FS
 {
-    vec3    worldPos;
-    float   pad1;
-    vec3    normal;
-    float   pad2;
+    vec4    worldPos;
     vec4    color;
+    vec3    normal;
+    float   pad;
+    vec2    texCoord;
 
 } vertex;
 
@@ -39,10 +41,10 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
                 Material.Ka = vec3(0.2);
                 Material.Kd = vec3(0.9);
                 Material.Ks = vec3(0.9);
-                Material.Shininess = 3.0;
+                Material.Shininess = 30.0;
 
-		vec3 s = normalize(vec3(lightPos - vertex.worldPos));
-		vec3 v = normalize(vertex.worldPos.xyz);	
+		vec3 s = normalize(vec3(lightPos - vertex.worldPos.xyz));
+		vec3 v = normalize(-vertex.worldPos.xyz);	
 		//vec3 h = normalize(v + s);
                 vec3 h = reflect( s, vertex.normal);
 
@@ -64,12 +66,12 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
 
 void main(void) 
 {   
-    vec3 ambient = vec3(0.0); // = vec3(0.2f,0.2f,0.2f);
+    vec3 ambient = vec3(0.0f); // = vec3(0.2f,0.2f,0.2f);
     vec3 diffAndSpec = vec3(0.0);
 
     for(int index = 0; index < nrOfLights; index++)
     {
-        float lightDist = abs(length(vertex.worldPos - vec3(Lights[index].Position)));
+        float lightDist = abs(length(vertex.worldPos.xyz - vec3(Lights[index].Position)));
         float lightStrength = 0;
         if( lightDist < Lights[index].Range )
 			lightStrength = 1.0-(lightDist / Lights[index].Range);
@@ -77,11 +79,9 @@ void main(void)
 	diffAndSpec += phongModelDiffAndSpec(index, vec3(Lights[index].Position), lightStrength);
     }
 
-        //vec4 A = modelView*vec4(vertex.normal,1.0);
-        //float b = dot(normalize(m_testLight),vec3(A));
-        //b = pow(b,2);
-        //gl_FragColor = vec4(vertex.normal.x, vertex.normal.y, vertex.normal.z, 1.0);
+    vec4 texColor = texture( m_standardTex, vertex.texCoord );
+    
+    gl_FragColor = vec4(diffAndSpec + ambient, 1.0) * texColor;
 
-    gl_FragColor = vec4(diffAndSpec + ambient, 1.0);
     //gl_FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
 }

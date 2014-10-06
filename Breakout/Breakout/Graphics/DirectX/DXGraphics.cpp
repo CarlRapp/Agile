@@ -253,7 +253,7 @@ void DXGraphics::Render(ICamera* _camera)
 }
 
 
-void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion)
 {
 
 	if (m_modelInstances[_model].count(_id) != 0)
@@ -266,6 +266,7 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->model = m_modelManager.GetModel(_model);
 	mi->world = _world;
 	mi->worldInverseTranspose = _worldInverseTranspose;
+	mi->explodeTime = _explosion;
 
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
 }
@@ -302,6 +303,10 @@ void DXGraphics::Remove2DTexture(int _id)
 	m_textureInstances.erase(_id);
 }
 
+void DXGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y)
+{
+	// HEJ ERIK, DU FÅR I UPPDRAG ATT FIXA DETTA :)
+}
 
 void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {

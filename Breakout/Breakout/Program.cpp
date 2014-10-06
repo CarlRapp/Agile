@@ -9,6 +9,7 @@
 
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
+#include "Scenes/GameOverScene.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -36,7 +37,9 @@ int main(int argc, char** argv)
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 350, 512, 512, displayMode);
+
+	m_GraphicsManager->InitWindow(100, 350, 1024, 512, displayMode);
+
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
@@ -49,8 +52,15 @@ int main(int argc, char** argv)
 	m_SceneManager = SceneManager::GetInstance();
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
+	m_SceneManager->AddScene<GameOverScene>(false);
         
 	m_SceneManager->ChangeScene<GameScene>();
+
+	/*	Random Seed	*/
+	printf("!!!IMPORTANT INFO!!!\n");
+	printf("Program.cpp is currently setting the random seed to 0 every time!!!!\n");
+	printf("!!!IMPORTANT INFO!!!\n");
+	srand(0);
 
 	/*	START HERE	*/
 	m_SceneManager->Start();

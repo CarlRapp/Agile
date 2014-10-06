@@ -5,6 +5,7 @@
 #include "../Component/PositionComponent.h"
 #include "../Component/RotationComponent.h"
 #include "../Component/ScaleComponent.h"
+#include "../Component/ShatterComponent.h"
 
 
 ModelSystem::ModelSystem(World* _world)
@@ -16,7 +17,6 @@ ModelSystem::ModelSystem(World* _world)
 ModelSystem::~ModelSystem()
 {
 }
-
 void ModelSystem::Update(float _dt)
 {
 	GraphicsManager* manager = GraphicsManager::GetInstance();
@@ -36,6 +36,8 @@ void ModelSystem::Update(float _dt)
 			GraphicsManager::GetInstance()->RemoveObject(e->GetId());
 			continue;
 		}
+
+
 		if (!e->GetInitialized())
 		{
 			LoadModel(e->GetId());
@@ -49,19 +51,16 @@ void ModelSystem::Update(float _dt)
 		scale = e->GetComponent<ScaleComponent>();
 		model = e->GetComponent<ModelComponent>();
 
-
 		if (!ISZERO(position->GetDeltaPosition()))
 			change = true;
-		else if (!ISZERO(rotation->m_deltaRotation))
+		else if (!rotation->HasChanged())
 			change = true;
-		else if (!ISZERO(scale->m_deltaScale))
+		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
-
-		//TRANSLATE(model->m_worldMatrix,position->
+                                
 		if (change)
 		{
-			model->m_worldMatrix = TRANSLATE(position->GetPosition());
-
+			model->m_worldMatrix = /*SCALE(scale->GetScale()) /* ROTATE(rotation->GetRotation())*/  TRANSLATE(position->GetPosition());
 			//TEMP
 			position->Reset();
 			rotation->Reset();
@@ -75,46 +74,29 @@ void ModelSystem::Update(float _dt)
 
 void ModelSystem::RunEvents()
 {
-     //if(m_nextEvent == NONE)
-     //       return;
-     //
-     //if(m_nextEvent == INITIALIZE)
-     //{
-     //    LoadModels();
-     //    printf("YO\n");
-     //}
-     //
-     //m_nextEvent = NONE;
-}
 
-//void ModelSystem::LoadModels()
-//{
-//    EntityMap::iterator it;
-//    ModelComponent* model;
-//    
-//    for (it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
-//    {
-//        Entity* e = it->second;
-//        model = e->GetComponent<ModelComponent>();
-//        GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
-//    }
-//}
+}
 
 void ModelSystem::LoadModel(int _entityID)
 {
-//    EntityMap::iterator it;
-//    ModelComponent* model;
-//    
-//    Entity* e = m_entityMap.find(_entityID)->second;
-//
-//    model = e->GetComponent<ModelComponent>();
-//    GraphicsManager::GetInstance()->AddObject(e->GetId(), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix);
-//
-//	e->SetInitialized(true);
+    EntityMap::iterator it;
+    ModelComponent* model;
+    
+    Entity* e = m_entityMap.find(_entityID)->second;
+
+    model = e->GetComponent<ModelComponent>();
+
+	auto shatter = e->GetComponent<ShatterComponent>();
+	if(shatter)
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+	else
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+
+	e->SetInitialized(true);
 }
 
 bool ModelSystem::Remove(Entity* _entity)
 {
-	GraphicsManager::GetInstance()->RemoveObject(_entity->GetId());
+	GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_entity));
 	return ISystem::Remove(_entity);
 }

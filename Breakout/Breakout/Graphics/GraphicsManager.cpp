@@ -72,11 +72,15 @@ void GraphicsManager::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_inten
 {
     m_IGraphics->AddPointLight(_id, _worldPos, _intensity, _color, _range);
 }
+void GraphicsManager::RemovePointLight(int _id)
+{
+	m_IGraphics->RemovePointLight(_id);
+}
    
 
-void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose)
+void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion)
 {
-	m_IGraphics->AddObject(_id, _model, _world, _worldInverseTranspose);
+	m_IGraphics->AddObject(_id, _model, _world, _worldInverseTranspose,_explosion);
 }
 
 void GraphicsManager::RemoveObject(int _id)
@@ -87,16 +91,21 @@ void GraphicsManager::RemoveObject(int _id)
 
 void GraphicsManager::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
 {
-	//m_IGraphics->Add2DTexture(_id, _path, _x, _y, _width, _height);
+	m_IGraphics->Add2DTexture(_id, _path, _x, _y, _width, _height);
 }
 
 void GraphicsManager::Remove2DTexture(int _id)
 {
-	//m_IGraphics->Remove2DTexture(_id);
+	m_IGraphics->Remove2DTexture(_id);
 }
 
 
 ICamera* GraphicsManager::GetICamera()
 {
     return m_ICamera;
+}
+
+void GraphicsManager::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+{
+    m_IGraphics->AddTextObject(_text,_scale,_color,_x,_y);
 }

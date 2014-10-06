@@ -2,9 +2,14 @@
 #define GLGRAPHICS_H
 
 #include "../IGraphics.h"
-//#include "GLTextureManager.h"
 
-#include <GL/glxew.h>
+#include "GLWindow.h"
+#include "GLShader.h"
+#include "GLTextureManager.h"
+#include "GLText.h"
+
+
+//#include <GL/glxew.h>
 #include <GL/glew.h>
 #include <GL/glx.h>
 //#include "../../../../External/include/glew.c"
@@ -38,6 +43,7 @@ class GLGraphics : public IGraphics
 
         public:
 
+            float       *explosion;
         glm::mat4	*world;
         glm::mat4	*worldInverseTranspose;
     };
@@ -47,10 +53,17 @@ class GLGraphics : public IGraphics
         public:
             
         int vertices;
-        GLuint bufferVAOID;
+        //GLuint bufferVAOID;
+        
+        float* vertexArray;
+        float* normalArray;
+        float* texCoordArray;
+        
+        GLuint texHandle;
         std::string name;
         std::map<int, ModelInstance*> instances;
-        //std::vector<ModelInstance> instances;
+        
+        //GLuint buffers[6];
         
         ModelRenderInfo(){}
       
@@ -71,30 +84,66 @@ class GLGraphics : public IGraphics
 	float *Range;
     };
     
+    
+    struct ComputeModelInfo
+    {
+        ComputeModelInfo(vec3 *pos, vec3 *intens, vec3 *col, float *range)
+        {
+            Position = pos;
+            Intensity = intens;
+            Color = col;
+            Range = range;
+        }
+        vec3 *Position; // Light position world coords.
+	vec3 *Intensity; // La, Ld and Ls intensity
+	vec3 *Color;
+	float *Range;
+    };
+    
+    struct TextObject
+    {
+        std::string* text;
+        float* scale;
+        unsigned int* color;
+        int* x;
+        int* y;
+    };
+    
 private:
 	GLWindow *m_window;
         int m_screenWidth;
         int m_screenHeight;
         
-        //GLTextureManager m_texManager;
+        GLTextureManager m_texManager;
         GLuint m_program; //shaderID
-        GLuint m_shader2Dprogram;
+
         GLuint m_computeTexture;
         GLuint m_computeProgram;
         GLuint m_frameBuffer;
         GLuint depth_rb;
         GLuint m_computeQuad;
+
+        GLuint m_shader2Dprogram, m_2DVAO;
+
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
         
-        std::vector<LightInfo*> m_lights;
+        std::map<int, LightInfo*> m_lights;
+        
+        std::map<int, ComputeModelInfo*> m_computeModels;
                                             
         std::vector<glm::mat4> m_testMatrices;
         
-        //std::map<int, TextureInfo> mTextureInstances;
+
+        std::map<int, TextureInfo*> m_TextureInstances;
+
         
-        //std::map<int, ModelInstance*> m_modelInstances;
+        std::vector<const GLbyte(*)[64]> m_letters;
+        
+        std::vector<TextObject> m_textObjects;
+        
+        float m_textFontSize = 3;
         
         int m_workSizeX,m_workSizeY;
         
@@ -108,11 +157,17 @@ private:
         
         int RenderInstanced();
         int RenderStandard();
+        void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
+
         void GenTexture();
         void RenderCompute();
         void SendComputeData();
+
+        void LoadLetters();
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y);
+
 public:
 
 	GLGraphics(void);
@@ -134,8 +189,11 @@ public:
         void Remove2DTexture(int _id);
         
         void AddRenderObject(std::string _path, MATRIX4 _world);
-        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose);
+        void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
         void RemoveObject(int _id);
+        
+        
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
         
 
 };

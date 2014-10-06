@@ -41,6 +41,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 
 		else if (str == "mtllib")								//materialfile
 		{
+                    
 			ParseMaterialFile(file, MODEL_ROOT);
 		}
                 str = "";
@@ -194,12 +195,13 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	std::getline(file, str);
 	Btrim(str);
 
-	str = dir + str;
+	str = GetFile(str, dir); //dir + str;
 
 	//append directory in front of filename
 	//str = dir + str;
 	ifstream mfile;
 	mfile.open(str.c_str());
+        //printf("MTL-fil: %s \n", str.c_str());
 
 	if (!mfile)
 	{
@@ -315,7 +317,7 @@ void ModelLoader::ParsePosition(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	VECTOR3 pos(x, y, -z);
+	VECTOR3 pos(x, y, z);
 
 	m_positions.push_back(pos);
 }
@@ -326,7 +328,7 @@ void ModelLoader::ParseNormal(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	VECTOR3 normal(x, y, -z);
+	VECTOR3 normal(x, y, z);
 
 	m_normals.push_back(normal);
 }
@@ -336,7 +338,7 @@ void ModelLoader::ParseTexCoord(std::ifstream& file)
 	file >> x;
 	file >> y;
 
-	VECTOR2 texCoord(x, 1 - y);
+	VECTOR2 texCoord(x, y);
 
 	m_texCoords.push_back(texCoord);
 }

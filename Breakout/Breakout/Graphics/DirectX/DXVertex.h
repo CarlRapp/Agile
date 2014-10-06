@@ -69,6 +69,7 @@ namespace DXInstance
 	struct World
 	{
 		DirectX::XMFLOAT4X4 world;
+		float ExplodeTime;
 	};	
 };
 
@@ -82,7 +83,7 @@ public:
 	static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTan[4];
 	//static const D3D11_INPUT_ELEMENT_DESC m_posNormalTexTanCol[5];
 
-	static const D3D11_INPUT_ELEMENT_DESC m_instancedPosNormalTexTan[8];
+	static const D3D11_INPUT_ELEMENT_DESC m_instancedPosNormalTexTan[9];
 };
 
 class DXInputLayouts

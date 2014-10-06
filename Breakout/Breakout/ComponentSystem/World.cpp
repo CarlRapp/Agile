@@ -21,6 +21,8 @@ void World::Start()
 
 	m_activeEntities = EntityMap();
 	m_systems = SystemMap();
+
+	m_running = true;
 }
 
 bool World::AddEntity(Entity* _e)
@@ -81,7 +83,6 @@ void World::Update(float _dt)
 
 		case Entity::DEAD:
 			KillEntity(e);
-			//EntityMap::iterator eDelete = eIT;
 			m_activeEntities.erase(eIT++);
 			break;
 
@@ -95,6 +96,21 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
+	//printf("Entity # changed!\n");
+	SystemMap::iterator sIT;
+	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+	{
+		if (sIT->second->HasEntity(_e))
+		{
+			if (!sIT->second->CheckChangedEntity(_e))
+				sIT->second->Remove(_e);
+			else
+				sIT->second->Add(_e);
+		}
+		else
+			sIT->second->Add(_e);
+
+	}
 }
 
 void World::KillEntity(Entity* _e)
@@ -132,4 +148,16 @@ Entity* World::GetEntity(int _id)
 		return m_activeEntities[_id];
 
 	return 0;
+}
+
+void World::Clear()
+{
+	EntityMap::iterator eIT;
+	for (eIT = m_activeEntities.begin(); eIT != m_activeEntities.end(); ++eIT)
+		KillEntity(eIT->second);
+
+	m_activeEntities.clear();
+	m_changedEntities.clear();
+	m_componentEntityPool.clear();
+	printf("World cleared!\n");
 }
