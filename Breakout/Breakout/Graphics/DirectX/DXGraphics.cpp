@@ -230,7 +230,7 @@ void DXGraphics::LoadTexture(std::string _path)
 }
 
 
-void DXGraphics::Update()
+void DXGraphics::Update(float _dt)
 {
 	m_window->Update();
 }
