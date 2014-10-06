@@ -811,16 +811,16 @@ void DXDeferred::RenderParticleSystems(float _dt, ID3D11RenderTargetView *_rende
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
 	//m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
 
-	DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(_camera->GetView());
-	DirectX::XMMATRIX proj = DirectX::XMLoadFloat4x4(_camera->GetProjection());	
+	//DirectX::XMMATRIX view = DirectX::XMLoadFloat4x4(_camera->GetView());
+	//DirectX::XMMATRIX proj = DirectX::XMLoadFloat4x4(_camera->GetProjection());	
 
-	DirectX::XMFLOAT4X4 viewProj;
-	DirectX::XMStoreFloat4x4(&viewProj, XMMatrixMultiply(view, proj));
+	//DirectX::XMFLOAT4X4 viewProj;
+	//DirectX::XMStoreFloat4x4(&viewProj, XMMatrixMultiply(view, proj));
 
 	map<int, DXParticleSystem*>::iterator psIterator;
 	for (psIterator = _particleSystems.begin(); psIterator != _particleSystems.end(); ++psIterator)
 	{
-		psIterator->second->Render(m_deviceContext, _dt, viewProj, _camera->GetPosition());
+		psIterator->second->Render(m_deviceContext, _dt, *_camera->GetView(), *_camera->GetProjection(), _camera->GetPosition());
 	}
 }
 

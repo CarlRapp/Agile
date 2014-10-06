@@ -11,7 +11,13 @@ DXTextureManager::~DXTextureManager()
 		ReleaseCOM(it->second);
     }
 
+	for (auto it = mLetterSRV.begin(); it != mLetterSRV.end(); ++it)
+	{
+		ReleaseCOM(it->second);
+	}
+
 	mTextureSRV.clear();
+	mLetterSRV.clear();
 
 	ReleaseCOM(m_RandomTex);
 }
@@ -84,12 +90,76 @@ void DXTextureManager::buildRandomTex(ID3D11Device *Device)
 	//
 	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
 	viewDesc.Format = texDesc.Format;
-	viewDesc.ViewDimension = D3D10_SRV_DIMENSION_TEXTURE1D;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE1D;
 	viewDesc.Texture1D.MipLevels = texDesc.MipLevels;
 	viewDesc.Texture1D.MostDetailedMip = 0;
 	HRESULT(Device->CreateShaderResourceView(randomTex, &viewDesc, &m_RandomTex));
 
 	ReleaseCOM(randomTex);
+}
+
+ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device, char* _data)
+{
+	//
+	// Create the random data.
+	//
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = _data;
+	initData.SysMemPitch = 64 * 64 * sizeof(char);
+	initData.SysMemSlicePitch = 64 * 64 * sizeof(char);
+	//
+	// Create the texture.
+	//
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = 64;
+	texDesc.Height = 64;
+	texDesc.MipLevels = 1;
+	texDesc.Format = DXGI_FORMAT_R8_UINT;
+	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+	texDesc.ArraySize = 1;
+
+	ID3D11Texture2D* letterTex = 0;
+	HRESULT(_device->CreateTexture2D(&texDesc, &initData, &letterTex));
+	//
+	// Create the resource view.
+	//
+
+	ID3D11ShaderResourceView *letterSRV = NULL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+	viewDesc.Format = texDesc.Format;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	viewDesc.Texture2D.MipLevels = texDesc.MipLevels;
+	viewDesc.Texture2D.MostDetailedMip = 0;
+	HRESULT(_device->CreateShaderResourceView(letterTex, &viewDesc, &letterSRV));
+
+	ReleaseCOM(letterTex);
+	return letterSRV;
+}
+
+void DXTextureManager::AddSymbolTexture(ID3D11Device *_device, char _c, char* _data)
+{
+	if (mLetterSRV.find(_c) == mLetterSRV.end())
+		return;
+
+	mLetterSRV[_c] = buildLetterTex(_device, _data);
+}
+
+ID3D11ShaderResourceView* DXTextureManager::GetSymbolTexture(char _c)
+{
+	ID3D11ShaderResourceView* srv = 0;
+
+
+	// Does it already exist?
+	if (mLetterSRV.find(_c) != mLetterSRV.end())
+	{
+		srv = mLetterSRV[_c];
+	}
+	return srv;
 }
 
 // Returns random float in [0, 1).
