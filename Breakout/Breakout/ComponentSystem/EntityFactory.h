@@ -40,7 +40,9 @@ public:
 
 	enum EntityType
 	{
-		BLOCK = 0,
+		STANDARD_BLOCK_RED = 0,
+		STANDARD_BLOCK_BLUE,
+		STANDARD_BLOCK_GREEN,
 		PAD,
 		BALL,
 		POWERUP,

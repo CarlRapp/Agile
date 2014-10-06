@@ -113,11 +113,13 @@ void ModelSystem::LoadModel(int _entityID)
     model = e->GetComponent<ModelComponent>();
 
 	auto shatter = e->GetComponent<ShatterComponent>();
-	if(shatter)
-		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
-	else
-		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+	model->m_gpuId = GetMemoryID(e);
 
+	if(shatter)
+		GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+	else
+		GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+	//GraphicsManager::GetInstance()->RemoveObject(model->m_gpuId);
 	e->SetInitialized(true);
 }
 

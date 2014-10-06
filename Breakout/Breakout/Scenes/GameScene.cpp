@@ -33,8 +33,8 @@ void GameScene::Initialize()
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
-	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
+	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<LoseLifeSystem>();
 	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
@@ -113,7 +113,8 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		int rnd = (rand() % (3 - 0));
+		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
@@ -186,7 +187,8 @@ void GameScene::Reset()
 	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		int rnd = (rand() % (3 - 0));
+		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
@@ -203,7 +205,7 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 20));
 	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
 	m_world->AddEntity(e);
 
