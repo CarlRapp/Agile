@@ -41,6 +41,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 
 		else if (str == "mtllib")								//materialfile
 		{
+                    
 			ParseMaterialFile(file, MODEL_ROOT);
 		}
                 str = "";
@@ -194,12 +195,13 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	std::getline(file, str);
 	Btrim(str);
 
-	str = dir + str;
+	str = GetFile(str, dir); //dir + str;
 
 	//append directory in front of filename
 	//str = dir + str;
 	ifstream mfile;
 	mfile.open(str.c_str());
+        //printf("MTL-fil: %s \n", str.c_str());
 
 	if (!mfile)
 	{

@@ -30,7 +30,6 @@ bool World::AddEntity(Entity* _e)
 	if (m_activeEntities.find(_e->GetId()) == m_activeEntities.end())
 	{
 		m_activeEntities[_e->GetId()] = _e;
-		//printf("Entity #%d added!\n", _e->GetId());
 
 		for (IComponent* c : *_e->GetComponents())
 			AddNewComponent(c->m_ID);
@@ -91,7 +90,6 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	printf("Entity # changed!\n");
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 	{
 		ISystem* system = sIT->second;
@@ -116,8 +114,6 @@ void World::KillEntity(Entity* _e)
 
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
-
-	printf("Entity #%d removed!\n", _e->GetId());
 }
 
 void World::AddNewComponent(TypeID _id)

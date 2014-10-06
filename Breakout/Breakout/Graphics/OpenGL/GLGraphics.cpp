@@ -88,6 +88,8 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     }
 //-----------------------------------------------------------------------------------------
     glEnable(GL_BLEND);
+    
+    LoadLetters();
       
     int err = glGetError();
     
@@ -96,6 +98,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     std::cout << "\033[31m with error: " << err;
     std::cout << "\n\033[30m";
 
+    glEnable(GL_DEPTH_TEST);
     return true; 
 } 
 
@@ -120,23 +123,51 @@ void GLGraphics::LoadModel(std::string _path)
         
         float* vertexArray = new float[floatCount];
         float* normalArray = new float[floatCount];
-
+        float* texCoordArray = new float[(int)(*groupIt)->triangles->size() * 3 * 2];
+        
+        
         int i = 0;
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles->begin(); triangleIt != (*groupIt)->triangles->end(); ++triangleIt)
         {
             //Dest,Source,Size
             memcpy(&vertexArray[3*i], &(*triangleIt).Vertices[0].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*i], &(*triangleIt).Vertices[0].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*i], &(*triangleIt).Vertices[0].Texture, sizeof(glm::vec2));
+            
+            texCoordArray[2*i +1] = -texCoordArray[2*i +1];
+            
             memcpy(&vertexArray[3*(i+1)], &(*triangleIt).Vertices[1].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+1)], &(*triangleIt).Vertices[1].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*(i+1)], &(*triangleIt).Vertices[1].Texture, sizeof(glm::vec2));
+            
+            texCoordArray[2*(i+1) + 1] = -texCoordArray[2*(i+1) + 1];
+            
             memcpy(&vertexArray[3*(i+2)], &(*triangleIt).Vertices[2].Position, sizeof(glm::vec3));
             memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Normal, sizeof(glm::vec3));
+            memcpy(&texCoordArray[2*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec2));
+            
+            texCoordArray[2*(i+2) + 1] = -texCoordArray[2*(i+2) + 1];
+            
+            //memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec3));
 
             i += 3;
         }
         printf("Vertices: %d [Index: %d]\n", i, index);
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
+        
+        if((*groupIt)->material)
+        {
+            m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE0);
+            m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
+          //  printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
+        }
+        else
+        {
+            m_texManager.Load2DTexture("whitePixel.png", GL_TEXTURE0);
+            m_models[index]->texHandle = m_texManager.GetTexture("whitePixel.png");
+           // printf("NO MATERIAL FILE: using %s \n", "whitePixel.png");
+        }
         
         m_testMatrices.push_back(glm::mat4(1.0f));
         
@@ -146,8 +177,9 @@ void GLGraphics::LoadModel(std::string _path)
         int explosion       = glGetAttribLocation(m_program, "m_explosion");
         int color           = glGetAttribLocation(m_program, "m_color");
         int matrix          = glGetAttribLocation(m_program, "m_matModel");
+        int texCoord        = glGetAttribLocation(m_program, "m_texCoord");
         
-	glGenBuffers(5, m_models[index]->buffers);
+	glGenBuffers(6, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
@@ -167,22 +199,26 @@ void GLGraphics::LoadModel(std::string _path)
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
         glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
         
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]); 
+        glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
+        
 	// create 1 VAO
 	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
 	glBindVertexArray(m_models[index]->bufferVAOID);
         
-	// enable "vertex attribute arrays"
-	glEnableVertexAttribArray(pos);         // position     1
-        glEnableVertexAttribArray(pos+1);       // pad          2
-	glEnableVertexAttribArray(normal);      // normal       3
-        glEnableVertexAttribArray(explosion);    // explosion   4
-        glEnableVertexAttribArray(color);       // color        5
+	// enable "vertex attribute arrays"     
+	glEnableVertexAttribArray(pos);         // position     0
+        glEnableVertexAttribArray(pos+1);       // pad          1
+	glEnableVertexAttribArray(normal);      // normal       2
+        glEnableVertexAttribArray(explosion);    // explosion   3
+        glEnableVertexAttribArray(color);       // color        4
 
-        glEnableVertexAttribArray(matrix);      //matrix        6
-        glEnableVertexAttribArray(matrix+1);    //matrix        7
-        glEnableVertexAttribArray(matrix+2);    //matrix        8
-        glEnableVertexAttribArray(matrix+3);    //matrix        9
+        glEnableVertexAttribArray(matrix);      //matrix        5
+        glEnableVertexAttribArray(matrix+1);    //matrix        6
+        glEnableVertexAttribArray(matrix+2);    //matrix        7
+        glEnableVertexAttribArray(matrix+3);    //matrix        8
         
+        glEnableVertexAttribArray(texCoord);    //matrix        9
 
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
@@ -205,6 +241,7 @@ void GLGraphics::LoadModel(std::string _path)
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
         glVertexAttribDivisor(color, 1);
+        
 
         //model matrix
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
@@ -216,6 +253,9 @@ void GLGraphics::LoadModel(std::string _path)
         glVertexAttribDivisor(matrix+2, 1);
         glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
         glVertexAttribDivisor(matrix+3, 1);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]);
+	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 
         glBindVertexArray(0); // disable VAO
@@ -245,55 +285,57 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
     m_texManager.Load2DTexture(_path, GL_TEXTURE0);
     m_TextureInstances.insert(pair<int, TextureInfo*>(_id, new TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
     
-    //buffra datan till 2D shader
-    float positionData[] = {
-	-1.0, -1.0,
-	-1.0, 1.0,
-	1.0, -1.0,
-	-1.0, 1.0,
-	1.0, 1.0,
-	1.0, -1.0 };
-    
-    float texCoordData[] = {
-	0.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 1.0f,
-	0.0f, 0.0f,
-	1.0f, 0.0f,
-	1.0f, 1.0f };
+    if(m_TextureInstances.size() <= 1)
+    {
+        //buffra datan till 2D shader
+        float positionData[] = {
+            -1.0, -1.0,
+            -1.0, 1.0,
+            1.0, -1.0,
+            -1.0, 1.0,
+            1.0, 1.0,
+            1.0, -1.0 };
 
-    int nrOfPoints = 12;
-    
-    GLuint m_2DVBOs[2];
-    glGenBuffers(2, m_2DVBOs);
+        float texCoordData[] = {
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f };
 
-    // "Bind" (switch focus to) first buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]); 
-    glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), positionData, GL_STATIC_DRAW);
+        int nrOfPoints = 12;
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
-    glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), texCoordData, GL_STATIC_DRAW);
+        GLuint m_2DVBOs[2];
+        glGenBuffers(2, m_2DVBOs);
 
-    // create 1 VAO
-    glGenVertexArrays(1, &m_2DVAO);
-    glBindVertexArray(m_2DVAO);
+        // "Bind" (switch focus to) first buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]); 
+        glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), positionData, GL_STATIC_DRAW);
 
-    // enable "vertex attribute arrays"
-    glEnableVertexAttribArray(0); // position
-    glEnableVertexAttribArray(1); // texCoord
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
+        glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), texCoordData, GL_STATIC_DRAW);
 
-    // map index 0 to position buffer
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        // create 1 VAO
+        glGenVertexArrays(1, &m_2DVAO);
+        glBindVertexArray(m_2DVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+        // enable "vertex attribute arrays"
+        glEnableVertexAttribArray(0); // position
+        glEnableVertexAttribArray(1); // texCoord
 
-    
-    glBindVertexArray(0); // disable VAO
-    glUseProgram(0); // disable shader programme
+        // map index 0 to position buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+        glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+
+
+        glBindVertexArray(0); // disable VAO
+        glUseProgram(0); // disable shader programme
     //glBindBuffer(GL_ARRAY_BUFFER,0);
-    glDeleteBuffers(2, m_2DVBOs);
+        glDeleteBuffers(2, m_2DVBOs);
     
     int err = glGetError();
     
@@ -301,6 +343,7 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
     if(err)
     std::cout << "\033[31m with error: " << err;
     std::cout << "\n\033[30m";
+    }
 }
 
 void GLGraphics::Remove2DTexture(int _id)
@@ -326,7 +369,7 @@ void GLGraphics::Free()
     for(int i = m_models.size()-1; i > -1;i--)
     {
         m_models[i]->instances.clear();
-        glDeleteBuffers(5,&m_models[i]->bufferVAOID);
+        glDeleteBuffers(6,&m_models[i]->bufferVAOID);
         m_models.pop_back();
     }
     
@@ -334,6 +377,12 @@ void GLGraphics::Free()
     {
         m_testMatrices.pop_back();
     }
+    
+    for(std::map<int,LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it)
+    {
+        delete(it->second);
+    }
+    m_lights.clear();
     
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
@@ -344,23 +393,32 @@ void GLGraphics::Free()
     glDeleteVertexArrays(1, &m_2DVAO);
     
     glDeleteProgram(m_program);
+ 
+    for(int i=0;i < m_letters.size(); i++)
+    {
+        m_letters.pop_back();
+    }
+    
+    for(int i=0; i < m_textObjects.size();i++)
+    {
+        m_textObjects.pop_back();
+    }
     
     printf("Graphics memory cleared\n");
 }
 
-float t;
+    float t;
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.2, 0.2, 0.8, 1.0);
+
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    
     
     glUseProgram(m_program);
     
     glViewport(0, 0, m_screenWidth, m_screenHeight);
     
-    //LightsToRender();
     UpdateLights();
     
     CameraToRender(_camera);
@@ -371,9 +429,47 @@ void GLGraphics::Render(ICamera* _camera)
     
     Render2D();
     
+    
     glUseProgram(0);
+
+    for(int i=0; i < m_textObjects.size();i++)
+    {
+        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y);
+    }
+    
     
     SDL_GL_SwapBuffers( );
+}
+
+void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+{
+    GLvoid* v;
+    
+    std::string text = (*_text);
+    float scale = (*_scale);
+    unsigned int color = (*_color);
+    int x = (*_x);
+    int y = (*_y);
+    
+    glPixelZoom(scale,  scale);
+    for(int i=0; i< text.size();i++)
+    {
+        v = (GLvoid*)m_letters[text.at(i)-32];
+        glRasterPos2i(x+i*8*scale,  y*scale);
+        glDrawPixels(8,8,  color, GL_BYTE,  v);
+    }
+}
+
+void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+{
+    TextObject textObject;
+    textObject.text = _text;
+    textObject.scale = _scale;
+    textObject.color = _color;
+    textObject.x = _x;
+    textObject.y = _y;
+    
+    m_textObjects.push_back(textObject);
     
 }
 
@@ -385,15 +481,14 @@ void GLGraphics::Render2D()
     
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
-        //printf("it->second->TexHandle: %d \n", it->second->TexHandle);
-        //printf("Looop \n");
         glBindVertexArray(m_2DVAO);
         glBindTexture(GL_TEXTURE_2D, it->second->TexHandle);
         //set viewPort (resterande TextureInfo-variabler)
-        glViewport((GLint)*it->second->X, (GLint)*it->second->Y, (GLsizei)*it->second->Width * m_screenWidth, (GLsizei)*it->second->Height * m_screenHeight);
-        //printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)*it->second->X, (GLint)*it->second->Y, (GLsizei)*it->second->Width * m_screenWidth, (GLsizei)*it->second->Height * m_screenHeight);
+        glViewport((GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
+        //printf("X: %d  Y: %d    Width: %d    Height: %d \n\n", (GLint)(*it->second->X * m_screenWidth), (GLint)(*it->second->Y * m_screenHeight), (GLsizei)(*it->second->Width * m_screenWidth), (GLsizei)(*it->second->Height * m_screenHeight));
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
     glBindVertexArray(0);
@@ -419,11 +514,15 @@ int GLGraphics::RenderInstanced()
     ModelRenderInfo* MRI;
     
     glUseProgram(m_program);
+    glEnable(GL_DEPTH_TEST);
     
     for(int i=0; i< m_models.size();i++)
     {
         MRI = m_models[i];
         int instances = m_models[i]->instances.size();
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_models[i]->texHandle);
         
         //Update matrix buffer//
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[4]);
@@ -469,20 +568,22 @@ int GLGraphics::RenderInstanced()
 
 void GLGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {   
-    m_lights.push_back(new LightInfo(_worldPos, _intensity, _color, _range));
+    m_lights.insert(pair<int, LightInfo*>(_id, new LightInfo(_worldPos, _intensity, _color, _range)));
 }
 
 void GLGraphics::RemovePointLight(int _id)
 {
-    return;
+    delete(m_lights[_id]);
+    m_lights.erase(_id);
 }
 
 void GLGraphics::UpdateLights()
 {
-    for(int i = 0; i < m_lights.size(); i++)
+    int i = 0;
+    for(std::map<int,LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it)
 	{
             //Light properties
-            vec4 LightPosition = vec4(*m_lights[i]->Position, 1.0f);	// Light position
+            vec4 LightPosition = vec4(*it->second->Position, 1.0f);	// Light position
             
             //-----Send all the lights values------
             const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
@@ -493,9 +594,11 @@ void GLGraphics::UpdateLights()
             strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
 
             SetUniformV(m_program, positionStr, LightPosition);
-            SetUniformV(m_program, intensityStr, *m_lights[i]->Intensity);
-            SetUniformV(m_program, colorStr, *m_lights[i]->Color);
-            SetUniformV(m_program, rangeStr, *m_lights[i]->Range);
+            SetUniformV(m_program, intensityStr, *it->second->Intensity);
+            SetUniformV(m_program, colorStr, *it->second->Color);
+            SetUniformV(m_program, rangeStr, *it->second->Range);
+            
+            i++;
 	}
 }
 
@@ -519,14 +622,6 @@ void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world)
 
 void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion)
 {
-//
-//    int err = glGetError();
-//    
-//    std::cout << "Addobject ";
-//    if(err)
-//    std::cout << "\033[31m with error: " << err;
-//    std::cout << "\n\033[30m";
-//    
     for(int i=0; i < m_models.size();i++)
     {
         if (m_models[0]->instances.count(_id) !=0)
@@ -671,4 +766,71 @@ int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, int _value
 	else return 1;
 
 	return 0;
+}
+
+void GLGraphics::LoadLetters()
+{
+    m_letters.push_back(&_space);
+    m_letters.push_back(&_exclamation);
+    m_letters.push_back(&_quote);
+    m_letters.push_back(&_number);
+    m_letters.push_back(&_dollar);
+    m_letters.push_back(&_percent);
+    m_letters.push_back(&_ampersand);
+    m_letters.push_back(&_apostrophe);
+    m_letters.push_back(&_leftbrace);
+    m_letters.push_back(&_rightbrace);
+    m_letters.push_back(&_asterisk);
+    m_letters.push_back(&_plus);
+    m_letters.push_back(&_comma);
+    m_letters.push_back(&_minus);
+    m_letters.push_back(&_dot);
+    m_letters.push_back(&_slash);
+
+    m_letters.push_back(&_0);
+    m_letters.push_back(&_1);
+    m_letters.push_back(&_2);
+    m_letters.push_back(&_3);
+    m_letters.push_back(&_4);
+    m_letters.push_back(&_5);
+    m_letters.push_back(&_6);
+    m_letters.push_back(&_7);
+    m_letters.push_back(&_8);
+    m_letters.push_back(&_9);
+
+    m_letters.push_back(&_colon);
+    m_letters.push_back(&_semicolon);
+    m_letters.push_back(&_lessthan);
+    m_letters.push_back(&_equal);
+    m_letters.push_back(&_morethan);
+    m_letters.push_back(&_question);
+    m_letters.push_back(&_at);
+
+    m_letters.push_back(&A);
+    m_letters.push_back(&B);
+    m_letters.push_back(&C);
+    m_letters.push_back(&D);
+    m_letters.push_back(&E);
+    m_letters.push_back(&F);
+    m_letters.push_back(&G);
+    m_letters.push_back(&H);
+    m_letters.push_back(&I);
+    m_letters.push_back(&J);
+    m_letters.push_back(&K);
+    m_letters.push_back(&L);
+    m_letters.push_back(&M);
+    m_letters.push_back(&N);
+    m_letters.push_back(&O);
+    m_letters.push_back(&P);
+    m_letters.push_back(&Q);
+    m_letters.push_back(&R);
+    m_letters.push_back(&S);
+    m_letters.push_back(&T);
+    m_letters.push_back(&U);
+    m_letters.push_back(&V);
+    m_letters.push_back(&W);
+    m_letters.push_back(&X);
+    m_letters.push_back(&Y);
+    m_letters.push_back(&Z);
+    
 }

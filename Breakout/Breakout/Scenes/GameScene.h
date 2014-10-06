@@ -15,6 +15,7 @@
 #include "../ComponentSystem/System/AudioSystem.h"
 #include "../ComponentSystem/System/ScoreSystem.h"
 #include "../ComponentSystem/System/LightSystem.h"
+#include "../ComponentSystem/System/EffectSystem.h"
 #include "../ComponentSystem/System/RespawnBallSystem.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
@@ -32,6 +33,7 @@ private:
 	// Pause Screen settings
 	Texture2DData*	m_pauseBackground;
 	bool m_isPaused;
+        int m_fpsCounterID;
 public:
 	GameScene();
 	~GameScene();
@@ -39,10 +41,11 @@ public:
 	void Initialize();
 	void LoadContent();
 	void Update(float _dt);
-	void Render();
+	void Render(float _dt);
 
 	void OnActive();
 	void OnInactive();
+        void UpdateFPS(float _dt);
 };
 
 

@@ -70,14 +70,14 @@ void SceneManager::Start()
 		IM->Update();
 
 		m_activeScene->Update(dt);
-		m_activeScene->Render();
+		m_activeScene->Render(dt);
                 //setbuf(stdout, NULL);
 		lol += dt;
 		if (lol > 0.5f)
 		{
-            printf("\033[33mFPS: %f | Delta: %f\n\033[30m" , 1.0f / dt,dt);
+                    printf("FPS: %f | Delta: %f \n" , 1.0f / dt,dt);
 
-            lol = 0;
+                    lol = 0;
 		}
 	}
 

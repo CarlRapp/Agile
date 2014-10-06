@@ -1,7 +1,6 @@
 #include "../stdafx.h"
 
 #include "EntityFactory.h"
-#include "Component/BlockComponent.h"
 
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
@@ -38,6 +37,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
+		
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER | EffectFlags::EXPLORE;
+		_entity->AddComponent<ShatterComponent>();
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
@@ -50,6 +52,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();
@@ -112,6 +115,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "coolPlane";
+		break;
+        case EntityFactory::TEXT:
+		_entity->AddComponent<TextComponent>();
 		break;
 	default:
 		break;

@@ -30,6 +30,7 @@ void GameScene::Initialize()
 	m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
 	//m_world->AddSystem<LoseLifeSystem>();
@@ -54,7 +55,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -84,7 +85,7 @@ void GameScene::Update(float _dt)
 		
 
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
-
+        
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 		this->Reset();
 
@@ -100,7 +101,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > 1.5f)
+	if (counter > .25f)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
@@ -116,11 +117,29 @@ void GameScene::Update(float _dt)
 	{
 		SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
+
+        UpdateFPS(_dt);
+        
 }
 
-void GameScene::Render()
+void GameScene::UpdateFPS(float _dt)
+{
+  //      
+  //      float fps = 1.0f / _dt;
+  //      std::string fpsString= "FPS: ";
+  //      fpsString.append(std::to_string(fps));
+  //      fpsString += " DT: ";
+  //      fpsString.append(std::to_string(_dt));
+  //      Entity* e = m_world->GetEntity(m_fpsCounterID);
+  //      auto TC = e->GetComponent<TextComponent>();
+		//if(TC)
+		//	TC->SetText(fpsString);
+}
+
+void GameScene::Render(float _dt)
 {
 	GraphicsManager::GetInstance()->Render();
+        
 }
 
 void GameScene::OnActive()
@@ -148,7 +167,7 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
