@@ -11,6 +11,12 @@ DXParticleSystem::DXParticleSystem(void)
 
 DXParticleSystem::~DXParticleSystem(void)
 {
+	ReleaseCOM(InitVertexBuffer);
+	ReleaseCOM(DrawVertexBuffer);
+	ReleaseCOM(SteamOutVertexBuffer);
+	ReleaseCOM(InputLayout);
+	ReleaseCOM(m_effect);
+
 }
 
 void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceContext, std::string _effect, DXTextureManager *_texMgr)
@@ -23,6 +29,9 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 	Particle *partilce		= new Particle();
 	partilce->age			= 0.0f;
 	partilce->type			= 0;
+	partilce->initialVel    = DirectX::XMFLOAT3(0, 0, 0);
+	partilce->size			= DirectX::XMFLOAT2(0, 0);
+	partilce->initialPos    = DirectX::XMFLOAT3(0, 0, 0);
 
 	//skapar start-vertexbuffern som endast innehåller en emit-partikel (en vertex).
 	D3D11_BUFFER_DESC initVertexBufferDesc;
@@ -78,10 +87,9 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 	fin.read(&compiledShader[0], size);
 	fin.close();
 
-	ID3DX11Effect* effect;
 
 	HRESULT(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
-		0, _device, &effect));
+		0, _device, &m_effect));
 
 
 	//dwShaderFlags |= D3D10_SHADER_DEBUG;
@@ -107,18 +115,17 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 		
 
 	//laddar effectteknikerna från effektfilen.
-	StreamOutTech	= effect->GetTechniqueByName("StreamOutTech");
-	DrawTech		= effect->GetTechniqueByName("DrawTech");
+	StreamOutTech = m_effect->GetTechniqueByName("StreamOutTech");
+	DrawTech = m_effect->GetTechniqueByName("DrawTech");
 
 	//laddar variabler från effektfilen.
-	mfxViewProjVar	= effect->GetVariableByName("gViewProjection")->AsMatrix();
-	mfxTimeVar		= effect->GetVariableByName("gTime")->AsScalar();
-	mfxDeltaTimeVar = effect->GetVariableByName("gDeltaTime")->AsScalar();
-	mfxNsVar		= effect->GetVariableByName("Ns")->AsScalar();
-	mfxKsVar		= effect->GetVariableByName("Ks")->AsScalar();
-	mfxCameraPosVar = effect->GetVariableByName("gCameraPos")->AsVector();
-	mfxEmitPosVar	= effect->GetVariableByName("gEmitPosW")->AsVector();
-	mfxEmitVelVar = effect->GetVariableByName("gEmitVelW")->AsVector();
+	mfxViewVar = m_effect->GetVariableByName("gView")->AsMatrix();
+	mfxProjVar = m_effect->GetVariableByName("gProjection")->AsMatrix();
+	mfxTimeVar = m_effect->GetVariableByName("gTime")->AsScalar();
+	mfxDeltaTimeVar = m_effect->GetVariableByName("gDeltaTime")->AsScalar();
+	mfxCameraPosVar = m_effect->GetVariableByName("gCameraPos")->AsVector();
+	mfxEmitPosVar = m_effect->GetVariableByName("gEmitPosW")->AsVector();
+	mfxEmitVelVar = m_effect->GetVariableByName("gEmitVelW")->AsVector();
 
 	RandomTexRV = _texMgr->GetRandomTexture();
 
@@ -132,8 +139,10 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 	//}
 
 	//skickar texturerna till gpu.
-	effect->GetVariableByName("randomTex")->AsShaderResource()->SetResource(RandomTexRV);
-	effect->GetVariableByName("Texture")->AsShaderResource()->SetResource(TextureRV);
+	mfxTexture = m_effect->GetVariableByName("Texture")->AsShaderResource();
+	mfxRandomTex = m_effect->GetVariableByName("randomTex")->AsShaderResource();
+	//effect->GetVariableByName("randomTex")->AsShaderResource()->SetResource(RandomTexRV);
+	//effect->GetVariableByName("Texture")->AsShaderResource()->SetResource(TextureRV);
 
 	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -187,20 +196,25 @@ DirectX::XMFLOAT3 DXParticleSystem::GetEmitVelocity()
 
 
 //uppdaterar och målar ut partikelsystemt.
-void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX::XMFLOAT4X4& ViewProjection, DirectX::XMFLOAT3& cameraPos)
+void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX::XMFLOAT4X4& View, DirectX::XMFLOAT4X4& Projection, DirectX::XMFLOAT3& cameraPos)
 {
 	time += deltaTime;
 
-	mfxEmitPosVar->SetFloatVector(reinterpret_cast<const float*>(m_position));
-	mfxEmitVelVar->SetFloatVector(reinterpret_cast<const float*>(m_velocity));
+	VECTOR3 *temp = m_position ? m_position : &VECTOR3(0, 0, 0);
+	mfxEmitPosVar->SetFloatVector(reinterpret_cast<const float*>(temp));
+
+	temp = m_velocity ? m_velocity : &VECTOR3(0,0,0);
+	mfxEmitVelVar->SetFloatVector(reinterpret_cast<const float*>(temp));
 
 
 	//skickar variabler till GPU.
-	mfxViewProjVar->SetMatrix((float*)&ViewProjection);
+	mfxViewVar->SetMatrix((float*)&View);
+	mfxProjVar->SetMatrix((float*)&Projection);
 	mfxTimeVar->SetFloat(time);
 	mfxDeltaTimeVar->SetFloat(deltaTime);
-	mfxNsVar->SetFloat(Ns);
-	mfxKsVar->SetFloat(Ks);
+	mfxTexture->SetResource(TextureRV);
+	mfxRandomTex->SetResource(RandomTexRV);
+
 	DirectX::XMFLOAT4 camPos = DirectX::XMFLOAT4(cameraPos.x, cameraPos.y, cameraPos.z, 0);
 	mfxCameraPosVar->SetFloatVector(reinterpret_cast<const float*>(&camPos));
 
@@ -247,7 +261,7 @@ void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX
 	//un-binding streamouttarget-buffern.
 	ID3D11Buffer* bufferArray[1] = {0};
 	_dc->SOSetTargets(1, bufferArray, &offset);
-
+	//_dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 	//byter så att DrawVertexBuffer blir SteamOutVertexBuffer och tvärt om.
 	std::swap(DrawVertexBuffer, SteamOutVertexBuffer);
 

@@ -403,6 +403,9 @@
     <ClInclude Include="ComponentSystem\Component\TextComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXParticleSystem.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -498,6 +501,15 @@
       <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\Fire.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\RenderText.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\Trail.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -161,6 +161,7 @@ void GameScene::OnInactive()
 	{
 		eIT->second->SetInitialized(false);
 		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 	}	
 	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));

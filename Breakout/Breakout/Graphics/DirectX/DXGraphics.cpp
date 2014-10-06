@@ -14,6 +14,13 @@ DXGraphics::DXGraphics(void)
 DXGraphics::~DXGraphics(void)
 {
 	m_modelInstances.clear();
+	
+	map<int, DXParticleSystem*>::iterator	mapIterator;
+	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
+	{
+		delete(mapIterator->second);
+	}
+
 
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
@@ -44,8 +51,6 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 
 
 
-VECTOR3 pos;
-VECTOR3 vel;
 //#define asd 1000
 //MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
@@ -63,7 +68,9 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_DXDeferred = new DXDeferred();
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
+	m_DXDeferred->SetDirectionLightMap(&m_dirLights);
 	m_DXDeferred->SetPointLightMap(&m_pointLights);
+	m_DXDeferred->SetSpotLightMap(&m_spotLights);
 
 	
 
@@ -72,10 +79,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
-	pos = VECTOR3(0, 0, 0);
-	vel = VECTOR3(0, 0, 0);
-
-	AddEffect(0, "fire", &pos, &vel);
 
 	//for (int i = 0; i < asd; ++i)
 	//{
@@ -241,6 +244,7 @@ void DXGraphics::Update()
 
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
+
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -348,9 +352,8 @@ void DXGraphics::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 
 void DXGraphics::RemoveEffect(int _id)
 {
 	//förstör buffrar mm.
+	if (m_particleSystems.count(_id) != 0)
+		delete(m_particleSystems[_id]);
+
 	m_particleSystems.erase(_id);
-
-
-
-
 }

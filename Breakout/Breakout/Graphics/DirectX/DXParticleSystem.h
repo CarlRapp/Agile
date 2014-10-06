@@ -42,17 +42,21 @@ class DXParticleSystem
 	ID3DX11EffectTechnique*		StreamOutTech;
 	ID3DX11EffectTechnique*		DrawTech;
 
-	ID3DX11EffectMatrixVariable* mfxViewProjVar;
+	ID3DX11EffectMatrixVariable* mfxViewVar;
+	ID3DX11EffectMatrixVariable* mfxProjVar;
 	ID3DX11EffectScalarVariable* mfxTimeVar;
 	ID3DX11EffectScalarVariable* mfxDeltaTimeVar;
-	ID3DX11EffectScalarVariable* mfxNsVar;
-	ID3DX11EffectScalarVariable* mfxKsVar;
 	ID3DX11EffectVectorVariable* mfxCameraPosVar;
 	ID3DX11EffectVectorVariable* mfxEmitPosVar;
 	ID3DX11EffectVectorVariable* mfxEmitVelVar;
+	ID3DX11EffectShaderResourceVariable *mfxTexture;
+	ID3DX11EffectShaderResourceVariable *mfxRandomTex;
 
 	ID3D11ShaderResourceView*	RandomTexRV;
 	ID3D11ShaderResourceView*	TextureRV;
+
+	ID3DX11Effect* m_effect;
+
 public:
 	float	Ks;
 	float	Ns;
@@ -68,7 +72,7 @@ public:
 	DirectX::XMFLOAT3 GetEmitPosition();
 	DirectX::XMFLOAT3 GetEmitVelocity();
 
-	void Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX::XMFLOAT4X4& ViewProjection, DirectX::XMFLOAT3& cameraPos);
+	void Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX::XMFLOAT4X4& View, DirectX::XMFLOAT4X4& Projection, DirectX::XMFLOAT3& cameraPos);
 
 };
 #endif
