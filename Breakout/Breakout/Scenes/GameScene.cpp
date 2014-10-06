@@ -105,7 +105,8 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		int rnd = (rand() % (3 - 0));
+		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
@@ -170,7 +171,8 @@ void GameScene::Reset()
 	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+		int rnd = (rand() % (3 - 0));
+		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
