@@ -2,6 +2,7 @@
 #define EFFECTSYSTEM_H
 
 #include "ISystem.h"
+#include "../Component/EffectComponent.h"
 
 class EffectSystem : public System<EffectSystem>
 {
@@ -17,6 +18,8 @@ private:
 
 	float m_currentTime;
 	float m_maxTime;
+
+	EffectFlags m_flags;
 
 public:
 
