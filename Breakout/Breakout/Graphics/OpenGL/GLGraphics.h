@@ -3,7 +3,7 @@
 
 #include "../IGraphics.h"
 #include "GLWindow.h"
-#include "GLShader.h"
+#include "GLShaderHandler.h"
 #include "GLTextureManager.h"
 #include "GLText.h"
 
@@ -86,8 +86,8 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        GLuint m_program; //shaderID
-        GLuint m_shader2Dprogram, m_2DVAO;
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+        GLuint m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
         
@@ -105,12 +105,6 @@ private:
         
         float m_textFontSize = 3;
         
-        int SetUniformV(GLuint shaderProg, const char* variable,float value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,int value);
         
         int RenderInstanced();
         int RenderStandard();
