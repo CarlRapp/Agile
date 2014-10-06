@@ -115,7 +115,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > .5f)
+	if (counter > .25f)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
@@ -181,7 +181,7 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);

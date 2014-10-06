@@ -44,6 +44,17 @@ private:
 	void PushDownRec(int _x, int _y);
 	void VisitAdjacentRec(std::map<GridPosition, bool>* _closedList, int _x, int _y);
 	inline void MoveBlockTo(Entity* _e, int _x, int _y);
+
+	void DisconnectFromTop(std::vector<Entity*>* _checkBlocks, int _x);
+	void UpdateDependencyRec(std::map<GridPosition, bool>* _closedList, Entity* _comingFrom, int _x, int _y);
+
+
+
+
+
+	void PushDown(int _x, int _y);
+	void GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, bool>* _closedList);
+	void MoveToWorldPosition(Entity* _block, int _x, int _y);
 public:
 	BlockSystem(World* _world);
 	~BlockSystem();
