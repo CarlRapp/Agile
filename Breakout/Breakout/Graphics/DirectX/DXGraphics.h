@@ -70,7 +70,7 @@ public:
 	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_window; }
-	void	Update();
+	void	Update(float _dt);
 	void	Render(float _dt, ICamera* _camera);
 	void LoadModel(std::string _path);
 	void LoadTexture(std::string _path);

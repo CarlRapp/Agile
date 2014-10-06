@@ -66,7 +66,7 @@ void SceneManager::Start()
 	while (m_isRunning)
 	{
 		float dt = GetDeltaTime();
-		GM->Update();
+		GM->Update(dt);
 		IM->Update();
 
 		m_activeScene->Update(dt);
