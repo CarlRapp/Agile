@@ -20,72 +20,40 @@ EffectSystem::~EffectSystem()
 
 void EffectSystem::Update(float _dt)
 {
+	/*
+	If currentTime is >= then maxTime, reset to 0, else add _dt
+	*/
 	m_currentTime = m_currentTime >= m_maxTime ? 0 : m_currentTime + _dt;
+
+	// Go through all entites
 	for (auto entityPair : m_entityMap)
 	{
 		Entity* e = entityPair.second;
-		auto flags = e->GetComponent<EffectComponent>()->m_effects;
 
-		//OnEveryFrame
+		if ((e->GetComponent<EffectComponent>()->m_effects & EffectFlags::NO_EFFECT) == EffectFlags::NO_EFFECT)
+			continue;
 
-		//OnEverySecond
+		// OnEveryFrame
+		OnEveryFrame(e, _dt);
+
+		// OneEverySecond
 		if (m_currentTime >= m_maxTime)
-		{
-			if ((flags & EffectFlags::INVISIBLE) == EffectFlags::INVISIBLE)
-			{
-				auto model = e->GetComponent<ModelComponent>();
-				if (model)
-				{
-					if (!model->m_render)
-					{
-						auto shatter = e->GetComponent<ShatterComponent>();
-						//model->m_gpuId = GetMemoryID(e);
+			OnEverySecond(e, _dt);
 
-						if (shatter)
-							GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
-						else
-							GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
 
-						model->m_render = true;
-					}
-					else
-					{
-						GraphicsManager::GetInstance()->RemoveObject(model->m_gpuId);
-						model->m_render = false;
-					}
-				}
-			}
-
-			
-		}
-
-		//OnCollide
+		// OnCollision
 		auto collide = e->GetComponent<CollisionComponent>();
 		if (collide)
 		{
 			if (collide->GetCollisions().size() > 0)
-			{
-
-			}
+				OnCollision(e, _dt);
 		}
 
-		//OnRemove
+		// OnRemove
 		if (e->GetState() == Entity::SOON_DEAD)
-		{
+			OnRemove(e, _dt);
 
-			// Shatter
-			if ((flags & EffectFlags::SHATTER) == EffectFlags::SHATTER)
-			{
-				e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
-				e->RemoveComponent<CollisionComponent>();
-			}
-
-
-		}
-
-		UpdateComponents(e, _dt);
 	}
-
 }
 
 void EffectSystem::UpdateComponents(Entity* _e, float _dt)
@@ -102,5 +70,18 @@ void EffectSystem::UpdateComponents(Entity* _e, float _dt)
 
 
 void EffectSystem::OnEntityAdded(Entity* _e)
+{
+}
+
+void EffectSystem::OnEveryFrame(Entity* _e, float _dt)
+{
+}
+void EffectSystem::OnEverySecond(Entity* _e, float _dt)
+{
+}
+void EffectSystem::OnCollision(Entity* _e, float _dt)
+{
+}
+void EffectSystem::OnRemove(Entity* _e, float _dt)
 {
 }
