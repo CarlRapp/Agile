@@ -54,6 +54,7 @@ private:
 
 	void PushDown(int _x, int _y);
 	void GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, bool>* _closedList);
+	bool GroupCanReachRoot(std::map<GridPosition, bool>* _blockGroup);
 	void MoveToWorldPosition(Entity* _block, int _x, int _y);
 public:
 	BlockSystem(World* _world);

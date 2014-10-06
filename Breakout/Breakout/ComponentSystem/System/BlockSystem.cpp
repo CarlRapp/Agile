@@ -1,11 +1,12 @@
 #include "BlockSystem.h"
 #include "../Component/PositionComponent.h"
 #include "../Component/ScaleComponent.h"
+#include "../Component/CollisionComponent.h"
 #include "../World.h"
 
 
 BlockSystem::BlockSystem(World* _world)
-: Base(ComponentFilter().Requires<BlockComponent>(), _world)
+: Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
 	m_blockGrid = 0;
 	SetSettings(20, 20, 20, 0);
@@ -67,7 +68,81 @@ void BlockSystem::OnEntityAdded(Entity* _block)
 
 void BlockSystem::OnEntityRemoved(Entity* _e)
 {
+	int X, Y;
+	FindBlock(_e, X, Y);
+	if (X == -1 || Y == -1)
+		return;
+	m_blockGrid[Y][X] = 0;
 
+	//	Check LEFT
+	if (X - 1 >= 0)
+	{
+		Entity* block = m_blockGrid[Y][X - 1];
+		if (block)
+		{
+			std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
+			GetBlocksAttachedTo(X-1, Y, &blockGroup);
+
+			if (!GroupCanReachRoot(&blockGroup))
+			{
+				std::map<GridPosition, bool>::iterator gIT;
+				for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
+					m_blockGrid[gIT->first.second][gIT->first.first]->SetState(Entity::DEAD);
+			}
+		}
+	}
+	//	Check RIGHT
+	if (X + 1 < m_dimensionX)
+	{
+		Entity* block = m_blockGrid[Y][X + 1];
+		if (block)
+		{
+			std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
+			GetBlocksAttachedTo(X + 1, Y, &blockGroup);
+
+			if (!GroupCanReachRoot(&blockGroup))
+			{
+				std::map<GridPosition, bool>::iterator gIT;
+				for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
+					m_blockGrid[gIT->first.second][gIT->first.first]->SetState(Entity::DEAD);
+			}
+		}
+	}
+	//	Check DOWN
+	if (Y + 1 < m_dimensionY)
+	{
+		Entity* block = m_blockGrid[Y + 1][X];
+		if (block)
+		{
+			std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
+			GetBlocksAttachedTo(X, Y + 1, &blockGroup);
+
+			if (!GroupCanReachRoot(&blockGroup))
+			{
+				std::map<GridPosition, bool>::iterator gIT;
+				for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
+					m_blockGrid[gIT->first.second][gIT->first.first]->SetState(Entity::DEAD);
+			}
+		}
+	}
+	//	Check UP
+	if (Y - 1 >= 0)
+	{
+		Entity* block = m_blockGrid[Y - 1][X];
+		if (block)
+		{
+			std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
+			GetBlocksAttachedTo(X, Y - 1, &blockGroup);
+
+			if (!GroupCanReachRoot(&blockGroup))
+			{
+				std::map<GridPosition, bool>::iterator gIT;
+				for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
+					m_blockGrid[gIT->first.second][gIT->first.first]->SetState(Entity::DEAD);
+			}
+		}
+	}
+	
 }
 
 void BlockSystem::PushDown(int _x, int _y)
@@ -89,19 +164,29 @@ void BlockSystem::PushDown(int _x, int _y)
 		GridPosition GP = sortedPositions.top();
 		Entity* e = m_blockGrid[GP.second][GP.first];
 		if (e)
-			MoveToWorldPosition(e, GP.first, GP.second);
-
-		if (GP.second + 1 < m_dimensionY)
 		{
-			m_blockGrid[GP.second + 1][GP.first] = m_blockGrid[GP.second][GP.first];
-			m_blockGrid[GP.second][GP.first] = 0;
-		}
-		else
-			if (e)
+			MoveToWorldPosition(e, GP.first, GP.second);
+			if (GP.second + 1 < m_dimensionY)
+			{
+				m_blockGrid[GP.second + 1][GP.first] = m_blockGrid[GP.second][GP.first];
+				m_blockGrid[GP.second][GP.first] = 0;
+			}
+			else
 				e->SetState(Entity::DEAD);
-
+		}
+			
 		sortedPositions.pop();
 	}
+}
+
+bool BlockSystem::GroupCanReachRoot(std::map<GridPosition, bool>* _blockGroup)
+{
+	std::map<GridPosition, bool>::iterator gIT;
+	for (gIT = _blockGroup->begin(); gIT != _blockGroup->end(); ++gIT)
+		if (gIT->first.second == 0)
+			return true;
+
+	return false;
 }
 
 void BlockSystem::GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, bool>* _closedList)
@@ -113,21 +198,28 @@ void BlockSystem::GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, boo
 
 	if (_x - 1 >= 0)
 		if (m_blockGrid[_y][_x - 1])
-			GetBlocksAttachedTo(_x - 1, _y, _closedList);
+			if (m_blockGrid[_y][_x - 1]->GetState() == Entity::ALIVE)
+				GetBlocksAttachedTo(_x - 1, _y, _closedList);
 	if (_x + 1 < m_dimensionX)
 		if (m_blockGrid[_y][_x + 1])
-			GetBlocksAttachedTo(_x + 1, _y, _closedList);
+			if (m_blockGrid[_y][_x + 1]->GetState() == Entity::ALIVE)
+				GetBlocksAttachedTo(_x + 1, _y, _closedList);
 	if (_y - 1 >= 0)
 		if (m_blockGrid[_y - 1][_x])
-			GetBlocksAttachedTo(_x, _y - 1, _closedList);
+			if (m_blockGrid[_y - 1][_x]->GetState() == Entity::ALIVE)
+				GetBlocksAttachedTo(_x, _y - 1, _closedList);
 	if (_y + 1 < m_dimensionY)
 		if (m_blockGrid[_y + 1][_x])
-			GetBlocksAttachedTo(_x, _y + 1, _closedList);
+			if (m_blockGrid[_y + 1][_x]->GetState() == Entity::ALIVE)
+				GetBlocksAttachedTo(_x, _y + 1, _closedList);
 
 }
 
 void BlockSystem::MoveToWorldPosition(Entity* _block, int _x, int _y)
 {
+	if (_block->GetState() != Entity::ALIVE)
+		return;
+
 	PositionComponent* positionC = _block->GetComponent<PositionComponent>();
 	VECTOR3 position = VECTOR3(_x - (m_dimensionX*0.5f), -_y, 0);
 
@@ -143,4 +235,20 @@ void BlockSystem::MoveToWorldPosition(Entity* _block, int _x, int _y)
 	position.x += m_topCenterX;
 	position.y += m_topCenterY;
 	positionC->SetPosition(position);
+}
+
+void BlockSystem::FindBlock(Entity* _e, int& _x, int& _y)
+{
+	_x = -1;
+	_y = -1;
+
+	for (int y = 0; y < m_dimensionY; ++y)
+		for (int x = 0; x < m_dimensionX; ++x)
+			if (m_blockGrid[y][x])
+				if (m_blockGrid[y][x]->GetId() == _e->GetId())
+				{
+					_x = x;
+					_y = y;
+					return;
+				}
 }
