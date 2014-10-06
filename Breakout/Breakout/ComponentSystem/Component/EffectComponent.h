@@ -65,10 +65,10 @@ struct EffectComponent : Component<EffectComponent>
 
 	EffectComponent()
 	{
-		m_effects.OnAdded	= NO_EFFECT;
-		m_effects.OnCollide = NO_EFFECT;
-		m_effects.OnRemoved = NO_EFFECT;
-		m_effects.OnAdded	= NO_EFFECT;
+		m_effects.OnEveryFrame	= NO_EFFECT;
+		m_effects.OnCollide		= NO_EFFECT;
+		m_effects.OnRemoved		= NO_EFFECT;
+		m_effects.OnAdded		= NO_EFFECT;
 	}
 
 };

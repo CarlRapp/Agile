@@ -10,7 +10,10 @@ EffectSystem::EffectSystem(World* _world)
 {
 	m_currentTime = 0.f;
 	m_maxTime = 1.f;
-	m_flags = NO_EFFECT;
+	m_flags.OnAdded = NO_EFFECT;
+	m_flags.OnCollide = NO_EFFECT;
+	m_flags.OnEveryFrame = NO_EFFECT;
+	m_flags.OnRemoved = NO_EFFECT;
 }
 
 EffectSystem::~EffectSystem()
@@ -31,9 +34,6 @@ void EffectSystem::Update(float _dt)
 		Entity* e = entityPair.second;
 
 		m_flags = e->GetComponent<EffectComponent>()->m_effects;
-
-		if ((m_flags & EffectFlags::NO_EFFECT) == EffectFlags::NO_EFFECT)
-			continue;
 
 		// OnEveryFrame
 		OnEveryFrame(e, _dt);
@@ -84,11 +84,15 @@ void EffectSystem::OnEverySecond(Entity* _e, float _dt)
 }
 void EffectSystem::OnCollision(Entity* _e, float _dt)
 {
+	if ((m_flags.OnCollide & EffectFlags::EXPLORE) == EffectFlags::EXPLORE)
+	{
+		_e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(4, 4, 1));
+	}
 }
 void EffectSystem::OnRemove(Entity* _e, float _dt)
 {
 
-	if ((m_flags & EffectFlags::SHATTER) == EffectFlags::SHATTER)
+	if ((m_flags.OnRemoved & EffectFlags::SHATTER) == EffectFlags::SHATTER)
 	{
 		_e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
 		_e->RemoveComponent<CollisionComponent>();

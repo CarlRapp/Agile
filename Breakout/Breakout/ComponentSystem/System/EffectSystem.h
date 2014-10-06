@@ -19,7 +19,7 @@ private:
 	float m_currentTime;
 	float m_maxTime;
 
-	EffectFlags m_flags;
+	EffectEvents m_flags;
 
 public:
 

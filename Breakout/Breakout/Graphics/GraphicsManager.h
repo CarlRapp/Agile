@@ -39,32 +39,32 @@ private:
 
 public:
 
-    ~GraphicsManager(void);
-    static GraphicsManager* GetInstance();
-    static void Destroy();
+	~GraphicsManager(void);
+	static GraphicsManager* GetInstance();
+	static void Destroy();
 
 
-    bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
-    IGraphics*  GetIGraphics() { return m_IGraphics; }
-
-    void        Update(float _dt);
-    ICamera*    GetICamera();
+	bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
+	IGraphics*  GetIGraphics() { return m_IGraphics; }
+	void        Render(float _dt);
+	void        Update(float _dt);
+	ICamera*    GetICamera();
 
 	void        AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
-    void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion);
-    void        RemoveObject(int _id);
+	void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion);
+	void        RemoveObject(int _id);
 
 
 
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
-void RemovePointLight(int _id);
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
+	void RemovePointLight(int _id);
+	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y);
 
 	void		AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
 	void		RemoveEffect(int _id);
 
-    bool        Init3D(DisplayMode _displayMode);
+	bool        Init3D(DisplayMode _displayMode);
 };
 
 

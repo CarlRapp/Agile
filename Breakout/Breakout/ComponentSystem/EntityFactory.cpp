@@ -26,6 +26,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	switch (_entityType)
 	{
 	case EntityFactory::STANDARD_BLOCK_RED:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -37,11 +38,14 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
-		
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER;
+
 		_entity->AddComponent<ShatterComponent>();
+		_entity->AddComponent<EffectComponent>().m_effects;
+
 		break;
+	}
 	case EntityFactory::STANDARD_BLOCK_GREEN:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -54,10 +58,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER;
 		_entity->AddComponent<ShatterComponent>();
+		_entity->AddComponent<EffectComponent>().m_effects;
+
 		break;
+	}
 	case EntityFactory::STANDARD_BLOCK_BLUE:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -70,9 +77,11 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::NO_EFFECT;
 		_entity->AddComponent<ShatterComponent>();
+		_entity->AddComponent<EffectComponent>().m_effects;
+
 		break;
+	}
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
