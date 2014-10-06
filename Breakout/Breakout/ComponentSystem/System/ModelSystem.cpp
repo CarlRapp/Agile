@@ -113,7 +113,6 @@ void ModelSystem::LoadModel(int _entityID)
     model = e->GetComponent<ModelComponent>();
 
 	auto shatter = e->GetComponent<ShatterComponent>();
-	model->m_gpuId = GetMemoryID(e);
 
 	if (shatter)
 	{
