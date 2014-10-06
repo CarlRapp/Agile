@@ -34,7 +34,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.0f);
 		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<DamageComponent>(10);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
@@ -65,7 +64,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<CollisionStatsComponent>(0.0f, 100.0f, 40.0f, 20.0f);
 		_entity->AddComponent<DamageComponent>(10);
-		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<LoseLifeComponent>();
 		break;
 	case EntityFactory::POWERUP:
