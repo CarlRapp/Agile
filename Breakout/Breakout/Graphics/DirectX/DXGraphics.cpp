@@ -51,8 +51,6 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 
 
 
-VECTOR3 pos;
-VECTOR3 vel;
 //#define asd 1000
 //MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
@@ -81,10 +79,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
 
-	pos = VECTOR3(0, -20, 0);
-	vel = VECTOR3(0, 0, 0);
-
-	AddEffect(0, "fire", &pos, &vel);
 
 	//for (int i = 0; i < asd; ++i)
 	//{
@@ -248,11 +242,8 @@ void DXGraphics::Update()
 	m_window->Update();
 }
 
-float aaaa = 0.0f;
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
-	pos.x = 40 * sinf(aaaa);
-	aaaa += _dt;
 
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -365,8 +356,4 @@ void DXGraphics::RemoveEffect(int _id)
 		delete(m_particleSystems[_id]);
 
 	m_particleSystems.erase(_id);
-
-
-
-
 }
