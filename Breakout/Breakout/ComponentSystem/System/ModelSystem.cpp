@@ -7,6 +7,7 @@
 #include "../Component/ScaleComponent.h"
 #include "../Component/ShatterComponent.h"
 
+#include "../Component/VelocityComponent.h"
 
 ModelSystem::ModelSystem(World* _world)
 : Base(ComponentFilter().Requires<ModelComponent, PositionComponent, RotationComponent, ScaleComponent>(), _world)
@@ -99,6 +100,7 @@ void ModelSystem::RunEvents()
 //    }
 //}
 
+VECTOR3 tessst(20, 20, 0);
 void ModelSystem::LoadModel(int _entityID)
 {
     EntityMap::iterator it;
@@ -109,10 +111,25 @@ void ModelSystem::LoadModel(int _entityID)
     model = e->GetComponent<ModelComponent>();
 
 	auto shatter = e->GetComponent<ShatterComponent>();
-	if(shatter)
+	if (shatter)
+	{
 		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
+	}
+		
 	else
+	{
 		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+
+		GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
+		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e)*2, "trail", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
+
+		if (e->GetComponent<VelocityComponent>())
+		{
+
+		}
+			//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &e->GetComponent<PositionComponent>()->GetPosition(), &e->GetComponent<VelocityComponent>()->m_velocity);
+	}
 
 	e->SetInitialized(true);
 }
