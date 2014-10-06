@@ -53,7 +53,7 @@ void PhysicsSystem::Update(float _dt)
 				collision->GetBody()->SetLinearVelocity(b2Velocity);
 		}
 		
-		// Update velocity manually
+		// Update velocity min/max and deacceleration
 		if (velocity && stats)
 		{
 			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)

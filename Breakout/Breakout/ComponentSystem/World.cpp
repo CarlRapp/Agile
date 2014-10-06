@@ -34,16 +34,11 @@ bool World::AddEntity(Entity* _e)
 		for (IComponent* c : *_e->GetComponents())
 			AddNewComponent(c->m_ID);
 
-		SystemMap::iterator sIT;
-		for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+		for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 			sIT->second->Add(_e);
 
 		AddEntityToComponentPool(_e);
 	}
-
-
-
-
 	return true;
 }
 
@@ -80,7 +75,7 @@ void World::Update(float _dt)
 			++eIT;
 			break;
 
-		case Entity::DEAD:
+		case Entity::SOON_DEAD:
 			KillEntity(e);
 			m_activeEntities.erase(eIT++);
 			break;
@@ -95,31 +90,31 @@ void World::Update(float _dt)
 
 void World::EntityChanged(Entity* _e)
 {
-	SystemMap::iterator sIT;
-	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 	{
-		if (sIT->second->HasEntity(_e))
+		ISystem* system = sIT->second;
+		if (system->HasEntity(_e))
 		{
-			if (!sIT->second->CheckChangedEntity(_e))
-				sIT->second->Remove(_e);
+			if (!system->CheckChangedEntity(_e))
+				system->Remove(_e);
 			else
-				sIT->second->Add(_e);
+				system->Add(_e);
 		}
 		else
-			sIT->second->Add(_e);
+			system->Add(_e);
 
 	}
 }
 
 void World::KillEntity(Entity* _e)
 {
-	_e->RemoveAllComponents();
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);
 
-	SystemMap::iterator sIT;
-	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
+
+	_e->RemoveAllComponents();
 }
 
 void World::AddNewComponent(TypeID _id)

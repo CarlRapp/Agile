@@ -30,15 +30,15 @@ void GameScene::Initialize()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
-	m_world->AddSystem<ProjectileSystem>();
+	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
-	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
-	//m_world->AddSystem<LoseLifeSystem>();
-	//m_world->AddSystem<RespawnBallSystem>();
+	m_world->AddSystem<LoseLifeSystem>();
+	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
+	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
 	
 
@@ -65,7 +65,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
+	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
