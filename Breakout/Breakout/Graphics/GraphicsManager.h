@@ -47,7 +47,7 @@ public:
     bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
     IGraphics*  GetIGraphics() { return m_IGraphics; }
     void        Render();
-    void        Update();
+    void        Update(float _dt);
     ICamera*    GetICamera();
 
 	void        AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);

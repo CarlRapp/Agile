@@ -135,7 +135,6 @@ void GameScene::Update(float _dt)
 
 void GameScene::UpdateFPS(float _dt)
 {
-        
         float fps = 1.0f / _dt;
         fpsString= "FPS: ";
         fpsString.append(std::to_string(fps));
