@@ -503,5 +503,14 @@
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\Fire.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
     </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\RenderText.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\Trail.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
