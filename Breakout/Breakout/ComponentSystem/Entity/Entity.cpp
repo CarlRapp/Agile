@@ -35,7 +35,7 @@ void Entity::AddComponent(IComponent* base, TypeID _componentTypeId)
 
 void Entity::RemoveComponent(int _componentTypeId)
 {
-
+	
 	for (int i = 0; i < m_components.size(); ++i)
 	{
 		if (_componentTypeId == m_components[i]->m_ID)

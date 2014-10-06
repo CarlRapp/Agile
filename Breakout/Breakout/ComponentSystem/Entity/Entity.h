@@ -37,7 +37,6 @@ private:
 	ENTITY_STATE m_state;
 	std::vector<IComponent*> m_components;
 
-
 public:
 
 	Entity();
