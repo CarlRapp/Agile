@@ -78,6 +78,8 @@ class GLGraphics : public IGraphics
         int* x;
         int* y;
         float effectTime;
+        int id;
+        bool kill;
     };
     
 private:
@@ -118,7 +120,7 @@ private:
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect);
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect,bool kill);
 public:
 
 	GLGraphics(void);
@@ -144,7 +146,8 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
+        void RemoveTextObject(int _id);
         
 
 };

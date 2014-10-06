@@ -41,8 +41,8 @@ public:
 
 	virtual void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height) = 0;
 	virtual void Remove2DTexture(int _id) = 0;
-        virtual void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)=0; //NEW, remove comment when done on DX
-
+        virtual void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)=0; //NEW, remove comment when done on DX
+        virtual void RemoveTextObject(int _id)=0; //NEW, remove comment when done on DX
 	static IGraphics* GetIGraphics();
 };
 

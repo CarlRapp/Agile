@@ -4,7 +4,7 @@
 PhysicsSystem::PhysicsSystem(World* _world) 
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
 {
-	m_b2World = new b2World(DEFAULTGRAVITY,true);
+	m_b2World = new b2World(DEFAULTGRAVITY);
 }
 
 
@@ -172,7 +172,7 @@ void PhysicsSystem::OnEntityAdded(Entity* _entity)
 			if (fix->shape->m_type == b2Shape::Type::e_polygon)
 			{
 				b2PolygonShape* polygonShape = (b2PolygonShape*)fix->shape;
-				for (int i = 0; i < polygonShape->m_vertexCount; ++i)
+				for (int i = 0; i < polygonShape->m_count; ++i)
 					polygonShape->m_vertices[i] = b2Vec2(polygonShape->m_vertices[i].x * scale->GetScale().x, polygonShape->m_vertices[i].y * scale->GetScale().y);
 			}
 			else if (fix->shape->m_type == b2Shape::Type::e_circle)
