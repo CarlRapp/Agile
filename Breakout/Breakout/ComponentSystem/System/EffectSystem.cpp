@@ -18,29 +18,37 @@ EffectSystem::~EffectSystem()
 
 void EffectSystem::Update(float _dt)
 {
-	EffectFlags effectFlags;
-
 	for (auto entityPair : m_entityMap)
 	{
 		Entity* e = entityPair.second;
+		auto flags = e->GetComponent<EffectComponent>()->m_effects;
 
-		auto effectFlags = e->GetComponent<EffectComponent>()->m_effects;
-
-		if ((effectFlags & EffectFlags::NO_EFFECT) == EffectFlags::NO_EFFECT)
-			continue;
+		//OnEveryFrame
 
 
-		// Every effect which trigger at a collision is checked here
-		auto collision = e->GetComponent<CollisionComponent>();
-		if (collision)
+
+		//OnCollide
+		auto collide = e->GetComponent<CollisionComponent>();
+		if (collide)
 		{
-			if (collision->GetCollisions().size() > 0)
+			if (collide->GetCollisions().size() > 0)
 			{
-				auto effect = e->GetComponent<EffectComponent>()->m_effects;
 
-				if ((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER)
-					e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
 			}
+		}
+
+		//OnRemove
+		if (e->GetState() == Entity::SOON_DEAD)
+		{
+
+			// Shatter
+			if ((flags & EffectFlags::SHATTER) == EffectFlags::SHATTER)
+			{
+				e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
+				e->RemoveComponent<CollisionComponent>();
+			}
+
+
 		}
 
 		UpdateComponents(e, _dt);
@@ -55,6 +63,12 @@ void EffectSystem::UpdateComponents(Entity* _e, float _dt)
 	if (shatter)
 	{
 		if (shatter->IsExploding(_dt) == ShatterComponent::DONE)
-			_e->SetState(Entity::DEAD);
+			_e->SetState(Entity::SOON_DEAD);
 	}
+}
+
+
+
+void EffectSystem::OnEntityAdded(Entity* _e)
+{
 }

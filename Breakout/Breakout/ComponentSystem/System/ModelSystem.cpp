@@ -60,7 +60,11 @@ void ModelSystem::Update(float _dt)
                                 
 		if (change)
 		{
-			model->m_worldMatrix = SCALE(scale->GetScale()) * ROTATE(rotation->GetRotation()) * TRANSLATE(position->GetPosition());
+#ifdef OPENGL
+			model->m_worldMatrix = TRANSLATE(position->GetPosition()) * ROTATE(rotation->GetRotation())* SCALE(scale->GetScale());
+#else
+                        model->m_worldMatrix =  SCALE(scale->GetScale()) *ROTATE(rotation->GetRotation())* TRANSLATE(position->GetPosition());
+#endif
 			//TEMP
 			position->Reset();
 			rotation->Reset();

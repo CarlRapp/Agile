@@ -66,7 +66,7 @@ void SceneManager::Start()
 	while (m_isRunning)
 	{
 		float dt = GetDeltaTime();
-		GM->Update();
+		GM->Update(dt);
 		IM->Update();
 
 		m_activeScene->Update(dt);
@@ -75,7 +75,7 @@ void SceneManager::Start()
 //		lol += dt;
 //		if (lol > 0.5f)
 //		{
-//                    //printf("\033[33mFPS: %f | Delta: %f\n\033[30m" , 1.0f / dt,dt);
+//                    printf("FPS: %f | Delta: %f \n" , 1.0f / dt,dt);
 //
 //                    lol = 0;
 //		}
