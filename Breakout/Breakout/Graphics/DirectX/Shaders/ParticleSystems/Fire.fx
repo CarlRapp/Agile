@@ -1,18 +1,11 @@
-cbuffer cbPerFrame
-{
-	float4		gCameraPos;
-	float4		gEmitPosW;
-	float4		gEmitVelW;
-	float		gTime;
-	float		gDeltaTime;
-	matrix		gViewProjection;
-};
+#include "ParticleSystem.fx"
+
 
 float aliveTime = 2.0f;
 
 cbuffer cbFixed
 {
-	float3 gAccelW = {0.0f, 6.0f, 0.0f};		//acceleration
+	float3 gAccelW = {0.0f, 0.0f, 0.0f};		//acceleration
 	float2 gParticleSize = float2(2.5f, 2.5f);	//storlek på quad.
 	
 	//lokala positioner för quaden som skapas i GS.
@@ -176,17 +169,6 @@ cbuffer cbFixed
 	};
 };
 
-//texturer.
-Texture2D Texture;
-Texture1D randomTex;
-
-//sampler.
-SamplerState g_Sampler
-{
-    Filter = MIN_MAG_MIP_LINEAR;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
 
 DepthStencilState DisableDepth
 {
@@ -214,41 +196,13 @@ BlendState AdditiveBlending
 	RenderTargetWriteMask[0] = 0x0F;
 };
 
-//räkanr ut en slumpmässig normaliserad vektor med hjälp av randomtexturen.
-float3 RandUnitVec3(float offset)
-{
-	// Use game time plus offset to sample random texture.
-	float u = (gTime + offset);
-	// coordinates in [-1,1]
-	float3 v = randomTex.SampleLevel(g_Sampler, u, 0);
-	//float3 v = float3(1,1,1);
-	// project onto unit sphere
-	return normalize(v);
-}
-
-//partikelstrukt
-struct Particle
-{
-	float3	initialPosW	: POSITION;
-	float3	initialVelW	: VELOCITY;
-	float2	size		: SIZE;
-	float	age			: AGE;
-	uint	type		: TYPE;
-};
-
-//definierar PT_EMITTER och PT_FLARE
-#define PT_EMITTER 0
+//definierar PT_FLARE
 #define PT_FLARE 1
 
-//streamoutvertexshader.
-Particle StreamOutVS(Particle input)
-{
-	return input;
-}
 
 //streamoutgeometryshader
 //skickar ut partiklar som en pointstream. max 2 st.
-[maxvertexcount(68)]
+[maxvertexcount(6)]
 void StreamOutGS(point Particle input[1], inout PointStream<Particle> ptStream)
 {
 	input[0].age += gDeltaTime;	//gör partiklen äldre.
@@ -261,8 +215,8 @@ void StreamOutGS(point Particle input[1], inout PointStream<Particle> ptStream)
 				float3 velocity = RandUnitVec3(0.001f * i);	//slumpar hastighet.
 				
 				//minskar hastigheten i x och z-led.
-				velocity.x *= 0.8f;
-				velocity.z *= 0.8f;
+				//velocity.x *= 0.8f;
+				//velocity.z *= 0.8f;
 				
 				//skapar den nya partiklen.
 				Particle p;
@@ -320,7 +274,7 @@ VS_OUT DrawVS(Particle input)
 	float opacity = 1.0f - smoothstep(0.0f, 1.0f, t / aliveTime);
 	opacity = opacity * 0.5f;
 	vOut.color = float4(1.0f, 1.0f, 1.0f, opacity);	//gör färgengenomskinlig över tid.
-	vOut.size = input.size;
+	vOut.size = input.size * (1+( 1.5f * input.age / aliveTime));
 	vOut.type = input.type;
 	vOut.texIndex = 24 * (input.age / aliveTime);
 	return vOut;
@@ -352,7 +306,8 @@ void DrawGS(point VS_OUT input[1], inout TriangleStream<GS_OUT> triStream)
 		World[1] = float4(up, 0.0f);
 		World[2] = float4(look, 0.0f);
 		World[3] = float4(input[0].posW, 1.0f);
-		float4x4 WVP = mul(World, gViewProjection); //räknar ut WVP.
+		float4x4 WVP = mul(World, gView); //räknar ut WV.
+		WVP = mul(WVP, gProjection); //räknar ut WVP.
 
 		// Räknar ut 4 trianglestrip vertices (quad) i lokala koordinater.
 		float halfWidth = 0.5f*input[0].size.x;
