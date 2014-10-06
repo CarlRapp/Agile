@@ -27,7 +27,7 @@ public:
 
 
 	virtual void Render(ICamera* _camera) = 0;
-	virtual void Update() = 0;
+	virtual void Update(float _dt) = 0; //DELTA TIME NYTT SHIT, LÄGG TILL I DX
 
 	virtual void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion) = 0;
 

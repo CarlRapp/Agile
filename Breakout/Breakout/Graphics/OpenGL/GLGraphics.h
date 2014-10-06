@@ -77,6 +77,7 @@ class GLGraphics : public IGraphics
         unsigned int* color;
         int* x;
         int* y;
+        float effectTime;
     };
     
 private:
@@ -98,7 +99,7 @@ private:
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        std::vector<const GLbyte(*)[64]> m_letters;
+        std::vector<GLbyte(*)[64]> m_letters;
         
         std::vector<TextObject> m_textObjects;
         
@@ -117,7 +118,7 @@ private:
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y);
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect);
 public:
 
 	GLGraphics(void);
@@ -128,7 +129,7 @@ public:
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
         void Free();
-        void Update();
+        void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
         
