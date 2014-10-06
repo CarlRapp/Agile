@@ -8,10 +8,12 @@ struct ModelComponent : Component<ModelComponent>
 {
 	std::string m_modelPath= "";
 	MATRIX4 m_worldMatrix= GETIMATRIX();
+	int m_gpuId;
+	bool m_render;
         
         ModelComponent()
 	{
-
+			m_render = true;
 	}
 
 };

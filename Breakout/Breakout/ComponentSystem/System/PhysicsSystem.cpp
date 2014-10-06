@@ -53,7 +53,7 @@ void PhysicsSystem::Update(float _dt)
 				collision->GetBody()->SetLinearVelocity(b2Velocity);
 		}
 		
-		// Update velocity manually
+		// Update velocity min/max and deacceleration
 		if (velocity && stats)
 		{
 			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)
@@ -172,7 +172,7 @@ void PhysicsSystem::OnEntityAdded(Entity* _entity)
 			if (fix->shape->m_type == b2Shape::Type::e_polygon)
 			{
 				b2PolygonShape* polygonShape = (b2PolygonShape*)fix->shape;
-				for (int i = 0; i < polygonShape->m_count; ++i)
+				for (int i = 0; i < polygonShape->GetVertexCount(); ++i)
 					polygonShape->m_vertices[i] = b2Vec2(polygonShape->m_vertices[i].x * scale->GetScale().x, polygonShape->m_vertices[i].y * scale->GetScale().y);
 			}
 			else if (fix->shape->m_type == b2Shape::Type::e_circle)
@@ -207,7 +207,9 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 
 	switch (_entityType)
 	{
-	case EntityFactory::BLOCK:
+	case EntityFactory::STANDARD_BLOCK_RED:
+	case EntityFactory::STANDARD_BLOCK_GREEN:
+	case EntityFactory::STANDARD_BLOCK_BLUE:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);

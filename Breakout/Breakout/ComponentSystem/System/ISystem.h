@@ -15,13 +15,13 @@ typedef std::map<TypeID, Entity*> EntityMap;
 class ISystem
 {
 public:
-    
-    	enum EVENT
+
+	enum EVENT
 	{
 		NONE = 0,
 		INITIALIZE,
 	};
-    
+
 private:
 	virtual void Initialize(){}
 	virtual void OnEntityAdded(Entity* _e){}

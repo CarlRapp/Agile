@@ -15,6 +15,7 @@ public:
 	enum ENTITY_STATE
 	{
 		ALIVE = 0,
+		SOON_DEAD,
 		DEAD,
 		CHANGED
 	};
@@ -33,7 +34,6 @@ private:
 	int m_id;
 	ENTITY_STATE m_state;
 	std::vector<IComponent*> m_components;
-
 
 public:
 
