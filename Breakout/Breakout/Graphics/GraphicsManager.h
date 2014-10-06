@@ -46,7 +46,7 @@ public:
 
     bool        InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
     IGraphics*  GetIGraphics() { return m_IGraphics; }
-    void        Render();
+	void        Render(float _dt);
     void        Update();
     ICamera*    GetICamera();
 
@@ -61,6 +61,8 @@ public:
 void RemovePointLight(int _id);
         void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
 
+	void		AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
+	void		RemoveEffect(int _id);
 
     bool        Init3D(DisplayMode _displayMode);
 };

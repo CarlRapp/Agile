@@ -42,15 +42,15 @@ void EffectSystem::Update(float _dt)
 						//model->m_gpuId = GetMemoryID(e);
 
 						if (shatter)
-							GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+							GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
 						else
-							GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+							GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
 
 						model->m_render = true;
 					}
 					else
 					{
-						GraphicsManager::GetInstance()->RemoveObject(model->m_gpuId);
+						GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(e));
 						model->m_render = false;
 					}
 				}

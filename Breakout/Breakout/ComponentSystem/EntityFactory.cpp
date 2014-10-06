@@ -38,7 +38,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER | EffectFlags::EXPLORE;
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER;
 		_entity->AddComponent<ShatterComponent>();
 		break;
 	case EntityFactory::STANDARD_BLOCK_GREEN:
@@ -49,12 +49,12 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.0f);
-		_entity->AddComponent<HealthComponent>(10);
+		_entity->AddComponent<HealthComponent>(20);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER | EffectFlags::EXPLORE;
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER;
 		_entity->AddComponent<ShatterComponent>();
 		break;
 	case EntityFactory::STANDARD_BLOCK_BLUE:
@@ -70,7 +70,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
+		//_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
 		_entity->AddComponent<ShatterComponent>();
 		break;
 	case EntityFactory::PAD:
@@ -176,7 +176,7 @@ void EntityFactory::CreateBlockField(World* _world)
 
 			EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
 			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
-			e->GetComponent<RotationComponent>()->SetRotation(MacroRotateYawPitchRoll(0, 0, 0));
+			e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLL(0, 0, 0));
 			BlockComponent* bc = e->GetComponent<BlockComponent>();
 
 

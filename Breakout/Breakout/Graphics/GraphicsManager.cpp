@@ -40,9 +40,9 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 }
 
 
-void GraphicsManager::Render()
+void GraphicsManager::Render(float _dt)
 {
-	m_IGraphics->Render(m_ICamera);
+	m_IGraphics->Render(_dt, m_ICamera);
 }
 
 float test = 0.0f;
@@ -99,6 +99,15 @@ void GraphicsManager::Remove2DTexture(int _id)
 	m_IGraphics->Remove2DTexture(_id);
 }
 
+void GraphicsManager::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+{
+	m_IGraphics->AddEffect(_id, _effect, _pos, _vel);
+}
+
+void GraphicsManager::RemoveEffect(int _id)
+{
+	m_IGraphics->RemoveEffect(_id);
+}
 
 ICamera* GraphicsManager::GetICamera()
 {

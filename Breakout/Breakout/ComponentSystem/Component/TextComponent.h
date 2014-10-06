@@ -9,7 +9,7 @@ private:
 
 
 public:
-        std::string m_text;
+        std::string* m_text;
         float m_scale;
         unsigned int m_color;
         int m_x;
@@ -17,7 +17,7 @@ public:
     
 	TextComponent(){ }
 
-        void Initialize(std::string _text,float _scale, unsigned int _color,int _x,int _y)
+        void Initialize(std::string* _text,float _scale, unsigned int _color,int _x,int _y)
         {
             m_text  =_text,
             m_scale =_scale;
@@ -26,7 +26,7 @@ public:
             m_y     =_y;
         }
         
-        void SetText(std::string _text)
+        void SetText(std::string* _text)
         {
             m_text = _text;
         }

@@ -5,8 +5,11 @@
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/Component/RotationComponent.h"
 #include "../ComponentSystem/System/LoseLifeSystem.h"
+#include "../ComponentSystem/Component/TextComponent.h"
 
 float counter;
+std::string fpsString= "FPS: ";
+
 GameScene::GameScene()
 {
 	printf("Game Scene created!\n");
@@ -47,6 +50,13 @@ void GameScene::Initialize()
 	m_pauseBackground->m_textureName = "Pause.png";
 
 	counter = 0;
+
+
+//        
+//	m_x = 0;
+//	m_y = 0;
+//	m_width = 1.f;
+//	m_height = 1.f;
 
 	m_isPaused = false;
 }
@@ -125,22 +135,17 @@ void GameScene::Update(float _dt)
 
 void GameScene::UpdateFPS(float _dt)
 {
-  //      
-  //      float fps = 1.0f / _dt;
-  //      std::string fpsString= "FPS: ";
-  //      fpsString.append(std::to_string(fps));
-  //      fpsString += " DT: ";
-  //      fpsString.append(std::to_string(_dt));
-  //      Entity* e = m_world->GetEntity(m_fpsCounterID);
-  //      auto TC = e->GetComponent<TextComponent>();
-		//if(TC)
-		//	TC->SetText(fpsString);
+        
+        float fps = 1.0f / _dt;
+        fpsString= "FPS: ";
+        fpsString.append(std::to_string(fps));
+        fpsString += " DT: ";
+        fpsString.append(std::to_string(_dt));
 }
 
 void GameScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
-        
+	GraphicsManager::GetInstance()->Render(_dt);
 }
 
 void GameScene::OnActive()
@@ -156,6 +161,7 @@ void GameScene::OnInactive()
 	{
 		eIT->second->SetInitialized(false);
 		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 	}	
 	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
@@ -167,8 +173,19 @@ void GameScene::Reset()
 	m_world->Clear();
 
 	/*	New Implementation	*/
-	Entity* e;
-	for (int i = 0; i < 1; ++i)
+        
+        //FPS COUNTER
+        Entity* e;
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->Initialize(&fpsString,2.f,0x1904 ,10,10);
+        m_fpsCounterID = e->GetId();
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+        
+	for (int i = 0; i < 0; ++i)
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
@@ -229,7 +246,19 @@ void GameScene::Reset()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLAYER);
 	m_world->AddEntity(e);
 
-
+        //PLAYER SCORE >>
+        auto SC = e->GetComponent<ScoreComponent>();
+        
+        Entity* t = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
+        TC = t->GetComponent<TextComponent>();
+        
+        TC->Initialize(SC->GetString(),2.f,0x1903 ,10,20);
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+        SC->SetString();
+        //PLAYER SCORE <<
+        
 	//	Background
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);

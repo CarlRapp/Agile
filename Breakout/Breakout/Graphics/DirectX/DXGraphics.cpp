@@ -14,6 +14,13 @@ DXGraphics::DXGraphics(void)
 DXGraphics::~DXGraphics(void)
 {
 	m_modelInstances.clear();
+	
+	map<int, DXParticleSystem*>::iterator	mapIterator;
+	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
+	{
+		delete(mapIterator->second);
+	}
+
 
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
@@ -44,7 +51,6 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 
 
 
-
 //#define asd 1000
 //MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
@@ -62,7 +68,9 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	m_DXDeferred = new DXDeferred();
 	m_DXDeferred->Init(m_device, m_deviceContext, m_width, m_height);
 
+	m_DXDeferred->SetDirectionLightMap(&m_dirLights);
 	m_DXDeferred->SetPointLightMap(&m_pointLights);
+	m_DXDeferred->SetSpotLightMap(&m_spotLights);
 
 	
 
@@ -70,7 +78,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
-
 
 
 	//for (int i = 0; i < asd; ++i)
@@ -235,8 +242,9 @@ void DXGraphics::Update()
 	m_window->Update();
 }
 
-void DXGraphics::Render(ICamera* _camera)
+void DXGraphics::Render(float _dt, ICamera* _camera)
 {
+
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -246,7 +254,7 @@ void DXGraphics::Render(ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, _camera);
 
 	m_swapChain->Present(0, 0);
 
@@ -326,4 +334,26 @@ void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity,
 void DXGraphics::RemovePointLight(int _id)
 {
 	m_pointLights.erase(_id);
+}
+
+void DXGraphics::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+{
+	if (m_particleSystems.count(_id) != 0)
+		return;
+
+	DXParticleSystem *ps = new DXParticleSystem();
+	ps->Init(m_device, m_deviceContext, _effect, &m_textureManager);
+	ps->SetEmitPosition(_pos);
+	ps->SetEmitVelocity(_vel);
+
+	m_particleSystems.insert(pair<int, DXParticleSystem*>(_id, ps));
+}
+
+void DXGraphics::RemoveEffect(int _id)
+{
+	//förstör buffrar mm.
+	if (m_particleSystems.count(_id) != 0)
+		delete(m_particleSystems[_id]);
+
+	m_particleSystems.erase(_id);
 }
