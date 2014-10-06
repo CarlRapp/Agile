@@ -30,8 +30,8 @@ void GameScene::Initialize()
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
-	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
+	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<LoseLifeSystem>();
 	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();

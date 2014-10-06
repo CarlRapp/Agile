@@ -64,13 +64,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_blue";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.0f);
+		_entity->AddComponent<DeflectionComponent>(100.f);
 		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::SHATTER | EffectFlags::EXPLORE;
+		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
 		_entity->AddComponent<ShatterComponent>();
 		break;
 	case EntityFactory::PAD:
@@ -80,11 +80,10 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
 		_entity->AddComponent<MouseInputComponent>();
-		_entity->AddComponent<SpawnEntityComponent>(2, VECTOR3(0, 2, 0));
+		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
-		_entity->AddComponent<EffectComponent>().m_effects = EffectFlags::INVISIBLE;
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();

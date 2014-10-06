@@ -10,6 +10,10 @@ private:
 	void UpdateComponents(Entity* _entity, float _dt);
 	void OnEntityAdded(Entity* _e);
 
+
+	float m_currentTime;
+	float m_maxTime;
+
 public:
 
 	EffectSystem(World* _world);
