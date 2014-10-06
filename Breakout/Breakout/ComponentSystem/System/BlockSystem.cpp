@@ -91,8 +91,14 @@ void BlockSystem::PushDown(int _x, int _y)
 		if (e)
 			MoveToWorldPosition(e, GP.first, GP.second);
 
-		m_blockGrid[GP.second + 1][GP.first] = m_blockGrid[GP.second][GP.first];
-		m_blockGrid[GP.second][GP.first] = 0;
+		if (GP.second + 1 < m_dimensionY)
+		{
+			m_blockGrid[GP.second + 1][GP.first] = m_blockGrid[GP.second][GP.first];
+			m_blockGrid[GP.second][GP.first] = 0;
+		}
+		else
+			if (e)
+				e->SetState(Entity::DEAD);
 
 		sortedPositions.pop();
 	}
