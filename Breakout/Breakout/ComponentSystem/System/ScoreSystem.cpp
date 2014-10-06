@@ -31,8 +31,12 @@ void ScoreSystem::Update(float _dt)
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
 			//Entity* collidingEntity = m_world->GetEntity(collisions[i]);
-			player->at(0)->GetComponent<ScoreComponent>()->m_score += e->GetComponent<ScoreComponent>()->m_score;
-			printf("Score: %i\n", player->at(0)->GetComponent<ScoreComponent>()->m_score);
+			auto SC = player->at(0)->GetComponent<ScoreComponent>();
+                        SC->m_score += e->GetComponent<ScoreComponent>()->m_score;
+                        SC->SetString();
+                        
+                        
+			//printf("Score: %i\n", player->at(0)->GetComponent<ScoreComponent>()->m_score);
 		}
 	}
 
