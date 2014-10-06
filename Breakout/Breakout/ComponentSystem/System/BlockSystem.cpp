@@ -181,14 +181,14 @@ void BlockSystem::PushDown(int _x, int _y)
 		Entity* e = m_blockGrid[GP.second][GP.first];
 		if (e)
 		{
-			MoveToWorldPosition(e, GP.first, GP.second);
+			MoveToWorldPosition(e, GP.first, GP.second + 1);
 			if (GP.second + 1 < m_dimensionY)
 			{
 				m_blockGrid[GP.second + 1][GP.first] = m_blockGrid[GP.second][GP.first];
 				m_blockGrid[GP.second][GP.first] = 0;
 			}
 			else
-				e->SetState(Entity::DEAD);
+				e->SetState(Entity::SOON_DEAD);
 		}
 			
 		sortedPositions.pop();
@@ -254,6 +254,10 @@ void BlockSystem::MoveToWorldPosition(Entity* _block, int _x, int _y)
 	position.x += m_topCenterX;
 	position.y += m_topCenterY;
 	positionC->SetPosition(position);
+
+	CollisionComponent* collisionC = _block->GetComponent<CollisionComponent>();
+	if (collisionC)
+		collisionC->GetBody()->SetTransform(b2Vec2(position.x, position.y), 0);
 }
 
 void BlockSystem::FindBlock(Entity* _e, int& _x, int& _y)
