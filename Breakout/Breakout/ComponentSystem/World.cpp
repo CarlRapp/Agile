@@ -75,7 +75,7 @@ void World::Update(float _dt)
 			++eIT;
 			break;
 
-		case Entity::DEAD:
+		case Entity::SOON_DEAD:
 			KillEntity(e);
 			m_activeEntities.erase(eIT++);
 			break;

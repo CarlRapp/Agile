@@ -32,14 +32,17 @@ void EffectSystem::Update(float _dt)
 
 		// Every effect which trigger at a collision is checked here
 		auto collision = e->GetComponent<CollisionComponent>();
-		if (collision)
+		if (e->GetState() == Entity::SOON_DEAD && collision)
 		{
 			if (collision->GetCollisions().size() > 0)
 			{
 				auto effect = e->GetComponent<EffectComponent>()->m_effects;
 
 				if ((effect & EffectFlags::SHATTER) == EffectFlags::SHATTER)
+				{
 					e->GetComponent<ShatterComponent>()->m_explosionState = ShatterComponent::EXPLODING;
+					e->RemoveComponent<CollisionComponent>();
+				}
 			}
 		}
 
@@ -55,6 +58,6 @@ void EffectSystem::UpdateComponents(Entity* _e, float _dt)
 	if (shatter)
 	{
 		if (shatter->IsExploding(_dt) == ShatterComponent::DONE)
-			_e->SetState(Entity::DEAD);
+			_e->SetState(Entity::SOON_DEAD);
 	}
 }

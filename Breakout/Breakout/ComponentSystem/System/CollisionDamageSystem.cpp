@@ -14,13 +14,14 @@ CollisionDamageSystem::~CollisionDamageSystem()
 
 void CollisionDamageSystem::Update(float _dt)
 {
+	vector<Entity*> toBeRemoved;
 	for (auto entityPair : m_entityMap)
 	{
 		Entity* e = entityPair.second;
-		auto damage = e->GetComponent<DamageComponent>();
-		if ((e->GetState() == Entity::DEAD) || !damage)
+		if ((e->GetState() != Entity::ALIVE))
 			continue;
 
+		auto damage = e->GetComponent<DamageComponent>();
 		auto collision = e->GetComponent<CollisionComponent>();
 		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
@@ -32,11 +33,14 @@ void CollisionDamageSystem::Update(float _dt)
 				DealDamage(*damage, *collidingHealth);
 				if (collidingHealth->m_currentHealth <= 0)
 				{
+					toBeRemoved.push_back(collidingEntity);
 					break;
 				}
 			}
 		}
 	}
+	for (auto entity : toBeRemoved)
+		entity->SetState(Entity::SOON_DEAD);
 }
 
 void CollisionDamageSystem::DealDamage(DamageComponent& _damage, HealthComponent& _health) const

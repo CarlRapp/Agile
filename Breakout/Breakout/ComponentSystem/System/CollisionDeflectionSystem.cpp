@@ -18,7 +18,7 @@ void CollisionDeflectionSystem::Update(float _dt)
 	for (auto entityPair : m_entityMap)
 	{
 		Entity* e = entityPair.second;
-		if (e->GetState() == Entity::DEAD)
+		if (e->GetState() != Entity::ALIVE)
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();

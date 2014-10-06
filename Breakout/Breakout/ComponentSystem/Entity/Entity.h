@@ -15,6 +15,7 @@ public:
 	enum ENTITY_STATE
 	{
 		ALIVE = 0,
+		SOON_DEAD,
 		DEAD,
 		CHANGED
 	};
