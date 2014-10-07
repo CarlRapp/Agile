@@ -90,8 +90,21 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
+
+		int rnd = (rand() % (16 - 0));
+
+		EntityFactory::EntityType type;
+
+		if (rnd >= 0 && rnd < 5)
+			type = EntityFactory::STANDARD_BLOCK_RED;
+		else if(rnd >= 5 && rnd < 10)
+			type = EntityFactory::STANDARD_BLOCK_GREEN;
+		else if(rnd >= 10 && rnd < 15)
+			type = EntityFactory::STANDARD_BLOCK_BLUE;
+		else if(rnd == 15)
+			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+		EntityFactory::GetInstance()->CreateEntity(e, type);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
