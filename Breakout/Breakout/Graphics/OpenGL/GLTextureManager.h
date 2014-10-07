@@ -33,6 +33,12 @@ public:
     {
         return m_TextureMap[_name];
     }
+    
+    GLuint* GetTexturePointer(std::string _name)
+    {
+        return &m_TextureMap[_name];
+    }
+    
     void Free()
     {
         m_TextureMap.clear();

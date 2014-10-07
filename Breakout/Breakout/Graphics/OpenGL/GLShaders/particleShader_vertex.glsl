@@ -1,4 +1,4 @@
-#version 410
+#version 430
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 layout (location = 0) in vec3 VertexPosition;

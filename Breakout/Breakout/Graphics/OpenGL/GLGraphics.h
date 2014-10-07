@@ -6,6 +6,7 @@
 #include "GLShaderHandler.h"
 #include "GLTextureManager.h"
 #include "GLText.h"
+#include "GLParticleSystem.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -86,8 +87,10 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram, m_particleShaderProgram; //shaderID
         GLuint m_2DVAO;
+        
+        GLParticleSystem *m_particlesFire;
         
         GLint m_attributePosition, m_attributeNormal;
         
@@ -109,6 +112,7 @@ private:
         int RenderInstanced();
         int RenderStandard();
         void Render2D();
+        void RenderParticles(int dt, int et, ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();

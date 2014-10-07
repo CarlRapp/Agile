@@ -22,6 +22,7 @@ public:
         void UseProgram();
         
         GLuint GetProgramHandle(){ return m_program; }
+        GLuint* GetProgramHandlePointer(){ return &m_program; }
         
         //lägg till alla setUniforms
         int SetUniformV(const char* variable,float value);

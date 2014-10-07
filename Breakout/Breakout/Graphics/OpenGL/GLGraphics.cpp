@@ -59,10 +59,23 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     
     m_shader2Dprogram.LinkShaderProgram();
     
-//-----------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+    m_particleShaderProgram.CreateShaderProgram();
+    
+    m_particleShaderProgram.AddShader("particleShader_vertex.glsl",GL_VERTEX_SHADER);
+    m_particleShaderProgram.AddShader("particleShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    m_particleShaderProgram.AddShader("particleShader_geometry.glsl",GL_GEOMETRY_SHADER);
+
+    m_particleShaderProgram.LinkShaderProgram();
+//------------------------------------------------------------------------------------
     glEnable(GL_BLEND);
     
     LoadLetters();
+    
+    glEnable(GL_POINT_SPRITE);
+    m_texManager.Load2DTexture("fireTexture.png", GL_TEXTURE0);
+    m_particlesFire = new GLParticleSystem((char*)"fire", vec3(250, 8, 280), 200, 800, 40.f, 
+                                            m_texManager.GetTexturePointer("fireTexture.png"), m_particleShaderProgram.GetProgramHandlePointer());
   
     int err = glGetError();
     
@@ -419,6 +432,37 @@ void GLGraphics::Render(ICamera* _camera)
     
     
     SDL_GL_SwapBuffers( );
+}
+
+void GLGraphics::RenderParticles(int dt, int et, ICamera* _camera)
+{
+	m_particleShaderProgram.UseProgram();
+
+	glUniformMatrix4fv(glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
+
+//	glEnable(GL_BLEND);
+	glDepthMask(GL_FALSE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+	
+	glActiveTexture(GL_TEXTURE0);
+
+	//for (int i = 0; i < mParticleEffects.size(); i++)
+	{
+		glBindTexture(GL_TEXTURE_2D, *m_particlesFire->m_textureHandle);
+
+		glm::mat4 Model = glm::translate(m_particlesFire->GetWorldPos());
+		glm::mat4 viewMatrix = *_camera->GetView();//mCam->GetCamViewMatrix();
+		glm::mat4 ModelView = viewMatrix * Model;
+
+		GLuint location = glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
+		if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &ModelView[0][0]); }
+
+		m_particlesFire->Render(&m_particleShaderProgram, dt, et);
+	}
+	glDepthMask(GL_TRUE);
+	//glDisable(GL_BLEND);
+	glUseProgram(0);
 }
 
 void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect)

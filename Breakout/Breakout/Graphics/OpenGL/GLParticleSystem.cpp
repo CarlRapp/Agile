@@ -1,7 +1,7 @@
 #include "GLParticleSystem.h"
 
 
-GLParticleSystem::GLParticleSystem(char* _type, const vec3 _pos, int _nParticles, float _lifeTime, float _size, char* _texPath, GLuint *_shaderProg, GLuint _texHandle)
+GLParticleSystem::GLParticleSystem(char* _type, const vec3 _pos, int _nParticles, float _lifeTime, float _size, GLuint *_texHandle, GLuint *_shaderProg)
 {
 	m_pos = _pos;
 	m_noParticles = _nParticles;
@@ -24,6 +24,7 @@ GLParticleSystem::GLParticleSystem(char* _type, const vec3 _pos, int _nParticles
 
 GLParticleSystem::~GLParticleSystem()
 {
+    
 }
 
 void GLParticleSystem::CreateFire()
@@ -272,18 +273,19 @@ void GLParticleSystem::CreateSmoke()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_startTime[1]);
 }
 
-void GLParticleSystem::Render(int dt, int elTime)
+void GLParticleSystem::Render(ShaderHandler *particleProg, int dt, int elTime)
 {
 	/////////// Update pass ////////////////
 	glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &m_subRoutineUpdate);
 	// Set the uniforms: H and Time
 	//�
-//	mShader->UpdateUniform("Time", *m_progHandle, float(elTime));
-//	mShader->UpdateUniform("DeltaTime", *m_progHandle, float(dt));
-//	mShader->UpdateUniform("ParticleLifetime", *m_progHandle, m_lifeTime);
-//	mShader->UpdateUniform("Size", *m_progHandle, m_size);
-//	mShader->UpdateUniform("Type", *m_progHandle, m_type);
-//	mShader->UpdateUniform("Accel", *m_progHandle, m_accel);
+        
+	particleProg->SetUniformV("Time", float(elTime));
+	particleProg->SetUniformV("DeltaTime", float(dt));
+	particleProg->SetUniformV("ParticleLifetime", m_lifeTime);
+	particleProg->SetUniformV("Size", m_size);
+	particleProg->SetUniformV("Type", m_type);
+	particleProg->SetUniformV("Accel", m_accel);
 
 	// Disable rendering
 	glEnable(GL_RASTERIZER_DISCARD);
