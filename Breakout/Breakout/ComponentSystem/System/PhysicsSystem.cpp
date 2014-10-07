@@ -48,7 +48,7 @@ void PhysicsSystem::Update(float _dt)
 		else if (rotation)
 		{
 			if (collision->GetBody()->GetAngle() != rotation->GetRotation().z)
-				collision->GetBody()->SetTransform(collision->GetBody()->GetPosition(), collision->GetBody()->GetAngle());
+				collision->GetBody()->SetTransform(collision->GetBody()->GetPosition(), rotation->GetRotation().z);
 		}
 		if (velocity)
 		{
@@ -63,11 +63,10 @@ void PhysicsSystem::Update(float _dt)
 			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)
 				b2Body->SetLinearVelocity(b2Vec2(b2Body->GetLinearVelocity().x, -3.0f));
 
-			// Speed cant be 0
 			float speed = b2Body->GetLinearVelocity().Length();
+			// Speed cant be 0
 			if (speed == 0)
 				continue;
-
 			// Set speed between min/max
 			if (speed < stats->GetMinSpeed())
 			{
@@ -77,7 +76,6 @@ void PhysicsSystem::Update(float _dt)
 			{
 				b2Body->SetLinearVelocity(b2Vec2((b2Body->GetLinearVelocity().x / speed) * stats->GetMaxSpeed(), (b2Body->GetLinearVelocity().y / speed) * stats->GetMaxSpeed()));
 			}
-			
 			// Deaccelerate
 			if (speed > stats->GetMaxDampingSpeed())
 			{
@@ -92,7 +90,7 @@ void PhysicsSystem::Update(float _dt)
 	// Simulate worlds physics
 	m_b2World->Step(_dt, VELOCITYITERATIONS, POSITIONITERATIONS);
 
-	// Update position, velocity and rotation component
+	// Update position, velocity and rotation components
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -108,7 +106,6 @@ void PhysicsSystem::Update(float _dt)
 
 		collision->ResetCollisions();
 
-		// Update all other components except collision
 		if (position)
 		{
 			b2Vec2 b2Pos = b2Body->GetPosition();
@@ -130,7 +127,6 @@ void PhysicsSystem::Update(float _dt)
 	{
 		if (!contact->IsTouching())
 			continue;
-
 		b2Fixture* fixtureA = contact->GetFixtureA();
 		b2Fixture* fixtureB = contact->GetFixtureB();
 		Entity* entityA = 0;
@@ -147,7 +143,6 @@ void PhysicsSystem::Update(float _dt)
 			if (entityA && entityB)
 				break;
 		}
-
 		if (entityA && entityB)
 		{
 			CollisionContact collisionContact = CollisionContact(contact, fixtureA, fixtureB, entityB->GetId());
@@ -241,6 +236,25 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(2.5f, 0.5f);
 		fixDef->shape = polygonShape;
+		fixDef->filter.categoryBits = CollisionCategory::PAD;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_kinematicBody;
+		break;
+	case EntityFactory::SAUSAGE_PAD_MID:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(0.5f, 0.5f);
+		fixDef->shape = polygonShape;
+		fixDef->filter.categoryBits = CollisionCategory::PAD;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_kinematicBody;
+		break;
+	case EntityFactory::SAUSAGE_PAD_EDGE:
+		fixDef = new b2FixtureDef();
+		circleShape = new b2CircleShape();
+		circleShape->m_p.Set(0, 0);
+		circleShape->m_radius = 1.0f;
+		fixDef->shape = circleShape;
 		fixDef->filter.categoryBits = CollisionCategory::PAD;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_kinematicBody;

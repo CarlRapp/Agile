@@ -179,19 +179,26 @@ void GameScene::Reset()
     TC->Initialize(&fpsString,2.f,0x1904 ,10,10);
     m_fpsCounterID = e->GetId();
     m_world->AddEntity(e);
-    GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+    GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y, TC->m_ID);
         
 	for (int i = 0; i < 50; ++i)
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
 		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
-	e = m_world->CreateEntity();
+	/*e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	m_world->AddEntity(e);*/
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_MID);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(10.0f, 0.3f, 1.2f)));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
@@ -251,7 +258,7 @@ void GameScene::Reset()
         
         TC->Initialize(SC->GetString(),2.f,0x1903 ,10,20);
         m_world->AddEntity(e);
-        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y, TC->m_ID);
         SC->SetString();
         //PLAYER SCORE <<
         

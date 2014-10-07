@@ -45,6 +45,8 @@ public:
 		STANDARD_BLOCK_BLUE,
 		STANDARD_BLOCK_GREEN,
 		PAD,
+		SAUSAGE_PAD_MID,
+		SAUSAGE_PAD_EDGE,
 		BALL,
 		POWERUP,
 		WALL,
@@ -56,7 +58,8 @@ public:
 		PLANE,
         TEXT,
 		EXPLOSION,
-		SHATTER
+		SHATTER,
+		STANDARD_HORIZONTAL_RECTANGLE
 	};
 
 	static EntityFactory* GetInstance();
