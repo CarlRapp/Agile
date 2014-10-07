@@ -197,6 +197,7 @@
     <ClInclude Include="Graphics\DirectX\DXParticleSystem.h" />
     <ClInclude Include="Graphics\DirectX\DXRenderStates.h" />
     <ClInclude Include="Graphics\DirectX\DXShadowMap.h" />
+    <ClInclude Include="Graphics\DirectX\DXText.h" />
     <ClInclude Include="Graphics\DirectX\DXTextureManager.h" />
     <ClInclude Include="Graphics\DirectX\DXVertex.h" />
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />

@@ -406,6 +406,9 @@
     <ClInclude Include="Graphics\DirectX\DXParticleSystem.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXText.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

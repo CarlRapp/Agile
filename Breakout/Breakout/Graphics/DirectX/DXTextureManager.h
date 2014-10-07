@@ -5,6 +5,7 @@
 
 
 #include "..\..\stdafx.h"
+#include "DXText.h"
 //#include <d3d11.h>
 
 
@@ -33,7 +34,9 @@ private:
 	ID3D11ShaderResourceView* m_RandomTex;
 
 	void buildRandomTex(ID3D11Device *_device);
-	ID3D11ShaderResourceView* buildLetterTex(ID3D11Device *_device, char* _data);
+	ID3D11ShaderResourceView* buildLetterTex(ID3D11Device *_device, float* _data);
+
+	void InitLetters(ID3D11Device* _device);
 
 	float RandF();
 	float RandF(float a, float b);
@@ -47,7 +50,7 @@ public:
 	ID3D11ShaderResourceView* CreateTexture(std::string _filename);
 	ID3D11ShaderResourceView* GetRandomTexture() { return m_RandomTex; }
 
-	void AddSymbolTexture(ID3D11Device *_device, char _c, char* _data);
+	void AddSymbolTexture(ID3D11Device *_device, char _c, float* _data);
 	ID3D11ShaderResourceView* GetSymbolTexture(char _c);
 };
 

@@ -9,12 +9,14 @@
 #include "DXTextureManager.h"
 #include "DX2DTextureInstance.h"
 #include "DXParticleSystem.h"
+#include "DXText.h"
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
 #include "DXDeferred.h"
 #include "../ICamera.h"
 #include <map>
+
 
 
 
@@ -37,6 +39,7 @@ private:
 	map<int, PointLight*>				m_pointLights;
 	map<int, SpotLight*>				m_spotLights;
 	map<int, DXParticleSystem*>			m_particleSystems;
+	map<int, DXText::String*>			m_texts;
 
 
 
@@ -88,6 +91,9 @@ public:
 
 	void AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
 	void RemoveEffect(int _id);
+
+	void AddText(int _id, std::string *_text, VECTOR3 *_color, float *_x, float *_y, float *_scale);
+	void RemoveText(int _id);
 
 };
 
