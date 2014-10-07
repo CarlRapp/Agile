@@ -311,7 +311,12 @@ void DXGraphics::Remove2DTexture(int _id)
 	m_textureInstances.erase(_id);
 }
 
-void DXGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y)
+void DXGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y, int _id)
+{
+	// HEJ ERIK, DU FÅR I UPPDRAG ATT FIXA DETTA :)
+}
+
+void DXGraphics::RemoveTextObject(int _id)
 {
 	// HEJ ERIK, DU FÅR I UPPDRAG ATT FIXA DETTA :)
 }

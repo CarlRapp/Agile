@@ -173,7 +173,7 @@ void PhysicsSystem::OnEntityAdded(Entity* _entity)
 			{
 				b2PolygonShape* polygonShape = (b2PolygonShape*)fix->shape;
 
-				for (int i = 0; i < polygonShape->m_count; ++i)
+				for (int i = 0; i < polygonShape->GetVertexCount(); ++i)
                                     polygonShape->m_vertices[i] = b2Vec2(polygonShape->m_vertices[i].x * scale->GetScale().x, polygonShape->m_vertices[i].y * scale->GetScale().y);
 			}
 			else if (fix->shape->m_type == b2Shape::Type::e_circle)
