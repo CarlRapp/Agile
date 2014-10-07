@@ -25,13 +25,13 @@ void GameScene::Initialize()
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
 	m_world->AddSystem<PhysicsSystem>();
+	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
-	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<LoseLifeSystem>();
 	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();

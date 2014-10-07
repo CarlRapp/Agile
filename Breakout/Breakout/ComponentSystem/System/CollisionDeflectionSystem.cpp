@@ -29,7 +29,7 @@ void CollisionDeflectionSystem::Update(float _dt)
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
 			Entity* otherEntity = m_world->GetEntity(collisions[i].m_otherId);
-			if (otherEntity->GetState() == Entity::DEAD)
+			if (otherEntity->GetState() != Entity::ALIVE)
 				continue;
 			auto otherDeflection = otherEntity->GetComponent<DeflectionComponent>();
 			if (otherDeflection)
@@ -37,11 +37,15 @@ void CollisionDeflectionSystem::Update(float _dt)
 				float speed = b2Body->GetLinearVelocity().Length();
 				if (speed < otherDeflection->GetDeflection() && speed != 0)
 				{
-					b2Body->SetLinearVelocity(b2Vec2
+					b2Vec2 velocity = b2Body->GetLinearVelocity();
+					float deflection = otherDeflection->GetDeflection();
+					e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3
 						(
-						(b2Body->GetLinearVelocity().x / speed) * otherDeflection->GetDeflection(),
-						(b2Body->GetLinearVelocity().y / speed) * otherDeflection->GetDeflection()
-						));
+						(velocity.x / speed) * deflection,
+						(velocity.y / speed) * deflection,
+						e->GetComponent<VelocityComponent>()->m_velocity.z
+						);
+					
 				}
 			}
 		}

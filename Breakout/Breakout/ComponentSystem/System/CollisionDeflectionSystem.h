@@ -5,6 +5,7 @@
 
 #include "ISystem.h"
 #include "../Component/CollisionComponent.h"
+#include "../Component/VelocityComponent.h"
 #include "../Component/DeflectionComponent.h"
 
 class CollisionDeflectionSystem : public System<CollisionDeflectionSystem>
