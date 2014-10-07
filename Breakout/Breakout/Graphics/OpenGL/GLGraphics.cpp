@@ -340,13 +340,20 @@ void GLGraphics::Remove2DTexture(int _id)
 
 void GLGraphics::Update(float _dt) 
 {
-    for(int i = 0; i < m_textObjects.size();i++)
+    for(int i = m_textObjects.size()-1; i >= 0; --i)
     {
         if(m_textObjects[i].effectTime > 1.0f)
             m_textObjects[i].effectTime -= 0.1f;
+        
+        if(m_textObjects[i].kill)
+        {
+            m_textObjects[i].effectTime -= 0.1f;
+            if(m_textObjects[i].effectTime < -10)
+            {  
+                m_textObjects.erase(m_textObjects.begin() +(i));
+            }
+        }
     }
-    
-    
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -427,7 +434,8 @@ void GLGraphics::Render(ICamera* _camera)
 
     for(int i=0; i < m_textObjects.size();i++)
     {
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime);
+        
+            RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime,m_textObjects[i].kill);
     }
     
     
@@ -465,8 +473,11 @@ void GLGraphics::RenderParticles(int dt, int et, ICamera* _camera)
 	glUseProgram(0);
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect)
+void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect,bool kill)
 {
+    if(_text == 0)
+        return;
+    
     GLvoid* v;
     
     std::string text = (*_text);
@@ -475,17 +486,31 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
     int x = (*_x);
     int y = (*_y);
     
+    int sign = 1;
+    if(kill)
+        sign = -1;
+    
     glPixelZoom(scale,  scale);
     for(int i=0; i< text.size();i++)
     {
         v = (GLvoid*)m_letters[text.at(i)-32];
-        glRasterPos2i(x+i*8*scale*effect,  y*scale);
+        glRasterPos2i(x+i*8*scale*effect*sign,  y*scale);
         glDrawPixels(8,8,  color, GL_BYTE,  v);
     }
 }
 
-void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)
 {
+    for(int i = 0; i < m_textObjects.size();i++)
+    {
+        if(m_textObjects[i].id == _id)
+        {
+            m_textObjects.erase(m_textObjects.begin() + i);
+            printf("\033[31mWARNING, ADDED TEXTOBJECT WITH EXISTING ID: %d \033[30m\n",_id);
+
+        }
+    }
+    
     TextObject textObject;
     textObject.text = _text;
     textObject.scale = _scale;
@@ -493,8 +518,22 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.x = _x;
     textObject.y = _y;
     textObject.effectTime = 10;
+    textObject.id = _id;
+    textObject.kill = false;
     m_textObjects.push_back(textObject);
     
+}
+
+void GLGraphics::RemoveTextObject(int _id)
+{
+    for(int i = 0; i < m_textObjects.size();i++)
+    {
+        if(m_textObjects[i].id == _id)
+        {
+            m_textObjects[i].kill = true;
+            break;
+        }
+    }
 }
 
 
@@ -701,10 +740,13 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 
 void GLGraphics::RemoveObject(int _id)
 {
-    for(int i=0; i< m_models.size();i++)
-    {
-        m_models[i]->instances.erase(_id);
-    }
+    for(int i = m_models.size() - 1; i>= 0; --i)
+        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+        {
+             m_models.erase(m_models.begin() + i);
+             break;
+        }
+           
 }
 
 void GLGraphics::LoadLetters()
@@ -775,7 +817,7 @@ void GLGraphics::LoadLetters()
 #ifdef SHADE_TEXT
     GLbyte temp;
     
-    GLbyte shade = 'a';
+    GLbyte shade = 'm';
     
     for(int i = 0; i < m_letters.size();i++)
     {
@@ -784,17 +826,53 @@ void GLGraphics::LoadLetters()
             temp = (*m_letters[i])[j];
             if(temp == '~')
             {
+//                if(j-8 > 0)
+//                {
+//                    if((*m_letters[i])[j-8] != '~')
+//                    (*m_letters[i])[j-8] += 40;  
+//                }
+                
+                if(j+1 < 64)
+                {
+                    if((*m_letters[i])[j+1] == '~')
+                    {
+                        if(j+8 < 64)
+                            if((*m_letters[i])[j-8] == '~' && !((*m_letters[i])[j-1] == '~'))
+                                (*m_letters[i])[j] -= 40;
+                    }
+                }
+            }
+            
+            if(temp == 0)
+            {
+                int a =0;
+                
                 if(j-8 > 0)
                 {
-                    if((*m_letters[i])[j-8] != '~')
-                    (*m_letters[i])[j-8] = shade;  
+                    if((*m_letters[i])[j-8] == '~')
+                        a++;
                 }
                 
-//                if(j+1 != 8 && j+1 != 16 && j+1 != 24 && j+1 != 32 && j+1 != 40 && j+1 != 48 && j+1 != 56 && j+1 != 64)
-//                {
-//                    if((*m_letters[i])[j+1] != '~')
-//                    (*m_letters[i])[j+1] = shade;  
-//                }
+                if(j+8 < 64)
+                {
+                    if((*m_letters[i])[j+8] == '~')
+                        a++;
+                }
+                
+                if(j-1 > 0)
+                {
+                    if((*m_letters[i])[j-1] == '~')
+                        a++;
+                }
+                
+                if(j+1 < 64)
+                {
+                    if((*m_letters[i])[j+1] == '~')
+                        a++;
+                }
+                
+                if(a>0)
+                    (*m_letters[i])[j] = ' '*a;
             }
         }
     }

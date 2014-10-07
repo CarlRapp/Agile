@@ -2,7 +2,6 @@
 #define GLTEXT_H
 
     const static GLbyte x = '~';
-    const static GLbyte s = 'A';
 
     
      static GLbyte E[64]= {    0,0,0,0,0,0,0,0,
