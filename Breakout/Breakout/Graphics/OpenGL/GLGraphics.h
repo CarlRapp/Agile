@@ -3,7 +3,7 @@
 
 #include "../IGraphics.h"
 #include "GLWindow.h"
-#include "GLShader.h"
+#include "GLShaderHandler.h"
 #include "GLTextureManager.h"
 #include "GLText.h"
 
@@ -78,6 +78,8 @@ class GLGraphics : public IGraphics
         int* x;
         int* y;
         float effectTime;
+        int id;
+        bool kill;
     };
     
 private:
@@ -86,8 +88,8 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        GLuint m_program; //shaderID
-        GLuint m_shader2Dprogram, m_2DVAO;
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+        GLuint m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
         
@@ -105,12 +107,6 @@ private:
         
         float m_textFontSize = 3;
         
-        int SetUniformV(GLuint shaderProg, const char* variable,float value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,int value);
         
         int RenderInstanced();
         int RenderStandard();
@@ -118,7 +114,7 @@ private:
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect);
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect,bool kill);
 public:
 
 	GLGraphics(void);
@@ -144,7 +140,8 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
+        void RemoveTextObject(int _id);
         
 
 };

@@ -6,9 +6,10 @@
 
 enum EffectFlags
 {
-	SHATTER = 1 << 0,
-	EXPLORE = 1 << 1,
-	INVISIBLE = 1 << 2,
+	SHATTER		= 1 << 0,
+	EXPLODE		= 1 << 1,
+	INVISIBLE	= 1 << 2,
+	TRAIL		= 1 << 3,
 
 	NO_EFFECT = 1 << 10,
 };

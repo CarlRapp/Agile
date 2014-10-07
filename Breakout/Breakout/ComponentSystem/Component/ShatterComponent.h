@@ -7,30 +7,30 @@
 struct ShatterComponent : Component<ShatterComponent>
 {
 
-	enum ExplosionState
+	enum ShatterState
 	{
 		NONE = 0,
-		EXPLODING,
+		SHATTERING,
 		DONE
 	};
 
 	float m_explosion = 0.0f;
 	float m_maxExplosionTime = 0.2f;
 	float m_expansionRate = 20.0f;
-	ExplosionState m_explosionState = NONE;
+	ShatterState m_explosionState = NONE;
 
 	ShatterComponent()	{}
 
-	ExplosionState IsExploding(float _dt)
+	ShatterState IsShattering(float _dt)
 	{
-		if (m_explosionState == EXPLODING)
+		if (m_explosionState == SHATTERING)
 		{
 			m_explosion += _dt * m_expansionRate;
 
 			if (m_explosion > m_maxExplosionTime * m_expansionRate)
 			{
 				m_explosionState = DONE;
-				printf("Entity done exploding, remove\n");
+				printf("Entity done shattering, remove\n");
 			}
 		}
 
