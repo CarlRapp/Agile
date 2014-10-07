@@ -22,23 +22,15 @@ void MainMenuScene::Initialize()
 void MainMenuScene::LoadContent()
 {
 	printf("Loading Content (Main Menu)\n");
-	m_x = 0;
-	m_y = 0;
-	m_width = 1.f;
-	m_height = 1.f;
-	m_trollCounter = 0;
+
+    m_world = new World();
         
-        m_world = new World();
-        
-        m_stringPlay        = "--START--";
-        m_stringOptions     = "--OPTIONS--";
-        m_stringExit        = "--EXIT--";
+    m_stringPlay        = "--START--";
+    m_stringOptions     = "--OPTIONS--";
+    m_stringExit        = "--EXIT--";
         
 
         //GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
-       
-
-
 }
 
 void MainMenuScene::LoadText()
@@ -58,6 +50,8 @@ void MainMenuScene::LoadText()
 
 void MainMenuScene::OnActive()
 {
+	//m_world = new World();
+
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
     Entity* e = m_world->CreateEntity();
@@ -84,12 +78,9 @@ void MainMenuScene::OnActive()
     m_exitID = e->GetId();
     GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
 
-    GM->Add2DTexture(1337, "PLANE.png", &m_x, &m_y, &m_width, &m_height);
-    m_trollCounter = 0;
 }
 void MainMenuScene::OnInactive()
 {
-            
     EntityMap::iterator eIT;
     for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
     {
@@ -98,9 +89,6 @@ void MainMenuScene::OnInactive()
             GraphicsManager::GetInstance()->RemoveTextObject(eIT->second->GetId());
         }
     }	
-            
-    GraphicsManager* GM = GraphicsManager::GetInstance();
-    GM->Remove2DTexture(1337);
 }
 
 void MainMenuScene::Update(float _dt)
@@ -114,8 +102,6 @@ void MainMenuScene::Update(float _dt)
 
 	//m_x = sinf(4*m_trollCounter) * 0.2f;
 	//m_y = sinf(2*m_trollCounter) * 0.2f;
-
-	m_trollCounter += _dt;
 }
 
 void MainMenuScene::Render(float _dt)
