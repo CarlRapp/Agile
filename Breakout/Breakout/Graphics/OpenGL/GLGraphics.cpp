@@ -41,53 +41,24 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     printf("\033[35mGL Version (integer) : %d.%d\n", major, minor);
     printf("\033[35mGLSL Version : %s\n\033[30m", glslVersion);
     
-    GLint link_ok = GL_FALSE;
-    GLuint vs, fs;
     
 //-----------Creating shader programs----------------------------------------------
-    m_program = glCreateProgram();
+    m_standardShaderProgram.CreateShaderProgram();
     
-    Shader* a = new Shader("standard_vertex.glsl",GL_VERTEX_SHADER);
-    Shader* b = new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
-    Shader* c = new Shader("explode_geometry.glsl",GL_GEOMETRY_SHADER);
-    
-    glAttachShader(m_program, a->GetShaderID());
-    glAttachShader(m_program, b->GetShaderID());
-    glAttachShader(m_program, c->GetShaderID());
-    
-    a=NULL;
-    b=NULL;
-    c = NULL;
-    
-    glLinkProgram(m_program);
-    glGetProgramiv(m_program, GL_LINK_STATUS, &link_ok);
-    
-    if (!link_ok) 
-    {
-        printf("\033[31mUnable to link shader\n\033[30m");
-        exit(0);
-        return 0;
-    }
-//------------------------------------------------------------------------------------
-     m_shader2Dprogram = glCreateProgram();
-    
-    a = new Shader("2Dshader_vertex.glsl",GL_VERTEX_SHADER);
-    b = new Shader("2Dshader_fragment.glsl",GL_FRAGMENT_SHADER);
-    
-    glAttachShader(m_shader2Dprogram, a->GetShaderID());
-    glAttachShader(m_shader2Dprogram, b->GetShaderID());
-    
-    a=NULL;
-    b=NULL;
+    m_standardShaderProgram.AddShader("standard_vertex.glsl",GL_VERTEX_SHADER);
+    m_standardShaderProgram.AddShader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
+    m_standardShaderProgram.AddShader("explode_geometry.glsl",GL_GEOMETRY_SHADER);
 
-    glLinkProgram(m_shader2Dprogram);
-    glGetProgramiv(m_shader2Dprogram, GL_LINK_STATUS, &link_ok);
+    m_standardShaderProgram.LinkShaderProgram();
+
+//------------------------------------------------------------------------------------
+    m_shader2Dprogram.CreateShaderProgram();
     
-    if (!link_ok) 
-    {
-        printf("\033[31mUnable to link shader\n\033[30m");
-        return 0;
-    }
+    m_shader2Dprogram.AddShader("2Dshader_vertex.glsl",GL_VERTEX_SHADER);
+    m_shader2Dprogram.AddShader("2Dshader_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    m_shader2Dprogram.LinkShaderProgram();
+    
 //-----------------------------------------------------------------------------------------
     glEnable(GL_BLEND);
     
@@ -106,7 +77,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
 
 void GLGraphics::LoadModel(std::string _path)
 {
-    glUseProgram(m_program);
+    m_standardShaderProgram.UseProgram();
     ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path,MODEL_ROOT));
 
     if(!data)
@@ -173,13 +144,13 @@ void GLGraphics::LoadModel(std::string _path)
         
         m_testMatrices.push_back(glm::mat4(1.0f));
         
-        int pos             = glGetAttribLocation(m_program, "m_position");
-        int pad1            = glGetAttribLocation(m_program, "pad1");
-        int normal          = glGetAttribLocation(m_program, "m_normal");
-        int explosion       = glGetAttribLocation(m_program, "m_explosion");
-        int color           = glGetAttribLocation(m_program, "m_color");
-        int matrix          = glGetAttribLocation(m_program, "m_matModel");
-        int texCoord        = glGetAttribLocation(m_program, "m_texCoord");
+        int pos             = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_position");
+        int pad1            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad1");
+        int normal          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_normal");
+        int explosion       = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_explosion");
+        int color           = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_color");
+        int matrix          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_matModel");
+        int texCoord        = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_texCoord");
         
 	glGenBuffers(6, m_models[index]->buffers);
  
@@ -283,7 +254,7 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
     {
         return;
     }
-    glUseProgram(m_shader2Dprogram);
+    m_shader2Dprogram.UseProgram();
     m_texManager.Load2DTexture(_path, GL_TEXTURE0);
     m_TextureInstances.insert(pair<int, TextureInfo*>(_id, new TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
     
@@ -356,13 +327,20 @@ void GLGraphics::Remove2DTexture(int _id)
 
 void GLGraphics::Update(float _dt) 
 {
-    for(int i = 0; i < m_textObjects.size();i++)
+    for(int i = m_textObjects.size()-1; i >= 0; --i)
     {
         if(m_textObjects[i].effectTime > 1.0f)
             m_textObjects[i].effectTime -= 0.1f;
+        
+        if(m_textObjects[i].kill)
+        {
+            m_textObjects[i].effectTime -= 0.1f;
+            if(m_textObjects[i].effectTime < -10)
+            {  
+                m_textObjects.erase(m_textObjects.begin() +(i));
+            }
+        }
     }
-    
-    
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -400,7 +378,8 @@ void GLGraphics::Free()
     m_texManager.Free();
     glDeleteVertexArrays(1, &m_2DVAO);
     
-    glDeleteProgram(m_program);
+    m_standardShaderProgram.~ShaderHandler();
+    m_shader2Dprogram.~ShaderHandler();
  
     for(int i=0;i < m_letters.size(); i++)
     {
@@ -419,11 +398,11 @@ void GLGraphics::Free()
 
 void GLGraphics::Render(ICamera* _camera) 
 { 
-    glClearColor(0.2, 0.2, 0.8, 1.0);
+    glClearColor(0.05, 0.05, 0.05, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    glUseProgram(m_program);
+    m_standardShaderProgram.UseProgram();
     
     glViewport(0, 0, m_screenWidth, m_screenHeight);
     
@@ -442,15 +421,19 @@ void GLGraphics::Render(ICamera* _camera)
 
     for(int i=0; i < m_textObjects.size();i++)
     {
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime);
+        
+            RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime,m_textObjects[i].kill);
     }
     
     
     SDL_GL_SwapBuffers( );
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect)
+void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect,bool kill)
 {
+    if(_text == 0)
+        return;
+    
     GLvoid* v;
     
     std::string text = (*_text);
@@ -459,17 +442,31 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
     int x = (*_x);
     int y = (*_y);
     
+    int sign = 1;
+    if(kill)
+        sign = -1;
+    
     glPixelZoom(scale,  scale);
     for(int i=0; i< text.size();i++)
     {
         v = (GLvoid*)m_letters[text.at(i)-32];
-        glRasterPos2i(x+i*8*scale*effect,  y*scale);
+        glRasterPos2i(x+i*8*scale*effect*sign,  y*scale);
         glDrawPixels(8,8,  color, GL_BYTE,  v);
     }
 }
 
-void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)
 {
+    for(int i = 0; i < m_textObjects.size();i++)
+    {
+        if(m_textObjects[i].id == _id)
+        {
+            m_textObjects.erase(m_textObjects.begin() + i);
+            printf("\033[31mWARNING, ADDED TEXTOBJECT WITH EXISTING ID: %d \033[30m\n",_id);
+
+        }
+    }
+    
     TextObject textObject;
     textObject.text = _text;
     textObject.scale = _scale;
@@ -477,15 +474,29 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.x = _x;
     textObject.y = _y;
     textObject.effectTime = 10;
+    textObject.id = _id;
+    textObject.kill = false;
     m_textObjects.push_back(textObject);
     
+}
+
+void GLGraphics::RemoveTextObject(int _id)
+{
+    for(int i = 0; i < m_textObjects.size();i++)
+    {
+        if(m_textObjects[i].id == _id)
+        {
+            m_textObjects[i].kill = true;
+            break;
+        }
+    }
 }
 
 
 void GLGraphics::Render2D()
 {
     //printf("Entering Render2D");
-    glUseProgram(m_shader2Dprogram);
+    m_shader2Dprogram.UseProgram();
     
     glActiveTexture(GL_TEXTURE0);
     glEnable(GL_BLEND);
@@ -521,7 +532,7 @@ int GLGraphics::RenderInstanced()
 
     ModelRenderInfo* MRI;
     
-    glUseProgram(m_program);
+    m_standardShaderProgram.UseProgram();
     glEnable(GL_DEPTH_TEST);
     
     for(int i=0; i< m_models.size();i++)
@@ -605,10 +616,10 @@ void GLGraphics::UpdateLights()
             strcpy(colorStr, "Lights[");	strcat(colorStr, indexStr);		strcat(colorStr, "].Color");
             strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
 
-            SetUniformV(m_program, positionStr, LightPosition);
-            SetUniformV(m_program, intensityStr, *it->second->Intensity);
-            SetUniformV(m_program, colorStr, *it->second->Color);
-            SetUniformV(m_program, rangeStr, *it->second->Range);
+            m_standardShaderProgram.SetUniformV(positionStr, LightPosition);
+            m_standardShaderProgram.SetUniformV(intensityStr, *it->second->Intensity);
+            m_standardShaderProgram.SetUniformV(colorStr, *it->second->Color);
+            m_standardShaderProgram.SetUniformV(rangeStr, *it->second->Range);
             
             i++;
 	}
@@ -618,12 +629,12 @@ void GLGraphics::CameraToRender(ICamera* _camera)
 {
     glm::mat4* temp1 = _camera->GetProjection();
     
-    GLint projection = glGetUniformLocation(m_program, "m_matProj" );
+    GLint projection = glGetUniformLocation(m_standardShaderProgram.GetProgramHandle(), "m_matProj" );
     glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
     
     temp1 = _camera->GetView();
 
-    GLint view = glGetUniformLocation(m_program, "m_matView" );
+    GLint view = glGetUniformLocation(m_standardShaderProgram.GetProgramHandle(), "m_matView" );
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
 }
 
@@ -685,99 +696,13 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 
 void GLGraphics::RemoveObject(int _id)
 {
-    for(int i=0; i< m_models.size();i++)
-    {
-        m_models[i]->instances.erase(_id);
-    }
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, float _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniform1fv(location, 1, &_value);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::vec3 _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniform3fv(location, 1, &_value[0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::vec4 _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniform4fv(location, 1, &_value[0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::mat3 _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniformMatrix3fv(location, 1, GL_FALSE, &_value[0][0]);
-	else 
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, glm::mat4 _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniformMatrix4fv(location, 1, GL_FALSE, &_value[0][0]);
-	else
-		return 1;
-
-	return 0;
-}
-
-int GLGraphics::SetUniformV(GLuint shaderProg, const char* _variable, int _value)
-{
-	//	Set as current program
-	glUseProgram(shaderProg);
-
-	//	Get pointer for variable
-	int location = glGetUniformLocation(shaderProg, _variable);
-	if (location >= 0)
-		glUniform1i(location, _value);
-	else return 1;
-
-	return 0;
+    for(int i = m_models.size() - 1; i>= 0; --i)
+        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+        {
+             m_models.erase(m_models.begin() + i);
+             break;
+        }
+           
 }
 
 void GLGraphics::LoadLetters()
@@ -848,7 +773,7 @@ void GLGraphics::LoadLetters()
 #ifdef SHADE_TEXT
     GLbyte temp;
     
-    GLbyte shade = 'a';
+    GLbyte shade = 'm';
     
     for(int i = 0; i < m_letters.size();i++)
     {
@@ -857,17 +782,53 @@ void GLGraphics::LoadLetters()
             temp = (*m_letters[i])[j];
             if(temp == '~')
             {
+//                if(j-8 > 0)
+//                {
+//                    if((*m_letters[i])[j-8] != '~')
+//                    (*m_letters[i])[j-8] += 40;  
+//                }
+                
+                if(j+1 < 64)
+                {
+                    if((*m_letters[i])[j+1] == '~')
+                    {
+                        if(j+8 < 64)
+                            if((*m_letters[i])[j-8] == '~' && !((*m_letters[i])[j-1] == '~'))
+                                (*m_letters[i])[j] -= 40;
+                    }
+                }
+            }
+            
+            if(temp == 0)
+            {
+                int a =0;
+                
                 if(j-8 > 0)
                 {
-                    if((*m_letters[i])[j-8] != '~')
-                    (*m_letters[i])[j-8] = shade;  
+                    if((*m_letters[i])[j-8] == '~')
+                        a++;
                 }
                 
-//                if(j+1 != 8 && j+1 != 16 && j+1 != 24 && j+1 != 32 && j+1 != 40 && j+1 != 48 && j+1 != 56 && j+1 != 64)
-//                {
-//                    if((*m_letters[i])[j+1] != '~')
-//                    (*m_letters[i])[j+1] = shade;  
-//                }
+                if(j+8 < 64)
+                {
+                    if((*m_letters[i])[j+8] == '~')
+                        a++;
+                }
+                
+                if(j-1 > 0)
+                {
+                    if((*m_letters[i])[j-1] == '~')
+                        a++;
+                }
+                
+                if(j+1 < 64)
+                {
+                    if((*m_letters[i])[j+1] == '~')
+                        a++;
+                }
+                
+                if(a>0)
+                    (*m_letters[i])[j] = ' '*a;
             }
         }
     }
