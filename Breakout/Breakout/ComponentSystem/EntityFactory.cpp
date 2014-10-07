@@ -26,7 +26,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	switch (_entityType)
 	{
 	case EntityFactory::STANDARD_BLOCK_RED:
-	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -38,14 +37,10 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
-
-		_entity->AddComponent<ShatterComponent>();
-		_entity->AddComponent<EffectComponent>().m_effects;
-
+		
+		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::SHATTER;
 		break;
-	}
 	case EntityFactory::STANDARD_BLOCK_GREEN:
-	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -58,13 +53,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<ShatterComponent>();
-		_entity->AddComponent<EffectComponent>().m_effects;
-
+		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
-	}
 	case EntityFactory::STANDARD_BLOCK_BLUE:
-	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -77,11 +68,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<ShatterComponent>();
-		_entity->AddComponent<EffectComponent>().m_effects;
-
+		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved;
 		break;
-	}
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
@@ -102,9 +90,11 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<VelocityComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<CollisionStatsComponent>(60.0f, 100.0f, 40.0f, 20.0f);
+		_entity->AddComponent<CollisionStatsComponent>(40.0f, 100.0f, 40.0f, 20.0f);
 		_entity->AddComponent<DamageComponent>(10);
 		_entity->AddComponent<LoseLifeComponent>();
+
+		_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
 		break;
 	case EntityFactory::POWERUP:
 		break;
@@ -159,6 +149,19 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
         case EntityFactory::TEXT:
 		_entity->AddComponent<TextComponent>();
 		break;
+		case EntityFactory::SHATTER:
+			_entity->AddComponent<PositionComponent>();
+			_entity->AddComponent<RotationComponent>();
+			_entity->AddComponent<ScaleComponent>();
+			_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
+
+			_entity->AddComponent<ShatterComponent>().m_explosionState = ShatterComponent::SHATTERING;
+			break;
+		case EntityFactory::EXPLOSION:
+			_entity->AddComponent<PositionComponent>();
+			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
+
+				break;
 	default:
 		break;
 	}

@@ -117,8 +117,6 @@ void GameScene::Update(float _dt)
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
 		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-		e->GetComponent<EffectComponent>()->m_effects.OnRemoved	= EffectFlags::SHATTER;
-		e->GetComponent<EffectComponent>()->m_effects.OnCollide = EffectFlags::EXPLORE;
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;

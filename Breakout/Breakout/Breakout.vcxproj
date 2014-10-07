@@ -145,6 +145,7 @@
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DeflectionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\EffectComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\ExplosionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\HealthComponent.h" />
     <ClInclude Include="ComponentSystem\Component\IComponent.h" />
     <ClInclude Include="ComponentSystem\Component\InputComponent.h" />
