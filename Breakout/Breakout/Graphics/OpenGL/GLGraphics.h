@@ -35,7 +35,7 @@ class GLGraphics : public IGraphics
 
         public:
 
-            float       *explosion;
+            float   *explosion;
         glm::mat4	*world;
         glm::mat4	*worldInverseTranspose;
     };

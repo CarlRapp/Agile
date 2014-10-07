@@ -120,5 +120,5 @@ void MainMenuScene::Update(float _dt)
 
 void MainMenuScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
+	GraphicsManager::GetInstance()->Render(_dt);
 }

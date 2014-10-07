@@ -82,8 +82,8 @@ void DXInputLayouts::InitAll(ID3D11Device* _device)
 	// PosTex
 	//
 
-	DXEffects::m_shadowMapFX->m_basicShadowDirTech->GetPassByIndex(0)->GetDesc(&passDesc);
-	_device->CreateInputLayout(DXInputLayoutDesc::m_posTex, 2, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_posTex);
+	/*DXEffects::m_shadowMapFX->m_basicShadowDirTech->GetPassByIndex(0)->GetDesc(&passDesc);
+	_device->CreateInputLayout(DXInputLayoutDesc::m_posTex, 2, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_posTex);*/
 
 	//
 	// Basic32

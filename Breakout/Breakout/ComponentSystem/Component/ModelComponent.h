@@ -6,9 +6,8 @@
 
 struct ModelComponent : Component<ModelComponent>
 {
-	std::string m_modelPath= "";
-	MATRIX4 m_worldMatrix= GETIMATRIX();
-	int m_gpuId;
+	std::string m_modelPath = "";
+	MATRIX4 m_worldMatrix = GETIMATRIX();
 	bool m_render;
         
         ModelComponent()

@@ -8,6 +8,7 @@
 #include "DXModelManager.h"
 #include "DXTextureManager.h"
 #include "DX2DTextureInstance.h"
+#include "DXParticleSystem.h"
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
@@ -35,6 +36,7 @@ private:
 	map<int, DirectionalLight*>			m_dirLights;
 	map<int, PointLight*>				m_pointLights;
 	map<int, SpotLight*>				m_spotLights;
+	map<int, DXParticleSystem*>			m_particleSystems;
 
 
 
@@ -69,7 +71,7 @@ public:
 	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_window; }
 	void	Update(float _dt);
-	void	Render(ICamera* _camera);
+	void	Render(float _dt, ICamera* _camera);
 	void LoadModel(std::string _path);
 	void LoadTexture(std::string _path);
 
@@ -79,10 +81,15 @@ public:
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
 
-	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y);
+	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y, int _id); //NEW, remove comment when done on DX
+	void RemoveTextObject(int _id); //NEW, remove comment when done on DX
 
 	void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
 	void RemovePointLight(int _id);
+
+	void AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
+	void RemoveEffect(int _id);
+
 };
 
 
