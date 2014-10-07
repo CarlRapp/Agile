@@ -22,21 +22,33 @@
 
 class DXTextureManager
 {
+private:
+	DXTextureManager(const DXTextureManager& rhs);
+	DXTextureManager& operator=(const DXTextureManager& rhs);
+
+	ID3D11Device* md3dDevice;
+	std::map<std::string, ID3D11ShaderResourceView*> mTextureSRV;
+	std::map<char, ID3D11ShaderResourceView*> mLetterSRV;
+
+	ID3D11ShaderResourceView* m_RandomTex;
+
+	void buildRandomTex(ID3D11Device *_device);
+	ID3D11ShaderResourceView* buildLetterTex(ID3D11Device *_device, char* _data);
+
+	float RandF();
+	float RandF(float a, float b);
+
 public:
 	DXTextureManager();
 	~DXTextureManager();
 
-	void Init(ID3D11Device* device);
+	void Init(ID3D11Device* _device);
 
-	ID3D11ShaderResourceView* CreateTexture(std::string filename);
+	ID3D11ShaderResourceView* CreateTexture(std::string _filename);
+	ID3D11ShaderResourceView* GetRandomTexture() { return m_RandomTex; }
 
-private:
-	DXTextureManager(const DXTextureManager& rhs);
-	DXTextureManager& operator=(const DXTextureManager& rhs);
-	
-private:
-	ID3D11Device* md3dDevice;
-	std::map<std::string, ID3D11ShaderResourceView*> mTextureSRV;
+	void AddSymbolTexture(ID3D11Device *_device, char _c, char* _data);
+	ID3D11ShaderResourceView* GetSymbolTexture(char _c);
 };
 
 #endif
