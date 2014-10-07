@@ -213,6 +213,24 @@ CombineFinalEffect::~CombineFinalEffect()
 }
 #pragma endregion
 
+#pragma region RenderTextEffect
+RenderTextEffect::RenderTextEffect(ID3D11Device* _device, const std::wstring& _filename)
+: DXEffect(_device, _filename)
+{
+	m_basicTech = m_FX->GetTechniqueByName("BasicTech");
+
+	m_color = m_FX->GetVariableByName("gColor")->AsVector();
+	m_position = m_FX->GetVariableByName("gPosition")->AsVector();
+
+	m_texture = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
+	m_outputMap = m_FX->GetVariableByName("gOutput")->AsUnorderedAccessView();
+}
+
+RenderTextEffect::~RenderTextEffect()
+{
+}
+#pragma endregion
+
 #pragma region DXEffects
 
 BuildShadowMapEffect*  DXEffects::m_buildShadowMapFX = 0;
@@ -220,7 +238,8 @@ ClearGBufferEffect*    DXEffects::m_clearGBufferFX = 0;
 CombineFinalEffect*	   DXEffects::m_combineFinalFX = 0;
 ObjectDeferredEffect*  DXEffects::m_objectDeferredFX = 0;
 TiledLightningEffect*  DXEffects::m_tiledLightningFX = 0;
-ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
+//ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
+RenderTextEffect*	   DXEffects::m_renderTextFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* _device)
 {
@@ -229,7 +248,8 @@ void DXEffects::InitAll(ID3D11Device* _device)
 	m_combineFinalFX = new CombineFinalEffect(_device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
 	m_objectDeferredFX = new ObjectDeferredEffect(_device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
 	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
-	m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
+	//m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
+	m_renderTextFX = new RenderTextEffect(_device, L"Graphics/DirectX/Shaders/RenderText.fxo");
 }
 
 void DXEffects::DestroyAll()
@@ -239,7 +259,8 @@ void DXEffects::DestroyAll()
 	SafeDelete(m_combineFinalFX);
 	SafeDelete(m_objectDeferredFX);
 	SafeDelete(m_tiledLightningFX);
-	SafeDelete(m_shadowMapFX);
+	//SafeDelete(m_shadowMapFX);
+	SafeDelete(m_renderTextFX);
 }
 
 #pragma endregion

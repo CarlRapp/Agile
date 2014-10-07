@@ -2,6 +2,8 @@
 #include <iostream>
 #include "../../Storage/FileManager.h"
 
+#define SHADE_TEXT 1
+
 GLGraphics::GLGraphics(void)
 {
 
@@ -90,7 +92,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     glEnable(GL_BLEND);
     
     LoadLetters();
-      
+  
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
@@ -352,9 +354,15 @@ void GLGraphics::Remove2DTexture(int _id)
     m_TextureInstances.erase(_id);
 }
 
-void GLGraphics::Update() 
+void GLGraphics::Update(float _dt) 
 {
-
+    for(int i = 0; i < m_textObjects.size();i++)
+    {
+        if(m_textObjects[i].effectTime > 1.0f)
+            m_textObjects[i].effectTime -= 0.1f;
+    }
+    
+    
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -434,14 +442,14 @@ void GLGraphics::Render(ICamera* _camera)
 
     for(int i=0; i < m_textObjects.size();i++)
     {
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y);
+        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime);
     }
     
     
     SDL_GL_SwapBuffers( );
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect)
 {
     GLvoid* v;
     
@@ -455,7 +463,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
     for(int i=0; i< text.size();i++)
     {
         v = (GLvoid*)m_letters[text.at(i)-32];
-        glRasterPos2i(x+i*8*scale,  y*scale);
+        glRasterPos2i(x+i*8*scale*effect,  y*scale);
         glDrawPixels(8,8,  color, GL_BYTE,  v);
     }
 }
@@ -468,7 +476,7 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.color = _color;
     textObject.x = _x;
     textObject.y = _y;
-    
+    textObject.effectTime = 10;
     m_textObjects.push_back(textObject);
     
 }
@@ -540,6 +548,7 @@ int GLGraphics::RenderInstanced()
         //Update matrix buffer//
         
         //Update explosion buffer//
+
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[2]);
         float* explosion = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
@@ -547,14 +556,17 @@ int GLGraphics::RenderInstanced()
 
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
         {
-            explosion[j] = *insIt->second->explosion;
-            
+            if(insIt->second->explosion)
+                explosion[j] = *insIt->second->explosion;
+            else
+                explosion[j] = 0.0f;
+
             j++;
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glBindBuffer(GL_ARRAY_BUFFER,0);
         //Update explosion buffer<//
-        
+
         glBindVertexArray(MRI->bufferVAOID);
 
         glDrawArraysInstanced(GL_TRIANGLES,0,MRI->vertices,instances);
@@ -832,5 +844,32 @@ void GLGraphics::LoadLetters()
     m_letters.push_back(&X);
     m_letters.push_back(&Y);
     m_letters.push_back(&Z);
+   
+#ifdef SHADE_TEXT
+    GLbyte temp;
     
+    GLbyte shade = 'a';
+    
+    for(int i = 0; i < m_letters.size();i++)
+    {
+        for(int j = 0; j < 64; j++)
+        {
+            temp = (*m_letters[i])[j];
+            if(temp == '~')
+            {
+                if(j-8 > 0)
+                {
+                    if((*m_letters[i])[j-8] != '~')
+                    (*m_letters[i])[j-8] = shade;  
+                }
+                
+//                if(j+1 != 8 && j+1 != 16 && j+1 != 24 && j+1 != 32 && j+1 != 40 && j+1 != 48 && j+1 != 56 && j+1 != 64)
+//                {
+//                    if((*m_letters[i])[j+1] != '~')
+//                    (*m_letters[i])[j+1] = shade;  
+//                }
+            }
+        }
+    }
+#endif
 }

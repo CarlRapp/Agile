@@ -51,7 +51,7 @@ void GameOverScene::Update(float _dt)
 		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 }
 
-void GameOverScene::Render()
+void GameOverScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
+	GraphicsManager::GetInstance()->Render(_dt);
 }

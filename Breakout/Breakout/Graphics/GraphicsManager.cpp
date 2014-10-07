@@ -24,13 +24,13 @@ void GraphicsManager::Destroy()
 
 GraphicsManager::~GraphicsManager(void)
 {
-    SafeDelete(m_IGraphics);
+	SafeDelete(m_IGraphics);
 }
 
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
+	m_ICamera = ICamera::GetICamera(45.0f, _width, _height, 0.1f, 100.0f);
 	m_ICamera->SetPosition(VECTOR3(0, 0, 10));
 
 	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
@@ -40,15 +40,15 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 }
 
 
-void GraphicsManager::Render()
+void GraphicsManager::Render(float _dt)
 {
-	m_IGraphics->Render(m_ICamera);
+	m_IGraphics->Render(_dt, m_ICamera);
 }
 
 float test = 0.0f;
-void GraphicsManager::Update()
+void GraphicsManager::Update(float _dt)
 {
-	m_IGraphics->Update();
+	m_IGraphics->Update(_dt);
 
 	VECTOR3 pos = m_ICamera->GetPosition();
 	//pos.z += dt * 10.0f;
@@ -65,22 +65,22 @@ void GraphicsManager::Update()
 
 bool GraphicsManager::Init3D(DisplayMode _displayMode)
 {
-    return m_IGraphics->Init3D(_displayMode);
+	return m_IGraphics->Init3D(_displayMode);
 }
 
 void GraphicsManager::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {
-    m_IGraphics->AddPointLight(_id, _worldPos, _intensity, _color, _range);
+	m_IGraphics->AddPointLight(_id, _worldPos, _intensity, _color, _range);
 }
 void GraphicsManager::RemovePointLight(int _id)
 {
 	m_IGraphics->RemovePointLight(_id);
 }
-   
+
 
 void GraphicsManager::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion)
 {
-	m_IGraphics->AddObject(_id, _model, _world, _worldInverseTranspose,_explosion);
+	m_IGraphics->AddObject(_id, _model, _world, _worldInverseTranspose, _explosion);
 }
 
 void GraphicsManager::RemoveObject(int _id)
@@ -99,13 +99,22 @@ void GraphicsManager::Remove2DTexture(int _id)
 	m_IGraphics->Remove2DTexture(_id);
 }
 
+void GraphicsManager::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+{
+	m_IGraphics->AddEffect(_id, _effect, _pos, _vel);
+}
+
+void GraphicsManager::RemoveEffect(int _id)
+{
+	m_IGraphics->RemoveEffect(_id);
+}
 
 ICamera* GraphicsManager::GetICamera()
 {
-    return m_ICamera;
+	return m_ICamera;
 }
 
-void GraphicsManager::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
+void GraphicsManager::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y)
 {
-    m_IGraphics->AddTextObject(_text,_scale,_color,_x,_y);
+	m_IGraphics->AddTextObject(_text, _scale, _color, _x, _y);
 }
