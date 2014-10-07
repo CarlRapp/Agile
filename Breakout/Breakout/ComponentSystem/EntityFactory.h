@@ -57,7 +57,8 @@ public:
 		PLANE,
         TEXT,
 		EXPLOSION,
-		SHATTER
+		SHATTER,
+		STANDARD_HORIZONTAL_RECTANGLE
 	};
 
 	static EntityFactory* GetInstance();

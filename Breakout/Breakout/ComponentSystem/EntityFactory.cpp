@@ -168,12 +168,11 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 			_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
 
 			_entity->AddComponent<ShatterComponent>().m_explosionState = ShatterComponent::SHATTERING;
-			break;
+		break;
 		case EntityFactory::EXPLOSION:
 			_entity->AddComponent<PositionComponent>();
 			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
-
-				break;
+		break;
 	default:
 		break;
 	}
