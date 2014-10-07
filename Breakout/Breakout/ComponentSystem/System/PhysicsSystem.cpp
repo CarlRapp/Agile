@@ -10,7 +10,11 @@ PhysicsSystem::PhysicsSystem(World* _world)
 
 PhysicsSystem::~PhysicsSystem()
 {
+	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+		it->second->RemoveComponent<CollisionComponent>();
+
 	delete m_b2World;
+	m_b2World = 0;
 }
 
 void PhysicsSystem::Update(float _dt)
@@ -213,6 +217,17 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::STANDARD_HORIZONTAL_RECTANGLE:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(1.0f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;

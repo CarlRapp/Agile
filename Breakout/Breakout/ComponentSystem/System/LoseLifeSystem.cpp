@@ -21,13 +21,6 @@ void LoseLifeSystem::OnEntityRemoved(Entity* _e)
 	printf("Life Removed!\n");
 
 	Entity* player = m_world->GetEntities<LifeComponent>()->at(0);
-	if (player)
-		if (player->GetState() != Entity::ALIVE)
-		{
-			m_world->Kill();
-			return;
-		}
-			
 
 	player->GetComponent<LifeComponent>()->m_noLifes -= 1;
 	if (player->GetComponent<LifeComponent>()->m_noLifes <= 0)
