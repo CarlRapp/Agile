@@ -90,8 +90,21 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
+
+		int rnd = (rand() % (16 - 0));
+
+		EntityFactory::EntityType type;
+
+		if (rnd >= 0 && rnd < 5)
+			type = EntityFactory::STANDARD_BLOCK_RED;
+		else if(rnd >= 5 && rnd < 10)
+			type = EntityFactory::STANDARD_BLOCK_GREEN;
+		else if(rnd >= 10 && rnd < 15)
+			type = EntityFactory::STANDARD_BLOCK_BLUE;
+		else if(rnd == 15)
+			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+		EntityFactory::GetInstance()->CreateEntity(e, type);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
@@ -132,19 +145,19 @@ void GameScene::OnActive()
 }
 void GameScene::OnInactive()
 {
+	EntityMap::iterator eIT;
+	for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
+	{
+		eIT->second->SetInitialized(false);
+		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
+	}	
 	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 
 	if (m_world)
 	{
-		EntityMap::iterator eIT;
-		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
-		{
-			eIT->second->SetInitialized(false);
-			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
-			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
-		}
 		delete m_world;
 	}
 }
@@ -157,6 +170,7 @@ void GameScene::Reset()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
+	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
@@ -185,7 +199,7 @@ void GameScene::Reset()
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
 		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
 	e = m_world->CreateEntity();
@@ -219,7 +233,6 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
-	e->AddComponent<DamageComponent>().m_damage = 5;
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
 	m_world->AddEntity(e);
 
@@ -251,7 +264,7 @@ void GameScene::Reset()
         
         TC->Initialize(SC->GetString(),2.f,0x1903 ,10,20);
         m_world->AddEntity(e);
-		GraphicsManager::GetInstance()->AddTextObject(TC->m_text, &TC->m_scale, &TC->m_color, &TC->m_x, &TC->m_y, TC->m_ID);
+        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y, TC->m_ID);
         SC->SetString();
         //PLAYER SCORE <<
         
