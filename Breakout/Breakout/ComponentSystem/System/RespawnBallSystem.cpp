@@ -31,7 +31,7 @@ void RespawnBallSystem::Update(float _dt)
 					EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)spawnEntity->m_entityType);
 					e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
 					e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x + spawnEntity->m_posFromEntity.x, position->GetPosition().y + spawnEntity->m_posFromEntity.y, position->GetPosition().z + spawnEntity->m_posFromEntity.z));
-
+					//e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
 					m_world->AddEntity(e);
 				}
 			}

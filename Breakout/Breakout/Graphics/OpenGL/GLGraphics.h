@@ -3,7 +3,7 @@
 
 #include "../IGraphics.h"
 #include "GLWindow.h"
-#include "GLShader.h"
+#include "GLShaderHandler.h"
 #include "GLTextureManager.h"
 #include "GLText.h"
 
@@ -34,7 +34,7 @@ class GLGraphics : public IGraphics
 
         public:
 
-            float       *explosion;
+            float   *explosion;
         glm::mat4	*world;
         glm::mat4	*worldInverseTranspose;
     };
@@ -77,6 +77,9 @@ class GLGraphics : public IGraphics
         unsigned int* color;
         int* x;
         int* y;
+        float effectTime;
+        int id;
+        bool kill;
     };
     
 private:
@@ -85,8 +88,8 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        GLuint m_program; //shaderID
-        GLuint m_shader2Dprogram, m_2DVAO;
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+        GLuint m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
         
@@ -98,18 +101,12 @@ private:
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        std::vector<const GLbyte(*)[64]> m_letters;
+        std::vector<GLbyte(*)[64]> m_letters;
         
         std::vector<TextObject> m_textObjects;
         
         float m_textFontSize = 3;
         
-        int SetUniformV(GLuint shaderProg, const char* variable,float value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::vec4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat3 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,glm::mat4 value);
-        int SetUniformV(GLuint shaderProg, const char* variable,int value);
         
         int RenderInstanced();
         int RenderStandard();
@@ -117,7 +114,7 @@ private:
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y);
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect,bool kill);
 public:
 
 	GLGraphics(void);
@@ -128,7 +125,7 @@ public:
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
         void Free();
-        void Update();
+        void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
         
@@ -143,7 +140,8 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
+        void RemoveTextObject(int _id);
         
 
 };

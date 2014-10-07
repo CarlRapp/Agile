@@ -70,7 +70,7 @@ public:
 	bool  InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode);
 	bool  Init3D(DisplayMode _displayMode);
 	DXWindow* GetWindow(){ return m_window; }
-	void	Update();
+	void	Update(float _dt);
 	void	Render(float _dt, ICamera* _camera);
 	void LoadModel(std::string _path);
 	void LoadTexture(std::string _path);
@@ -81,7 +81,8 @@ public:
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
 
-	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y);
+	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y, int _id); //NEW, remove comment when done on DX
+	void RemoveTextObject(int _id); //NEW, remove comment when done on DX
 
 	void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
 	void RemovePointLight(int _id);

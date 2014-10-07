@@ -124,9 +124,6 @@ void ModelSystem::LoadModel(int _entityID)
 	else
 	{
 		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
-
-		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
-		GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e)*2, "trail", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
 	}
 	e->SetInitialized(true);
 }
