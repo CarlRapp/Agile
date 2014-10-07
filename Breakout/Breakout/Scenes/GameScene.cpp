@@ -24,6 +24,7 @@ void GameScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 	
+	AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -199,7 +200,7 @@ void GameScene::Reset()
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
 		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
 	e = m_world->CreateEntity();
