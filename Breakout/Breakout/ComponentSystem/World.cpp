@@ -7,7 +7,12 @@ World::World()
 
 World::~World()
 {
+	SystemMap::iterator sIT;
+	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
+		delete sIT->second;
 
+	m_systems.clear();
+	Clear();
 }
 
 void World::Start()
