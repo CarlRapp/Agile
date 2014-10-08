@@ -346,16 +346,6 @@ void DXGraphics::Remove2DTexture(int _id)
 	m_textureInstances.erase(_id);
 }
 
-void DXGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y, int _id)
-{
-	// HEJ ERIK, DU FÅR I UPPDRAG ATT FIXA DETTA :)
-}
-
-void DXGraphics::RemoveTextObject(int _id)
-{
-	// HEJ ERIK, DU FÅR I UPPDRAG ATT FIXA DETTA :)
-}
-
 void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
 {
 	if (m_pointLights.count(_id) != 0)

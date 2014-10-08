@@ -84,8 +84,6 @@ public:
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
 
-	void AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y, int _id); //NEW, remove comment when done on DX
-	void RemoveTextObject(int _id); //NEW, remove comment when done on DX
 
 	void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
 	void RemovePointLight(int _id);

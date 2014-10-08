@@ -48,26 +48,31 @@ void MainMenuScene::OnActive()
     Entity* e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringPlay,2.f,0x1904 ,100,100);
+    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(1,0,0), 0.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
-    GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
+   // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
+	GM->GetInstance()->AddTextObject(m_playID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
+	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(1, 0, 0), 0.0f);
+    //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
-    GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_optionsID);
+    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_optionsID);
+	GM->GetInstance()->AddTextObject(m_optionsID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
+	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(1, 0, 0), 0.0f);
+    //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
-    GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
+    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
+	GM->GetInstance()->AddTextObject(m_exitID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
 	
 }
@@ -83,6 +88,11 @@ void MainMenuScene::OnInactive()
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(eIT->second));
 		}
+
+		GraphicsManager::GetInstance()->RemoveTextObject(m_playID);
+		GraphicsManager::GetInstance()->RemoveTextObject(m_optionsID);
+		GraphicsManager::GetInstance()->RemoveTextObject(m_exitID);
+
 		delete m_world;
 	}
 }

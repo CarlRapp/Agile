@@ -196,7 +196,7 @@ void GameScene::Reset()
     TC->Initialize(&fpsString, 0.1f, 0.9f, 2.f, VECTOR3(0,1,0), 0);
     m_fpsCounterID = e->GetId();
     m_world->AddEntity(e);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    //GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
         
 	for (int i = 0; i < 50; ++i)
 	{
@@ -287,7 +287,7 @@ void GameScene::Reset()
         
         TC->Initialize(SC->GetString(),0.1f, 0.8f, 2.f, VECTOR3(0,1,1), 0);
         m_world->AddEntity(e);
-	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	//GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 	SC->SetString();
         //PLAYER SCORE <<
         
