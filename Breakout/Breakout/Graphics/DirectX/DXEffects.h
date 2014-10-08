@@ -278,6 +278,28 @@ public:
 };
 #pragma endregion
 
+#pragma region RenderTextEffect
+class RenderTextEffect : public DXEffect
+{
+public:
+	RenderTextEffect(ID3D11Device* _device, const std::wstring& _filename);
+	~RenderTextEffect();
+
+	void SetPosition(const DirectX::XMFLOAT2* _V)					{ m_position->SetFloatVector(reinterpret_cast<const float*>(_V)); }
+	void SetColor(const DirectX::XMFLOAT4* _V)	{ m_color->SetFloatVector(reinterpret_cast<const float*>(_V)); }
+	void SetTexture(ID3D11ShaderResourceView* _tex)  { m_texture->SetResource(_tex); }
+	void SetOutputMap(ID3D11UnorderedAccessView* _tex)		{ m_outputMap->SetUnorderedAccessView(_tex); }
+	
+
+	ID3DX11EffectTechnique* m_basicTech;
+
+	ID3DX11EffectVectorVariable*				m_position;
+	ID3DX11EffectVectorVariable*				m_color;
+	ID3DX11EffectShaderResourceVariable*		m_texture;
+	ID3DX11EffectUnorderedAccessViewVariable*	m_outputMap;
+};
+#pragma endregion
+
 #pragma region Effects
 class DXEffects
 {
@@ -291,7 +313,8 @@ public:
 	static CombineFinalEffect* m_combineFinalFX;
 	static ObjectDeferredEffect* m_objectDeferredFX;
 	static TiledLightningEffect* m_tiledLightningFX;
-	static ShadowMapEffect*	m_shadowMapFX;
+	//static ShadowMapEffect*	m_shadowMapFX;
+	static RenderTextEffect*	m_renderTextFX;
 };
 #pragma endregion
 

@@ -113,13 +113,18 @@ void ModelSystem::LoadModel(int _entityID)
     model = e->GetComponent<ModelComponent>();
 
 	auto shatter = e->GetComponent<ShatterComponent>();
-	model->m_gpuId = GetMemoryID(e);
 
-	if(shatter)
-		GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+	if (shatter)
+	{
+		//GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, &shatter->m_explosion);
+		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &e->GetComponent<PositionComponent>()->GetPosition(), 0);
+	}
+		
 	else
-		GraphicsManager::GetInstance()->AddObject(model->m_gpuId, model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
-	//GraphicsManager::GetInstance()->RemoveObject(model->m_gpuId);
+	{
+		GraphicsManager::GetInstance()->AddObject(GetMemoryID(e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+	}
 	e->SetInitialized(true);
 }
 

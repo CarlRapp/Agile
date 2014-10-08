@@ -83,6 +83,24 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     //LoadTexture("TEXT");
     Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
     
+//------------------------------------------------------------------------------------
+    m_particleShaderProgram.CreateShaderProgram();
+    
+    m_particleShaderProgram.AddShader("particleShader_vertex.glsl",GL_VERTEX_SHADER);
+    m_particleShaderProgram.AddShader("particleShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_particleShaderProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_particleShaderProgram.LinkShaderProgram();
+//------------------------------------------------------------------------------------
+    glEnable(GL_BLEND);
+    
+    glEnable(GL_POINT_SPRITE);
+    m_texManager.Load2DTexture("fire3.png", GL_TEXTURE0);
+   // m_particlesFire = new GLParticleSystem("fire", vec3(0, 0, -5), 200, 800, 20.f, 
+   //                                         m_texManager.GetTexturePointer("red.png"), m_particleShaderProgram.GetProgramHandlePointer());
+  
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
@@ -345,6 +363,22 @@ void GLGraphics::Remove2DTexture(int _id)
     m_TextureInstances.erase(_id);
 }
 
+void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+{
+    if(_effect == "fire")
+    {
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 100, 500, 20.f, 
+                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_particleShaderProgram.GetProgramHandlePointer())));
+    }
+}
+        
+
+void GLGraphics::RemoveParticleEffect(int _id)
+{
+    delete(m_particleEffects[_id]);
+    m_particleEffects.erase(_id);
+}
+
 void GLGraphics::Update(float _dt) 
 {
     for(int i = m_textObjects.size()-1; i >= 0; --i)
@@ -418,12 +452,18 @@ void GLGraphics::Free()
         m_textObjects.pop_back();
     }
     
+    for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
+    {
+        delete(it->second);
+    }
+    m_particleEffects.clear();
+    
     printf("Graphics memory cleared\n");
 }
 
     float t;
 
-void GLGraphics::Render(ICamera* _camera) 
+void GLGraphics::Render(float _dt, ICamera* _camera) 
 { 
     glClearColor(0.05, 0.05, 0.05, 1.0);
 
@@ -441,8 +481,10 @@ void GLGraphics::Render(ICamera* _camera)
     
     //RenderStandard();
     
+    
     Render2D();
     
+    RenderParticles(_dt, _camera);
     
     glUseProgram(0);
 
@@ -456,7 +498,41 @@ void GLGraphics::Render(ICamera* _camera)
     SDL_GL_SwapBuffers( );
 }
 
+void GLGraphics::RenderParticles(float dt, ICamera* _camera)
+{
+	m_particleShaderProgram.UseProgram();
+
+	glUniformMatrix4fv(glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
+
+	glEnable(GL_BLEND);
+        glEnable(GL_POINT_SPRITE);
+	glDepthMask(GL_FALSE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+        
+	glActiveTexture(GL_TEXTURE0);
+
+	for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
+	{
+		glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
+
+                //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
+		glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
+		glm::mat4 viewMatrix = *_camera->GetView();//mCam->GetCamViewMatrix();
+		glm::mat4 ModelView = viewMatrix * Model;
+
+		GLuint location = glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
+		if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &ModelView[0][0]); }
+
+		it->second->Render(&m_particleShaderProgram, dt);
+	}
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glUseProgram(0);
+}
+
 void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,float effect,bool kill)
+
 {
     if(_text == 0)
         return;
@@ -568,6 +644,7 @@ void GLGraphics::Render2D()
     }
     glBindVertexArray(0);
     glActiveTexture(0);
+    glEnable(GL_DEPTH_TEST);
 }
 
 int GLGraphics::RenderStandard()

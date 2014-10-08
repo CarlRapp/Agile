@@ -26,7 +26,7 @@ public:
 	virtual void LoadTexture(std::string _path){};
 
 
-	virtual void Render(ICamera* _camera) = 0;
+	virtual void Render(float _dt, ICamera* _camera) = 0;
 	virtual void Update(float _dt) = 0; //DELTA TIME NYTT SHIT, LÄGG TILL I DX
 
 	virtual void AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose,float* _explosion) = 0;
@@ -41,8 +41,13 @@ public:
 
 	virtual void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height) = 0;
 	virtual void Remove2DTexture(int _id) = 0;
+
         virtual void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id)=0; //NEW, remove comment when done on DX
         virtual void RemoveTextObject(int _id)=0; //NEW, remove comment when done on DX
+
+	virtual void AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel) = 0;
+	virtual void RemoveParticleEffect(int _id) = 0;
+
 	static IGraphics* GetIGraphics();
 };
 

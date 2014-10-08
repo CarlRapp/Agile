@@ -3,14 +3,25 @@
 
 #include "IComponent.h"
 
+
 enum EffectFlags
 {
-	SHATTER = 1 << 0,
+	SHATTER		= 1 << 0,
+	EXPLODE		= 1 << 1,
+	INVISIBLE	= 1 << 2,
+	TRAIL		= 1 << 3,
 
-	EXPLORE = 1 << 1,
-	INVISIBLE = 1 << 2,
 	NO_EFFECT = 1 << 10,
 };
+
+struct EffectEvents
+{
+	EffectFlags OnEveryFrame;
+	EffectFlags OnCollide;
+	EffectFlags OnRemoved;
+	EffectFlags OnAdded;
+};
+
 
 // OR operator
 inline EffectFlags operator|(EffectFlags a, EffectFlags b)
@@ -51,9 +62,15 @@ inline EffectFlags &operator ^= (EffectFlags &a, EffectFlags b)
 
 struct EffectComponent : Component<EffectComponent>
 {
-	EffectFlags m_effects;
+	EffectEvents m_effects;
 
-	EffectComponent() : m_effects(NO_EFFECT) { }
+	EffectComponent()
+	{
+		m_effects.OnEveryFrame	= NO_EFFECT;
+		m_effects.OnCollide		= NO_EFFECT;
+		m_effects.OnRemoved		= NO_EFFECT;
+		m_effects.OnAdded		= NO_EFFECT;
+	}
 
 };
 

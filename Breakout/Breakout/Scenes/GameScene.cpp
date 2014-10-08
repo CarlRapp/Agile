@@ -64,6 +64,7 @@ void GameScene::Initialize()
 void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
+	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
@@ -142,8 +143,7 @@ void GameScene::UpdateFPS(float _dt)
 
 void GameScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render();
-        
+	GraphicsManager::GetInstance()->Render(_dt);
 }
 
 void GameScene::OnActive()
@@ -169,6 +169,7 @@ void GameScene::OnInactive()
                 GraphicsManager::GetInstance()->RemoveTextObject(eIT->second->GetId());
             }
 
+		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 	}	
 	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
@@ -184,7 +185,7 @@ void GameScene::Reset()
         //FPS COUNTER
         Entity* e;
        
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 0; ++i)
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));

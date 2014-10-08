@@ -1,4 +1,4 @@
-#version 410
+#version 420
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 layout (location = 0) in vec3 VertexPosition;
@@ -12,7 +12,7 @@ out vec3 Velocity; // To transform feedback
 out float StartTime; // To transform feedback
 out float Transp; // To fragment shader
 
-uniform float Time; // Simulation time
+uniform float Time; // Simulation time (elapsed time)
 uniform float DeltaTime; // Elapsed time between frames dt
 uniform vec3 Accel; // Particle acceleration
 uniform float ParticleLifetime; // Particle lifespan
@@ -47,6 +47,8 @@ void update()
 			Velocity += Accel * DeltaTime;			
 		}
 	}
+
+        //Position = vec3(1100.0, 0.0, 0.0);
 }
 subroutine (RenderPassType)
 void render() 
