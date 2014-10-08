@@ -830,6 +830,9 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	W *= m_width;
 	H *= m_height;
 
+	float effect = _text->Effect ? *_text->Effect * H : 0.0f;
+
+
 	if (_text->Color)
 		DXEffects::m_combineFinalFX->SetColor(*_text->Color);
 	else
@@ -838,7 +841,7 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	for (int i = 0; i < _text->Letters.size(); ++i)
 	{
 		D3D11_VIEWPORT vp;
-		vp.TopLeftX = x + H * i;
+		vp.TopLeftX = x + H * i + effect * i;
 		vp.TopLeftY = y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;

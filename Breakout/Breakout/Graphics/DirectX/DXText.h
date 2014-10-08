@@ -19,8 +19,11 @@ namespace DXText
 	struct String
 	{
 		std::string *Text;
-		float *X, *Y, *Scale;
+		float *X = NULL;
+		float *Y = NULL;
+		float *Scale = NULL;
 		VECTOR3 *Color = NULL;
+		float *Effect = NULL;
 		std::vector<Letter> Letters;
 	};
 

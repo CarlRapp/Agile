@@ -180,10 +180,10 @@ void GameScene::Reset()
         e = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
         auto TC = e->GetComponent<TextComponent>();
-        TC->Initialize(&fpsString,2.f,0x1904 ,10,10);
+		TC->Initialize(&fpsString, 0.1f, 0.9f, 2.f, VECTOR3(0,1,0), 0);
         m_fpsCounterID = e->GetId();
         m_world->AddEntity(e);
-        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+		GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
         
 	for (int i = 0; i < 0; ++i)
 	{
@@ -253,10 +253,11 @@ void GameScene::Reset()
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         TC = t->GetComponent<TextComponent>();
         
-        TC->Initialize(SC->GetString(),2.f,0x1903 ,10,20);
+        TC->Initialize(SC->GetString(),0.1f, 0.8f, 2.f, VECTOR3(0,1,1), 0);
         m_world->AddEntity(e);
-        GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
-        SC->SetString();
+        //GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+		GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+		SC->SetString();
         //PLAYER SCORE <<
         
 	//	Background

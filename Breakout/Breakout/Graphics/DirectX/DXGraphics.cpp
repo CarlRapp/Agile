@@ -54,6 +54,7 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 float xx = 0.2f, yy = 0.5f, scale = 1.0f;
 std::string ttext = "hesjan";
 VECTOR3 ccolor = VECTOR3(1, 0, 0);
+float effect = 0;
 
 //#define asd 1000
 //MATRIX4 world[asd];
@@ -91,7 +92,7 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	//	AddObject(i, "sphere", &world[i], &world[i]);
 	//}
 
-	AddText(0, &ttext, &ccolor, &xx, &yy, &scale);
+	//AddTextObject(0, &ttext, &xx, &yy, &scale, &ccolor, &effect);
 
 	return true;
 }
@@ -264,7 +265,8 @@ float asdasdasdasd = 0;
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
 	asdasdasdasd += _dt;
-	scale = 3.5 + 2.5 * sinf(asdasdasdasd);
+	//scale = 3.5 + 2.5 * sinf(asdasdasdasd);
+	effect = 2.5 + 2.5 * sinf(asdasdasdasd);
 
 	if (scale > 3)
 	{
@@ -391,7 +393,7 @@ void DXGraphics::RemoveEffect(int _id)
 	m_particleSystems.erase(_id);
 }
 
-void DXGraphics::AddText(int _id, std::string *_text, VECTOR3 *_color, float *_x, float *_y, float *_scale)
+void DXGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
 	if (m_texts.count(_id) != 0)
 		return;
@@ -402,6 +404,7 @@ void DXGraphics::AddText(int _id, std::string *_text, VECTOR3 *_color, float *_x
 	text->Y = _y;
 	text->Scale = _scale;
 	text->Text = _text;
+	text->Effect = _effect;
 	text->Color = _color;
 
 	//for (int i = 0; i < _text->size(); ++i)
@@ -416,7 +419,7 @@ void DXGraphics::AddText(int _id, std::string *_text, VECTOR3 *_color, float *_x
 	m_texts.insert(pair<int, DXText::String*>(_id, text));
 }
 
-void DXGraphics::RemoveText(int _id)
+void DXGraphics::RemoveTextObject(int _id)
 {
 	if (m_texts.count(_id) != 0)
 		delete(m_texts[_id]);
