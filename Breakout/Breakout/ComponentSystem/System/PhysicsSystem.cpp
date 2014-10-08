@@ -254,7 +254,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef = new b2FixtureDef();
 		circleShape = new b2CircleShape();
 		circleShape->m_p.Set(0, 0);
-		circleShape->m_radius = 1.0f;
+		circleShape->m_radius = 0.5f;
 		fixDef->shape = circleShape;
 		fixDef->filter.categoryBits = CollisionCategory::PAD;
 		_b2FixtureDefs.push_back(fixDef);
