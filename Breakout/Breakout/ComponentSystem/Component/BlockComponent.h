@@ -6,56 +6,16 @@
 struct BlockComponent : Component<BlockComponent>
 {
 private:
-	//	All IDs in this map is adjacent blocks
-	//	to this block, the bool indicates if
-	//	the block is attached to the adjacent
-	//	block or not.
-	//	True = It depends on the block
-	//	False = It does not depend on it, just a neighbour
-	std::map<TypeID, bool> m_adjacentBlocks;
-	int m_dependentNeighbours;
+	VECTOR2 m_blockSize;
+	VECTOR2 m_blockDimension;
 public:
-	BlockComponent()
-	{
-		m_adjacentBlocks = std::map<TypeID, bool>();
-		m_dependentNeighbours = 0;
-	}
+	BlockComponent() : m_blockSize(VECTOR2(1, 1)), m_blockDimension(VECTOR2(1, 1)){}
 
-	void AddToAdjacentList(TypeID _i, bool _dependency = false)
-	{
-		if (m_adjacentBlocks.find(_i) != m_adjacentBlocks.end())
-			return;
+	void SetSize(VECTOR2 _size){ m_blockSize = _size; }
+	void SetDimension(VECTOR2 _dimension){ m_blockDimension = _dimension; }
 
-		m_adjacentBlocks[_i] = _dependency;
-		
-		m_dependentNeighbours += (_dependency) ? 1 : 0;
-	}
-	void ChangeDependency(TypeID _i, bool _dependency)
-	{
-		if (m_adjacentBlocks.find(_i) == m_adjacentBlocks.end())
-			return;
-
-		m_adjacentBlocks[_i] = _dependency;
-		m_dependentNeighbours += (_dependency) ? 1 : -1;
-	}
-	void RemoveNeighbour(TypeID _i)
-	{
-		if (m_adjacentBlocks.find(_i) == m_adjacentBlocks.end())
-			return;
-
-		m_dependentNeighbours -= (m_adjacentBlocks[_i]) ? 1 : 0;
-		m_adjacentBlocks.erase(_i);
-	}
-
-	int GetSizeDependent()
-	{
-		return m_dependentNeighbours;
-	}
-	int GetSizeTotal()
-	{
-		return m_adjacentBlocks.size();
-	}
-
+	VECTOR2 GetSize(){ return m_blockSize; }
+	VECTOR2 GetDimension(){ return m_blockDimension; }
 };
 
 #endif
