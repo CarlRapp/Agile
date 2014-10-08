@@ -62,8 +62,8 @@ public:
         void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
         void RemoveTextObject(int _id);
 
-	void		AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
-	void		RemoveEffect(int _id);
+	void		AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
+	void		RemoveParticleEffect(int _id);
 
 	bool        Init3D(DisplayMode _displayMode);
 };

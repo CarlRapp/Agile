@@ -38,21 +38,22 @@ private:
 
 	int m_noParticles, m_type;
 	int m_drawBuf;
-	vec3 m_pos, m_accel;
+	vec3 *m_pos, m_accel;
 	float m_size, m_lifeTime;
+        float elapsedTime;
 
 	void CreateFire();
 	void CreateSmoke();
 
 public:
-	GLParticleSystem(char* _type, const vec3 _pos, int _nParticles, float _lifeTime, float _size, GLuint *_texHandle, GLuint *_shaderProg);
+	GLParticleSystem(std::string _type, vec3 *_pos, int _nParticles, float _lifeTime, float _size, GLuint *_texHandle, GLuint *_shaderProg);
 	~GLParticleSystem();
 
 	GLuint *m_textureHandle;
 
 	//bool InitParticleSystem(const vec3 _pos, int _nParticles, char* _texPath);
-	void Render(ShaderHandler *particleProg, int _deltaTimeMillis, int _elapsedTime);
-	vec3 GetWorldPos(){ return m_pos; }
+	void Render(ShaderHandler *particleProg, float _deltaTimeMillis);
+	vec3* GetWorldPos(){ return m_pos; }
 	vec3 GetAccel(){ return m_accel; }
 	void SetAccel(vec3 acc){ m_accel = acc; }
 };

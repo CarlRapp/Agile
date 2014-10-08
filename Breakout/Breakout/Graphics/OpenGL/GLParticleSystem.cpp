@@ -1,7 +1,7 @@
 #include "GLParticleSystem.h"
 
 
-GLParticleSystem::GLParticleSystem(char* _type, const vec3 _pos, int _nParticles, float _lifeTime, float _size, GLuint *_texHandle, GLuint *_shaderProg)
+GLParticleSystem::GLParticleSystem(std::string _type, vec3 *_pos, int _nParticles, float _lifeTime, float _size, GLuint *_texHandle, GLuint *_shaderProg)
 {
 	m_pos = _pos;
 	m_noParticles = _nParticles;
@@ -15,10 +15,14 @@ GLParticleSystem::GLParticleSystem(char* _type, const vec3 _pos, int _nParticles
 		CreateFire();
 	else if (_type == "smoke")
 		CreateSmoke();
+        
+        
 
 	//set uniforms?
 	m_subRoutineUpdate = glGetSubroutineIndex(*_shaderProg, GL_VERTEX_SHADER, "update");
 	m_subRoutineRender = glGetSubroutineIndex(*_shaderProg, GL_VERTEX_SHADER, "render");
+        
+        printf("m_subRoutineUpdate: %i,     m_subRoutineRender: %i \n ", m_subRoutineUpdate, m_subRoutineRender);
 }
 
 
@@ -32,11 +36,12 @@ void GLParticleSystem::CreateFire()
 	// Create and allocate buffers A and B for posBuf, velBuf
 	// and startTime
 	//�
-	m_accel = vec3(0.0);
+        elapsedTime = 0.0f;
+	m_accel = vec3(0, 0, 0);
 	m_type = 0;
 	vec3 v(0.0f);
 	float velocity, theta, phi;
-	float mtime = 0.0f, rate = (m_lifeTime / (float)m_noParticles)*6.0f;//0.00075f;
+	float mtime = 0.0f, rate = (m_lifeTime / (float)m_noParticles); //*6.0f;//0.00075f;
 
 	GLfloat *posData = new GLfloat[m_noParticles * 3];
 	GLfloat *velData = new GLfloat[m_noParticles * 3];
@@ -64,7 +69,7 @@ void GLParticleSystem::CreateFire()
 
 		// Scale to set the magnitude of the velocity (speed)
 		velocity = glm::mix(1.25f, 1.5f, (float)(rand() % 101) / 100);
-		v = v * velocity;
+		v = v * velocity * 0.1f;
 		velData[3 * i] = v.x;
 		velData[3 * i + 1] = v.y;
 		velData[3 * i + 2] = v.z;
@@ -73,7 +78,7 @@ void GLParticleSystem::CreateFire()
 		mtime += rate;
 
 		//printf("velData[i]: %f, %f, %f \n", velData[3 * i], velData[3 * i + 1], velData[3 * i + 2]);
-		//printf("timeData[i]: %f \n", timeData[i]);
+		printf("timeData[i]: %f \n", timeData[i]);
 
 	}
 	initVelData = velData;
@@ -273,19 +278,31 @@ void GLParticleSystem::CreateSmoke()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_startTime[1]);
 }
 
-void GLParticleSystem::Render(ShaderHandler *particleProg, int dt, int elTime)
+void GLParticleSystem::Render(ShaderHandler *particleProg, float dt)
 {
 	/////////// Update pass ////////////////
 	glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &m_subRoutineUpdate);
 	// Set the uniforms: H and Time
 	//�
+        dt *= 1000.f;
+        elapsedTime += dt;
         
-	particleProg->SetUniformV("Time", float(elTime));
-	particleProg->SetUniformV("DeltaTime", float(dt));
+	particleProg->SetUniformV("Time", elapsedTime);
+	particleProg->SetUniformV("DeltaTime", dt);
 	particleProg->SetUniformV("ParticleLifetime", m_lifeTime);
 	particleProg->SetUniformV("Size", m_size);
 	particleProg->SetUniformV("Type", m_type);
 	particleProg->SetUniformV("Accel", m_accel);
+        
+//        printf("elTime: %f \n", elapsedTime);
+//        printf("DeltaTime: %f \n", dt);
+//        printf("ParticleLifetime: %f \n", m_lifeTime);
+//        printf("Size: %f \n", m_size);
+//        printf("Accel: %f, %f, %f \n\n\n", m_accel.x, m_accel.y, m_accel.z);
+        
+//        GLint *values;
+//        glGetProgramStageiv(*m_progHandle, GL_VERTEX_SHADER, GL_ACTIVE_SUBROUTINES, values);
+//        printf("Active subs values: %i \n", *values);
 
 	// Disable rendering
 	glEnable(GL_RASTERIZER_DISCARD);
@@ -302,7 +319,6 @@ void GLParticleSystem::Render(ShaderHandler *particleProg, int dt, int elTime)
 	// Enable rendering
 	glDisable(GL_RASTERIZER_DISCARD);
 
-
 	//////////// Render pass ///////////////
 	glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &m_subRoutineRender);
 	//glClear(GL_COLOR_BUFFER_BIT);
@@ -315,4 +331,5 @@ void GLParticleSystem::Render(ShaderHandler *particleProg, int dt, int elTime)
 	glDrawArrays(GL_POINTS, 0, m_noParticles);
 	// Swap buffers
 	m_drawBuf = 1 - m_drawBuf;
+        
 }

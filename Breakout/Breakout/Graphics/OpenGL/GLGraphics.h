@@ -92,13 +92,15 @@ private:
         ShaderHandler m_standardShaderProgram, m_shader2Dprogram, m_particleShaderProgram; //shaderID
         GLuint m_2DVAO;
         
-        GLParticleSystem *m_particlesFire;
+        //GLParticleSystem *m_particlesFire;
         
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
         
         std::map<int, LightInfo*> m_lights;
+        
+        std::map<int, GLParticleSystem*> m_particleEffects;
                                             
         std::vector<glm::mat4> m_testMatrices;
         
@@ -114,7 +116,7 @@ private:
         int RenderInstanced();
         int RenderStandard();
         void Render2D();
-        void RenderParticles(int dt, int et, ICamera* _camera);
+        void RenderParticles(float dt, ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         void LoadLetters();
@@ -125,13 +127,16 @@ public:
 	~GLGraphics(void);
 
 	bool  InitWindow(int x, int y, int width, int height, DisplayMode _displayMode);
-        void Render(ICamera* _Camera);
+        void Render(float _dt, ICamera* _camera);
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
         void Free();
         void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
+        
+        void AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
+        void RemoveParticleEffect(int _id);
         
         void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
         void RemovePointLight(int _id);

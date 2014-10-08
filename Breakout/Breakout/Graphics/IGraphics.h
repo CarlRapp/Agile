@@ -45,8 +45,8 @@ public:
     virtual void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)=0; //NEW, remove comment when done on DX
 	virtual void RemoveTextObject(int _id) = 0; //NEW, remove comment when done on DX
 
-	virtual void AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel) = 0;
-	virtual void RemoveEffect(int _id) = 0;
+	virtual void AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel) = 0;
+	virtual void RemoveParticleEffect(int _id) = 0;
 
 
 	static IGraphics* GetIGraphics();
