@@ -24,6 +24,7 @@ void GameScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 	
+	AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
