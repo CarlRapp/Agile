@@ -195,6 +195,7 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
+	e->RemoveComponent<DamageComponent>();
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
@@ -210,10 +211,6 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(47 + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
-	m_world->AddEntity(e);
-
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLAYER);
 	m_world->AddEntity(e);
 
 	//PLAYER SCORE <<

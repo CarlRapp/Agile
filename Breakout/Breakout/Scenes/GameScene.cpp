@@ -160,6 +160,7 @@ void GameScene::OnInactive()
 			eIT->second->SetInitialized(false);
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(eIT->second));
 		}
 		delete m_world;
 	}
