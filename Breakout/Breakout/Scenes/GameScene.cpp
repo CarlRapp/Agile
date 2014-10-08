@@ -145,19 +145,18 @@ void GameScene::OnActive()
 }
 void GameScene::OnInactive()
 {
-	EntityMap::iterator eIT;
-	for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
-	{
-		eIT->second->SetInitialized(false);
-		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
-		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
-	}	
-	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 
 	if (m_world)
 	{
+		EntityMap::iterator eIT;
+		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
+		{
+			eIT->second->SetInitialized(false);
+			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
+		}
 		delete m_world;
 	}
 }
@@ -199,7 +198,7 @@ void GameScene::Reset()
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
 		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
 	e = m_world->CreateEntity();
