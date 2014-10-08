@@ -75,8 +75,8 @@ class GLGraphics : public IGraphics
         std::string* text;
         float* scale;
         unsigned int* color;
-        int* x;
-        int* y;
+        float* x;
+        float* y;
         float effectTime;
         int id;
         bool kill;
@@ -88,7 +88,7 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram,m_textProgram; //shaderID
         GLuint m_2DVAO;
         
         GLint m_attributePosition, m_attributeNormal;
@@ -101,7 +101,10 @@ private:
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        std::vector<GLbyte(*)[64]> m_letters;
+        float m_tX;
+        float m_tY;
+        float m_tW;
+        float m_tH;
         
         std::vector<TextObject> m_textObjects;
         
@@ -113,8 +116,8 @@ private:
         void Render2D();
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
-        void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect,bool kill);
+        //void LoadLetters();
+        void RenderText(std::string* _text,float* _scale, unsigned int* _color,float* _x, float* _y,float effect,bool kill);
 public:
 
 	GLGraphics(void);
@@ -140,7 +143,7 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
+        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id);
         void RemoveTextObject(int _id);
         
 

@@ -12,12 +12,12 @@ public:
         std::string* m_text;
         float m_scale;
         unsigned int m_color;
-        int m_x;
-        int m_y;
+        float m_x;
+        float m_y;
     
 	TextComponent(){ }
 
-        void Initialize(std::string* _text,float _scale, unsigned int _color,int _x,int _y)
+        void Initialize(std::string* _text,float _scale, unsigned int _color,float _x,float _y)
         {
             m_text  =_text,
             m_scale =_scale;

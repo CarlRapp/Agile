@@ -251,7 +251,7 @@ void GameScene::Reset()
         Entity* t = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         auto TC = t->GetComponent<TextComponent>();
-        TC->Initialize(SC->GetString(),2.f,0x1903 ,10,20);
+        TC->Initialize(SC->GetString(),2.f,0x1903 ,0.01,0.8);
         m_world->AddEntity(t);
         GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,t->GetId());
         SC->SetString();
@@ -259,7 +259,7 @@ void GameScene::Reset()
         e = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
         TC = e->GetComponent<TextComponent>();
-        TC->Initialize(&fpsString,2.f,0x1904 ,10,10);
+        TC->Initialize(&fpsString,2.f,0x1904 ,0.01,0.9);
         m_fpsCounterID = e->GetId();
         m_world->AddEntity(e);
         GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,e->GetId());
