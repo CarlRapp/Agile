@@ -367,7 +367,7 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 100, 500, 20.f, 
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 30, 600, 85.f, 
                                                                                     m_texManager.GetTexturePointer("fire3.png"), m_particleShaderProgram.GetProgramHandlePointer())));
     }
 }

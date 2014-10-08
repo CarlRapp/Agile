@@ -48,7 +48,6 @@ void update()
 		}
 	}
 
-        //Position = vec3(1100.0, 0.0, 0.0);
 }
 subroutine (RenderPassType)
 void render() 
@@ -64,7 +63,7 @@ void render()
 	if(Time >= VertexStartTime)
 	{
 		if(Type == 0)
-			sizeFactor = 1.0-(age/ParticleLifetime)*0.5;
+			sizeFactor = 1.0-(age/ParticleLifetime)*0.8;
 		else if(Type == 1)
 			sizeFactor = 1.0+(age/ParticleLifetime)*0.7;
 		Transp = 1.0 - age / ParticleLifetime;
