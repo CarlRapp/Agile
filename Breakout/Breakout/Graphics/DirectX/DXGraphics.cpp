@@ -51,6 +51,11 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 
 
 
+float xx = 0.2f, yy = 0.5f, scale = 1.0f;
+std::string ttext = "hesjan";
+VECTOR3 ccolor = VECTOR3(1, 0, 0);
+float effect = 0;
+
 //#define asd 1000
 //MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
@@ -87,6 +92,7 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	//	AddObject(i, "sphere", &world[i], &world[i]);
 	//}
 
+	//AddTextObject(0, &ttext, &xx, &yy, &scale, &ccolor, &effect);
 
 	return true;
 }
@@ -240,10 +246,39 @@ void DXGraphics::LoadTexture(std::string _path)
 void DXGraphics::Update(float _dt)
 {
 	m_window->Update();
+
+	for (auto it = m_texts.begin(); it != m_texts.end(); ++it)
+	{
+		it->second->Letters.clear();
+		for (int i = 0; i < it->second->Text->size(); ++i)
+		{
+			DXText::Letter letter;
+			char c = toupper(it->second->Text->at(i));
+			letter.SRV = m_textureManager.GetSymbolTexture(c);
+
+			it->second->Letters.push_back(letter);
+		}
+	}
 }
 
+float asdasdasdasd = 0;
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
+	asdasdasdasd += _dt;
+	//scale = 3.5 + 2.5 * sinf(asdasdasdasd);
+	effect = 2.5 + 2.5 * sinf(asdasdasdasd);
+
+	if (scale > 3)
+	{
+		ttext = "Big red text";
+		ccolor = VECTOR3(1, 0, 0);
+	}
+	else
+	{
+		ttext = "small green text";
+		ccolor = VECTOR3(0, 1, 0);
+	}
+
 
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -254,7 +289,7 @@ void DXGraphics::Render(float _dt, ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, _camera);
 
 	m_swapChain->Present(0, 0);
 
@@ -364,4 +399,38 @@ void DXGraphics::RemoveEffect(int _id)
 		m_particleSystems.erase(_id);
 	}
 
+}
+
+void DXGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
+{
+	if (m_texts.count(_id) != 0)
+		return;
+
+	DXText::String *text = new DXText::String();
+
+	text->X = _x;
+	text->Y = _y;
+	text->Scale = _scale;
+	text->Text = _text;
+	text->Effect = _effect;
+	text->Color = _color;
+
+	//for (int i = 0; i < _text->size(); ++i)
+	//{
+	//	DXText::Letter letter;
+	//	letter.SRV = m_textureManager.GetSymbolTexture(_text->at(i));
+
+	//	text->Letters.push_back(letter);
+	//}
+
+
+	m_texts.insert(pair<int, DXText::String*>(_id, text));
+}
+
+void DXGraphics::RemoveTextObject(int _id)
+{
+	if (m_texts.count(_id) != 0)
+		delete(m_texts[_id]);
+
+	m_texts.erase(_id);
 }

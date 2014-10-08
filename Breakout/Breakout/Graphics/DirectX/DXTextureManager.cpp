@@ -22,10 +22,76 @@ DXTextureManager::~DXTextureManager()
 	ReleaseCOM(m_RandomTex);
 }
 
-void DXTextureManager::Init(ID3D11Device* device)
+void DXTextureManager::Init(ID3D11Device* _device)
 {
-	md3dDevice = device;
-	buildRandomTex(device);
+	md3dDevice = _device;
+	buildRandomTex(_device);
+	InitLetters(_device);
+}
+
+void DXTextureManager::InitLetters(ID3D11Device* _device)
+{
+	AddSymbolTexture(_device, 'A', DXText::A);
+	AddSymbolTexture(_device, 'B', DXText::B);
+	AddSymbolTexture(_device, 'C', DXText::C);
+	AddSymbolTexture(_device, 'D', DXText::D);
+	AddSymbolTexture(_device, 'E', DXText::E);
+	AddSymbolTexture(_device, 'F', DXText::F);
+	AddSymbolTexture(_device, 'G', DXText::G);
+	AddSymbolTexture(_device, 'H', DXText::H);
+	AddSymbolTexture(_device, 'I', DXText::I);
+	AddSymbolTexture(_device, 'J', DXText::J);
+	AddSymbolTexture(_device, 'K', DXText::K);
+	AddSymbolTexture(_device, 'L', DXText::L);
+	AddSymbolTexture(_device, 'M', DXText::M);
+	AddSymbolTexture(_device, 'N', DXText::N);
+	AddSymbolTexture(_device, 'O', DXText::O);
+	AddSymbolTexture(_device, 'P', DXText::P);
+	AddSymbolTexture(_device, 'Q', DXText::Q);
+	AddSymbolTexture(_device, 'R', DXText::R);
+	AddSymbolTexture(_device, 'S', DXText::S);
+	AddSymbolTexture(_device, 'T', DXText::T);
+	AddSymbolTexture(_device, 'U', DXText::U);
+	AddSymbolTexture(_device, 'V', DXText::V);
+	AddSymbolTexture(_device, 'W', DXText::W);
+	AddSymbolTexture(_device, 'X', DXText::X);
+	AddSymbolTexture(_device, 'Y', DXText::Y);
+	AddSymbolTexture(_device, 'Z', DXText::Z);
+
+	AddSymbolTexture(_device, '1', DXText::_1);
+	AddSymbolTexture(_device, '2', DXText::_2);
+	AddSymbolTexture(_device, '3', DXText::_3);
+	AddSymbolTexture(_device, '4', DXText::_4);
+	AddSymbolTexture(_device, '5', DXText::_5);
+	AddSymbolTexture(_device, '6', DXText::_6);
+	AddSymbolTexture(_device, '7', DXText::_7);
+	AddSymbolTexture(_device, '8', DXText::_8);
+	AddSymbolTexture(_device, '9', DXText::_9);
+	AddSymbolTexture(_device, '0', DXText::_0);
+
+	//AddSymbolTexture(_device, ':', DXText::A);
+	//AddSymbolTexture(_device, ';', DXText::A);
+	//AddSymbolTexture(_device, '<', DXText::A);
+	//AddSymbolTexture(_device, '=', DXText::A);
+	//AddSymbolTexture(_device, '>', DXText::A);
+	//AddSymbolTexture(_device, '?', DXText::A);
+	//AddSymbolTexture(_device, '@', DXText::A);
+	//AddSymbolTexture(_device, ' ', DXText::A);
+	//AddSymbolTexture(_device, '!', DXText::A);
+	//AddSymbolTexture(_device, '"', DXText::A);
+	//AddSymbolTexture(_device, '#', DXText::A);
+	//AddSymbolTexture(_device, '$', DXText::A);
+	//AddSymbolTexture(_device, '%', DXText::A);
+	//AddSymbolTexture(_device, '&', DXText::A);
+	//AddSymbolTexture(_device, '´', DXText::A);
+	//AddSymbolTexture(_device, '(', DXText::A);
+	//AddSymbolTexture(_device, ')', DXText::A);
+	//AddSymbolTexture(_device, '*', DXText::A);
+	//AddSymbolTexture(_device, '+', DXText::A);
+	//AddSymbolTexture(_device, ',', DXText::A);
+	//AddSymbolTexture(_device, '-', DXText::A);
+	//AddSymbolTexture(_device, '.', DXText::A);
+	//AddSymbolTexture(_device, '/', DXText::A);
 }
 
 ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
@@ -98,32 +164,36 @@ void DXTextureManager::buildRandomTex(ID3D11Device *Device)
 	ReleaseCOM(randomTex);
 }
 
-ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device, char* _data)
+ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device, float* _data)
 {
 	//
 	// Create the random data.
 	//
 
+
 	D3D11_SUBRESOURCE_DATA initData;
 	initData.pSysMem = _data;
-	initData.SysMemPitch = 64 * 64 * sizeof(char);
-	initData.SysMemSlicePitch = 64 * 64 * sizeof(char);
+	initData.SysMemPitch = 8 * sizeof(float);
+	initData.SysMemSlicePitch = 0;
 	//
 	// Create the texture.
 	//
 	D3D11_TEXTURE2D_DESC texDesc;
-	texDesc.Width = 64;
-	texDesc.Height = 64;
+	texDesc.Width = 8;
+	texDesc.Height = 8;
 	texDesc.MipLevels = 1;
-	texDesc.Format = DXGI_FORMAT_R8_UINT;
-	texDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	texDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	texDesc.CPUAccessFlags = 0;
 	texDesc.MiscFlags = 0;
 	texDesc.ArraySize = 1;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+
 
 	ID3D11Texture2D* letterTex = 0;
-	HRESULT(_device->CreateTexture2D(&texDesc, &initData, &letterTex));
+	HRESULT r = HRESULT(_device->CreateTexture2D(&texDesc, &initData, &letterTex));
 	//
 	// Create the resource view.
 	//
@@ -141,9 +211,9 @@ ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device
 	return letterSRV;
 }
 
-void DXTextureManager::AddSymbolTexture(ID3D11Device *_device, char _c, char* _data)
+void DXTextureManager::AddSymbolTexture(ID3D11Device *_device, char _c, float* _data)
 {
-	if (mLetterSRV.find(_c) == mLetterSRV.end())
+	if (mLetterSRV.find(_c) != mLetterSRV.end())
 		return;
 
 	mLetterSRV[_c] = buildLetterTex(_device, _data);

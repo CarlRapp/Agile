@@ -4,6 +4,11 @@ cbuffer Object
 	float g_Opacity;
 };
 
+cbuffer ObjectText
+{
+	float3 g_Color;
+};
+
 Texture2D g_Texture;
 
 SamplerState g_Sampler 
@@ -12,6 +17,14 @@ SamplerState g_Sampler
     AddressU = CLAMP;
     AddressV = CLAMP;
 };
+
+SamplerState g_TextSampler
+{
+	Filter = MIN_MAG_MIP_POINT;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+
 
 SamplerState samLinearClamp
 {
@@ -71,6 +84,22 @@ float4 PSScene(PSSceneIn input, uniform bool gColor, uniform bool gAlphaClip, un
 
 	if (gFixedAlpha)
 		result.a = g_Opacity;
+
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------
+// PixelShader: PSSceneMain
+//-----------------------------------------------------------------------------------------
+float4 PSText(PSSceneIn input) : SV_Target
+{
+	float4 result;
+
+	float2 tex = input.Tex;
+	tex.y = 1 - tex.y;
+
+	result.xyz = g_Color;
+	result.a = g_Texture.SampleLevel(g_TextSampler, tex, 0).x;
 
 	return result;
 }
@@ -180,5 +209,17 @@ technique11 TransparencyColor
     }  
 }
 
+technique11 Text
+{
+	pass p0
+	{
+		// Set VS, GS, and PS
+		SetVertexShader(CompileShader(vs_4_0, VSScene()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, PSText()));
+		SetBlendState(Transparency, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+		//SetRasterizerState( NoCulling );
+	}
+}
 
 
