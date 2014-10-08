@@ -28,6 +28,7 @@
 #include "Component/BlockComponent.h"
 #include "Component/TextComponent.h"
 #include "Component/ExplosionComponent.h"
+#include "Component/TNTComponent.h"
 
 class EntityFactory
 {

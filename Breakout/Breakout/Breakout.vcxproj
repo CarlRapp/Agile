@@ -163,6 +163,7 @@
     <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h" />
     <ClInclude Include="ComponentSystem\Component\TextComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\TNTComponent.h" />
     <ClInclude Include="ComponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ComponentSystem\EntityFactory.h" />
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
