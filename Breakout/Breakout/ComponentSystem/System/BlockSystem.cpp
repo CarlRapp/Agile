@@ -89,6 +89,7 @@ void BlockSystem::OnEntityRemoved(Entity* _e)
 				//if _x & _y = 0, or if we are outside bounds ( < 0 )
 				if (   (_x == 0 && _y == 0)
 					|| ( _x + X < 0 || _y + Y < 0)
+					|| (_x + X >= m_dimensionX || _y + Y >= m_dimensionY)
 				   )
 					continue;
 

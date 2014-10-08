@@ -18,7 +18,10 @@ private:
     int m_playID;
     int m_optionsID;
     int m_exitID;
-    void LoadText();
+
+	float m_blockTimer;
+	void CreatePlayField();
+
 public:
 	MainMenuScene();
 	~MainMenuScene();
