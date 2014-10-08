@@ -53,7 +53,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 
-		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::EXPLODE;
+		_entity->AddComponent<EffectComponent>();
 		break;
 	case EntityFactory::STANDARD_BLOCK_BLUE:
 		_entity->AddComponent<PositionComponent>();
@@ -67,6 +67,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
+		_entity->AddComponent<TNTComponent>();
 		break;
 
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:

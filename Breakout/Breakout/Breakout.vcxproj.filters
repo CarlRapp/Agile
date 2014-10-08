@@ -409,6 +409,9 @@
     <ClInclude Include="ComponentSystem\Component\ExplosionComponent.h">
       <Filter>Source Files\ComponentSystem\Component\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\TNTComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

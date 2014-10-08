@@ -179,8 +179,8 @@ void GameScene::Reset()
 	m_world->AddSystem<LoseLifeSystem>();
 	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
-	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
+	m_world->AddSystem<EffectSystem>();
 
 	/*	New Implementation	*/
         

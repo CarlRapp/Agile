@@ -80,7 +80,7 @@ void EffectSystem::UpdateEffects(float _dt)
 		{
 			if (explosion->IsExploding(_dt) == ExplosionComponent::DONE)
 			{
-				GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(it->second) * 2);
+				GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(it->second));
 				it->second->SetState(Entity::SOON_DEAD);
 			}
 		}
@@ -98,7 +98,7 @@ void EffectSystem::OnEntityAdded(Entity* _e)
 		auto position = _e->GetComponent<PositionComponent>();
 		if (position)
 		{
-			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e) * 2, "trail", &position->GetPosition(), 0);
+			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e), "trail", &position->GetPosition(), 0);
 		}
 
 	}
@@ -110,6 +110,31 @@ void EffectSystem::OnEntityAdded(Entity* _e)
 }
 void EffectSystem::OnEntityRemoved(Entity* _e)
 {
+	auto flags = _e->GetComponent<EffectComponent>()->m_effects;
+
+	if ((flags.OnRemoved & EffectFlags::SHATTER) == EffectFlags::SHATTER)
+	{
+		Entity* e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SHATTER);
+		e->GetComponent<ModelComponent>()->m_modelPath = _e->GetComponent<ModelComponent>()->m_modelPath;
+		e->GetComponent<PositionComponent>()->SetPosition(_e->GetComponent<PositionComponent>()->GetPosition());
+		m_effects[e->GetId()] = e;
+
+		m_world->AddEntity(e);
+	}
+
+	if ((flags.OnRemoved & EffectFlags::EXPLODE) == EffectFlags::EXPLODE)
+	{
+		Entity* e = m_world->CreateEntity();
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::EXPLOSION);
+		e->GetComponent<PositionComponent>()->SetPosition(_e->GetComponent<PositionComponent>()->GetPosition());
+		m_effects[e->GetId()] = e;
+
+		m_world->AddEntity(e);
+
+		auto position = e->GetComponent<PositionComponent>();
+		GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
+	}
 }
 
 void EffectSystem::OnEveryFrame(Entity* _e, float _dt)
@@ -126,7 +151,7 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
 		auto position = _e->GetComponent<PositionComponent>();
 		if (position)
 		{
-			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e) * 2, "fire", &position->GetPosition(), 0);
+			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e), "fire", &position->GetPosition(), 0);
 		}
 
 
@@ -136,40 +161,6 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
 void EffectSystem::OnRemove(Entity* _e, float _dt)
 {
 
-	if ((m_flags.OnRemoved & EffectFlags::SHATTER) == EffectFlags::SHATTER)
-	{
-		_e->RemoveComponent<CollisionComponent>();
-
-		Entity* e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SHATTER);
-		e->GetComponent<ModelComponent>()->m_modelPath = _e->GetComponent<ModelComponent>()->m_modelPath;
-		e->GetComponent<PositionComponent>()->SetPosition(_e->GetComponent<PositionComponent>()->GetPosition());
-		m_effects[e->GetId()] = e;
-
-		m_world->AddEntity(e);
-
-
-		_e->SetState(Entity::SOON_DEAD);
-
-
-	}
-
-	if ((m_flags.OnRemoved & EffectFlags::EXPLODE) == EffectFlags::EXPLODE)
-	{
-		_e->RemoveComponent<CollisionComponent>();
-
-		Entity* e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::EXPLOSION);
-		e->GetComponent<PositionComponent>()->SetPosition(_e->GetComponent<PositionComponent>()->GetPosition());
-		m_effects[e->GetId()] = e;
-
-		m_world->AddEntity(e);
-
-		auto position = e->GetComponent<PositionComponent>();
-		GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e) * 2, "fire", &position->GetPosition(), 0);
-
-		_e->SetState(Entity::SOON_DEAD);
-	}
 }
 
 
