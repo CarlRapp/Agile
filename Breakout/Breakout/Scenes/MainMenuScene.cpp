@@ -81,6 +81,7 @@ void MainMenuScene::OnInactive()
 			eIT->second->SetInitialized(false);
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(eIT->second));
 		}
 		delete m_world;
 	}
@@ -138,7 +139,6 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<InputSystem>();
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
-	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();

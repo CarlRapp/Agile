@@ -137,7 +137,10 @@ void GameScene::UpdateFPS(float _dt)
 
 void GameScene::Render(float _dt)
 {
-	GraphicsManager::GetInstance()->Render(_dt);
+	if (m_isPaused)
+		GraphicsManager::GetInstance()->Render(0);
+	else
+		GraphicsManager::GetInstance()->Render(_dt);
 }
 
 void GameScene::OnActive()

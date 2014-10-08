@@ -23,7 +23,7 @@ void ScoreSystem::Update(float _dt)
 	{
 		Entity* e = entityPair.second;
 
-		if ((e->GetState() == Entity::DEAD))
+		if ((e->GetState() != Entity::ALIVE))
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();

@@ -357,8 +357,11 @@ void DXGraphics::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 
 void DXGraphics::RemoveEffect(int _id)
 {
 	//förstör buffrar mm.
-	if (m_particleSystems.count(_id) != 0)
-		delete(m_particleSystems[_id]);
+	if (m_particleSystems.find(_id) != m_particleSystems.end())
+	{
+		DXParticleSystem* ps = m_particleSystems[_id];
+		delete(ps);
+		m_particleSystems.erase(_id);
+	}
 
-	m_particleSystems.erase(_id);
 }

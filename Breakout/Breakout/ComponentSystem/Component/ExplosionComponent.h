@@ -30,7 +30,7 @@ struct ExplosionComponent : Component<ExplosionComponent>
 			if (m_explosion > m_maxExplosionTime * m_expansionRate)
 			{
 				m_explosionState = DONE;
-				printf("Entity done exploding, remove\n");
+				//printf("Entity done exploding, remove\n");
 			}
 		}
 
