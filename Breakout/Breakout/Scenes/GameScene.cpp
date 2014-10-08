@@ -24,6 +24,7 @@ void GameScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 	
+	AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -145,19 +146,18 @@ void GameScene::OnActive()
 }
 void GameScene::OnInactive()
 {
-	EntityMap::iterator eIT;
-	for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
-	{
-		eIT->second->SetInitialized(false);
-		GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
-		GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
-	}	
-	
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 
 	if (m_world)
 	{
+		EntityMap::iterator eIT;
+		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
+		{
+			eIT->second->SetInitialized(false);
+			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
+		}
 		delete m_world;
 	}
 }
