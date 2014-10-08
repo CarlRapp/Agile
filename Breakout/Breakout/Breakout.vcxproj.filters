@@ -129,9 +129,6 @@
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
@@ -330,9 +327,6 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\LightComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
-      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXLightHelper.h">
       <Filter>Source Files\Graphics\DirectX</Filter>

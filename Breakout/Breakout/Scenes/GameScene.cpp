@@ -205,9 +205,28 @@ void GameScene::Reset()
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
-	e = m_world->CreateEntity();
+	/*e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	m_world->AddEntity(e);*/
+
+	Entity* midPad = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(midPad, EntityFactory::SAUSAGE_PAD_MID);
+	midPad->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	midPad->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 2, 2));
+	m_world->AddEntity(midPad);
+	
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
+	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(0, PI * 0.5f, 0)));
+	m_world->AddEntity(e);
+
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
