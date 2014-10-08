@@ -30,10 +30,6 @@ void CollisionDamageSystem::Update(float _dt)
 			auto collidingHealth = collidingEntity->GetComponent<HealthComponent>();
 			if (collidingHealth)
 			{
-
-				if (collidingHealth->m_currentHealth == -1337)
-					break;
-
 				DealDamage(*damage, *collidingHealth);
 				if (collidingHealth->m_currentHealth <= 0)
 				{

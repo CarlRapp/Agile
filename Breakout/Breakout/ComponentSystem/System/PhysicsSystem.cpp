@@ -118,7 +118,8 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			rotation->SetRotation(MacroRotateYawPitchRoll(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
+			QUAT rot = rotation->GetRotation();
+			rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
 		}
 	}
 
