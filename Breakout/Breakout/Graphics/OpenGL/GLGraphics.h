@@ -79,6 +79,14 @@ class GLGraphics : public IGraphics
         float* x;
         float* y;
         float* effect;
+        
+        std::string textCopy;
+        float scaleCopy;
+        glm::vec3 colorCopy;
+        float xCopy;
+        float yCopy;
+        float effectCopy;
+        
         int id;
         bool kill;
     };
@@ -90,11 +98,13 @@ private:
         
         GLTextureManager m_texManager;
 
-        ShaderHandler m_standardShaderProgram, m_shader2Dprogram, m_particleShaderProgram,m_textProgram;
+        ShaderHandler m_standardShaderProgram, 
+                      m_shader2Dprogram, 
+                      m_fireParticlesProgram, 
+                      m_trailParticlesProgram, 
+                      m_textProgram;
 
         GLuint m_2DVAO;
-        
-        //GLParticleSystem *m_particlesFire;
         
         GLint m_attributePosition, m_attributeNormal;
         

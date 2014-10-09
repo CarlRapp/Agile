@@ -41,8 +41,10 @@ private:
 	vec3 *m_pos, m_accel;
 	float m_size, m_lifeTime;
         float elapsedTime;
+        std::string m_name;
 
 	void CreateFire();
+        void CreateTrail();
 	void CreateSmoke();
 
 public:
@@ -51,11 +53,11 @@ public:
 
 	GLuint *m_textureHandle;
 
-	//bool InitParticleSystem(const vec3 _pos, int _nParticles, char* _texPath);
 	void Render(ShaderHandler *particleProg, float _deltaTimeMillis);
 	vec3* GetWorldPos(){ return m_pos; }
 	vec3 GetAccel(){ return m_accel; }
 	void SetAccel(vec3 acc){ m_accel = acc; }
+        std::string GetName(){ return m_name; }
 };
 
 #endif

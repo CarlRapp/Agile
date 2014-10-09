@@ -6,6 +6,7 @@
 
 #pragma region System includes
 #include "../ComponentSystem/System/BlockSystem.h"
+#include "../ComponentSystem/System/TextSystem.h"
 #pragma endregion
 
 
@@ -48,7 +49,7 @@ void MainMenuScene::OnActive()
     Entity* e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(1,0,0), 0.0f);
+    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(1,0,0), 5.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
    // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
@@ -57,7 +58,7 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(1, 0, 0), 0.0f);
+	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(1, 0, 0), 5.0f);
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
@@ -66,7 +67,7 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(1, 0, 0), 0.0f);
+	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(1, 0, 0), 5.0f);
     //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
@@ -88,10 +89,6 @@ void MainMenuScene::OnInactive()
 			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}
-
-		
-		
-		
 
 		delete m_world;
 	}
@@ -159,7 +156,7 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
-
+        m_world->AddSystem<TextSystem>();
 	/*	New Implementation	*/
 
 	//FPS COUNTER
@@ -178,6 +175,7 @@ void MainMenuScene::CreatePlayField()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
 	e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
 	
 	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
 	
@@ -215,18 +213,21 @@ void MainMenuScene::CreatePlayField()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::H_WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 28, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 29.5f, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 1, 1));
+
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-47 - e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-49.5f - e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(47 + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(49.5f + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
 	m_world->AddEntity(e);
+
 
 	//PLAYER SCORE <<
 

@@ -836,13 +836,13 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	float W = 8.0f / m_width * *_text->Scale;
 	float H = 8.0f / m_height * *_text->Scale;
 
-	float x = *_text->X * m_width;
+	float x = *_text->X;
 	float y = (1 - (*_text->Y + H)) * m_height;
 
-	W *= m_width;
+	//W *= m_width;
 	H *= m_height;
 
-	float effect = _text->Effect ? *_text->Effect * H : 0.0f;
+	float effect = _text->Effect ? *_text->Effect : 1.0f;
 
 
 	if (_text->Color)
@@ -854,11 +854,11 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	for (int i = 0; i < _text->Indices.size(); ++i)
 	{
 		D3D11_VIEWPORT vp;
-		vp.TopLeftX = x + H * i + effect * i;
+		vp.TopLeftX = (x + W * i) * effect * m_width;
 		vp.TopLeftY = y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
-		vp.Width = W;
+		vp.Width = W * m_width;
 		vp.Height = H;
 
 
