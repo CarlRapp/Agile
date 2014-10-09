@@ -17,6 +17,7 @@ public:
         float m_effect;
         float m_effectStop;
         float m_effectSpeed;
+        bool m_useEffect;
         
 	TextComponent(){ }
 
@@ -27,7 +28,7 @@ public:
             m_color =_color;
             m_x     =_x;
             m_y     =_y;
-            m_effect = 20.0f;
+            m_effect = _effect;
             m_effectStop = 1.0f;
             m_effectSpeed = 20.0f;
         }

@@ -18,6 +18,7 @@ void ScoreSystem::OnEntityAdded(Entity* _e)
 {
 
 }
+
 void ScoreSystem::OnEntityRemoved(Entity* _e)
 {
 	ScoreComponent* scoreC = _e->GetComponent<ScoreComponent>();
