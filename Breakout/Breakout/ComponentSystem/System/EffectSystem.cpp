@@ -76,7 +76,7 @@ void EffectSystem::UpdateEffects(float _dt)
 
 			if (explosion->IsExploding(_dt) == ExplosionComponent::DONE)
 			{
-				GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(it->second));
+				GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(it->second));
 				it->second->SetState(Entity::SOON_DEAD);
 				m_effects.erase(it++);
 				continue;
@@ -98,7 +98,7 @@ void EffectSystem::OnEntityAdded(Entity* _e)
 		auto position = _e->GetComponent<PositionComponent>();
 		if (position)
 		{
-			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e), "trail", &position->GetPosition(), 0);
+			GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(_e), "trail", &position->GetPosition(), 0);
 		}
 
 	}
@@ -135,7 +135,7 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 		m_world->AddEntity(e);
 
 		auto position = e->GetComponent<PositionComponent>();
-		GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
+		GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
 	}
 }
 
@@ -153,7 +153,7 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
 		auto position = _e->GetComponent<PositionComponent>();
 		if (position)
 		{
-			GraphicsManager::GetInstance()->AddEffect(GetMemoryID(_e), "fire", &position->GetPosition(), 0);
+			GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(_e), "fire", &position->GetPosition(), 0);
 		}
 
 

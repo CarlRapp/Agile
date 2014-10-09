@@ -366,7 +366,7 @@ void DXGraphics::RemovePointLight(int _id)
 	m_pointLights.erase(_id);
 }
 
-void DXGraphics::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+void DXGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
 {
 	if (m_particleSystems.count(_id) != 0)
 		return;
@@ -379,7 +379,7 @@ void DXGraphics::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 
 	m_particleSystems.insert(pair<int, DXParticleSystem*>(_id, ps));
 }
 
-void DXGraphics::RemoveEffect(int _id)
+void DXGraphics::RemoveParticleEffect(int _id)
 {
 	//förstör buffrar mm.
 	if (m_particleSystems.find(_id) != m_particleSystems.end())
@@ -420,7 +420,8 @@ void DXGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y
 void DXGraphics::RemoveTextObject(int _id)
 {
 	if (m_texts.count(_id) != 0)
+	{
 		delete(m_texts[_id]);
-
-	m_texts.erase(_id);
+		m_texts.erase(_id);
+	}
 }

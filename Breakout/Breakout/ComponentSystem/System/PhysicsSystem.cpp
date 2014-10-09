@@ -212,6 +212,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::STANDARD_BLOCK_GREEN:
 	case EntityFactory::STANDARD_BLOCK_BLUE:
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:
+	case EntityFactory::TNT_BLOCK:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);
