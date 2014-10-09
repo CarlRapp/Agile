@@ -19,7 +19,7 @@ WindowsInput::~WindowsInput()
 
 void WindowsInput::Update()
 {
-	if (m_mousePointer != 0 && m_keyboardPointer != 0)
+	if (m_mousePointer != 0 && m_keyboardPointer != 0 && GetActiveWindow() == ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle())
 	{
 		m_mousePointer->Update();
 		m_keyboardPointer->Update();

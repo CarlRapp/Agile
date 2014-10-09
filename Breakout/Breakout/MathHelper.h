@@ -26,7 +26,7 @@ static glm::mat4 MacroTranslate(glm::vec3 vector)
 
 static glm::mat4 MacroRotate(glm::quat _q)
 {
-	return glm::mat4_cast(_q);//rotate(glm::mat4(1.0), angle, axis);
+    return glm::mat4_cast(_q);//rotate(glm::mat4(1.0), angle, axis);
 }
 
 static bool MacroIsZero(glm::vec3 _vec)
@@ -53,14 +53,7 @@ static glm::vec3 MacroNormalize(glm::vec3 _v1)
 	return glm::normalize(_v1);
 }
 
-static glm::quat MacroRotateYawPitchRollFromVector(glm::vec3 _rot)
-{
-   glm::quat rotateX( std::cos( _rot.y ), std::sin( _rot.y), 0.f, 0.f );  
-    glm::quat rotateY( std::cos( _rot.x ), 0.f, std::sin( _rot.x ), 0.f );  
-    glm::quat rotateZ( std::cos( _rot.z ), 0.f, 0.f, std::sin( _rot.z ) );    
-    return rotateZ * rotateY * rotateX;
 
-}
 
 static void MacroPrintMatrix(glm::mat4* _m)
 {
@@ -81,6 +74,14 @@ static glm::quat MacroRotateYawPitchRoll(float _yaw, float _pitch, float _roll)
 	glm::quat rotateY( std::cos( _yaw ), 0.f, std::sin( _yaw ), 0.f );
 	glm::quat rotateZ( std::cos( _roll ), 0.f, 0.f, std::sin( _roll ) );
 	return rotateZ * rotateY * rotateX;
+}
+static glm::quat MacroRotateYawPitchRollFromVector(glm::vec3 _rot)
+{
+   //glm::quat rotateX( std::cos( _rot.x ), std::sin( _rot.x), 0.f, 0.f );  
+    //glm::quat rotateY( std::cos( _rot.y ), 0.f, std::sin( _rot.y ), 0.f );  
+    //glm::quat rotateZ( std::cos( _rot.z ), 0.f, 0.f, std::sin( _rot.z ) );    
+    return MacroRotateYawPitchRoll(_rot.y, _rot.x, _rot.z);
+
 }
 
 static glm::mat4 MacroScale(VECTOR3 _scale)

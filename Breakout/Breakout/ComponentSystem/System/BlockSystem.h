@@ -43,8 +43,10 @@ private:
 	void GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, bool>* _closedList);
 	bool GroupCanReachRoot(std::map<GridPosition, bool>* _blockGroup);
 	void CheckIndividualBlock(int _x, int _y);
+	void CheckGroupOfBlocks(std::map<GridPosition, bool>* _blocks);
 	void MoveToWorldPosition(Entity* _block, int _x, int _y);
 	bool HasCollisionComponent(Entity* _block);
+
 public:
 	BlockSystem(World* _world);
 	~BlockSystem();
