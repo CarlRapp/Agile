@@ -21,6 +21,8 @@ uniform mat4 ProjectionMatrix;
 uniform mat4 Model;
 uniform mat4 View;
 
+uniform float Rate;
+
 mat4 ViewProjection;
 
 subroutine (RenderPassType)
@@ -33,7 +35,7 @@ void update()
 	if( Time >= StartTime ) {
 		float age = Time - StartTime;
 		
-		if( age >ParticleLifetime ) {
+		if( age >ParticleLifetime) {
 			// The particle is past its lifetime, recycle.
 			Position = BallPos;
 			Velocity = vec3(0.0);
@@ -69,7 +71,6 @@ void render()
 
 void main()
 {
-	//Accel = vec3(0.0); //vec3(0.01,0.0,0.0);
 	ViewProjection = ProjectionMatrix * View;
 	// This will call either render() or update()
 	RenderPass();

@@ -151,7 +151,6 @@ void PhysicsSystem::Update(float _dt)
 			collisionContact = CollisionContact(contact, fixtureB, fixtureA, entityA->GetId());
 			entityB->GetComponent<CollisionComponent>()->CollidingWith(collisionContact);
 		}
-
 	}
 }
 

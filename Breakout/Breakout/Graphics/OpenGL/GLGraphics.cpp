@@ -104,7 +104,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
 
     m_trailParticlesProgram.LinkShaderProgram();
-    m_texManager.Load2DTexture("circle.png", GL_TEXTURE0);
+    m_texManager.Load2DTexture("circle_blue.png", GL_TEXTURE0);
 //------------------------------------------------------------------------------------
     
     glEnable(GL_BLEND);
@@ -381,8 +381,8 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
     }
     else if(_effect == "trail")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 50.f, 
-                                                                                    m_texManager.GetTexturePointer("circle.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 35.f, 
+                                                                                    m_texManager.GetTexturePointer("circle_blue.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
     }
 }
         
@@ -398,7 +398,14 @@ void GLGraphics::Update(float _dt)
     {
         if(m_textObjects[i].text == NULL)
         {
-            m_textObjects[i].effectCopy -= _dt*10;
+            //9999 = no effect
+            if(m_textObjects[i].effectCopy != 9999.0f)
+                m_textObjects[i].effectCopy -= _dt*10;
+            else
+            {
+                if(m_textObjects[i].kill)
+                    m_textObjects.erase(m_textObjects.begin() +(i));
+            }
 
             if(m_textObjects[i].effectCopy < -10)
             {  
@@ -488,7 +495,7 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     CameraToRender(_camera);
     
-    RenderInstanced();
+    RenderInstanced(_camera);
     
     Render2D();
     
@@ -548,7 +555,7 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 	glUseProgram(0);
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
+void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* _effect,bool kill)
 {
     if(_text == NULL)
         return;
@@ -563,14 +570,19 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     float width;
     float height;
     
+    float effect = *_effect;
+    
+    if(effect == 9999.0f)
+        effect = 1.0f;
+    
     width = 8.0f/m_screenWidth*scale;
     height = 8.0f/m_screenHeight*scale;
     
     int sign = (kill) ? -1 : 1;
 
-    float r_ = 0;
-    float g_ = 1;
-    float b_ = 0;
+    float r_ = _color->x;
+    float g_ = _color->y;
+    float b_ = _color->z;
     
     m_textProgram.UseProgram();
 
@@ -586,7 +598,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 
     for(int i= 0; i < text.size();i++)
     {
-        x = ((*_x) + width*i) * (*effect);
+        x = ((*_x) + width*i) * (effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);
@@ -689,7 +701,7 @@ int GLGraphics::RenderStandard()
     }
 }
 
-int GLGraphics::RenderInstanced()
+int GLGraphics::RenderInstanced(ICamera* _camera)
 {
     t+=0.001f;
 
@@ -697,6 +709,8 @@ int GLGraphics::RenderInstanced()
     
     m_standardShaderProgram.UseProgram();
     glEnable(GL_DEPTH_TEST);
+    
+    m_standardShaderProgram.SetUniformV("EyePosition", vec4(_camera->GetPosition(), 1.0f));
     
     for(int i=0; i< m_models.size();i++)
     {

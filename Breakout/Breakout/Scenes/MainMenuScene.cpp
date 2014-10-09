@@ -49,7 +49,7 @@ void MainMenuScene::OnActive()
     Entity* e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(1,0,0), 5.0f);
+    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(0,1,0), 20.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
    // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
@@ -58,7 +58,7 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(1, 0, 0), 5.0f);
+	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
@@ -67,7 +67,7 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(1, 0, 0), 5.0f);
+	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
@@ -120,17 +120,17 @@ void MainMenuScene::Update(float _dt)
 
 		EntityFactory::EntityType type;
 
-		if (rnd >= 0 && rnd < 5)
+		if (rnd >= 0 && rnd < 20)
 			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 5 && rnd < 10)
+		else if (rnd >= 20 && rnd < 40)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 10 && rnd < 15)
+		else if (rnd >= 40 && rnd < 60)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 15 && rnd < 20)
+		else if (rnd >= 60 && rnd < 80)
 			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd == 20)
+		else if (rnd >= 80 && rnd < 90)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else
+		else if (rnd >= 90 && rnd < 100)
 			type = EntityFactory::TNT_BLOCK;
 
 		EntityFactory::GetInstance()->CreateEntity(e, type);
@@ -234,8 +234,8 @@ void MainMenuScene::CreatePlayField()
 	//	Background
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, -30, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
 	m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));

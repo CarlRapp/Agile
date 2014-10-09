@@ -168,6 +168,7 @@ void GLParticleSystem::CreateFire()
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_startTime[1]);
 }
 
+float m_rate;
 void GLParticleSystem::CreateTrail()
 {
 	// Create and allocate buffers A and B for posBuf, velBuf
@@ -182,13 +183,14 @@ void GLParticleSystem::CreateTrail()
 	m_type = 0;
 	vec3 v(0.0f);
 	float mtime = 0.0f, rate = (m_lifeTime / (float)m_noParticles); //*6.0f;//0.00075f;
+        m_rate = rate;
 
 	GLfloat *posData = new GLfloat[m_noParticles * 3];
 	GLfloat *velData = new GLfloat[m_noParticles * 3];
 	GLfloat *timeData = new GLfloat[m_noParticles];
         
 	for (GLuint i = 0; i < m_noParticles; i++) {
-		posData[3 * i] = m_pos->x;
+		posData[3 * i] = m_pos->x-10000;
 		posData[3 * i + 1] = m_pos->y;
 		posData[3 * i + 2] = m_pos->z;
 
@@ -222,8 +224,6 @@ void GLParticleSystem::CreateTrail()
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_posBuf[i]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
@@ -406,6 +406,7 @@ void GLParticleSystem::Render(ShaderHandler *particleProg, float dt)
         else if(m_name == "trail")
         {
             particleProg->SetUniformV("BallPos", *m_pos);
+            particleProg->SetUniformV("Rate", m_rate);
         }
         
 //        printf("elTime: %f \n", elapsedTime);

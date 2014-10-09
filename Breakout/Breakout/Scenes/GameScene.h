@@ -34,6 +34,9 @@ private:
 	Texture2DData*	m_pauseBackground;
 	bool m_isPaused;
         int m_fpsCounterID;
+        int m_pauseHandle;
+        int m_gameOverHandle;
+        bool m_gameOver;
 public:
 	GameScene();
 	~GameScene();
