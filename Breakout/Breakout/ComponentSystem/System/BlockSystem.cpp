@@ -205,6 +205,10 @@ void BlockSystem::CheckGroupOfBlocks(std::map<GridPosition, bool>* _blocks)
 				for (destroyBlock = blockGroup.begin(); destroyBlock != blockGroup.end(); ++destroyBlock)
 				{
 					m_blockGrid[destroyBlock->first.second][destroyBlock->first.first]->SetState(Entity::SOON_DEAD);
+					auto effect = m_blockGrid[destroyBlock->first.second][destroyBlock->first.first]->GetComponent<EffectComponent>();
+					if (effect)
+						effect->m_effects.OnRemoved = EffectFlags::SHATTER;
+
 					m_blockGrid[destroyBlock->first.second][destroyBlock->first.first] = 0;
 				}
 			}
