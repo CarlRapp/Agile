@@ -90,8 +90,8 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		
 
 		DXMaterial m;
-		m.SpecIntensity = 100;
-		m.SpecPower = 200;
+		m.SpecIntensity = 1;
+		m.SpecPower = 100;
 
 		//data->Groups[i]->material->Ks
 
