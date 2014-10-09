@@ -381,20 +381,20 @@ void GLGraphics::RemoveParticleEffect(int _id)
 
 void GLGraphics::Update(float _dt) 
 {
-    for(int i = m_textObjects.size()-1; i >= 0; --i)
-    {
-        if(m_textObjects[i].effectTime > 1.0f)
-            m_textObjects[i].effectTime -= 0.01f;
-        
-        if(m_textObjects[i].kill)
-        {
-            m_textObjects[i].effectTime -= 0.01f;
-            if(m_textObjects[i].effectTime < -10)
-            {  
-                m_textObjects.erase(m_textObjects.begin() +(i));
-            }
-        }
-    }
+//    for(int i = m_textObjects.size()-1; i >= 0; --i)
+//    {
+//        if(m_textObjects[i].effectTime > 1.0f)
+//            m_textObjects[i].effectTime -= 0.01f;
+//        
+//        if(m_textObjects[i].kill)
+//        {
+//            m_textObjects[i].effectTime -= 0.01f;
+//            if(m_textObjects[i].effectTime < -10)
+//            {  
+//                m_textObjects.erase(m_textObjects.begin() +(i));
+//            }
+//        }
+//    }
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -491,7 +491,7 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     for(int i=0; i < m_textObjects.size();i++)
     {
         
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime,m_textObjects[i].kill);
+        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effect,m_textObjects[i].kill);
     }
     
     
@@ -531,7 +531,7 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 	glUseProgram(0);
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,float effect,bool kill)
+void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
 
 {
     if(_text == 0)
@@ -572,7 +572,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
 
     for(int i= 0; i < text.size();i++)
     {
-        x *= effect;
+        //x *= *effect;
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);
@@ -583,7 +583,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
     glActiveTexture(0);
 }
 
-void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id)
+void GLGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
     for(int i = 0; i < m_textObjects.size();i++)
     {
@@ -601,8 +601,8 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.color = _color;
     textObject.x = _x;
     textObject.y = _y;
-    textObject.effectTime = 10;
     textObject.id = _id;
+    textObject.effect = _effect;
     textObject.kill = false;
     m_textObjects.push_back(textObject);
     

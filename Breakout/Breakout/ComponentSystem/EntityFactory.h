@@ -28,6 +28,7 @@
 #include "Component/BlockComponent.h"
 #include "Component/TextComponent.h"
 #include "Component/ExplosionComponent.h"
+#include "Component/TNTComponent.h"
 
 class EntityFactory
 {
@@ -44,7 +45,10 @@ public:
 		STANDARD_BLOCK_RED = 0,
 		STANDARD_BLOCK_BLUE,
 		STANDARD_BLOCK_GREEN,
+		INDESTRUCTIBLE_BLOCK,
 		PAD,
+		SAUSAGE_PAD_MID,
+		SAUSAGE_PAD_EDGE,
 		BALL,
 		POWERUP,
 		WALL,
@@ -56,7 +60,8 @@ public:
 		PLANE,
         TEXT,
 		EXPLOSION,
-		SHATTER
+		SHATTER,
+		STANDARD_HORIZONTAL_RECTANGLE
 	};
 
 	static EntityFactory* GetInstance();

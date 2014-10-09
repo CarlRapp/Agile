@@ -75,10 +75,10 @@ class GLGraphics : public IGraphics
     {
         std::string* text;
         float* scale;
-        unsigned int* color;
+        glm::vec3* color;
         float* x;
         float* y;
-        float effectTime;
+        float* effect;
         int id;
         bool kill;
     };
@@ -125,7 +125,7 @@ private:
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         //void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,float* _x, float* _y,float effect,bool kill);
+        void RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill);
 public:
 
 	GLGraphics(void);
@@ -154,7 +154,7 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id);
+        void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect);
         void RemoveTextObject(int _id);
         
 

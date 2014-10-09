@@ -12,10 +12,11 @@ struct ExplosionComponent : Component<ExplosionComponent>
 		NONE = 0,
 		EXPLODING,
 		DONE
+
 	};
 
 	float m_explosion = 0.0f;
-	float m_maxExplosionTime = 1.2f;
+	float m_maxExplosionTime = .3f;
 	float m_expansionRate = 20.0f;
 	ExplosionState m_explosionState = NONE;
 
@@ -30,7 +31,7 @@ struct ExplosionComponent : Component<ExplosionComponent>
 			if (m_explosion > m_maxExplosionTime * m_expansionRate)
 			{
 				m_explosionState = DONE;
-				printf("Entity done exploding, remove\n");
+				//printf("Entity done exploding, remove\n");
 			}
 		}
 

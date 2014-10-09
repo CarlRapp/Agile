@@ -2,6 +2,8 @@
 #include "../Component/PositionComponent.h"
 #include "../Component/ScaleComponent.h"
 #include "../Component/CollisionComponent.h"
+#include "../Component/TNTComponent.h"
+#include "../Component/EffectComponent.h"
 #include "../World.h"
 
 
@@ -9,7 +11,7 @@ BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
 	m_blockGrid = 0;
-	SetSettings(20, 20, 20, 0);
+	SetSettings(40, 15, 20, 0);
 }
 
 BlockSystem::~BlockSystem()
@@ -73,6 +75,43 @@ void BlockSystem::OnEntityRemoved(Entity* _e)
 	if (X == -1 || Y == -1)
 		return;
 	m_blockGrid[Y][X] = 0;
+
+
+	auto tnt = _e->GetComponent<TNTComponent>();
+	if (tnt)
+	{
+		Entity* block;
+
+		for (int _x = -1; _x < 2; ++_x)
+		{
+			for (int _y = -1; _y < 2; ++_y)
+			{
+				//if _x & _y = 0, or if we are outside bounds ( < 0 )
+				if (   (_x == 0 && _y == 0)
+					|| ( _x + X < 0 || _y + Y < 0)
+					|| (_x + X >= m_dimensionX || _y + Y >= m_dimensionY)
+				   )
+					continue;
+
+				block = m_blockGrid[Y + _y][X + _x];
+				if (block)
+				{
+					auto effect = block->GetComponent<EffectComponent>();
+					if (effect)
+						effect->m_effects.OnRemoved = EffectFlags::EXPLODE;
+
+					block->SetState(Entity::SOON_DEAD);
+				}
+
+			}
+		}
+
+		return;
+	}
+
+
+
+
 
 	//	Check LEFT
 	if (X - 1 >= 0)
@@ -208,9 +247,13 @@ bool BlockSystem::GroupCanReachRoot(std::map<GridPosition, bool>* _blockGroup)
 bool BlockSystem::HasCollisionComponent(Entity* _block)
 {
 	if (_block)
-		return _block->GetComponent<CollisionComponent>();
-	else
-		return false;
+	{
+		auto collision = _block->GetComponent<CollisionComponent>();
+		if (collision)
+			return true;
+	}
+
+	return false;
 }
 
 void BlockSystem::GetBlocksAttachedTo(int _x, int _y, std::map<GridPosition, bool>* _closedList)
