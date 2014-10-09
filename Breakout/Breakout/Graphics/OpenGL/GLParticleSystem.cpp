@@ -36,8 +36,10 @@ void GLParticleSystem::CreateFire()
 	// Create and allocate buffers A and B for posBuf, velBuf
 	// and startTime
 	//�
+    float scale = 0.30f;
+    m_size *= scale;
         elapsedTime = 0.0f;
-	m_accel = vec3(0, 0, 0);
+	m_accel = vec3(0, -0.00001, 0);
 	m_type = 0;
 	vec3 v(0.0f);
 	float velocity, theta, phi;
@@ -48,28 +50,31 @@ void GLParticleSystem::CreateFire()
 	GLfloat *timeData = new GLfloat[m_noParticles];
 	GLfloat *initVelData = new GLfloat[m_noParticles * 3];
 	GLfloat *initPosData = new GLfloat[m_noParticles * 3];
+        
 
-	srand(time(NULL));
+	srand(time(0));
+        
 	for (GLuint i = 0; i < m_noParticles; i++) {
-		posData[3 * i] = (float)(rand() % 9) - 4;
-		posData[3 * i + 1] = 0.0;
-		posData[3 * i + 2] = (float)(rand() % 9 - 4);
+		posData[3 * i] = ((float)(rand() % 9) - 4)*0.5 * scale;
+		posData[3 * i + 1] = ((float)(rand() % 9) - 4)*0.5 * scale;
+		posData[3 * i + 2] = ((float)(rand() % 9 - 4))*0.5 * scale;
 
 		// Pick the direction of the velocity
 		theta = glm::mix(0.0f, (float)M_PI / 6.0f, (float)(rand() % 101) / 100);
 		phi = glm::mix(0.0f, (float)(2 * M_PI), (float)(rand() % 101) / 100);
 
-		v.x = glm::sin(theta) * glm::cos(phi) * 0.1; 
-		if ((posData[3 * i] < 0 && v.x < 0) || (posData[3 * i] > 0 && v.x > 0))
-			v.x *= -1;
-		v.y = glm::cos(theta) * 0.4;
-		v.z = glm::sin(theta) * glm::sin(phi) * 0.1;
-		if ((posData[3 * i + 2] < 0 && v.z < 0) || (posData[3 * i + 2] > 0 && v.z > 0))
-			v.z *= -1;
+                //printf("rand val %f \n" , sin((float)(rand() % (int)(2*M_PI*1000))/1000));
+                
+		v.x = sin((float)(rand() % (int)(2*M_PI*1000)+1)/1000) * 0.03;      //((float)(rand() % 101)/100 -0.5)*0.1;
+		v.y = sin((float)(rand() % (int)(2*M_PI*1000)+1)/1000) * 0.03;      //((float)(rand() % 101)/100 -0.5)*0.1;
+                if(v.y > 0)
+                    v.y *= 2;
+		v.z = sin((float)(rand() % (int)(2*M_PI*1000)+1)/1000) * 0.03;      //((float)(rand() % 101)/100 -0.5)*0.1; 
 
 		// Scale to set the magnitude of the velocity (speed)
-		velocity = glm::mix(1.25f, 1.5f, (float)(rand() % 101) / 100);
-		v = v * velocity * 0.1f;
+		//velocity = glm::mix(1.25f, 1.5f, (float)(rand() % 101) / 100);
+		//v = v * velocity * 0.1f * scale;
+                v *= scale;
 		velData[3 * i] = v.x;
 		velData[3 * i + 1] = v.y;
 		velData[3 * i + 2] = v.z;
@@ -78,7 +83,7 @@ void GLParticleSystem::CreateFire()
 		mtime += rate;
 
 		//printf("velData[i]: %f, %f, %f \n", velData[3 * i], velData[3 * i + 1], velData[3 * i + 2]);
-		printf("timeData[i]: %f \n", timeData[i]);
+		//printf("timeData[i]: %f \n", timeData[i]);
 
 	}
 	initVelData = velData;
