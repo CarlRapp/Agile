@@ -96,6 +96,7 @@
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\TextSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
     <ClCompile Include="Graphics\DirectX\DXCamera.cpp" />
     <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
+    <ClInclude Include="ComponentSystem\System\TextSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />
     <ClInclude Include="Graphics\DirectX\DXCamera.h" />
     <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
