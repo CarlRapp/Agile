@@ -95,7 +95,62 @@ void DXTextureManager::InitLetters(ID3D11Device* _device)
 	letters.push_back(LetterInfo('.', DXText::_dot));
 	letters.push_back(LetterInfo('/', DXText::_slash));
 
+	
+	float* temp;
+	for (int i = 0; i < letters.size(); i++)
+	{
+		for (int j = 0; j < 64; j++)
+		{
+			temp = &letters[i].data[j];
+			if (*temp == 1.0f)
+			{
 
+				if (j + 1 < 64)
+				{
+					if (letters[i].data[j + 1] == 1.0f)
+					{
+						if (j + 8 < 64)
+							if (letters[i].data[j - 8] == 1.0f && !(letters[i].data[j - 1] == 1.0f))
+								letters[i].data[j] -= 0.31f;
+					}
+				}
+			}
+
+			if (*temp == 0)
+			{
+				int a = 0;
+
+				if (j - 8 > 0)
+				{
+					if (letters[i].data[j - 8] == 1.0f)
+						a++;
+				}
+
+				if (j + 8 < 64)
+				{
+					if (letters[i].data[j + 8] == 1.0f)
+						a++;
+				}
+
+				if (j - 1 > 0)
+				{
+					if (letters[i].data[j - 1] == 1.0f)
+						a++;
+				}
+
+				if (j + 1 < 64)
+				{
+					if (letters[i].data[j + 1] == 1.0f)
+						a++;
+				}
+
+				if (a>0)
+					letters[i].data[j] = 0.25f * a;
+			}
+		}
+	}
+
+	
 	//AddSymbolTexture(_device, ':', DXText::A);
 	//AddSymbolTexture(_device, ';', DXText::A);
 	//AddSymbolTexture(_device, '<', DXText::A);
