@@ -84,22 +84,33 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
     
 //------------------------------------------------------------------------------------
-    m_particleShaderProgram.CreateShaderProgram();
+    m_fireParticlesProgram.CreateShaderProgram();
     
-    m_particleShaderProgram.AddShader("particleShader_vertex.glsl",GL_VERTEX_SHADER);
-    m_particleShaderProgram.AddShader("particleShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
     
     const char * outputNames[] = { "Position", "Velocity", "StartTime" };
-    glTransformFeedbackVaryings(m_particleShaderProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+    glTransformFeedbackVaryings(m_fireParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
 
-    m_particleShaderProgram.LinkShaderProgram();
+    m_fireParticlesProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
+    m_trailParticlesProgram.CreateShaderProgram();
+    
+    m_trailParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_trailParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_trailParticlesProgram.LinkShaderProgram();
+//------------------------------------------------------------------------------------
+    
     glEnable(GL_BLEND);
     
     glEnable(GL_POINT_SPRITE);
     m_texManager.Load2DTexture("fire3.png", GL_TEXTURE0);
    // m_particlesFire = new GLParticleSystem("fire", vec3(0, 0, -5), 200, 800, 20.f, 
-   //                                         m_texManager.GetTexturePointer("red.png"), m_particleShaderProgram.GetProgramHandlePointer());
+   //                                         m_texManager.GetTexturePointer("red.png"), m_fireParticlesProgram.GetProgramHandlePointer());
   
     int err = glGetError();
     
@@ -367,14 +378,16 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 30, 600, 85.f, 
-                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_particleShaderProgram.GetProgramHandlePointer())));
+        printf("ADD FIRE\n");
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
+                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
     }
 }
         
 
 void GLGraphics::RemoveParticleEffect(int _id)
 {
+    printf("DELETE FIRE\n");
     delete(m_particleEffects[_id]);
     m_particleEffects.erase(_id);
 }
@@ -500,9 +513,9 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
 
 void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 {
-	m_particleShaderProgram.UseProgram();
+	m_fireParticlesProgram.UseProgram();
 
-	glUniformMatrix4fv(glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_fireParticlesProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
 
 	glEnable(GL_BLEND);
         glEnable(GL_POINT_SPRITE);
@@ -521,10 +534,10 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 		glm::mat4 viewMatrix = *_camera->GetView();//mCam->GetCamViewMatrix();
 		glm::mat4 ModelView = viewMatrix * Model;
 
-		GLuint location = glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
+		GLuint location = glGetUniformLocation(m_fireParticlesProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
 		if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &ModelView[0][0]); }
 
-		it->second->Render(&m_particleShaderProgram, dt);
+		it->second->Render(&m_fireParticlesProgram, dt);
 	}
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);

@@ -90,11 +90,14 @@ private:
         
         GLTextureManager m_texManager;
 
-        ShaderHandler m_standardShaderProgram, m_shader2Dprogram, m_particleShaderProgram,m_textProgram;
+        ShaderHandler m_standardShaderProgram, 
+                      m_shader2Dprogram, 
+                      m_fireParticlesProgram, 
+                      m_trailParticlesProgram, 
+                      m_textProgram;
 
         GLuint m_2DVAO;
         
-        //GLParticleSystem *m_particlesFire;
         
         GLint m_attributePosition, m_attributeNormal;
         
