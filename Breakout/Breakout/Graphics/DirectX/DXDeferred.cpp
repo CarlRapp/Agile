@@ -777,6 +777,7 @@ void DXDeferred::Render(float _dt,
 	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
 	map<int, DX2DTextureInstance*> &_textureInstances,
 	map<int, DXParticleSystem*>		&_particleSystems,
+	map<int, DXText::String*>		&_texts,
 	ICamera* _camera)
 {
 
@@ -797,10 +798,59 @@ void DXDeferred::Render(float _dt,
 	Render2DTextures(_renderTargetView, _textureInstances);
 
 
-
+	RenderTexts(_renderTargetView, _texts);
 
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
+}
+void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts)
+{
+	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
+	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_noDSS, 0);
+
+	map<int, DXText::String*>::iterator tIterator;
+	for (tIterator = _texts.begin(); tIterator != _texts.end(); ++tIterator)
+	{
+		RenderText(_renderTargetView, tIterator->second);
+	}
+
+	m_deviceContext->RSSetViewports(1, &m_viewPort);
+}
+
+void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::String *_text)
+{
+	float W = 8.0f / m_width * *_text->Scale;
+	float H = 8.0f / m_height * *_text->Scale;
+
+	float x = *_text->X * m_width;
+	float y = (1 - (*_text->Y + H)) * m_height;
+
+	W *= m_width;
+	H *= m_height;
+
+	float effect = _text->Effect ? *_text->Effect * H : 0.0f;
+
+
+	if (_text->Color)
+		DXEffects::m_combineFinalFX->SetColor(*_text->Color);
+	else
+		DXEffects::m_combineFinalFX->SetColor(VECTOR3(1,1,1));
+
+	for (int i = 0; i < _text->Letters.size(); ++i)
+	{
+		D3D11_VIEWPORT vp;
+		vp.TopLeftX = x + H * i + effect * i;
+		vp.TopLeftY = y;
+		vp.MinDepth = 0.0f;
+		vp.MaxDepth = 1.0f;
+		vp.Width = W;
+		vp.Height = H;
+
+
+		RenderQuad(vp, _text->Letters[i].SRV, DXEffects::m_combineFinalFX->m_textTech);
+	}
 }
 
 void DXDeferred::RenderParticleSystems(float _dt, ID3D11RenderTargetView *_renderTargetView, map<int, DXParticleSystem*> &_particleSystems, ICamera* _camera)
