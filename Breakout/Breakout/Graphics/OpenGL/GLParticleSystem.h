@@ -41,6 +41,7 @@ private:
 	vec3 *m_pos, m_accel;
 	float m_size, m_lifeTime;
         float elapsedTime;
+        std::string m_name;
 
 	void CreateFire();
         void CreateTrail();
@@ -56,6 +57,7 @@ public:
 	vec3* GetWorldPos(){ return m_pos; }
 	vec3 GetAccel(){ return m_accel; }
 	void SetAccel(vec3 acc){ m_accel = acc; }
+        std::string GetName(){ return m_name; }
 };
 
 #endif

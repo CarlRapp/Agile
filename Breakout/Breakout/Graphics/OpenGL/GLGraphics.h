@@ -106,7 +106,6 @@ private:
 
         GLuint m_2DVAO;
         
-        
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;

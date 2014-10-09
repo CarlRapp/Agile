@@ -226,7 +226,7 @@ void GameScene::Reset()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(0, PI * 0.5f, 0)));
+	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(PI * 0.5f, 0, 0)));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();

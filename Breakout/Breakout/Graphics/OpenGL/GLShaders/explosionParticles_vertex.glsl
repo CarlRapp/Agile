@@ -21,7 +21,8 @@ uniform float Size;
 uniform int Type;
 
 uniform mat4 ProjectionMatrix;
-uniform mat4 ModelView;
+uniform mat4 Model;
+uniform mat4 View;
 
 mat4 MVP;
 
@@ -56,7 +57,7 @@ void render()
 	
 	gl_Position = MVP * vec4(VertexPosition, 1.0);
 
-	vec4 eyep = ModelView * vec4(VertexPosition, 1.0);
+	vec4 eyep = View * Model * vec4(VertexPosition, 1.0);
 
 	float sizeFactor = 1.0;
 	Transp = 0.0;
@@ -75,7 +76,7 @@ void render()
 void main()
 {
 	//Accel = vec3(0.0); //vec3(0.01,0.0,0.0);
-	MVP = ProjectionMatrix * ModelView;
+	MVP = ProjectionMatrix * View * Model;
 	// This will call either render() or update()
 	RenderPass();
 }

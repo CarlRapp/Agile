@@ -12,16 +12,16 @@ out float Transp; // To fragment shader
 
 uniform float Time; // Simulation time (elapsed time)
 uniform float DeltaTime; // Elapsed time between frames dt
-uniform vec3 Accel; // Particle acceleration
 uniform float ParticleLifetime; // Particle lifespan
 
 uniform float Size;
-uniform int Type;
+uniform vec3 BallPos;
 
 uniform mat4 ProjectionMatrix;
-uniform mat4 ModelView;
+uniform mat4 Model;
+uniform mat4 View;
 
-mat4 MVP;
+mat4 ViewProjection;
 
 subroutine (RenderPassType)
 void update() 
@@ -35,14 +35,13 @@ void update()
 		
 		if( age >ParticleLifetime ) {
 			// The particle is past its lifetime, recycle.
-			Position = VertexInitialPosition; //vec3(0.0);
-			Velocity = VertexInitialVelocity;
+			Position = BallPos; //vec3(0.0);
+			Velocity = vec3(0.0);
 			StartTime = Time;
 		} 
 		else {
 			// The particle is alive, update.
 			Position += Velocity * DeltaTime;
-			Velocity += Accel * DeltaTime;			
 		}
 	}
 
@@ -52,19 +51,17 @@ void render()
 {
 	float age = Time - VertexStartTime;
 	
-	gl_Position = MVP * vec4(VertexPosition, 1.0);
+	gl_Position = ViewProjection * vec4(VertexPosition, 1.0);
 
-	vec4 eyep = ModelView * vec4(VertexPosition, 1.0);
+	vec4 eyep = View * Model * vec4(VertexPosition, 1.0);
 
 	float sizeFactor = 1.0;
 	Transp = 0.0;
+
 	if(Time >= VertexStartTime)
 	{
-		if(Type == 0)
-			sizeFactor = 1.0-(age/ParticleLifetime)*0.8;
-		else if(Type == 1)
-			sizeFactor = 1.0+(age/ParticleLifetime)*0.7;
-		Transp = 1.0 - age / ParticleLifetime;
+            sizeFactor = 1.0-(age/ParticleLifetime)*0.8;
+            Transp = 1.0 - age / ParticleLifetime;
 	}
 
 	gl_PointSize = 200 * Size * sizeFactor /-eyep.z;
@@ -73,7 +70,7 @@ void render()
 void main()
 {
 	//Accel = vec3(0.0); //vec3(0.01,0.0,0.0);
-	MVP = ProjectionMatrix * ModelView;
+	ViewProjection = ProjectionMatrix * View;
 	// This will call either render() or update()
 	RenderPass();
 }

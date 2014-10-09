@@ -119,7 +119,7 @@ void PhysicsSystem::Update(float _dt)
 		if (rotation)
 		{
 			QUAT rot = rotation->GetRotation();
-			rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
+			//rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
 		}
 	}
 
