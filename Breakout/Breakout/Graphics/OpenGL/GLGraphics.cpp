@@ -84,23 +84,32 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
     
 //------------------------------------------------------------------------------------
-    m_particleShaderProgram.CreateShaderProgram();
+    m_fireParticlesProgram.CreateShaderProgram();
     
-    m_particleShaderProgram.AddShader("particleShader_vertex.glsl",GL_VERTEX_SHADER);
-    m_particleShaderProgram.AddShader("particleShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
     
     const char * outputNames[] = { "Position", "Velocity", "StartTime" };
-    glTransformFeedbackVaryings(m_particleShaderProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+    glTransformFeedbackVaryings(m_fireParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
 
-    m_particleShaderProgram.LinkShaderProgram();
-//------------------------------------------------------------------------------------
-    glEnable(GL_BLEND);
-    
-    glEnable(GL_POINT_SPRITE);
+    m_fireParticlesProgram.LinkShaderProgram();
     m_texManager.Load2DTexture("fire3.png", GL_TEXTURE0);
-   // m_particlesFire = new GLParticleSystem("fire", vec3(0, 0, -5), 200, 800, 20.f, 
-   //                                         m_texManager.GetTexturePointer("red.png"), m_particleShaderProgram.GetProgramHandlePointer());
-  
+//------------------------------------------------------------------------------------
+    m_trailParticlesProgram.CreateShaderProgram();
+    
+    m_trailParticlesProgram.AddShader("trailParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_trailParticlesProgram.AddShader("trailParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_trailParticlesProgram.LinkShaderProgram();
+    m_texManager.Load2DTexture("circle.png", GL_TEXTURE0);
+//------------------------------------------------------------------------------------
+    
+    glEnable(GL_BLEND);
+    glEnable(GL_POINT_SPRITE);
+   
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
@@ -367,8 +376,13 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 30, 600, 85.f, 
-                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_particleShaderProgram.GetProgramHandlePointer())));
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
+                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
+    }
+    else if(_effect == "trail")
+    {
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 50.f, 
+                                                                                    m_texManager.GetTexturePointer("circle.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
     }
 }
         
@@ -502,31 +516,39 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
 
 void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 {
-	m_particleShaderProgram.UseProgram();
-
-	glUniformMatrix4fv(glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
-
+	
 	glEnable(GL_BLEND);
         glEnable(GL_POINT_SPRITE);
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
         
-	glActiveTexture(GL_TEXTURE0);
-
 	for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
 	{
-		glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
+            ShaderHandler *tmp;
+            if(it->second->GetName() == "fire")
+                tmp = &m_fireParticlesProgram;
+            else if(it->second->GetName() == "trail")
+                tmp = &m_trailParticlesProgram;
+            
+            tmp->UseProgram();
+            glActiveTexture(GL_TEXTURE0);
 
-                //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
-		glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
-		glm::mat4 viewMatrix = *_camera->GetView();//mCam->GetCamViewMatrix();
-		glm::mat4 ModelView = viewMatrix * Model;
+            glUniformMatrix4fv(glGetUniformLocation(tmp->GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);
+            
+            glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
 
-		GLuint location = glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
-		if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &ModelView[0][0]); }
+            //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
+            glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
+            glm::mat4 viewMatrix = *_camera->GetView();
 
-		it->second->Render(&m_particleShaderProgram, dt);
+            GLuint location = glGetUniformLocation(tmp->GetProgramHandle(), "Model");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &Model[0][0]); }
+            
+            location = glGetUniformLocation(tmp->GetProgramHandle(), "View");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &viewMatrix[0][0]); }
+
+            it->second->Render(tmp, dt);
 	}
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
