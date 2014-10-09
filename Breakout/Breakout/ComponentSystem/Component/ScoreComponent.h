@@ -11,8 +11,8 @@ struct ScoreComponent : Component<ScoreComponent>
 
 	ScoreComponent()
 	{
-		m_score = 0;
-		wasHit = false;
+            m_score = 0;
+            wasHit = false;
 	}
         
         void SetString()

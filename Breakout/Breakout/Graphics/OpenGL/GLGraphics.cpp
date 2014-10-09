@@ -398,7 +398,14 @@ void GLGraphics::Update(float _dt)
     {
         if(m_textObjects[i].text == NULL)
         {
-            m_textObjects[i].effectCopy -= _dt*10;
+            //9999 = no effect
+            if(m_textObjects[i].effectCopy != 9999.0f)
+                m_textObjects[i].effectCopy -= _dt*10;
+            else
+            {
+                if(m_textObjects[i].kill)
+                    m_textObjects.erase(m_textObjects.begin() +(i));
+            }
 
             if(m_textObjects[i].effectCopy < -10)
             {  
@@ -548,7 +555,7 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 	glUseProgram(0);
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
+void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* _effect,bool kill)
 {
     if(_text == NULL)
         return;
@@ -563,14 +570,19 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     float width;
     float height;
     
+    float effect = *_effect;
+    
+    if(effect == 9999.0f)
+        effect = 1.0f;
+    
     width = 8.0f/m_screenWidth*scale;
     height = 8.0f/m_screenHeight*scale;
     
     int sign = (kill) ? -1 : 1;
 
-    float r_ = 0;
-    float g_ = 1;
-    float b_ = 0;
+    float r_ = _color->x;
+    float g_ = _color->y;
+    float b_ = _color->z;
     
     m_textProgram.UseProgram();
 
@@ -586,7 +598,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 
     for(int i= 0; i < text.size();i++)
     {
-        x = ((*_x) + width*i) * (*effect);
+        x = ((*_x) + width*i) * (effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);

@@ -224,8 +224,6 @@ void GLParticleSystem::CreateTrail()
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_posBuf[i]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
