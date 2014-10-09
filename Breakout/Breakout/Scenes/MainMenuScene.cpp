@@ -178,6 +178,7 @@ void MainMenuScene::CreatePlayField()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
 	e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
 	
 	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
 	
@@ -215,18 +216,21 @@ void MainMenuScene::CreatePlayField()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::H_WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 28, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 29.5f, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 1, 1));
+
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-47 - e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-49.5f - e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::WALL);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(47 + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(49.5f + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
 	m_world->AddEntity(e);
+
 
 	//PLAYER SCORE <<
 

@@ -137,6 +137,11 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 		auto position = e->GetComponent<PositionComponent>();
 		GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
 	}
+
+	if (EntityContains(flags, EffectFlags::TRAIL))
+	{
+		GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(_e));
+	}
 }
 
 void EffectSystem::OnEveryFrame(Entity* _e, float _dt)
