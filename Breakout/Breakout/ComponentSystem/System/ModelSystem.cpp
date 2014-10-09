@@ -57,7 +57,7 @@ void ModelSystem::Update(float _dt)
 			change = true;
 		else if (!ISZERO(scale->GetDeltaScale()))
 			change = true;
-                                
+                          
 		if (change)
 		{
 #ifdef OPENGL

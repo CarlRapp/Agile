@@ -384,7 +384,7 @@ void GLGraphics::Update(float _dt)
     {
         if(m_textObjects[i].text == NULL)
         {
-            m_textObjects[i].effectCopy -= _dt;
+            m_textObjects[i].effectCopy -= _dt*10;
 
             if(m_textObjects[i].effectCopy < -10)
             {  
@@ -535,7 +535,6 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     
     std::string text = (*_text);
     float scale = (*_scale);
-    //unsigned int color = (*_color);
     float x = (*_x);
     float y = (*_y);
     
@@ -565,12 +564,13 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 
     for(int i= 0; i < text.size();i++)
     {
-        //x *= *effect;
+        x = ((*_x) + width*i) * (*effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        x += width;
+        
+        //x += width;
     }
     glBindVertexArray(0);
     glActiveTexture(0);
