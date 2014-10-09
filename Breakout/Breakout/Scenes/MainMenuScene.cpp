@@ -120,17 +120,17 @@ void MainMenuScene::Update(float _dt)
 
 		EntityFactory::EntityType type;
 
-		if (rnd >= 0 && rnd < 5)
+		if (rnd >= 0 && rnd < 20)
 			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 5 && rnd < 10)
+		else if (rnd >= 20 && rnd < 40)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 10 && rnd < 15)
+		else if (rnd >= 40 && rnd < 60)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 15 && rnd < 20)
+		else if (rnd >= 60 && rnd < 80)
 			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd == 20)
+		else if (rnd >= 80 && rnd < 90)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else
+		else if (rnd >= 90 && rnd < 100)
 			type = EntityFactory::TNT_BLOCK;
 
 		EntityFactory::GetInstance()->CreateEntity(e, type);
@@ -234,8 +234,8 @@ void MainMenuScene::CreatePlayField()
 	//	Background
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, -30, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
 	m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));

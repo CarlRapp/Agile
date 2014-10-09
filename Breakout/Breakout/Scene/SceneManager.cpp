@@ -71,13 +71,13 @@ void SceneManager::Start()
 
 		m_activeScene->Update(dt);
 		m_activeScene->Render(dt);
-                //setbuf(stdout, NULL);
-		lol += dt;
-		if (lol > 0.5f)
-		{
-                    printf("FPS: %f | Delta: %f \n" , 1.0f / dt,dt);
+  //              //setbuf(stdout, NULL);
+		//lol += dt;
+		//if (lol > 0.5f)
+		//{
+  //                  printf("FPS: %f | Delta: %f \n" , 1.0f / dt,dt);
 
-                    lol = 0;
-		}
+  //                  lol = 0;
+		//}
 	}
 }
