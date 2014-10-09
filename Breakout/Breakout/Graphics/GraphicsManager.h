@@ -59,8 +59,9 @@ public:
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
         void RemovePointLight(int _id);
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id);
-        void RemoveTextObject(int _id);
+	void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect);
+	void RemoveTextObject(int _id);
+
 
 	void		AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
 	void		RemoveParticleEffect(int _id);

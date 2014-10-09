@@ -10,7 +10,11 @@ PhysicsSystem::PhysicsSystem(World* _world)
 
 PhysicsSystem::~PhysicsSystem()
 {
+	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
+		it->second->RemoveComponent<CollisionComponent>();
+
 	delete m_b2World;
+	m_b2World = 0;
 }
 
 void PhysicsSystem::Update(float _dt)
@@ -31,24 +35,24 @@ void PhysicsSystem::Update(float _dt)
 		// Update position, velocity and rotation after the components
 		if (position && rotation)
 		{
-			b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
+			const b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
 			if (collision->GetBody()->GetPosition().x != b2Pos.x || collision->GetBody()->GetPosition().y != b2Pos.y || collision->GetBody()->GetAngle() != rotation->GetRotation().z)
 				collision->GetBody()->SetTransform(b2Pos, rotation->GetRotation().z);
 		}
 		else if (position)
 		{
-			b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
+			const b2Vec2 b2Pos = b2Vec2(position->GetPosition().x, position->GetPosition().y);
 			if (collision->GetBody()->GetPosition().x != b2Pos.x || collision->GetBody()->GetPosition().y != b2Pos.y)
 				collision->GetBody()->SetTransform(b2Pos, collision->GetBody()->GetAngle());
 		}
 		else if (rotation)
 		{
 			if (collision->GetBody()->GetAngle() != rotation->GetRotation().z)
-				collision->GetBody()->SetTransform(collision->GetBody()->GetPosition(), collision->GetBody()->GetAngle());
+				collision->GetBody()->SetTransform(collision->GetBody()->GetPosition(), rotation->GetRotation().z);
 		}
 		if (velocity)
 		{
-			b2Vec2 b2Velocity = b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y);
+			const b2Vec2 b2Velocity = b2Vec2(velocity->m_velocity.x, velocity->m_velocity.y);
 			if (collision->GetBody()->GetLinearVelocity().x != b2Velocity.x || collision->GetBody()->GetLinearVelocity().y != b2Velocity.y)
 				collision->GetBody()->SetLinearVelocity(b2Velocity);
 		}
@@ -59,11 +63,10 @@ void PhysicsSystem::Update(float _dt)
 			if (b2Body->GetLinearVelocity().y <= 0.5f && b2Body->GetLinearVelocity().y >= -0.5f)
 				b2Body->SetLinearVelocity(b2Vec2(b2Body->GetLinearVelocity().x, -3.0f));
 
-			// Speed cant be 0
 			float speed = b2Body->GetLinearVelocity().Length();
+			// Speed cant be 0
 			if (speed == 0)
 				continue;
-
 			// Set speed between min/max
 			if (speed < stats->GetMinSpeed())
 			{
@@ -73,7 +76,6 @@ void PhysicsSystem::Update(float _dt)
 			{
 				b2Body->SetLinearVelocity(b2Vec2((b2Body->GetLinearVelocity().x / speed) * stats->GetMaxSpeed(), (b2Body->GetLinearVelocity().y / speed) * stats->GetMaxSpeed()));
 			}
-			
 			// Deaccelerate
 			if (speed > stats->GetMaxDampingSpeed())
 			{
@@ -88,7 +90,7 @@ void PhysicsSystem::Update(float _dt)
 	// Simulate worlds physics
 	m_b2World->Step(_dt, VELOCITYITERATIONS, POSITIONITERATIONS);
 
-	// Update position, velocity and rotation component
+	// Update position, velocity and rotation components
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -104,7 +106,6 @@ void PhysicsSystem::Update(float _dt)
 
 		collision->ResetCollisions();
 
-		// Update all other components except collision
 		if (position)
 		{
 			b2Vec2 b2Pos = b2Body->GetPosition();
@@ -117,7 +118,8 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			rotation->SetRotation(MacroRotateYawPitchRoll(rotation->GetRotation().x, rotation->GetRotation().y, b2Body->GetAngle()));
+			QUAT rot = rotation->GetRotation();
+			rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
 		}
 	}
 
@@ -126,7 +128,6 @@ void PhysicsSystem::Update(float _dt)
 	{
 		if (!contact->IsTouching())
 			continue;
-
 		b2Fixture* fixtureA = contact->GetFixtureA();
 		b2Fixture* fixtureB = contact->GetFixtureB();
 		Entity* entityA = 0;
@@ -143,7 +144,6 @@ void PhysicsSystem::Update(float _dt)
 			if (entityA && entityB)
 				break;
 		}
-
 		if (entityA && entityB)
 		{
 			CollisionContact collisionContact = CollisionContact(contact, fixtureA, fixtureB, entityB->GetId());
@@ -211,9 +211,22 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::STANDARD_BLOCK_RED:
 	case EntityFactory::STANDARD_BLOCK_GREEN:
 	case EntityFactory::STANDARD_BLOCK_BLUE:
+	case EntityFactory::INDESTRUCTIBLE_BLOCK:
+	case EntityFactory::TNT_BLOCK:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::STANDARD_HORIZONTAL_RECTANGLE:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(1.0f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
@@ -226,7 +239,25 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(2.5f, 0.5f);
 		fixDef->shape = polygonShape;
-		fixDef->friction = .5f;
+		fixDef->filter.categoryBits = CollisionCategory::PAD;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_kinematicBody;
+		break;
+	case EntityFactory::SAUSAGE_PAD_MID:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(0.5f, 0.5f);
+		fixDef->shape = polygonShape;
+		fixDef->filter.categoryBits = CollisionCategory::PAD;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_kinematicBody;
+		break;
+	case EntityFactory::SAUSAGE_PAD_EDGE:
+		fixDef = new b2FixtureDef();
+		circleShape = new b2CircleShape();
+		circleShape->m_p.Set(0, 0);
+		circleShape->m_radius = 0.5f;
+		fixDef->shape = circleShape;
 		fixDef->filter.categoryBits = CollisionCategory::PAD;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_kinematicBody;
@@ -237,13 +268,12 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		circleShape->m_p.Set(0, 0);
 		circleShape->m_radius = 1.0f;
 		fixDef->shape = circleShape;
-		fixDef->density = 1.0f;
-		fixDef->friction = 1.0f;
+		fixDef->friction = 0.0f;
 		fixDef->restitution = 1.0f;
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
-		_b2BodyDef->fixedRotation = true;
+		_b2BodyDef->fixedRotation = false;
 		break;
 	case EntityFactory::PROJECTILE:
 		fixDef = new b2FixtureDef();

@@ -264,6 +264,7 @@ public:
 	~CombineFinalEffect();
 
 	void SetOpacity(float _value)					{ m_opacity->SetFloat(_value); }
+	void SetColor(const DirectX::XMFLOAT3& _v)                  { m_color->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
 	void SetTexture(ID3D11ShaderResourceView* _tex)  { m_texture->SetResource(_tex); }
 
 	ID3DX11EffectTechnique* m_monoTech;
@@ -271,8 +272,10 @@ public:
 	ID3DX11EffectTechnique* m_alphaTransparencyColorTech;
 	ID3DX11EffectTechnique* m_transparencyColorTech;
 	ID3DX11EffectTechnique* m_alphaClipColorTech;
+	ID3DX11EffectTechnique* m_textTech;
 		
 	ID3DX11EffectScalarVariable*		m_opacity;
+	ID3DX11EffectVectorVariable*		m_color;
 
 	ID3DX11EffectShaderResourceVariable* m_texture;
 };

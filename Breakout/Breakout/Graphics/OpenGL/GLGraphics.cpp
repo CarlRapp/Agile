@@ -396,16 +396,16 @@ void GLGraphics::Update(float _dt)
 {
     for(int i = m_textObjects.size()-1; i >= 0; --i)
     {
-        if(m_textObjects[i].effectTime > 1.0f)
-            m_textObjects[i].effectTime -= 0.01f;
-        
         if(m_textObjects[i].kill)
         {
-            m_textObjects[i].effectTime -= 0.01f;
-            if(m_textObjects[i].effectTime < -10)
+            if(*m_textObjects[i].effect < -10)
             {  
                 m_textObjects.erase(m_textObjects.begin() +(i));
             }
+        }
+        if(m_textObjects[i].text == nullptr)
+        {
+            m_textObjects.erase(m_textObjects.begin() +(i));
         }
     }
 }
@@ -492,9 +492,6 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     RenderInstanced();
     
-    //RenderStandard();
-    
-    
     Render2D();
     
     RenderParticles(_dt, _camera);
@@ -504,7 +501,7 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     for(int i=0; i < m_textObjects.size();i++)
     {
         
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime,m_textObjects[i].kill);
+        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effect,m_textObjects[i].kill);
     }
     
     
@@ -544,12 +541,10 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 	glUseProgram(0);
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,float effect,bool kill)
-
+void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
 {
-    if(_text == 0)
+    if(_text == nullptr)
         return;
-    
     
     GLvoid* v;
     
@@ -585,7 +580,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
 
     for(int i= 0; i < text.size();i++)
     {
-        x *= effect;
+        //x *= *effect;
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);
@@ -596,7 +591,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _col
     glActiveTexture(0);
 }
 
-void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id)
+void GLGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
     for(int i = 0; i < m_textObjects.size();i++)
     {
@@ -614,8 +609,8 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.color = _color;
     textObject.x = _x;
     textObject.y = _y;
-    textObject.effectTime = 10;
     textObject.id = _id;
+    textObject.effect = _effect;
     textObject.kill = false;
     m_textObjects.push_back(textObject);
     
@@ -843,12 +838,18 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 void GLGraphics::RemoveObject(int _id)
 {
     for(int i = m_models.size() - 1; i>= 0; --i)
-        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
-        {
-             m_models.erase(m_models.begin() + i);
-             break;
-        }
-           
+    {
+//        for(int j = m_models[i]->instances.size() -1 ; j >=0 ; j --)
+//        {
+            if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+            {
+                m_models[i]->instances.erase(m_models[i]->instances.find(_id));
+
+                 break;
+            }
+       // }
+    }
+   // m_models[] m_models[i]->instances.find(_id)
 }
 /*
 void LoadLetters()

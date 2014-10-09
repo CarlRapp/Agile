@@ -38,12 +38,14 @@ void CollisionDeflectionSystem::Update(float _dt)
 				if (speed < otherDeflection->GetDeflection() && speed != 0)
 				{
 					b2Vec2 velocity = b2Body->GetLinearVelocity();
+					float deflection = otherDeflection->GetDeflection();
 					e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3
 						(
-						(velocity.x / speed) * otherDeflection->GetDeflection(),
-						(velocity.y / speed) * otherDeflection->GetDeflection(),
+						(velocity.x / speed) * deflection,
+						(velocity.y / speed) * deflection,
 						e->GetComponent<VelocityComponent>()->m_velocity.z
 						);
+					
 				}
 			}
 		}

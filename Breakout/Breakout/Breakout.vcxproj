@@ -92,7 +92,6 @@
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
-    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
@@ -164,6 +163,7 @@
     <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h" />
     <ClInclude Include="ComponentSystem\Component\TextComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\TNTComponent.h" />
     <ClInclude Include="ComponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ComponentSystem\EntityFactory.h" />
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
@@ -179,7 +179,6 @@
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
-    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
@@ -198,6 +197,7 @@
     <ClInclude Include="Graphics\DirectX\DXParticleSystem.h" />
     <ClInclude Include="Graphics\DirectX\DXRenderStates.h" />
     <ClInclude Include="Graphics\DirectX\DXShadowMap.h" />
+    <ClInclude Include="Graphics\DirectX\DXText.h" />
     <ClInclude Include="Graphics\DirectX\DXTextureManager.h" />
     <ClInclude Include="Graphics\DirectX\DXVertex.h" />
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />

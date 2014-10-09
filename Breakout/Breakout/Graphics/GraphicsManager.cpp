@@ -114,9 +114,9 @@ ICamera* GraphicsManager::GetICamera()
 	return m_ICamera;
 }
 
-void GraphicsManager::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,float* _x,float* _y,int _id)
+void GraphicsManager::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
-    m_IGraphics->AddTextObject(_text,_scale,_color,_x,_y,_id);
+    m_IGraphics->AddTextObject(_id, _text, _x, _y, _scale, _color, _effect);
 }
 
 void GraphicsManager::RemoveTextObject(int _id)
