@@ -249,14 +249,17 @@ void DXGraphics::Update(float _dt)
 
 	for (auto it = m_texts.begin(); it != m_texts.end(); ++it)
 	{
-		it->second->Letters.clear();
+		it->second->Indices.clear();
 		for (int i = 0; i < it->second->Text->size(); ++i)
 		{
-			DXText::Letter letter;
+			/*DXText::Letter letter;
 			char c = toupper(it->second->Text->at(i));
 			letter.SRV = m_textureManager.GetSymbolTexture(c);
 
-			it->second->Letters.push_back(letter);
+			it->second->Letters.push_back(letter);*/
+			char c = toupper(it->second->Text->at(i));
+			int index = m_textureManager.GetSymbolIndex(c);
+			it->second->Indices.push_back(index);
 		}
 	}
 }
@@ -289,7 +292,7 @@ void DXGraphics::Render(float _dt, ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), _camera);
 
 	m_swapChain->Present(0, 0);
 
