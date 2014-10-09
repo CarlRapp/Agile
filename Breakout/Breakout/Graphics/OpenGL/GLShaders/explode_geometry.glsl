@@ -31,25 +31,41 @@ out GS_FS
 
 void main() 
 {
-    mat4 localMatModel = GSIn[0].matModel;
-
-    vec3 faceEdgeA = vec3(GSIn[1].worldPos - GSIn[0].worldPos);
-    vec3 faceEdgeB = vec3(GSIn[2].worldPos - GSIn[0].worldPos);
-    vec3 faceNormal = normalize( cross(faceEdgeA, faceEdgeB) );
-    vec3 explodeVec = faceNormal;
-
-    for (int i = 0; i < 3; i++) 
+    if(GSIn[0].explode > 0)
     {
-        GSOut.normal = GSIn[i].normal;
-        GSOut.texCoord = GSIn[i].texCoord;
-        GSOut.worldPos = GSIn[i].worldPos + vec4(faceNormal*GSIn[0].explode,0);//explodeVec;
+        mat4 localMatModel = GSIn[0].matModel;
 
-        GSOut.color = GSIn[i].color;
+        vec3 faceEdgeA = vec3(GSIn[1].worldPos - GSIn[0].worldPos);
+        vec3 faceEdgeB = vec3(GSIn[2].worldPos - GSIn[0].worldPos);
+        vec3 faceNormal = normalize( cross(faceEdgeA, faceEdgeB) );
 
-        gl_Position = m_matProj*m_matView*GSOut.worldPos;
+        for (int i = 0; i < 3; i++) 
+        {
+            GSOut.normal = GSIn[i].normal;
+            GSOut.texCoord = GSIn[i].texCoord;
+            GSOut.worldPos = GSIn[i].worldPos + vec4(faceNormal*GSIn[0].explode,0);//explodeVec;
 
-        EmitVertex();
+            GSOut.color = GSIn[i].color;
+
+            gl_Position = m_matProj*m_matView*GSOut.worldPos;
+
+            EmitVertex();
+        }
     }
+    else
+    {
+        for (int i = 0; i < 3; i++) 
+        {
+            GSOut.normal = GSIn[i].normal;
+            GSOut.texCoord = GSIn[i].texCoord;
+            GSOut.worldPos = GSIn[i].worldPos;
+            GSOut.color = GSIn[i].color;
+            gl_Position = m_matProj*m_matView*GSOut.worldPos;
+
+            EmitVertex();
+        }
+    }
+
 
     EndPrimitive();
 }

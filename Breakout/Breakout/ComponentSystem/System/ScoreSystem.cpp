@@ -41,7 +41,7 @@ void ScoreSystem::Update(float _dt)
 			auto SC = player->at(0)->GetComponent<ScoreComponent>();
                         SC->m_score += e->GetComponent<ScoreComponent>()->m_score;
                         SC->SetString();
-                        
+                        printf("%d\n",SC->m_score);
                         
 			//printf("Score: %i\n", player->at(0)->GetComponent<ScoreComponent>()->m_score);
 		}
