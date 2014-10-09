@@ -330,7 +330,7 @@ PsOut PS(PixelIn pin,
 
 	pout.NormalSpec.xyz = (NormalW + float3(1.0f, 1.0f, 1.0f)) * 0.5f;
 	pout.NormalSpec.w  	= gMaterial.SpecPower / 1000.0f;
-	pout.Albedo.w  		= gMaterial.SpecIntensity;
+	pout.Albedo.w  		= gMaterial.SpecIntensity / 10.0f;
 	
 	//pout.NormalSpec = float4(1,0,0,1);
 	
