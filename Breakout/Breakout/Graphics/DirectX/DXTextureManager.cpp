@@ -31,6 +31,100 @@ void DXTextureManager::Init(ID3D11Device* _device)
 
 void DXTextureManager::InitLetters(ID3D11Device* _device)
 {
+	std::vector<LetterInfo> letters;
+
+	letters.push_back(LetterInfo('A', DXText::A));
+	letters.push_back(LetterInfo('B', DXText::B));
+	letters.push_back(LetterInfo('C', DXText::C));
+	letters.push_back(LetterInfo('D', DXText::D));
+	letters.push_back(LetterInfo('E', DXText::E));
+	letters.push_back(LetterInfo('F', DXText::F));
+	letters.push_back(LetterInfo('G', DXText::G));
+	letters.push_back(LetterInfo('H', DXText::H));
+	letters.push_back(LetterInfo('I', DXText::I));
+	letters.push_back(LetterInfo('J', DXText::J));
+	letters.push_back(LetterInfo('K', DXText::K));
+	letters.push_back(LetterInfo('L', DXText::L));
+	letters.push_back(LetterInfo('M', DXText::M));
+	letters.push_back(LetterInfo('N', DXText::N));
+	letters.push_back(LetterInfo('O', DXText::O));
+	letters.push_back(LetterInfo('P', DXText::P));
+	letters.push_back(LetterInfo('Q', DXText::Q));
+	letters.push_back(LetterInfo('R', DXText::R));
+	letters.push_back(LetterInfo('S', DXText::S));
+	letters.push_back(LetterInfo('T', DXText::T));
+	letters.push_back(LetterInfo('U', DXText::U));
+	letters.push_back(LetterInfo('V', DXText::V));
+	letters.push_back(LetterInfo('W', DXText::W));
+	letters.push_back(LetterInfo('X', DXText::X));
+	letters.push_back(LetterInfo('Y', DXText::Y));
+	letters.push_back(LetterInfo('Z', DXText::Z));
+
+	letters.push_back(LetterInfo('1', DXText::_1));
+	letters.push_back(LetterInfo('2', DXText::_2));
+	letters.push_back(LetterInfo('3', DXText::_3));
+	letters.push_back(LetterInfo('4', DXText::_4));
+	letters.push_back(LetterInfo('5', DXText::_5));
+	letters.push_back(LetterInfo('6', DXText::_6));
+	letters.push_back(LetterInfo('7', DXText::_7));
+	letters.push_back(LetterInfo('8', DXText::_8));
+	letters.push_back(LetterInfo('9', DXText::_9));
+	letters.push_back(LetterInfo('0', DXText::_0));
+
+	letters.push_back(LetterInfo(':', DXText::_colon));
+	letters.push_back(LetterInfo(';', DXText::_semicolon));
+	letters.push_back(LetterInfo('<', DXText::_lessthan));
+	letters.push_back(LetterInfo('=', DXText::_equal));
+	letters.push_back(LetterInfo('>', DXText::_morethan));
+	letters.push_back(LetterInfo('?', DXText::_question));
+	letters.push_back(LetterInfo('@', DXText::_at));
+	letters.push_back(LetterInfo(' ', DXText::_space));
+	letters.push_back(LetterInfo('!', DXText::_exclamation));
+	letters.push_back(LetterInfo('"', DXText::_quote));
+	letters.push_back(LetterInfo('#', DXText::_number));
+	letters.push_back(LetterInfo('$', DXText::_dollar));
+	letters.push_back(LetterInfo('%', DXText::_percent));
+	letters.push_back(LetterInfo('&', DXText::_ampersand));
+	letters.push_back(LetterInfo('´', DXText::_apostrophe));
+	letters.push_back(LetterInfo('(', DXText::_leftbrace));
+	letters.push_back(LetterInfo(')', DXText::_rightbrace));
+	letters.push_back(LetterInfo('*', DXText::_asterisk));
+	letters.push_back(LetterInfo('+', DXText::_plus));
+	letters.push_back(LetterInfo(',', DXText::_comma));
+	letters.push_back(LetterInfo('-', DXText::_minus));
+	letters.push_back(LetterInfo('.', DXText::_dot));
+	letters.push_back(LetterInfo('/', DXText::_slash));
+
+
+	//AddSymbolTexture(_device, ':', DXText::A);
+	//AddSymbolTexture(_device, ';', DXText::A);
+	//AddSymbolTexture(_device, '<', DXText::A);
+	//AddSymbolTexture(_device, '=', DXText::A);
+	//AddSymbolTexture(_device, '>', DXText::A);
+	//AddSymbolTexture(_device, '?', DXText::A);
+	//AddSymbolTexture(_device, '@', DXText::A);
+	//AddSymbolTexture(_device, ' ', DXText::A);
+	//AddSymbolTexture(_device, '!', DXText::A);
+	//AddSymbolTexture(_device, '"', DXText::A);
+	//AddSymbolTexture(_device, '#', DXText::A);
+	//AddSymbolTexture(_device, '$', DXText::A);
+	//AddSymbolTexture(_device, '%', DXText::A);
+	//AddSymbolTexture(_device, '&', DXText::A);
+	//AddSymbolTexture(_device, '´', DXText::A);
+	//AddSymbolTexture(_device, '(', DXText::A);
+	//AddSymbolTexture(_device, ')', DXText::A);
+	//AddSymbolTexture(_device, '*', DXText::A);
+	//AddSymbolTexture(_device, '+', DXText::A);
+	//AddSymbolTexture(_device, ',', DXText::A);
+	//AddSymbolTexture(_device, '-', DXText::A);
+	//AddSymbolTexture(_device, '.', DXText::A);
+	//AddSymbolTexture(_device, '/', DXText::A);
+
+
+
+	CreateSymbolsTexture(_device, letters);
+
+
 	AddSymbolTexture(_device, 'A', DXText::A);
 	AddSymbolTexture(_device, 'B', DXText::B);
 	AddSymbolTexture(_device, 'C', DXText::C);
@@ -162,6 +256,69 @@ void DXTextureManager::buildRandomTex(ID3D11Device *Device)
 	HRESULT(Device->CreateShaderResourceView(randomTex, &viewDesc, &m_RandomTex));
 
 	ReleaseCOM(randomTex);
+}
+
+
+void DXTextureManager::CreateSymbolsTexture(ID3D11Device *_device, std::vector<LetterInfo> &_letters)
+{
+	//
+	// Create the random data.
+	//
+
+	float* data = (float*)malloc(_letters.size() * 64 * sizeof(float));
+
+	int l = 0;
+	for (int i = 0; i < 8; ++i)
+	{
+		for (int j = 0; j < _letters.size(); ++j)
+		{
+			for (int k = 0; k < 8; ++k)
+			{
+				data[l] = _letters[j].data[i * 8 + k];
+				++l;
+			}
+			m_symbolIndices[_letters[j].symbol] = j;
+		}
+	}
+
+
+	D3D11_SUBRESOURCE_DATA initData;
+	initData.pSysMem = data;
+	initData.SysMemPitch = 8 * _letters.size() * sizeof(float);
+	initData.SysMemSlicePitch = 0;
+	//
+	// Create the texture.
+	//
+	D3D11_TEXTURE2D_DESC texDesc;
+	texDesc.Width = 8 * _letters.size();
+	texDesc.Height = 8;
+	texDesc.MipLevels = 1;
+	texDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = 0;
+	texDesc.ArraySize = 1;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+
+
+	ID3D11Texture2D* symbolsTex = 0;
+	HRESULT r = HRESULT(_device->CreateTexture2D(&texDesc, &initData, &symbolsTex));
+	//
+	// Create the resource view.
+	//
+
+	ID3D11ShaderResourceView *letterSRV = NULL;
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+	viewDesc.Format = texDesc.Format;
+	viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	viewDesc.Texture2D.MipLevels = texDesc.MipLevels;
+	viewDesc.Texture2D.MostDetailedMip = 0;
+	HRESULT(_device->CreateShaderResourceView(symbolsTex, &viewDesc, &m_SymbolsTex));
+
+	ReleaseCOM(symbolsTex);
 }
 
 ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device, float* _data)

@@ -7,6 +7,8 @@ cbuffer Object
 cbuffer ObjectText
 {
 	float3 g_Color;
+	float	g_Index;
+	float	g_NumSymbols;
 };
 
 Texture2D g_Texture;
@@ -65,6 +67,21 @@ PSSceneIn VSScene(VSIn input)
 	return output;
 }
 
+
+PSSceneIn VSText(VSIn input)
+{
+	PSSceneIn output = (PSSceneIn)0;
+	output.Pos = float4(input.Pos, 0, 1);
+
+	if (input.Tex.x == 0)
+		output.Tex.x = g_Index / g_NumSymbols;
+	else
+		output.Tex.x = (g_Index + 1) / g_NumSymbols;
+
+	output.Tex.y = 1 - input.Tex.y;
+	return output;
+}
+
 //-----------------------------------------------------------------------------------------
 // PixelShader: PSSceneMain
 //-----------------------------------------------------------------------------------------
@@ -96,11 +113,11 @@ float4 PSText(PSSceneIn input) : SV_Target
 	float4 result;
 
 	float2 tex = input.Tex;
-	tex.y = 1 - tex.y;
+	//tex.y = 1 - tex.y;
 
 	result.xyz = g_Color;
 	result.a = g_Texture.SampleLevel(g_TextSampler, tex, 0).x;
-
+	//result.a = 1;
 	return result;
 }
 
@@ -214,7 +231,7 @@ technique11 Text
 	pass p0
 	{
 		// Set VS, GS, and PS
-		SetVertexShader(CompileShader(vs_4_0, VSScene()));
+		SetVertexShader(CompileShader(vs_4_0, VSText()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, PSText()));
 		SetBlendState(Transparency, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
