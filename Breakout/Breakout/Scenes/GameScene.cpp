@@ -24,7 +24,7 @@ void GameScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 	
-	AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
+	//AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -197,8 +197,8 @@ void GameScene::Reset()
     auto TC = e->GetComponent<TextComponent>();
     TC->Initialize(&fpsString, 0.1f, 0.9f, 2.f, VECTOR3(0,1,0), 0);
     m_fpsCounterID = e->GetId();
-    m_world->AddEntity(e);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    ///m_world->AddEntity(e);
+   // GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
         
 	for (int i = 0; i < 50; ++i)
 	{
