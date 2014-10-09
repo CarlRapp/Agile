@@ -171,6 +171,7 @@ void BlockSystem::OnEntityRemoved(Entity* _e)
 
 void BlockSystem::CheckGroupOfBlocks(std::map<GridPosition, bool>* _blocks)
 {
+
 	std::map<GridPosition, bool>::iterator gIT;
 	for (gIT = _blocks->begin(); gIT != _blocks->end(); ++gIT)
 	{
@@ -211,26 +212,6 @@ void BlockSystem::CheckGroupOfBlocks(std::map<GridPosition, bool>* _blocks)
 
 		}
 		gIT->second = true;
-	}
-}
-
-void BlockSystem::CheckIndividualBlock(int _x, int _y)
-{
-	Entity* block = m_blockGrid[_y][_x];
-	if (block)
-	{
-		std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
-		GetBlocksAttachedTo(_x, _y, &blockGroup);
-
-		if (!GroupCanReachRoot(&blockGroup))
-		{
-			std::map<GridPosition, bool>::iterator gIT;
-			for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
-			{
-				m_blockGrid[gIT->first.second][gIT->first.first]->SetState(Entity::SOON_DEAD);
-				m_blockGrid[gIT->first.second][gIT->first.first] = 0;
-			}
-		}
 	}
 }
 
