@@ -84,23 +84,32 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
     
 //------------------------------------------------------------------------------------
-    m_particleShaderProgram.CreateShaderProgram();
+    m_fireParticlesProgram.CreateShaderProgram();
     
-    m_particleShaderProgram.AddShader("particleShader_vertex.glsl",GL_VERTEX_SHADER);
-    m_particleShaderProgram.AddShader("particleShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
     
     const char * outputNames[] = { "Position", "Velocity", "StartTime" };
-    glTransformFeedbackVaryings(m_particleShaderProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+    glTransformFeedbackVaryings(m_fireParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
 
-    m_particleShaderProgram.LinkShaderProgram();
-//------------------------------------------------------------------------------------
-    glEnable(GL_BLEND);
-    
-    glEnable(GL_POINT_SPRITE);
+    m_fireParticlesProgram.LinkShaderProgram();
     m_texManager.Load2DTexture("fire3.png", GL_TEXTURE0);
-   // m_particlesFire = new GLParticleSystem("fire", vec3(0, 0, -5), 200, 800, 20.f, 
-   //                                         m_texManager.GetTexturePointer("red.png"), m_particleShaderProgram.GetProgramHandlePointer());
-  
+//------------------------------------------------------------------------------------
+    m_trailParticlesProgram.CreateShaderProgram();
+    
+    m_trailParticlesProgram.AddShader("trailParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_trailParticlesProgram.AddShader("trailParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_trailParticlesProgram.LinkShaderProgram();
+    m_texManager.Load2DTexture("circle.png", GL_TEXTURE0);
+//------------------------------------------------------------------------------------
+    
+    glEnable(GL_BLEND);
+    glEnable(GL_POINT_SPRITE);
+   
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
@@ -367,12 +376,16 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 30, 600, 85.f, 
-                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_particleShaderProgram.GetProgramHandlePointer())));
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
+                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
+    }
+    else if(_effect == "trail")
+    {
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 50.f, 
+                                                                                    m_texManager.GetTexturePointer("circle.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
     }
 }
         
-
 void GLGraphics::RemoveParticleEffect(int _id)
 {
     delete(m_particleEffects[_id]);
@@ -381,20 +394,18 @@ void GLGraphics::RemoveParticleEffect(int _id)
 
 void GLGraphics::Update(float _dt) 
 {
-//    for(int i = m_textObjects.size()-1; i >= 0; --i)
-//    {
-//        if(m_textObjects[i].effectTime > 1.0f)
-//            m_textObjects[i].effectTime -= 0.01f;
-//        
-//        if(m_textObjects[i].kill)
-//        {
-//            m_textObjects[i].effectTime -= 0.01f;
-//            if(m_textObjects[i].effectTime < -10)
-//            {  
-//                m_textObjects.erase(m_textObjects.begin() +(i));
-//            }
-//        }
-//    }
+    for(int i = m_textObjects.size()-1; i >= 0; --i)
+    {
+        if(m_textObjects[i].text == NULL)
+        {
+            m_textObjects[i].effectCopy -= _dt*10;
+
+            if(m_textObjects[i].effectCopy < -10)
+            {  
+                m_textObjects.erase(m_textObjects.begin() +(i));
+            }
+        }
+    }
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -479,9 +490,6 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     RenderInstanced();
     
-    //RenderStandard();
-    
-    
     Render2D();
     
     RenderParticles(_dt, _camera);
@@ -490,41 +498,50 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
 
     for(int i=0; i < m_textObjects.size();i++)
     {
-        
-        RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effect,m_textObjects[i].kill);
+        if(!m_textObjects[i].kill)
+            RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effect,m_textObjects[i].kill);
+        else
+            RenderText(&m_textObjects[i].textCopy,&m_textObjects[i].scaleCopy,&m_textObjects[i].colorCopy,&m_textObjects[i].xCopy,&m_textObjects[i].yCopy,&m_textObjects[i].effectCopy,&m_textObjects[i].kill);
     }
-    
     
     SDL_GL_SwapBuffers( );
 }
 
 void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 {
-	m_particleShaderProgram.UseProgram();
-
-	glUniformMatrix4fv(glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);//&mCameraProjectionMat[0][0]);
-
+	
 	glEnable(GL_BLEND);
         glEnable(GL_POINT_SPRITE);
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
         
-	glActiveTexture(GL_TEXTURE0);
-
 	for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
 	{
-		glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
+            ShaderHandler *tmp;
+            if(it->second->GetName() == "fire")
+                tmp = &m_fireParticlesProgram;
+            else if(it->second->GetName() == "trail")
+                tmp = &m_trailParticlesProgram;
+            
+            tmp->UseProgram();
+            glActiveTexture(GL_TEXTURE0);
 
-                //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
-		glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
-		glm::mat4 viewMatrix = *_camera->GetView();//mCam->GetCamViewMatrix();
-		glm::mat4 ModelView = viewMatrix * Model;
+            glUniformMatrix4fv(glGetUniformLocation(tmp->GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);
+            
+            glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
 
-		GLuint location = glGetUniformLocation(m_particleShaderProgram.GetProgramHandle(), "ModelView");	//gets the UniformLocation
-		if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &ModelView[0][0]); }
+            //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
+            glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
+            glm::mat4 viewMatrix = *_camera->GetView();
 
-		it->second->Render(&m_particleShaderProgram, dt);
+            GLuint location = glGetUniformLocation(tmp->GetProgramHandle(), "Model");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &Model[0][0]); }
+            
+            location = glGetUniformLocation(tmp->GetProgramHandle(), "View");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &viewMatrix[0][0]); }
+
+            it->second->Render(tmp, dt);
 	}
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
@@ -532,17 +549,14 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 }
 
 void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
-
 {
-    if(_text == 0)
+    if(_text == NULL)
         return;
-    
     
     GLvoid* v;
     
     std::string text = (*_text);
     float scale = (*_scale);
-    //unsigned int color = (*_color);
     float x = (*_x);
     float y = (*_y);
     
@@ -572,12 +586,13 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 
     for(int i= 0; i < text.size();i++)
     {
-        //x *= *effect;
+        x = ((*_x) + width*i) * (*effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
         glUniform1i(letterLocation, text.at(i)-32);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        x += width;
+        
+        //x += width;
     }
     glBindVertexArray(0);
     glActiveTexture(0);
@@ -614,6 +629,21 @@ void GLGraphics::RemoveTextObject(int _id)
     {
         if(m_textObjects[i].id == _id)
         {
+            //When textobject is removed from world, copy data to graphics to play out-effect
+            m_textObjects[i].textCopy   = *m_textObjects[i].text;
+            m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
+            m_textObjects[i].colorCopy  = *m_textObjects[i].color;
+            m_textObjects[i].xCopy      = *m_textObjects[i].x;
+            m_textObjects[i].yCopy      = *m_textObjects[i].y;
+            m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+            
+            m_textObjects[i].text   =NULL;
+            m_textObjects[i].scale  =NULL;
+            m_textObjects[i].color  =NULL;
+            m_textObjects[i].x      =NULL;
+            m_textObjects[i].y      =NULL;
+            m_textObjects[i].effect =NULL;
+            
             m_textObjects[i].kill = true;
             break;
         }
@@ -830,12 +860,18 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 void GLGraphics::RemoveObject(int _id)
 {
     for(int i = m_models.size() - 1; i>= 0; --i)
-        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
-        {
-             m_models.erase(m_models.begin() + i);
-             break;
-        }
-           
+    {
+//        for(int j = m_models[i]->instances.size() -1 ; j >=0 ; j --)
+//        {
+            if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+            {
+                m_models[i]->instances.erase(m_models[i]->instances.find(_id));
+
+                 break;
+            }
+       // }
+    }
+   // m_models[] m_models[i]->instances.find(_id)
 }
 /*
 void LoadLetters()

@@ -778,6 +778,8 @@ void DXDeferred::Render(float _dt,
 	map<int, DX2DTextureInstance*> &_textureInstances,
 	map<int, DXParticleSystem*>		&_particleSystems,
 	map<int, DXText::String*>		&_texts,
+	ID3D11ShaderResourceView* _symbolsTex,
+	int _numSymbols,
 	ICamera* _camera)
 {
 
@@ -798,17 +800,23 @@ void DXDeferred::Render(float _dt,
 	Render2DTextures(_renderTargetView, _textureInstances);
 
 
-	RenderTexts(_renderTargetView, _texts);
+	//RenderQuad(m_viewPort, _symbolsTex, DXEffects::m_combineFinalFX->m_textTech);
+
+	RenderTexts(_renderTargetView, _texts, _symbolsTex, _numSymbols);
 
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
 }
-void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts)
+void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts, ID3D11ShaderResourceView* _symbolsTex, int _numSymbols)
 {
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, NULL);
 	m_deviceContext->OMSetDepthStencilState(DXRenderStates::m_noDSS, 0);
+
+
+	DXEffects::m_combineFinalFX->SetTexture(_symbolsTex);
+	DXEffects::m_combineFinalFX->SetNumSymbols((float)_numSymbols);
 
 	map<int, DXText::String*>::iterator tIterator;
 	for (tIterator = _texts.begin(); tIterator != _texts.end(); ++tIterator)
@@ -817,20 +825,24 @@ void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int,
 	}
 
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
+
+	DXEffects::m_combineFinalFX->SetTexture(NULL);
+	DXEffects::m_combineFinalFX->m_textTech->GetPassByIndex(0)->Apply(0, m_deviceContext);
 }
+
 
 void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::String *_text)
 {
 	float W = 8.0f / m_width * *_text->Scale;
 	float H = 8.0f / m_height * *_text->Scale;
 
-	float x = *_text->X * m_width;
+	float x = *_text->X;
 	float y = (1 - (*_text->Y + H)) * m_height;
 
-	W *= m_width;
+	//W *= m_width;
 	H *= m_height;
 
-	float effect = _text->Effect ? *_text->Effect * H : 0.0f;
+	float effect = _text->Effect ? *_text->Effect : 1.0f;
 
 
 	if (_text->Color)
@@ -838,18 +850,36 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	else
 		DXEffects::m_combineFinalFX->SetColor(VECTOR3(1,1,1));
 
-	for (int i = 0; i < _text->Letters.size(); ++i)
+
+	for (int i = 0; i < _text->Indices.size(); ++i)
 	{
 		D3D11_VIEWPORT vp;
-		vp.TopLeftX = x + H * i + effect * i;
+		vp.TopLeftX = (x + W * i) * effect * m_width;
 		vp.TopLeftY = y;
 		vp.MinDepth = 0.0f;
 		vp.MaxDepth = 1.0f;
-		vp.Width = W;
+		vp.Width = W * m_width;
 		vp.Height = H;
 
 
-		RenderQuad(vp, _text->Letters[i].SRV, DXEffects::m_combineFinalFX->m_textTech);
+		m_deviceContext->RSSetViewports(1, &vp);
+		m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		m_deviceContext->IASetInputLayout(DXInputLayouts::m_quad);
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		DXEffects::m_combineFinalFX->m_textTech->GetDesc(&techDesc);
+
+		DXEffects::m_combineFinalFX->SetIndex((float)_text->Indices[i]);
+
+		for (UINT p = 0; p < techDesc.Passes; ++p)
+		{
+			DXEffects::m_combineFinalFX->m_textTech->GetPassByIndex(p)->Apply(0, m_deviceContext);
+
+			UINT offset = 0;
+			UINT vertexStride = sizeof(DXVertex::Quad);
+			m_deviceContext->IASetVertexBuffers(0, 1, &m_fullSceenQuad, &vertexStride, &offset);
+			m_deviceContext->Draw(4, 0);
+		}
 	}
 }
 

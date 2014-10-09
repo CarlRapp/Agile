@@ -2,6 +2,7 @@
 #include "../Component/PositionComponent.h"
 #include "../Component/ScaleComponent.h"
 #include "../Component/CollisionComponent.h"
+#include "../Component/ScoreComponent.h"
 #include "../Component/TNTComponent.h"
 #include "../Component/EffectComponent.h"
 #include "../World.h"
@@ -71,6 +72,7 @@ void BlockSystem::OnEntityAdded(Entity* _block)
 				PushDown(xPos + n, yPos);
 				m_blockGrid[yPos][xPos + n] = 0;
 			}
+
 				
 		}
 		for (int n = 0; n < blockDimension.x; ++n)
@@ -138,29 +140,80 @@ void BlockSystem::OnEntityRemoved(Entity* _e)
 
 
 
-
-
+	std::vector<ScoreComponent> collectedScore = std::vector<ScoreComponent>();
+	std::map<GridPosition, bool> blocksToCheck = std::map<GridPosition, bool>();
 	//	Check LEFT
 	if (X - 1 >= 0)
 		for (int n = 0; n < mDimension.y; ++n)
-			CheckIndividualBlock(X - 1, Y + n);
+			blocksToCheck[GridPosition(X - 1, Y - n)] = false;
+			//CheckIndividualBlock(X - 1, Y + n);
 
 	//	Check RIGHT
 	if (X + mDimension.x < m_dimensionX)
 		for (int n = 0; n < mDimension.y; ++n)
-			CheckIndividualBlock(X + mDimension.x, Y + n);
+			blocksToCheck[GridPosition(X + (int)mDimension.x, Y + n)] = false;
+			//CheckIndividualBlock(X + mDimension.x, Y + n);
 
 	//	Check DOWN
 	if (Y + mDimension.y < m_dimensionY)
 		for (int n = 0; n < mDimension.x; ++n)
-			CheckIndividualBlock(X + n, Y + mDimension.y);
+			blocksToCheck[GridPosition(X + n, Y + (int)mDimension.y)] = false;
+			//CheckIndividualBlock(X + n, Y + mDimension.y);
 
 	//	Check UP
 	if (Y - 1 >= 0)
 		for (int n = 0; n < mDimension.x; ++n)
-			CheckIndividualBlock(X + n, Y - 1);
+			blocksToCheck[GridPosition(X + n, Y - 1)] = false;
+			//CheckIndividualBlock(X + n, Y - 1);
 	
+	CheckGroupOfBlocks(&blocksToCheck);
 }
+
+void BlockSystem::CheckGroupOfBlocks(std::map<GridPosition, bool>* _blocks)
+{
+	std::map<GridPosition, bool>::iterator gIT;
+	for (gIT = _blocks->begin(); gIT != _blocks->end(); ++gIT)
+	{
+		if (gIT->second)
+			continue;
+
+		int xPos = gIT->first.first;
+		int yPos = gIT->first.second;
+		if (m_blockGrid[yPos][xPos])
+		{
+			//	Get all blocks attached to the current block
+			std::map<GridPosition, bool> blockGroup = std::map<GridPosition, bool>();
+			GetBlocksAttachedTo(xPos, yPos, &blockGroup);
+
+			//	If the group can reach the root
+			//	check if any of the other blocks in _blocks
+			//	is in this group, which means we don't have tot check those.
+			if (GroupCanReachRoot(&blockGroup))
+			{
+				std::map<GridPosition, bool>::iterator alreadyExists;
+				for (alreadyExists = blockGroup.begin(); alreadyExists != blockGroup.end(); ++alreadyExists)
+				{
+					if (blockGroup.find(alreadyExists->first) != blockGroup.end())
+						alreadyExists->second = true;
+				}
+			}
+			else
+			{
+				//	Remove all the blocks that couldn't reach the root
+				std::map<GridPosition, bool>::iterator destroyBlock;
+				for (destroyBlock = blockGroup.begin(); destroyBlock != blockGroup.end(); ++destroyBlock)
+				{
+					m_blockGrid[destroyBlock->first.second][destroyBlock->first.first]->SetState(Entity::SOON_DEAD);
+					m_blockGrid[destroyBlock->first.second][destroyBlock->first.first] = 0;
+				}
+			}
+
+
+		}
+		gIT->second = true;
+	}
+}
+
 void BlockSystem::CheckIndividualBlock(int _x, int _y)
 {
 	Entity* block = m_blockGrid[_y][_x];
@@ -189,7 +242,6 @@ void BlockSystem::SpawnBlockAt(Entity* _block, int _x, int _y)
 		PushDown(_x, _y);
 
 	m_blockGrid[_y][_x] = _block;
-	//MoveToWorldPosition(_block, _x, _y);
 }
 
 void BlockSystem::PushDown(int _x, int _y)

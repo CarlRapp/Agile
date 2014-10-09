@@ -81,7 +81,7 @@ void main(void)
 
     vec4 texColor = texture( m_standardTex, vertex.texCoord );
     
-    gl_FragColor = vec4(diffAndSpec + ambient, 1.0) * texColor;
+    gl_FragColor = vec4(diffAndSpec*2 + ambient, 1.0) * texColor;
 
     //gl_FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
 }
