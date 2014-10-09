@@ -381,20 +381,20 @@ void GLGraphics::RemoveParticleEffect(int _id)
 
 void GLGraphics::Update(float _dt) 
 {
-//    for(int i = m_textObjects.size()-1; i >= 0; --i)
-//    {
-//        if(m_textObjects[i].effectTime > 1.0f)
-//            m_textObjects[i].effectTime -= 0.01f;
-//        
-//        if(m_textObjects[i].kill)
-//        {
-//            m_textObjects[i].effectTime -= 0.01f;
-//            if(m_textObjects[i].effectTime < -10)
-//            {  
-//                m_textObjects.erase(m_textObjects.begin() +(i));
-//            }
-//        }
-//    }
+    for(int i = m_textObjects.size()-1; i >= 0; --i)
+    {
+        if(m_textObjects[i].kill)
+        {
+            if(*m_textObjects[i].effect < -10)
+            {  
+                m_textObjects.erase(m_textObjects.begin() +(i));
+            }
+        }
+        if(m_textObjects[i].text == nullptr)
+        {
+            m_textObjects.erase(m_textObjects.begin() +(i));
+        }
+    }
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -479,9 +479,6 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     RenderInstanced();
     
-    //RenderStandard();
-    
-    
     Render2D();
     
     RenderParticles(_dt, _camera);
@@ -532,11 +529,9 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 }
 
 void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill)
-
 {
-    if(_text == 0)
+    if(_text == nullptr)
         return;
-    
     
     GLvoid* v;
     
@@ -830,12 +825,18 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 void GLGraphics::RemoveObject(int _id)
 {
     for(int i = m_models.size() - 1; i>= 0; --i)
-        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
-        {
-             m_models.erase(m_models.begin() + i);
-             break;
-        }
-           
+    {
+//        for(int j = m_models[i]->instances.size() -1 ; j >=0 ; j --)
+//        {
+            if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+            {
+                m_models[i]->instances.erase(m_models[i]->instances.find(_id));
+
+                 break;
+            }
+       // }
+    }
+   // m_models[] m_models[i]->instances.find(_id)
 }
 /*
 void LoadLetters()

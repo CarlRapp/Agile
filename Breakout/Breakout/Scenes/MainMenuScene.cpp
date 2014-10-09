@@ -87,6 +87,12 @@ void MainMenuScene::OnInactive()
 			GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(eIT->second));
 			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
+                        
+                        if(eIT->second->HasComponent<TextComponent>())
+                        {
+                            auto TC = eIT->second->GetComponent<TextComponent>();
+                            TC->m_text = nullptr;
+                        }
 		}
 
 		
