@@ -115,17 +115,17 @@ void GameScene::Update(float _dt)
 
 		EntityFactory::EntityType type;
 
-		if (rnd >= 0 && rnd < 5)
+		if (rnd >= 0 && rnd < 20)
 			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if(rnd >= 5 && rnd < 10)
+		else if (rnd >= 20 && rnd < 40)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if(rnd >= 10 && rnd < 15)
+		else if (rnd >= 40 && rnd < 60)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 15 && rnd < 20)
+		else if (rnd >= 60 && rnd < 80)
 			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd == 20)
+		else if (rnd >= 80 && rnd < 90)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else
+		else if (rnd >= 90 && rnd < 100)
 			type = EntityFactory::TNT_BLOCK;
 
 		EntityFactory::GetInstance()->CreateEntity(e, type);
@@ -336,17 +336,28 @@ void GameScene::Reset()
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         TC = t->GetComponent<TextComponent>();
 
-        TC->Initialize(SC->GetString(),0.82f, 0.92f, 2.5f, VECTOR3(0,1,1), 20);
+		TC->Initialize(SC->GetString(), 0.005f, 0.9f, 2.f, VECTOR3(0, 1, 1), 5);
         m_world->AddEntity(t);
-	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), SC->GetString(), &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(t), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 	SC->SetString();
 
+
+	auto LC = e->GetComponent<LifeComponent>();
+
+	Entity* t2 = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(t2, EntityFactory::TEXT);
+	TC = t2->GetComponent<TextComponent>();
+
+	TC->Initialize(LC->GetString(), 0.005f, 0.87f, 2.f, VECTOR3(0, 1, 1), 5);
+	m_world->AddEntity(t2);
+	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(t2), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	LC->SetString();
         
 	//	Background
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, -30, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
 	m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
