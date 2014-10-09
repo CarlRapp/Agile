@@ -79,6 +79,14 @@ class GLGraphics : public IGraphics
         float* x;
         float* y;
         float* effect;
+        
+        std::string textCopy;
+        float scaleCopy;
+        glm::vec3 colorCopy;
+        float xCopy;
+        float yCopy;
+        float effectCopy;
+        
         int id;
         bool kill;
     };
