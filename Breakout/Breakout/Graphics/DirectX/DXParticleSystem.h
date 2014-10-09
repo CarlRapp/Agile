@@ -6,6 +6,7 @@
 #include <DirectXMath.h>
 #include <string>
 #include "DXTextureManager.h"
+#include <map>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
@@ -13,32 +14,8 @@
 #pragma comment(lib, "Effects11D.lib")
 
 
-class DXParticleSystem
+struct ParticleEffect
 {
-	struct Particle
-	{
-		DirectX::XMFLOAT3 initialPos;
-		DirectX::XMFLOAT3 initialVel;
-		DirectX::XMFLOAT2 size;
-		float age;
-		unsigned int type;
-	};
-
-	DirectX::XMFLOAT3 *m_position, *m_velocity;
-
-
-	static const int					MAX_VERTICES = 240001;
-	bool								firstRun;
-	float								time;
-
-	//ID3D11Device*				mDevice;
-	//ID3D11DeviceContext*		mDeviceContext;
-	//Buffer*						InitVertexBuffer;
-	ID3D11Buffer*				InitVertexBuffer;
-	ID3D11Buffer*				DrawVertexBuffer;
-	ID3D11Buffer*				SteamOutVertexBuffer;
-
-	ID3D11InputLayout*			InputLayout;
 	ID3DX11EffectTechnique*		StreamOutTech;
 	ID3DX11EffectTechnique*		DrawTech;
 
@@ -56,6 +33,51 @@ class DXParticleSystem
 	ID3D11ShaderResourceView*	TextureRV;
 
 	ID3DX11Effect* m_effect;
+
+	ID3D11InputLayout*			InputLayout;
+
+	~ParticleEffect(void)
+	{
+		ReleaseCOM(m_effect);
+		ReleaseCOM(InputLayout);
+	}
+
+};
+
+static std::map<std::string, ParticleEffect*> pEffects;
+
+
+class DXParticleSystem
+{
+	struct Particle
+	{
+		DirectX::XMFLOAT3 initialPos;
+		DirectX::XMFLOAT3 initialVel;
+		DirectX::XMFLOAT2 size;
+		float age;
+		unsigned int type;
+	};
+
+
+
+
+
+	DirectX::XMFLOAT3 *m_position, *m_velocity;
+
+
+	static const int					MAX_VERTICES = 240001;
+	bool								firstRun;
+	float								time;
+
+	//ID3D11Device*				mDevice;
+	//ID3D11DeviceContext*		mDeviceContext;
+	//Buffer*						InitVertexBuffer;
+	ID3D11Buffer*				InitVertexBuffer;
+	ID3D11Buffer*				DrawVertexBuffer;
+	ID3D11Buffer*				SteamOutVertexBuffer;
+
+
+	ParticleEffect* m_effect;
 
 public:
 	float	Ks;

@@ -112,14 +112,14 @@ void MainMenuScene::Update(float _dt)
 	m_world->Update(_dt);
 
 	m_blockTimer += _dt;
-	if (m_blockTimer > 0.025f)
+	if (m_blockTimer > .50f)
 	{
 		m_blockTimer = 0;
 		Entity* e;
 		e = m_world->CreateEntity();
 		if (!e)
 			return;
-		int rnd = (rand() % (16 - 0));
+		int rnd = (rand() % (2 - 0));
 
 		EntityFactory::EntityType type;
 
@@ -132,8 +132,11 @@ void MainMenuScene::Update(float _dt)
 		else if (rnd == 15)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
 
+		type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
+		if (rnd == 1)
+			type = EntityFactory::STANDARD_BLOCK_BLUE;
 		EntityFactory::GetInstance()->CreateEntity(e, type);
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
 }
@@ -161,11 +164,11 @@ void MainMenuScene::CreatePlayField()
 	//FPS COUNTER
 	Entity* e;
 
-	for (int i = 0; i < 50; ++i)
+	for (int i = 0; i < 0; ++i)
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_HORIZONTAL_RECTANGLE);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
@@ -176,7 +179,7 @@ void MainMenuScene::CreatePlayField()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
 	
 	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
-	m_world->AddEntity(e);
+	//m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
