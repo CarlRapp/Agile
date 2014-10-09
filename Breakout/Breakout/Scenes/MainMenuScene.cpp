@@ -61,7 +61,6 @@ void MainMenuScene::OnActive()
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
-    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_optionsID);
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
@@ -71,7 +70,6 @@ void MainMenuScene::OnActive()
     //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
-    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
 	

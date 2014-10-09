@@ -139,19 +139,17 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 	}
 }
 
-		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
-
-	if ((m_flags.OnCollide & EffectFlags::EXPLODE) == EffectFlags::EXPLODE)
-	{
-		auto position = _e->GetComponent<PositionComponent>();
-		if (position)
-		{
-			GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(_e), "fire", &position->GetPosition(), 0);
-		}
-
-
-	}
+void EffectSystem::OnEveryFrame(Entity* _e, float _dt)
+{
 }
+void EffectSystem::OnEverySecond(Entity* _e, float _dt)
+{
+}
+void EffectSystem::OnCollision(Entity* _e, float _dt)
+{
+}
+
+
 
 bool EffectSystem::EntityContains(EffectEvents& _entityEvents, EffectFlags _flagToCheck)
 {
