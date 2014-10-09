@@ -106,7 +106,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1";	
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -173,7 +173,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
+		//_entity->AddComponent<ModelComponent>().m_modelPath = "wall";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(50.0f);
@@ -182,7 +182,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
+		//_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
 		PhysicsSystem::GenerateBody(INVISIBLE_WALL, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		break;
