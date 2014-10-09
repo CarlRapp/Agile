@@ -94,15 +94,15 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
 
     m_fireParticlesProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
-    m_trailParticlesProgram.CreateShaderProgram();
-    
-    m_trailParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
-    m_trailParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
-    
-    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
-    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
-
-    m_trailParticlesProgram.LinkShaderProgram();
+//    m_trailParticlesProgram.CreateShaderProgram();
+//    
+//    m_trailParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+//    m_trailParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+//    
+//    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+//    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+//
+//    m_trailParticlesProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
     
     glEnable(GL_BLEND);
@@ -378,7 +378,6 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        printf("ADD FIRE\n");
         m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
                                                                                     m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
     }
@@ -387,7 +386,6 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 
 void GLGraphics::RemoveParticleEffect(int _id)
 {
-    printf("DELETE FIRE\n");
     delete(m_particleEffects[_id]);
     m_particleEffects.erase(_id);
 }

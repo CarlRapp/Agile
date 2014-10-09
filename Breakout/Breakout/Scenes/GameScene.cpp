@@ -155,7 +155,6 @@ void GameScene::OnInactive()
 {
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
-
 	if (m_world)
 	{
 		EntityMap::iterator eIT;
