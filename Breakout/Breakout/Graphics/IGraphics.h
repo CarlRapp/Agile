@@ -43,8 +43,8 @@ public:
 	virtual void Remove2DTexture(int _id) = 0;
 
 
-	virtual void AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel) = 0;
-	virtual void RemoveEffect(int _id) = 0;
+	virtual void AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel) = 0;
+	virtual void RemoveParticleEffect(int _id) = 0;
 
 	virtual void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect) = 0;
 	virtual void RemoveTextObject(int _id) = 0;

@@ -6,6 +6,7 @@
 #include "GLShaderHandler.h"
 #include "GLTextureManager.h"
 #include "GLText.h"
+#include "GLParticleSystem.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -74,10 +75,10 @@ class GLGraphics : public IGraphics
     {
         std::string* text;
         float* scale;
-        unsigned int* color;
-        int* x;
-        int* y;
-        float effectTime;
+        glm::vec3* color;
+        float* x;
+        float* y;
+        float* effect;
         int id;
         bool kill;
     };
@@ -88,20 +89,29 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
-        ShaderHandler m_standardShaderProgram, m_shader2Dprogram;; //shaderID
+
+        ShaderHandler m_standardShaderProgram, m_shader2Dprogram, m_particleShaderProgram,m_textProgram;
+
         GLuint m_2DVAO;
+        
+        //GLParticleSystem *m_particlesFire;
         
         GLint m_attributePosition, m_attributeNormal;
         
         std::vector<ModelRenderInfo*> m_models;
         
         std::map<int, LightInfo*> m_lights;
+        
+        std::map<int, GLParticleSystem*> m_particleEffects;
                                             
         std::vector<glm::mat4> m_testMatrices;
         
         std::map<int, TextureInfo*> m_TextureInstances;
         
-        std::vector<GLbyte(*)[64]> m_letters;
+        float m_tX;
+        float m_tY;
+        float m_tW;
+        float m_tH;
         
         std::vector<TextObject> m_textObjects;
         
@@ -111,23 +121,27 @@ private:
         int RenderInstanced();
         int RenderStandard();
         void Render2D();
+        void RenderParticles(float dt, ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
-        void LoadLetters();
-        void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y,float effect,bool kill);
+        //void LoadLetters();
+        void RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill);
 public:
 
 	GLGraphics(void);
 	~GLGraphics(void);
 
 	bool  InitWindow(int x, int y, int width, int height, DisplayMode _displayMode);
-        void Render(ICamera* _Camera);
+        void Render(float _dt, ICamera* _camera);
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
         void Free();
         void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
+        
+        void AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
+        void RemoveParticleEffect(int _id);
         
         void AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range);
         void RemovePointLight(int _id);
@@ -140,7 +154,7 @@ public:
         void RemoveObject(int _id);
         
         
-        void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id);
+        void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect);
         void RemoveTextObject(int _id);
         
 

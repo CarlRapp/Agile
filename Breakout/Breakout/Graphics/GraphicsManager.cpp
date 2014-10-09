@@ -99,14 +99,14 @@ void GraphicsManager::Remove2DTexture(int _id)
 	m_IGraphics->Remove2DTexture(_id);
 }
 
-void GraphicsManager::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+void GraphicsManager::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
 {
-	m_IGraphics->AddEffect(_id, _effect, _pos, _vel);
+	m_IGraphics->AddParticleEffect(_id, _effect, _pos, _vel);
 }
 
-void GraphicsManager::RemoveEffect(int _id)
+void GraphicsManager::RemoveParticleEffect(int _id)
 {
-	m_IGraphics->RemoveEffect(_id);
+	m_IGraphics->RemoveParticleEffect(_id);
 }
 
 ICamera* GraphicsManager::GetICamera()

@@ -63,7 +63,5 @@ int main(int argc, char** argv)
 	/*	START HERE	*/
 	m_SceneManager->Start();
 
-	GraphicsManager::Destroy();
-
 	return 0;
 }
