@@ -165,12 +165,6 @@ void GameScene::OnInactive()
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
-                        
-                        if(eIT->second->HasComponent<TextComponent>())
-                        {
-                            auto TC = eIT->second->GetComponent<TextComponent>();
-                            TC->m_text = nullptr;
-                        }
 		}	
 
 		delete m_world;
