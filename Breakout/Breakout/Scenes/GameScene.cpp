@@ -24,7 +24,7 @@ void GameScene::Initialize()
 {
 	printf("Initialized (Game Scene)\n");
 	
-	AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
+	//AudioManager::GetInstance()->PlayMusic("Tetris.wav", -1);
 
 	m_pauseBackground = new Texture2DData();
 	m_pauseBackground->m_positionX = 0;
@@ -92,7 +92,7 @@ void GameScene::Update(float _dt)
 		Entity* e;
 		e = m_world->CreateEntity();
 
-		int rnd = (rand() % (30 - 0));
+		int rnd = (rand() % (22 - 0));
 
 		EntityFactory::EntityType type;
 
@@ -102,10 +102,12 @@ void GameScene::Update(float _dt)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
 		else if(rnd >= 10 && rnd < 15)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd == 15)
-			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else
+		else if (rnd >= 15 && rnd < 20)
 			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
+		else if (rnd == 20)
+			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+		else if (rnd == 21)
+			type = EntityFactory::TNT_BLOCK;
 
 		EntityFactory::GetInstance()->CreateEntity(e, type);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
