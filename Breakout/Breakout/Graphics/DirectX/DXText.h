@@ -27,7 +27,7 @@ namespace DXText
 		std::vector<int> Indices;
 	};
 
-	const static float x = std::numeric_limits<float>::infinity();;
+	const static float x = 1.0f;
 
 
 	static float E[64] = { 0, 0, 0, 0, 0, 0, 0, 0,
