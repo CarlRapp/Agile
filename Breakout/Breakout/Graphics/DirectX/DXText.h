@@ -24,7 +24,7 @@ namespace DXText
 		float *Scale = NULL;
 		VECTOR3 *Color = NULL;
 		float *Effect = NULL;
-		std::vector<Letter> Letters;
+		std::vector<int> Indices;
 	};
 
 	const static float x = std::numeric_limits<float>::infinity();;

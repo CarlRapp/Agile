@@ -83,7 +83,7 @@ private:
 
 	void					UpdateLights();
 
-	void					RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts);
+	void					RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts, ID3D11ShaderResourceView* _symbolsTex, int _numSymbols);
 	void					RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::String *_text);
 
 public:
@@ -100,6 +100,8 @@ public:
 		map<int, DX2DTextureInstance*> &_textureInstances,
 		map<int, DXParticleSystem*>		&_particleSystems,
 		map<int, DXText::String*>		&_texts,
+		ID3D11ShaderResourceView* _symbolsTex,
+		int _numSymbols,
 		ICamera* _camera);
 
 	void SetDirectionLightMap(map<int, DirectionalLight*> *map) { m_dirLights = map; }
