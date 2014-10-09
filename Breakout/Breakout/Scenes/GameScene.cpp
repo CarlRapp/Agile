@@ -297,6 +297,9 @@ void GameScene::Reset()
 	SC->SetString();
         //PLAYER SCORE <<
         
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+//        //PLAYER SCORE <<
+        
 	//	Background
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);

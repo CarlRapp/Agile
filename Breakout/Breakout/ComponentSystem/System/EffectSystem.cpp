@@ -139,14 +139,7 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 	}
 }
 
-void EffectSystem::OnEveryFrame(Entity* _e, float _dt)
-{
-}
-void EffectSystem::OnEverySecond(Entity* _e, float _dt)
-{
-}
-void EffectSystem::OnCollision(Entity* _e, float _dt)
-{
+		//GraphicsManager::GetInstance()->AddEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
 
 	if ((m_flags.OnCollide & EffectFlags::EXPLODE) == EffectFlags::EXPLODE)
 	{
@@ -158,7 +151,6 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
 
 
 	}
-
 }
 
 bool EffectSystem::EntityContains(EffectEvents& _entityEvents, EffectFlags _flagToCheck)
