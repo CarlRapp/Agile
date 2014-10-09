@@ -35,13 +35,13 @@ void update()
 		
 		if( age >ParticleLifetime ) {
 			// The particle is past its lifetime, recycle.
-			Position = BallPos; //vec3(0.0);
+			Position = BallPos;
 			Velocity = vec3(0.0);
-			StartTime = Time;
+			StartTime = Time-(age-ParticleLifetime);
 		} 
 		else {
 			// The particle is alive, update.
-			Position += Velocity * DeltaTime;
+			//Position += Velocity * DeltaTime;
 		}
 	}
 

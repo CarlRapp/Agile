@@ -102,11 +102,6 @@ void EffectSystem::OnEntityAdded(Entity* _e)
 		}
 
 	}
-
-	auto position = _e->GetComponent<PositionComponent>();
-	if (position)
-	{
-	}
 }
 void EffectSystem::OnEntityRemoved(Entity* _e)
 {
