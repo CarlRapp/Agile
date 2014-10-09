@@ -851,10 +851,6 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 
 		RenderQuad(vp, _text->Letters[i].SRV, DXEffects::m_combineFinalFX->m_textTech);
 	}
-	for (DXText::Letter letter : _text->Letters)
-	{
-		
-	}
 }
 
 void DXDeferred::RenderParticleSystems(float _dt, ID3D11RenderTargetView *_renderTargetView, map<int, DXParticleSystem*> &_particleSystems, ICamera* _camera)

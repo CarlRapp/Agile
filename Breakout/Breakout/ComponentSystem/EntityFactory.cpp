@@ -69,7 +69,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->AddComponent<TNTComponent>();
 		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(1, 1));
 		break;
 
@@ -80,11 +79,27 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_black";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(100.f);
+		_entity->AddComponent<DeflectionComponent>(30.f);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
+		break;
+	case EntityFactory::TNT_BLOCK:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_tnt";
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<DeflectionComponent>(30.f);
+		_entity->AddComponent<HealthComponent>(10);
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		_entity->AddComponent<ScoreComponent>().m_score = 1;
+		_entity->AddComponent<BlockComponent>();
+		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
+		_entity->AddComponent<TNTComponent>();
+		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
 	case EntityFactory::STANDARD_HORIZONTAL_RECTANGLE:
 		_entity->AddComponent<PositionComponent>();
@@ -101,7 +116,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
-		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();

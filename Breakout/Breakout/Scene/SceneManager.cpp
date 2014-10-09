@@ -80,5 +80,4 @@ void SceneManager::Start()
                     lol = 0;
 		}
 	}
-
 }

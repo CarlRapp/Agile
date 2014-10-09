@@ -52,7 +52,7 @@ void MainMenuScene::OnActive()
     m_world->AddEntity(e);
     m_playID = e->GetId();
    // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
-	GM->GetInstance()->AddTextObject(m_playID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
@@ -61,8 +61,7 @@ void MainMenuScene::OnActive()
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
-    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_optionsID);
-	GM->GetInstance()->AddTextObject(m_optionsID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
@@ -71,8 +70,7 @@ void MainMenuScene::OnActive()
     //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
-    //GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
-	GM->GetInstance()->AddTextObject(m_exitID, TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
 	
 }
@@ -86,12 +84,14 @@ void MainMenuScene::OnInactive()
 			eIT->second->SetInitialized(false);
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
-			GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(eIT->second));
+			
+			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}
 
-		GraphicsManager::GetInstance()->RemoveTextObject(m_playID);
-		GraphicsManager::GetInstance()->RemoveTextObject(m_optionsID);
-		GraphicsManager::GetInstance()->RemoveTextObject(m_exitID);
+		
+		
+		
 
 		delete m_world;
 	}
@@ -119,7 +119,7 @@ void MainMenuScene::Update(float _dt)
 		e = m_world->CreateEntity();
 		if (!e)
 			return;
-		int rnd = (rand() % (2 - 0));
+		int rnd = (rand() % (100 - 0));
 
 		EntityFactory::EntityType type;
 
@@ -129,14 +129,15 @@ void MainMenuScene::Update(float _dt)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
 		else if (rnd >= 10 && rnd < 15)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd == 15)
+		else if (rnd >= 15 && rnd < 20)
+			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
+		else if (rnd == 20)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+		else
+			type = EntityFactory::TNT_BLOCK;
 
-		type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		if (rnd == 1)
-			type = EntityFactory::STANDARD_BLOCK_BLUE;
 		EntityFactory::GetInstance()->CreateEntity(e, type);
-		//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
 }
@@ -179,7 +180,8 @@ void MainMenuScene::CreatePlayField()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
 	
 	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
-	//m_world->AddEntity(e);
+	
+	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

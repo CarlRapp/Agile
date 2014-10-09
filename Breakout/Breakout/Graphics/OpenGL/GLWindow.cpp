@@ -29,7 +29,7 @@ bool GLWindow::InitWindow(int _width, int _height)
 
 bool GLWindow::InitWnd()
 {
- //Initialize SDL 
+    //Initialize SDL 
     if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) 
     { return false; } 
     //Create Window 

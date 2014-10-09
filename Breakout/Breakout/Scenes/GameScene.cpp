@@ -92,7 +92,7 @@ void GameScene::Update(float _dt)
 		Entity* e;
 		e = m_world->CreateEntity();
 
-		int rnd = (rand() % (30 - 0));
+		int rnd = (rand() % (100 - 0));
 
 		EntityFactory::EntityType type;
 
@@ -102,10 +102,12 @@ void GameScene::Update(float _dt)
 			type = EntityFactory::STANDARD_BLOCK_GREEN;
 		else if(rnd >= 10 && rnd < 15)
 			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd == 15)
+		else if (rnd >= 15 && rnd < 20)
+			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
+		else if (rnd == 20)
 			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
 		else
-			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
+			type = EntityFactory::TNT_BLOCK;
 
 		EntityFactory::GetInstance()->CreateEntity(e, type);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
@@ -162,8 +164,10 @@ void GameScene::OnInactive()
 			eIT->second->SetInitialized(false);
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
-			GraphicsManager::GetInstance()->RemoveEffect(GetMemoryID(eIT->second));
-		}
+			GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(eIT->second));
+			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));	
+		}	
+
 		delete m_world;
 	}
 }
@@ -197,8 +201,8 @@ void GameScene::Reset()
     auto TC = e->GetComponent<TextComponent>();
     TC->Initialize(&fpsString, 0.1f, 0.9f, 2.f, VECTOR3(0,1,0), 0);
     m_fpsCounterID = e->GetId();
-    ///m_world->AddEntity(e);
-   // GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    m_world->AddEntity(e);
+	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
         
 	for (int i = 0; i < 50; ++i)
 	{
@@ -281,17 +285,20 @@ void GameScene::Reset()
 	m_world->AddEntity(e);
 
         //PLAYER SCORE >>
-        auto SC = e->GetComponent<ScoreComponent>();
+    auto SC = e->GetComponent<ScoreComponent>();
         
-        Entity* t = m_world->CreateEntity();
-        EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
-        TC = t->GetComponent<TextComponent>();
+    Entity* t = m_world->CreateEntity();
+    EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
+    TC = t->GetComponent<TextComponent>();
         
-        TC->Initialize(SC->GetString(),0.1f, 0.8f, 2.f, VECTOR3(0,1,1), 0);
-        m_world->AddEntity(e);
-	//GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(TC), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    TC->Initialize(SC->GetString(),0.1f, 0.8f, 2.f, VECTOR3(0,1,1), 0);
+    m_world->AddEntity(e);
+	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 	SC->SetString();
         //PLAYER SCORE <<
+        
+	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+//        //PLAYER SCORE <<
         
 	//	Background
 	e = m_world->CreateEntity();
