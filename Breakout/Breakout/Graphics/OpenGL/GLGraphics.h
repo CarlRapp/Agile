@@ -128,7 +128,7 @@ private:
         float m_textFontSize = 3;
         
         
-        int RenderInstanced();
+        int RenderInstanced(ICamera* _camera);
         int RenderStandard();
         void Render2D();
         void RenderParticles(float dt, ICamera* _camera);

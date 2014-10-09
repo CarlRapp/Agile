@@ -104,7 +104,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
 
     m_trailParticlesProgram.LinkShaderProgram();
-    m_texManager.Load2DTexture("circle.png", GL_TEXTURE0);
+    m_texManager.Load2DTexture("circle_blue.png", GL_TEXTURE0);
 //------------------------------------------------------------------------------------
     
     glEnable(GL_BLEND);
@@ -381,8 +381,8 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
     }
     else if(_effect == "trail")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 50.f, 
-                                                                                    m_texManager.GetTexturePointer("circle.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 35.f, 
+                                                                                    m_texManager.GetTexturePointer("circle_blue.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
     }
 }
         
@@ -495,7 +495,7 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     CameraToRender(_camera);
     
-    RenderInstanced();
+    RenderInstanced(_camera);
     
     Render2D();
     
@@ -701,7 +701,7 @@ int GLGraphics::RenderStandard()
     }
 }
 
-int GLGraphics::RenderInstanced()
+int GLGraphics::RenderInstanced(ICamera* _camera)
 {
     t+=0.001f;
 
@@ -709,6 +709,8 @@ int GLGraphics::RenderInstanced()
     
     m_standardShaderProgram.UseProgram();
     glEnable(GL_DEPTH_TEST);
+    
+    m_standardShaderProgram.SetUniformV("EyePosition", vec4(_camera->GetPosition(), 1.0f));
     
     for(int i=0; i< m_models.size();i++)
     {

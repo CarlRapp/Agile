@@ -190,7 +190,7 @@ void GLParticleSystem::CreateTrail()
 	GLfloat *timeData = new GLfloat[m_noParticles];
         
 	for (GLuint i = 0; i < m_noParticles; i++) {
-		posData[3 * i] = m_pos->x;
+		posData[3 * i] = m_pos->x-10000;
 		posData[3 * i + 1] = m_pos->y;
 		posData[3 * i + 2] = m_pos->z;
 
