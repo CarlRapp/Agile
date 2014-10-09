@@ -11,6 +11,7 @@
 float counter;
 std::string m_fpsString= "FPS: ";
 std::string m_pauseString= "GAME PAUSED";
+std::string m_gameOverString= "GAME OVER";
 
 GameScene::GameScene()
 {
@@ -62,12 +63,13 @@ void GameScene::Update(float _dt)
 
 			);*/
                    
+                    if(!m_gameOver)
+                    {
+                        Entity* e = m_world->GetEntity(m_pauseHandle);
+                        auto TC = e->GetComponent<TextComponent>();
 
-                    Entity* e = m_world->GetEntity(m_pauseHandle);
-                    auto TC = e->GetComponent<TextComponent>();
-    
-                    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-                    
+                        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+                    }
                     
 		}
                 else
@@ -134,9 +136,14 @@ void GameScene::Update(float _dt)
 
 	m_world->Update(_dt);
 
-	if (!m_world->IsAlive())
+	if (!m_world->IsAlive() && !m_gameOver)
 	{
-            SceneManager::GetInstance()->ChangeScene<GameOverScene>();
+            Entity* e = m_world->GetEntity(m_gameOverHandle);
+            auto TC = e->GetComponent<TextComponent>();
+
+            GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+            m_gameOver = true;
+            //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
 
         UpdateFPS(_dt);
@@ -148,7 +155,7 @@ void GameScene::UpdateFPS(float _dt)
         
         float fps = 1.0f / _dt;
         m_fpsString= "FPS: ";
-        m_fpsString.append(std::to_string(fps));
+        m_fpsString.append(std::to_string((int)fps));
         m_fpsString += " DT: ";
         m_fpsString.append(std::to_string(_dt));
 }
@@ -206,21 +213,36 @@ void GameScene::Reset()
                 m_world->AddSystem<TextSystem>();
 
 	/*	New Implementation	*/
-        
-    //FPS COUNTER
+            
+    m_gameOver = false;
+
     Entity* e;
     
+    //PAUSE
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_pauseString, 0.5f-m_pauseString.size()*(8/1280), 0.5f, 3.f, VECTOR3(1,1,0), 9999.0f);
+    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 9999.0f);
     m_pauseHandle = e->GetId();
     m_world->AddEntity(e);
-        
+    
+    //GAME OVER
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_fpsString, 0.005f, 0.97f, 2.f, VECTOR3(0,1,0), 20);
+    TC->Initialize(&m_gameOverString, 0.5f-(m_gameOverString.size()*8.0f)/1280.0f*2.0f, 0.5f, 4.f, VECTOR3(1,0.7f,0.3f), 30.0f);
+    m_gameOverHandle = e->GetId();
+    m_world->AddEntity(e);
+
+    
+    e = m_world->GetEntity(m_pauseHandle);
+    GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+    
+    //FPS COUNTER      
+    e = m_world->CreateEntity();
+    EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+    TC = e->GetComponent<TextComponent>();
+    TC->Initialize(&m_fpsString, 0.0f, 0.0f, 2.f, VECTOR3(0.5,1,0.5), 20);
     m_fpsCounterID = e->GetId();
     m_world->AddEntity(e);
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -312,7 +334,7 @@ void GameScene::Reset()
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         TC = t->GetComponent<TextComponent>();
 
-        TC->Initialize(SC->GetString(),0.1f, 0.8f, 2.f, VECTOR3(0,1,1), 20);
+        TC->Initialize(SC->GetString(),0.82f, 0.92f, 2.5f, VECTOR3(0,1,1), 20);
         m_world->AddEntity(t);
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 	SC->SetString();
