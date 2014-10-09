@@ -43,6 +43,7 @@ bool World::AddEntity(Entity* _e)
 			sIT->second->Add(_e);
 
 		AddEntityToComponentPool(_e);
+
 	}
 	return true;
 }
@@ -51,7 +52,7 @@ Entity* World::CreateEntity()
 {
 	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
 	{
-		if (m_entityPool[i]->GetState() == Entity::DEAD)
+		if (m_entityPool[i]->GetState() == Entity::DEAD && !m_entityPool[i]->GetInitialized())
 		{
 			m_entityPool[i]->SetState(Entity::ALIVE);
 			return m_entityPool[i];
@@ -110,15 +111,15 @@ void World::EntityChanged(Entity* _e)
 
 	}
 }
+#include "Component/TNTComponent.h"
 
 void World::KillEntity(Entity* _e)
 {
-	_e->SetState(Entity::DEAD);
-	_e->SetInitialized(false);
-
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
 
+	_e->SetState(Entity::DEAD);
+	_e->SetInitialized(false);
 	_e->RemoveAllComponents();
 }
 
