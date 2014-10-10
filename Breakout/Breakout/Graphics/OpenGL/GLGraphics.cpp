@@ -180,12 +180,16 @@ void GLGraphics::LoadModel(std::string _path)
             m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE0);
             m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
           //  printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
+            m_models[index]->MaterialKs = (*groupIt)->material->Ks[0];
+            m_models[index]->MaterialNs = (*groupIt)->material->Ns;
         }
         else
         {
             m_texManager.Load2DTexture("whitePixel.png", GL_TEXTURE0);
             m_models[index]->texHandle = m_texManager.GetTexture("whitePixel.png");
            // printf("NO MATERIAL FILE: using %s \n", "whitePixel.png");
+            m_models[index]->MaterialKs = 0.0f;
+            m_models[index]->MaterialNs = 1.0f;
         }
         
         m_testMatrices.push_back(glm::mat4(1.0f));
@@ -714,6 +718,8 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
     
     for(int i=0; i< m_models.size();i++)
     {
+        m_standardShaderProgram.SetUniformV("Material.Ks", m_models[i]->MaterialKs);
+        m_standardShaderProgram.SetUniformV("Material.Ns", m_models[i]->MaterialNs);
         MRI = m_models[i];
         int instances = m_models[i]->instances.size();
         
