@@ -92,7 +92,6 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 			m.SpecPower = data->Groups[i]->material->Ns;
 			m.SpecIntensity = data->Groups[i]->material->Ks[0];
 		}
-		
 		else
 		{
 			m.SpecPower = 1.0f;
