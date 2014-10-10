@@ -333,15 +333,18 @@ void GameScene::Reset()
 
         //PLAYER SCORE >>
         auto SC = e->GetComponent<ScoreComponent>();
-
+        
         Entity* t = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         TC = t->GetComponent<TextComponent>();
-
-		TC->Initialize(SC->GetString(), 0.005f, 0.9f, 2.f, VECTOR3(0, 1, 1), 5);
+        SC->SetString();
         m_world->AddEntity(t);
+        
+	TC->Initialize(SC->GetString(), 0.005f, 0.9f, 2.f, VECTOR3(0, 1, 1), 5);
+        
+        
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(t), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-	SC->SetString();
+	
 
 
 	auto LC = e->GetComponent<LifeComponent>();

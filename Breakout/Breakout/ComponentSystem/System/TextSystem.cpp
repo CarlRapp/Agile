@@ -30,16 +30,14 @@ void TextSystem::Update(float _dt)
             Entity* e = entityPair.second;
             auto TC = e->GetComponent<TextComponent>();
             
-            //fulhax 9999 = ingen effekt
-            if(TC->m_effect != 9999.0f)
+
+            if(TC->m_effect > TC->m_effectStop)
             {
-                if(TC->m_effect > TC->m_effectStop)
-                {
-                    TC->m_effect -= _dt*TC->m_effectSpeed;
-                }
-                else
-                    TC->m_effect = 1.0f;
+                TC->m_effect -= _dt*TC->m_effectSpeed;
             }
+            else
+                TC->m_effect = 1.0f;
+            
 	}
 
 }

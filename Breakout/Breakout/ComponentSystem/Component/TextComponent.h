@@ -9,7 +9,7 @@ private:
 
 
 public:
-        std::string* m_text;
+        std::string* m_text=NULL;
         float m_scale;
         VECTOR3 m_color;
         float m_x;

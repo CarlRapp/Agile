@@ -7,6 +7,7 @@
 ScoreSystem::ScoreSystem(World* _world)
 : Base(ComponentFilter().Requires<ScoreComponent>(), _world)
 {
+    m_frameScore = 0;
 }
 
 ScoreSystem::~ScoreSystem()
@@ -21,10 +22,10 @@ void ScoreSystem::OnEntityAdded(Entity* _e)
 
 void ScoreSystem::OnEntityRemoved(Entity* _e)
 {
-	ScoreComponent* scoreC = _e->GetComponent<ScoreComponent>();
+	ScoreComponent* SC = _e->GetComponent<ScoreComponent>();
 	int a = 2;
 
-	m_frameScore += scoreC->m_score;
+	m_frameScore += SC->m_score;
 }
 void ScoreSystem::Update(float _dt)
 {
@@ -32,7 +33,7 @@ void ScoreSystem::Update(float _dt)
 	if (m_frameScore > 0)
 	{
 		auto SC = player->at(0)->GetComponent<ScoreComponent>();
-		SC->m_score += m_frameScore;
+		SC->AddScore(m_frameScore);
 		SC->SetString();
 		m_frameScore = 0;
 	}
