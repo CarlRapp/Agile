@@ -663,23 +663,23 @@ void GLGraphics::RenderCompute() {
     
     glUseProgram(m_computeProgram);
 
-    for(int i=0; i< m_models.size();i++)
-    {
-        for(int j=0; j < m_models[i]->instances.size();j++)
-        {
-            glm::mat4* temp1;
-            
-//            if(m_models[i]->instances[j]->world != NULL)
-//            temp1 = m_models[i]->instances[j]->world;
-//            else
-                temp1 = &m_testMatrices[0];
-
-            std::string matrixStr = "Models[0].worldMatrix";
-
-            GLint projection = glGetUniformLocation(m_computeProgram, matrixStr.c_str());
-            glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
-        }
-    }
+//    for(int i=0; i< m_models.size();i++)
+//    {
+//        for(int j=0; j < m_models[i]->instances.size();j++)
+//        {
+//            glm::mat4* temp1;
+//            
+////            if(m_models[i]->instances[j]->world != NULL)
+////            temp1 = m_models[i]->instances[j]->world;
+////            else
+//                temp1 = &m_testMatrices[0];
+//
+//            std::string matrixStr = "Models[0].worldMatrix";
+//
+//            GLint projection = glGetUniformLocation(m_computeProgram, matrixStr.c_str());
+//            glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
+//        }
+//    }
     
     glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 

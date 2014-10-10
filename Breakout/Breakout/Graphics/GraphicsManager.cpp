@@ -1,4 +1,5 @@
 #include "GraphicsManager.h"
+#include <math.h>
 
 GraphicsManager* GraphicsManager::m_GMInstance = 0;
 
@@ -54,12 +55,10 @@ void GraphicsManager::Update()
 	//pos.z += dt * 10.0f;
 
 	test += 0.001f * 0.4;
-
-	//pos.x = 5 * sinf(test);
-	//pos.z = 5 * cosf(test);
-
-	//m_ICamera->SetPosition(pos);
-	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
+        
+	m_ICamera->Roll(sin(test));
+        //m_ICamera->RotateY(test);
+        //m_ICamera->Pitch(test);
 }
 
 

@@ -53,7 +53,11 @@ public:
 	//virtual void SetLookAt(float x, float y, float z) = 0;
 
 	virtual void SetViewPort(int _x, int _y, int _width, int _height) = 0;
-
+	virtual void Strafe(float delta)= 0;
+	virtual void Yaw(float angle)= 0;
+	virtual void Pitch(float angle)= 0;
+	virtual void Roll(float angle)= 0;
+	virtual void RotateY(float angle)= 0;
 #pragma endregion
 
 

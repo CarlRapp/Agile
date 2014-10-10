@@ -34,7 +34,7 @@ struct Model
     vec3[132]    normal;
     vec2[132]    texCoord;
 
-    mat4 modelMatrix;
+    //mat4 modelMatrix;
 
 };
 
@@ -45,7 +45,7 @@ uniform Model Models[5];
 uniform mat4 m_matView;
 uniform mat4 m_matProj;
 
-layout (local_size_x = 32, local_size_y = 32) in;
+layout (local_size_x = 16, local_size_y = 16) in;
 
 struct Sphere{
     vec4    position;
@@ -75,7 +75,7 @@ struct Triangle
 };
 
 vec4 traceColor(Vertex vertex);
-vec4 intersect(Ray r, Triangle t,mat4 modelMatrix);
+vec4 intersect(Ray r, Triangle t);
 vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vertex);
 vec4 traceColor(Vertex vertex);
 
@@ -84,7 +84,20 @@ void main()
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 
-    Ray ray = {vec3(0,0,0), vec3(x,y, 1000)};   
+    vec3 rayPos;
+    rayPos.x    = x/256.0 -1;
+    rayPos.y    = y/256.0 -1;
+
+    vec4 rayDir = vec4(x,y,1,1);
+
+    vec3 camPos = vec3(m_matView[3][0],m_matView[3][1],m_matView[3][2]);
+
+    rayDir = inverse(m_matProj)*rayDir; 
+    rayDir.xyz /= rayDir.w;
+    rayDir = inverse(m_matView)*rayDir;
+    rayDir.xyz = normalize(rayDir.xyz - camPos);
+    
+    Ray ray = {vec3(rayPos.x,rayPos.y,5), rayDir.xyz};   
 
     uint i = 0;
 
@@ -93,34 +106,32 @@ void main()
     float b = 0;
     float a = 1.0;
 
-for(i = 0; i < 132;i++)
-{
     Triangle tri;
     Vertex vx1;
-    vx1.worldPos = vec4(Models[0].pos[i],1);
-    vx1.normal = Models[0].normal[i];
-    vx1.texCoord = Models[0].texCoord[i];
+    vx1.worldPos = vec4(0,10,0,1);
+    //vx1.normal = Models[0].normal[i];
+    //vx1.texCoord = Models[0].texCoord[i];
 
     Vertex vx2;
-    vx2.worldPos = vec4(Models[0].pos[i+1],1);
-    vx2.normal = Models[0].normal[i+1];
-    vx2.texCoord = Models[0].texCoord[i+1];
+    vx2.worldPos = vec4(10,0,0,1);
+    //vx2.normal = Models[0].normal[i+1];
+    //vx2.texCoord = Models[0].texCoord[i+1];
 
     Vertex vx3;
-    vx3.worldPos = vec4(Models[0].pos[i+2],1);
-    vx3.normal = Models[0].normal[i+2];
-    vx3.texCoord = Models[0].texCoord[i+2];
+    vx3.worldPos = vec4(-10,0,0,1);
+    //vx3.normal = Models[0].normal[i+2];
+    //vx3.texCoord = Models[0].texCoord[i+2];
 
     tri.vx1 = vx1;
     tri.vx2 = vx2;
     tri.vx3 = vx3;
 
-    vec4 t = intersect(ray,tri,Models[0].modelMatrix);
+    vec4 t = intersect(ray,tri);
 
-    r = r+ t.x;
+    r = r+t.x;
     g = g+t.y;
     b = b+t.z;
-}
+
 /*
     float r = testArray[1].x;
     float g = testArray[2].y;
@@ -200,47 +211,45 @@ vec4 traceColor(Vertex vertex)
     //return vec4(0.5,0.5,0.5, 1.0);
 }
 
-vec4 intersect(Ray r, Triangle tri,mat4 modelMatrix)
+vec4 intersect(Ray ray, Triangle tri)
 {
-       vec3 v0 = vec3(m_matProj*m_matView*modelMatrix* tri.vx1.worldPos);
-       vec3 v1 = vec3(m_matProj*m_matView*modelMatrix* tri.vx2.worldPos);
-       vec3 v2 = vec3(m_matProj*m_matView*modelMatrix* tri.vx3.worldPos);
+    Vertex vertex1 = tri.vx1;
+    Vertex vertex2 = tri.vx2;
+    Vertex vertex3 = tri.vx3;
 
-        vec3 v0v1 = v1 - v0;
-        vec3 v0v2 = v2 - v0;
-        vec3 N = cross(v0v1, v0v2);
-        float nDotRay = dot(N, r.dir);
-       if (dot(N, r.dir) == 0) 
-            return vec4(0,0,0,0); 
-        // ray parallel to triangle 
-        float d = dot(N, v0);
-        float t = -(dot(N, r.origin) + d) / nDotRay;
-        // inside-out test 
-        vec3 Phit = r.dir*t + r.origin;
-        // inside-out test edge0 
-        vec3 v0p = Phit - v0;
-        float v = dot(N, cross(v0v1, v0p));
-        if (v < 0) 
-           return vec4(0,0,0,0); 
-         // P outside triangle 
+    vec3 e1 = vertex2.worldPos.xyz-vertex1.worldPos.xyz;
+    vec3 e2 = vertex3.worldPos.xyz-vertex1.worldPos.xyz;
+    vec3 q = cross(ray.dir.xyz, e2);
+    float a = dot(e1, q);
 
-        // inside-out test edge1 
-        vec3 v1p = Phit - v1; 
-        vec3 v1v2 = v2 - v1; 
-        float w = dot(N, cross(v1v2, v1p)); 
-        if (w < 0) 
-            return vec4(0,0,0,0); 
-        // P outside triangle 
+    if(a > -0.000001 && a < 0.000001)
+    {
+        return vec4(1,0,0,0);
+    }
 
-        // inside-out test edge2 
-        vec3 v2p = Phit - v2; 
-        vec3 v2v0 = v0 - v2; 
-        float u = dot(N, cross(v2v0, v2p)); 
-        if (u < 0) 
-            return vec4(0,0,0,0);
-         //P outside triangle 
+    float f = 1 / a;
+    vec3 s = ray.origin.xyz - vertex1.worldPos.xyz;
+    float u = f*(dot(s, q));
 
-        vec4 tc = vec4(1,1,1,1);//traceColor(tri.vx1) + traceColor(tri.vx2) + traceColor(tri.vx3);
+    if(u < 0 || u > 1.0f)
+    {
+        return vec4(0,1,0,0);
+    }
+    vec3 r = cross(s, e1);
+    float v = f*(dot(ray.dir.xyz, r));
 
-    return tc;
+    if(v < 0 || (u + v) > 1) 
+    {
+        return vec4(0,0,1,0);
+    }
+    float t = f*(dot(e2, r));
+
+    if(t < 0)
+    {
+        return vec4(0,1,1,0);
+    }
+
+    return vec4(1,1,1,0);
 } 
+
+
