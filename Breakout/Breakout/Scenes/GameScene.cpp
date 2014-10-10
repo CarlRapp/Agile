@@ -91,8 +91,8 @@ void GameScene::Update(float _dt)
 
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
         
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
-		this->Reset();
+	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
+	//	this->Reset();
 
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('c') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
@@ -222,7 +222,7 @@ void GameScene::Reset()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 9999.0f);
+    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 1.0f);
     m_pauseHandle = e->GetId();
     m_world->AddEntity(e);
     
@@ -281,15 +281,17 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 20));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 100));
 	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	e->GetComponent<LightComponent>()->SetRange(500);
 	m_world->AddEntity(e);
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -100));
+	//e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	//e->GetComponent<LightComponent>()->SetRange(500);
+	//m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

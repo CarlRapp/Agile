@@ -261,7 +261,7 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 	posW /= posW.w;
 
 	Material mat;
-	mat.SpecIntensity	= albedo.w;
+	mat.SpecIntensity	= albedo.w * 10.0f;
 	mat.SpecPower		= normalspec.w * 1000.0f;
 
 
