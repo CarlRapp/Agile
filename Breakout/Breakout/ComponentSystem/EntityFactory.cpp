@@ -94,7 +94,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
 		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Explosion.wav";
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
@@ -177,6 +177,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(50.0f);
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
 		break;
 	case EntityFactory::H_WALL:
 		_entity->AddComponent<PositionComponent>();
@@ -185,6 +186,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		//_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
 		PhysicsSystem::GenerateBody(INVISIBLE_WALL, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
 		break;
 	case EntityFactory::INVISIBLE_WALL:
 		_entity->AddComponent<PositionComponent>();
