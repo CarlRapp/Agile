@@ -84,6 +84,60 @@ void EffectSystem::UpdateEffects(float _dt)
 
 		}
 
+
+		auto effect = it->second->GetComponent<EffectComponent>();
+		if (effect)
+		{
+			// SCALE EFFECT
+			if ((effect->m_effects.OnAdded & EffectFlags::SCALE_MIN_TO_MAX) == EffectFlags::SCALE_MIN_TO_MAX)
+			{
+				auto scale = it->second->GetComponent<ScaleComponent>();
+				VECTOR3 newScale = scale->GetScale();
+
+				// If we are scaling up (0 -> 3.f)
+				if (scale->GetBool())
+				{
+					// scale is less then 3
+					if (newScale.x < 3.f)
+					{
+						newScale.x += _dt * 20;
+						newScale.y += _dt * 20;
+						newScale.z += _dt * 20;
+
+						scale->SetScale(newScale);
+					}
+					// scale is larger then 3
+					else
+						scale->SetBool(false);
+				}
+				// If we are scaling down (3.f -> 2.f)
+				else
+				{
+					if (newScale.x > 2.f)
+					{
+						newScale.x -= _dt * 10;
+						newScale.y -= _dt * 10;
+						newScale.z -= _dt * 10;
+
+						newScale.x = newScale.x < 2.f ? 2.f : newScale.x;
+						newScale.y = newScale.y < 2.f ? 2.f : newScale.y;
+						newScale.z = newScale.z < 2.f ? 2.f : newScale.z;
+						scale->SetScale(newScale);
+					}
+					else
+					{
+						effect->m_effects.OnAdded = NO_EFFECT;
+						m_effects.erase(it++);
+						continue;
+					}
+				}
+
+			}
+		}
+
+
+
+
 		++it;
 	}
 }
@@ -102,6 +156,14 @@ void EffectSystem::OnEntityAdded(Entity* _e)
 		}
 
 	}
+
+	if ((flags.OnAdded & EffectFlags::SCALE_MIN_TO_MAX) == EffectFlags::SCALE_MIN_TO_MAX)
+	{
+		auto scale = _e->GetComponent<ScaleComponent>();
+		scale->SetScale(VECTOR3(0, 0, 0));
+		m_effects[_e->GetId()] = _e;
+	}
+
 }
 void EffectSystem::OnEntityRemoved(Entity* _e)
 {

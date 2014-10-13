@@ -26,6 +26,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	switch (_entityType)
 	{
 	case EntityFactory::STANDARD_BLOCK_RED:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -38,9 +39,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::SHATTER;
+		
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
 		break;
+	}
 	case EntityFactory::STANDARD_BLOCK_GREEN:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -53,9 +58,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->AddComponent<EffectComponent>();
+
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
 		break;
+	}
 	case EntityFactory::STANDARD_BLOCK_BLUE:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -70,9 +79,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(1, 1));
-		break;
 
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		break;
+	}
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -84,8 +97,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScoreComponent>().m_score = 1;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
+
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
 		break;
+	}
 	case EntityFactory::TNT_BLOCK:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -99,9 +117,14 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		_entity->AddComponent<TNTComponent>();
-		_entity->AddComponent<EffectComponent>().m_effects.OnRemoved = EffectFlags::EXPLODE;
+
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		effect->m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
+	}
 	case EntityFactory::STANDARD_HORIZONTAL_RECTANGLE:
+	{
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -116,7 +139,11 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
+
+		auto effect = &_entity->AddComponent<EffectComponent>();
+		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
 		break;
+	}
 	case EntityFactory::PAD:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
