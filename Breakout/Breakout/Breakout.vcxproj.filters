@@ -159,6 +159,9 @@
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Storage\TextLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -421,8 +424,7 @@
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>    <ClInclude Include="BoundingBox2D.h">
       <Filter>Source Files</Filter>
-    </ClInclude>  </ItemGroup>
-  <ItemGroup>
+    </ClInclude>  </ItemGroup>  <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{29f1f3b8-01fb-4096-a44f-c7076fd87a94}</UniqueIdentifier>
     </Filter>

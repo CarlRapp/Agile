@@ -130,6 +130,7 @@
     <ClCompile Include="Storage\ModelData.cpp" />
     <ClCompile Include="Storage\ModelLoader.cpp" />
     <ClCompile Include="Storage\MusicLoader.cpp" />
+    <ClCompile Include="Storage\TextLoader.cpp" />
     <ClCompile Include="Storage\WavLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +225,7 @@
     <ClInclude Include="Storage\ModelData.h" />
     <ClInclude Include="Storage\ModelLoader.h" />
     <ClInclude Include="Storage\MusicLoader.h" />
+    <ClInclude Include="Storage\TextLoader.h" />
     <ClInclude Include="Storage\WavLoader.h" />
   </ItemGroup>
   <ItemGroup>
