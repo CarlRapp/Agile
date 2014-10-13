@@ -49,6 +49,8 @@ public:
 	virtual void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect) = 0;
 	virtual void RemoveTextObject(int _id) = 0;
 
+	virtual void ShowMouseCursor(bool _value) = 0;
+
 
 	static IGraphics* GetIGraphics();
 };

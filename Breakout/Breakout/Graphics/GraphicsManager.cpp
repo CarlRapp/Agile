@@ -123,3 +123,8 @@ void GraphicsManager::RemoveTextObject(int _id)
 {
     m_IGraphics->RemoveTextObject(_id);
 }
+
+void GraphicsManager::ShowMouseCursor(bool _value)
+{
+	m_IGraphics->ShowMouseCursor(_value);
+}

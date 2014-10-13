@@ -76,6 +76,9 @@ public:
 	void		RemoveParticleEffect(int _id);
 
 	bool        Init3D(DisplayMode _displayMode);
+
+	void		ShowMouseCursor(bool _value);
+
 };
 
 
