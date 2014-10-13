@@ -10,6 +10,8 @@
 #include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
+#include "../ComponentSystem/System/KillOnTouchSystem.h"
+#include "../ComponentSystem/Component/BallComponent.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -132,6 +134,7 @@ void GameScene::Update(float _dt)
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
+			
 	}
 
 	m_world->Update(_dt);
@@ -215,6 +218,7 @@ void GameScene::Reset()
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
 	m_world->AddSystem<SpawnPowerUpSystem>();
+	m_world->AddSystem<KillOnTouchSystem>();
 
 	/*	New Implementation	*/
             
