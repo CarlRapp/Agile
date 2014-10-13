@@ -420,11 +420,19 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>    <ClInclude Include="BoundingBox2D.h">
+    </ClInclude>
+    <ClInclude Include="BoundingBox2D.h">
       <Filter>Source Files</Filter>
-    </ClInclude>  </ItemGroup>  <ItemGroup>
+    </ClInclude>
+    <ClInclude Include="Storage\TextLoader.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{29f1f3b8-01fb-4096-a44f-c7076fd87a94}</UniqueIdentifier>
     </Filter>
