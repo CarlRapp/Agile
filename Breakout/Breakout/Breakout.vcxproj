@@ -96,6 +96,7 @@
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\TextSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
     <ClCompile Include="Graphics\DirectX\DXCamera.cpp" />
     <ClCompile Include="Graphics\DirectX\DXDeferred.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h" />
     <ClInclude Include="ComponentSystem\Component\TextComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\TNTComponent.h" />
     <ClInclude Include="ComponentSystem\Component\VelocityComponent.h" />
     <ClInclude Include="ComponentSystem\EntityFactory.h" />
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
@@ -182,6 +184,7 @@
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
+    <ClInclude Include="ComponentSystem\System\TextSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />
     <ClInclude Include="Graphics\DirectX\DXCamera.h" />
     <ClInclude Include="Graphics\DirectX\DXDeferred.h" />
@@ -196,6 +199,7 @@
     <ClInclude Include="Graphics\DirectX\DXParticleSystem.h" />
     <ClInclude Include="Graphics\DirectX\DXRenderStates.h" />
     <ClInclude Include="Graphics\DirectX\DXShadowMap.h" />
+    <ClInclude Include="Graphics\DirectX\DXText.h" />
     <ClInclude Include="Graphics\DirectX\DXTextureManager.h" />
     <ClInclude Include="Graphics\DirectX\DXVertex.h" />
     <ClInclude Include="Graphics\DirectX\DXWindow.h" />

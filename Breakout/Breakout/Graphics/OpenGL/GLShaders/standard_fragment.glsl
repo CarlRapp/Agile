@@ -1,10 +1,13 @@
 #version 430
 
-uniform vec3 m_testLight;
+//uniform vec3 m_testLight;
 
 varying mat4 modelView;
 
 uniform sampler2D m_standardTex;
+uniform vec4 EyePosition;
+
+layout( location = 0 ) out vec4 FragColor;
 
 in GS_FS
 {
@@ -35,53 +38,70 @@ struct MaterialInfo{
 };
 MaterialInfo Material;
 
-vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength) {
+void phongModel(int index, vec3 toEye, out vec3 ambient, out vec3 diffuse, out vec3 spec) {
 
-                //tmp material
-                Material.Ka = vec3(0.2);
-                Material.Kd = vec3(0.9);
-                Material.Ks = vec3(0.9);
-                Material.Shininess = 30.0;
+        //tmp material
+        Material.Ka = vec3(0.2);
+        Material.Kd = vec3(0.9);
+        Material.Ks = vec3(1.0);
+        Material.Shininess = 100.0;
 
-		vec3 s = normalize(vec3(lightPos - vertex.worldPos.xyz));
-		vec3 v = normalize(-vertex.worldPos.xyz);	
-		//vec3 h = normalize(v + s);
-                vec3 h = reflect( s, vertex.normal);
+        ambient = Lights[index].Color * Lights[index].Intensity.x;
+        diffuse = vec3(0.0);
+        spec    = vec3(0.0);
 
-		float sDotN = max( dot(s, vertex.normal), 0.0 );
-	
-		//Diffuse light
-		vec3 diffuse = vec3(Lights[index].Intensity.y) * Lights[index].Color * Material.Kd * sDotN * strength;
+        vec3 lightVec = Lights[index].Position.xyz - vertex.worldPos.xyz;
 
-		vec3 Ks = Material.Ks;
+        float d = length(lightVec);
 
-		vec3 specular = vec3(0.0);
-	
-		//Specular light
-		if( sDotN > 0.0 )
-			specular = vec3(Lights[index].Intensity.z) * Lights[index].Color * Ks * pow( max( dot(h,v), 0.0 ), Material.Shininess ) * strength;
-		
-		return vec3(diffuse);// + specular);
+        if(d > Lights[index].Range)
+            return;
+
+        lightVec /= d; //normlizing
+        float diffuseFactor = dot( lightVec, vertex.normal );
+
+        if(diffuseFactor > 0)
+        {
+            vec3 v = reflect( -lightVec, vertex.normal );
+            float specFactor = pow( max( dot(v, toEye), 0.0 ), Material.Shininess );
+
+            diffuse = diffuseFactor * Lights[index].Color * Lights[index].Intensity.y;
+            spec = specFactor * Lights[index].Color * Lights[index].Intensity.z * Material.Ks;
+        }
+
+        float att = 1 - pow((d/Lights[index].Range), 1.0f);
+
+        ambient *= att;
+        diffuse *= att;
+        spec    *= att;
+
+        return;
 }
 
 void main(void) 
 {   
-    vec3 ambient = vec3(0.0f); // = vec3(0.2f,0.2f,0.2f);
-    vec3 diffAndSpec = vec3(0.0);
+    vec3 ambient = vec3(0.0);
+    vec3 diffuse = vec3(0.0);
+    vec3 spec    = vec3(0.0);
+
+    vec3 toEye   = normalize(EyePosition.xyz - vertex.worldPos.xyz);
 
     for(int index = 0; index < nrOfLights; index++)
     {
-        float lightDist = abs(length(vertex.worldPos.xyz - vec3(Lights[index].Position)));
-        float lightStrength = 0;
-        if( lightDist < Lights[index].Range )
-			lightStrength = 1.0-(lightDist / Lights[index].Range);
+        vec3 a,d,s;
+
         //för varje ljus
-	diffAndSpec += phongModelDiffAndSpec(index, vec3(Lights[index].Position), lightStrength);
+        phongModel(index, toEye, a, d, s);
+        ambient += a;
+        diffuse += d;
+        spec    += s;
+
+        
     }
 
     vec4 texColor = texture( m_standardTex, vertex.texCoord );
     
-    gl_FragColor = vec4(diffAndSpec + ambient, 1.0) * texColor;
+    FragColor = vec4(ambient + diffuse, 1.0) * texColor + vec4(spec, 0.0f);
 
-    //gl_FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
+    //FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
 }

@@ -14,8 +14,8 @@ DXParticleSystem::~DXParticleSystem(void)
 	ReleaseCOM(InitVertexBuffer);
 	ReleaseCOM(DrawVertexBuffer);
 	ReleaseCOM(SteamOutVertexBuffer);
-	ReleaseCOM(InputLayout);
-	ReleaseCOM(m_effect);
+	//ReleaseCOM(InputLayout);
+	//ReleaseCOM(m_effect);
 
 }
 
@@ -75,91 +75,79 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 #if defined(DEBUG) || defined(_DEBUG)
 #endif
 
-	
-	std::string path = "Graphics/DirectX/Shaders/ParticleSystems/" + _effect + ".fxo";
-	std::ifstream fin(path.c_str(), std::ios::binary);
+	if (pEffects.find(_effect) == pEffects.end())
+	{
 
-	fin.seekg(0, std::ios_base::end);
-	int size = (int)fin.tellg();
-	fin.seekg(0, std::ios_base::beg);
-	std::vector<char> compiledShader(size);
+		ParticleEffect *pe = new ParticleEffect();
 
-	fin.read(&compiledShader[0], size);
-	fin.close();
+		std::string path = "Graphics/DirectX/Shaders/ParticleSystems/" + _effect + ".fxo";
+		std::ifstream fin(path.c_str(), std::ios::binary);
 
+		fin.seekg(0, std::ios_base::end);
+		int size = (int)fin.tellg();
+		fin.seekg(0, std::ios_base::beg);
+		std::vector<char> compiledShader(size);
 
-	HRESULT(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
-		0, _device, &m_effect));
-
-
-	//dwShaderFlags |= D3D10_SHADER_DEBUG;
-	//D3DX11CompileFromFile(effectFilePath,
-	//						NULL,
-	//						NULL,
-	//						"",
-	//						"fx_5_0",
-	//						dwShaderFlags,
-	//						NULL,
-	//						NULL,
-	//						&pBlobEffect,
-	//						&pBlobErrors,
-	//						NULL);
-	
+		fin.read(&compiledShader[0], size);
+		fin.close();
 
 
-	//D3DX11CreateEffectFromMemory(pBlobEffect->GetBufferPointer(),
-	//								pBlobEffect->GetBufferSize(),
-	//								dwShaderFlags,
-	//								_device,
-	//								&effect);
-		
-
-	//laddar effectteknikerna från effektfilen.
-	StreamOutTech = m_effect->GetTechniqueByName("StreamOutTech");
-	DrawTech = m_effect->GetTechniqueByName("DrawTech");
-
-	//laddar variabler från effektfilen.
-	mfxViewVar = m_effect->GetVariableByName("gView")->AsMatrix();
-	mfxProjVar = m_effect->GetVariableByName("gProjection")->AsMatrix();
-	mfxTimeVar = m_effect->GetVariableByName("gTime")->AsScalar();
-	mfxDeltaTimeVar = m_effect->GetVariableByName("gDeltaTime")->AsScalar();
-	mfxCameraPosVar = m_effect->GetVariableByName("gCameraPos")->AsVector();
-	mfxEmitPosVar = m_effect->GetVariableByName("gEmitPosW")->AsVector();
-	mfxEmitVelVar = m_effect->GetVariableByName("gEmitVelW")->AsVector();
-
-	RandomTexRV = _texMgr->GetRandomTexture();
-
-	//laddar textur till partikelsystemet, t.ex. eldtextur.
-
-	TextureRV = _texMgr->CreateTexture(_effect + ".png");
-
-	//if (D3DX11CreateShaderResourceViewFromFile(_device, charToWChar(texturePath), 0, 0, &TextureRV, 0))
-	//{
-	//	::MessageBox(0, L"Failed to create ShaderResourceView(ParticleSystem)", L"Error", MB_OK);
-	//}
-
-	//skickar texturerna till gpu.
-	mfxTexture = m_effect->GetVariableByName("Texture")->AsShaderResource();
-	mfxRandomTex = m_effect->GetVariableByName("randomTex")->AsShaderResource();
-	//effect->GetVariableByName("randomTex")->AsShaderResource()->SetResource(RandomTexRV);
-	//effect->GetVariableByName("Texture")->AsShaderResource()->SetResource(TextureRV);
-
-	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TYPE", 0, DXGI_FORMAT_R8_UINT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	};
+		HRESULT(D3DX11CreateEffectFromMemory(&compiledShader[0], size,
+			0, _device, &pe->m_effect));
 
 
-	D3DX11_PASS_DESC PassDesc;
-	DrawTech->GetPassByIndex(0)->GetDesc(&PassDesc);
-	_device->CreateInputLayout(inputDesc,
-								5,
-								PassDesc.pIAInputSignature,
-								PassDesc.IAInputSignatureSize,
-								&InputLayout);
+
+		//laddar effectteknikerna från effektfilen.
+		pe->StreamOutTech = pe->m_effect->GetTechniqueByName("StreamOutTech");
+		pe->DrawTech = pe->m_effect->GetTechniqueByName("DrawTech");
+
+		//laddar variabler från effektfilen.
+		pe->mfxViewVar = pe->m_effect->GetVariableByName("gView")->AsMatrix();
+		pe->mfxProjVar = pe->m_effect->GetVariableByName("gProjection")->AsMatrix();
+		pe->mfxTimeVar = pe->m_effect->GetVariableByName("gTime")->AsScalar();
+		pe->mfxDeltaTimeVar = pe->m_effect->GetVariableByName("gDeltaTime")->AsScalar();
+		pe->mfxCameraPosVar = pe->m_effect->GetVariableByName("gCameraPos")->AsVector();
+		pe->mfxEmitPosVar = pe->m_effect->GetVariableByName("gEmitPosW")->AsVector();
+		pe->mfxEmitVelVar = pe->m_effect->GetVariableByName("gEmitVelW")->AsVector();
+
+		pe->RandomTexRV = _texMgr->GetRandomTexture();
+
+		//laddar textur till partikelsystemet, t.ex. eldtextur.
+
+		pe->TextureRV = _texMgr->CreateTexture(_effect + ".png");
+
+		//if (D3DX11CreateShaderResourceViewFromFile(_device, charToWChar(texturePath), 0, 0, &TextureRV, 0))
+		//{
+		//	::MessageBox(0, L"Failed to create ShaderResourceView(ParticleSystem)", L"Error", MB_OK);
+		//}
+
+		//skickar texturerna till gpu.
+		pe->mfxTexture = pe->m_effect->GetVariableByName("Texture")->AsShaderResource();
+		pe->mfxRandomTex = pe->m_effect->GetVariableByName("randomTex")->AsShaderResource();
+		//effect->GetVariableByName("randomTex")->AsShaderResource()->SetResource(RandomTexRV);
+		//effect->GetVariableByName("Texture")->AsShaderResource()->SetResource(TextureRV);
+
+		D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "VELOCITY", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "SIZE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "AGE", 0, DXGI_FORMAT_R32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+				{ "TYPE", 0, DXGI_FORMAT_R8_UINT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+
+
+		D3DX11_PASS_DESC PassDesc;
+		pe->DrawTech->GetPassByIndex(0)->GetDesc(&PassDesc);
+		_device->CreateInputLayout(inputDesc,
+			5,
+			PassDesc.pIAInputSignature,
+			PassDesc.IAInputSignatureSize,
+			&pe->InputLayout);
+
+		pEffects[_effect] = pe;
+	}
+
+	m_effect = pEffects[_effect];
 }
 
 //startar om partikelsystemet
@@ -201,24 +189,24 @@ void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX
 	time += deltaTime;
 
 	VECTOR3 *temp = m_position ? m_position : &VECTOR3(0, 0, 0);
-	mfxEmitPosVar->SetFloatVector(reinterpret_cast<const float*>(temp));
+	m_effect->mfxEmitPosVar->SetFloatVector(reinterpret_cast<const float*>(temp));
 
 	temp = m_velocity ? m_velocity : &VECTOR3(0,0,0);
-	mfxEmitVelVar->SetFloatVector(reinterpret_cast<const float*>(temp));
+	m_effect->mfxEmitVelVar->SetFloatVector(reinterpret_cast<const float*>(temp));
 
 
 	//skickar variabler till GPU.
-	mfxViewVar->SetMatrix((float*)&View);
-	mfxProjVar->SetMatrix((float*)&Projection);
-	mfxTimeVar->SetFloat(time);
-	mfxDeltaTimeVar->SetFloat(deltaTime);
-	mfxTexture->SetResource(TextureRV);
-	mfxRandomTex->SetResource(RandomTexRV);
+	m_effect->mfxViewVar->SetMatrix((float*)&View);
+	m_effect->mfxProjVar->SetMatrix((float*)&Projection);
+	m_effect->mfxTimeVar->SetFloat(time);
+	m_effect->mfxDeltaTimeVar->SetFloat(deltaTime);
+	m_effect->mfxTexture->SetResource(m_effect->TextureRV);
+	m_effect->mfxRandomTex->SetResource(m_effect->RandomTexRV);
 
 	DirectX::XMFLOAT4 camPos = DirectX::XMFLOAT4(cameraPos.x, cameraPos.y, cameraPos.z, 0);
-	mfxCameraPosVar->SetFloatVector(reinterpret_cast<const float*>(&camPos));
+	m_effect->mfxCameraPosVar->SetFloatVector(reinterpret_cast<const float*>(&camPos));
 
-	_dc->IASetInputLayout(InputLayout);
+	_dc->IASetInputLayout(m_effect->InputLayout);
 	_dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
 	UINT stride = sizeof(Particle);
@@ -240,10 +228,10 @@ void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX
 
 	//kör draw metoden med StreamOutTech, vilket innebär att GPU:n kommer att uppdatera och skapa nya partiklar som sparas i StreamOutTarget.
 	D3DX11_TECHNIQUE_DESC techDesc;
-	StreamOutTech->GetDesc(&techDesc);
+	m_effect->StreamOutTech->GetDesc(&techDesc);
 	for(UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		StreamOutTech->GetPassByIndex(p)->Apply(0, _dc);
+		m_effect->StreamOutTech->GetPassByIndex(p)->Apply(0, _dc);
 		//"Målar ut" en vertex om det är första uppdateringen (emit-partiklen).
 		if( firstRun )
 		{
@@ -267,10 +255,10 @@ void DXParticleSystem::Render(ID3D11DeviceContext* _dc, float deltaTime, DirectX
 
 	//sätter DrawVertexBuffer (gamla SteamOutVertexBuffer) som vertexbuffer och målar ut den på skärmen med DrawTech-tekniken.
 	_dc->IASetVertexBuffers(0, 1, &DrawVertexBuffer, &stride, &offset);
-	DrawTech->GetDesc( &techDesc );
+	m_effect->DrawTech->GetDesc(&techDesc);
 	for(UINT p = 0; p < techDesc.Passes; ++p)
 	{
-		DrawTech->GetPassByIndex(p)->Apply(0, _dc);
+		m_effect->DrawTech->GetPassByIndex(p)->Apply(0, _dc);
 		_dc->DrawAuto();
 	}
 }

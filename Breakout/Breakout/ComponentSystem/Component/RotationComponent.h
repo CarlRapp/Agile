@@ -20,7 +20,11 @@ public:
 
 	QUAT& GetRotation() { return m_rotation; }
 	bool HasChanged(){ return m_changed; }
-	void SetRotation(const QUAT& _rotation) { m_rotation = _rotation; m_changed = true; }
+	void SetRotation(const QUAT& _rotation)
+        { 
+            m_rotation = _rotation; 
+            m_changed = true;
+        }
 };
 
 #endif

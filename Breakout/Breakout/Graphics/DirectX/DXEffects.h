@@ -264,15 +264,23 @@ public:
 	~CombineFinalEffect();
 
 	void SetOpacity(float _value)					{ m_opacity->SetFloat(_value); }
+	void SetColor(const DirectX::XMFLOAT3& _v)                  { m_color->SetRawValue(&_v, 0, sizeof(DirectX::XMFLOAT3)); }
 	void SetTexture(ID3D11ShaderResourceView* _tex)  { m_texture->SetResource(_tex); }
+	void SetIndex(float _value)					{ m_index->SetFloat(_value); }
+	void SetNumSymbols(float _value)					{ m_numSymbols->SetFloat(_value); }
 
 	ID3DX11EffectTechnique* m_monoTech;
 	ID3DX11EffectTechnique* m_colorTech;
 	ID3DX11EffectTechnique* m_alphaTransparencyColorTech;
 	ID3DX11EffectTechnique* m_transparencyColorTech;
 	ID3DX11EffectTechnique* m_alphaClipColorTech;
+	ID3DX11EffectTechnique* m_textTech;
 		
 	ID3DX11EffectScalarVariable*		m_opacity;
+	ID3DX11EffectVectorVariable*		m_color;
+
+	ID3DX11EffectScalarVariable*		m_index;
+	ID3DX11EffectScalarVariable*		m_numSymbols;
 
 	ID3DX11EffectShaderResourceVariable* m_texture;
 };

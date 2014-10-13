@@ -99,14 +99,14 @@ void GraphicsManager::Remove2DTexture(int _id)
 	m_IGraphics->Remove2DTexture(_id);
 }
 
-void GraphicsManager::AddEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+void GraphicsManager::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
 {
-	m_IGraphics->AddEffect(_id, _effect, _pos, _vel);
+	m_IGraphics->AddParticleEffect(_id, _effect, _pos, _vel);
 }
 
-void GraphicsManager::RemoveEffect(int _id)
+void GraphicsManager::RemoveParticleEffect(int _id)
 {
-	m_IGraphics->RemoveEffect(_id);
+	m_IGraphics->RemoveParticleEffect(_id);
 }
 
 ICamera* GraphicsManager::GetICamera()
@@ -114,9 +114,9 @@ ICamera* GraphicsManager::GetICamera()
 	return m_ICamera;
 }
 
-void GraphicsManager::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)
+void GraphicsManager::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
-    m_IGraphics->AddTextObject(_text,_scale,_color,_x,_y,_id);
+    m_IGraphics->AddTextObject(_id, _text, _x, _y, _scale, _color, _effect);
 }
 
 void GraphicsManager::RemoveTextObject(int _id)

@@ -30,7 +30,7 @@ struct ShatterComponent : Component<ShatterComponent>
 			if (m_explosion > m_maxExplosionTime * m_expansionRate)
 			{
 				m_explosionState = DONE;
-				printf("Entity done shattering, remove\n");
+				//printf("Entity done shattering, remove\n");
 			}
 		}
 

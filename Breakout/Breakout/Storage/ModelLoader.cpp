@@ -226,6 +226,10 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 			{
 				material = new Material;
 				material->Name = str;
+				material->Ns = 1.0;
+				material->Ks[0] = 0.0f;
+				material->Ks[1] = 0.0f;
+				material->Ks[2] = 0.0f;
 				m_materials[str] = material;
 			}
 			else

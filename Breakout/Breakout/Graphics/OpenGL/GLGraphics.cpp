@@ -60,10 +60,56 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_shader2Dprogram.LinkShaderProgram();
     
 //-----------------------------------------------------------------------------------------
+    
+    m_textProgram.CreateShaderProgram();
+    
+    m_textProgram.AddShader("text_vertex.glsl",GL_VERTEX_SHADER);
+    m_textProgram.AddShader("text_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    m_textProgram.LinkShaderProgram();
+    
+//-----------------------------------------------------------------------------------------
+    
     glEnable(GL_BLEND);
     
-    LoadLetters();
-  
+    float aspect = m_screenHeight/m_screenWidth;
+    
+    m_tX = 0.0;
+    m_tY = 0.0;
+    m_tW = (8.f*58)/(m_screenWidth);
+    m_tH = 8.0f/(m_screenHeight);
+    
+    m_texManager.LoadLetters();
+    //LoadTexture("TEXT");
+    Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
+    
+//------------------------------------------------------------------------------------
+    m_fireParticlesProgram.CreateShaderProgram();
+    
+    m_fireParticlesProgram.AddShader("explosionParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_fireParticlesProgram.AddShader("explosionParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_fireParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_fireParticlesProgram.LinkShaderProgram();
+    m_texManager.Load2DTexture("fire3.png", GL_TEXTURE0);
+//------------------------------------------------------------------------------------
+    m_trailParticlesProgram.CreateShaderProgram();
+    
+    m_trailParticlesProgram.AddShader("trailParticles_vertex.glsl",GL_VERTEX_SHADER);
+    m_trailParticlesProgram.AddShader("trailParticles_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    //const char * outputNames[] = { "Position", "Velocity", "StartTime" };
+    glTransformFeedbackVaryings(m_trailParticlesProgram.GetProgramHandle(), 3, outputNames, GL_SEPARATE_ATTRIBS);
+
+    m_trailParticlesProgram.LinkShaderProgram();
+    m_texManager.Load2DTexture("circle_blue.png", GL_TEXTURE0);
+//------------------------------------------------------------------------------------
+    
+    glEnable(GL_BLEND);
+    glEnable(GL_POINT_SPRITE);
+   
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
@@ -286,6 +332,7 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
         glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[0]); 
         glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), positionData, GL_STATIC_DRAW);
 
+
         glBindBuffer(GL_ARRAY_BUFFER, m_2DVBOs[1]);
         glBufferData(GL_ARRAY_BUFFER, nrOfPoints * sizeof(float), texCoordData, GL_STATIC_DRAW);
 
@@ -325,17 +372,42 @@ void GLGraphics::Remove2DTexture(int _id)
     m_TextureInstances.erase(_id);
 }
 
+void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
+{
+    if(_effect == "fire")
+    {
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
+                                                                                    m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
+    }
+    else if(_effect == "trail")
+    {
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 35.f, 
+                                                                                    m_texManager.GetTexturePointer("circle_blue.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
+    }
+}
+        
+void GLGraphics::RemoveParticleEffect(int _id)
+{
+    delete(m_particleEffects[_id]);
+    m_particleEffects.erase(_id);
+}
+
 void GLGraphics::Update(float _dt) 
 {
     for(int i = m_textObjects.size()-1; i >= 0; --i)
     {
-        if(m_textObjects[i].effectTime > 1.0f)
-            m_textObjects[i].effectTime -= 0.1f;
-        
-        if(m_textObjects[i].kill)
+        if(m_textObjects[i].text == NULL)
         {
-            m_textObjects[i].effectTime -= 0.1f;
-            if(m_textObjects[i].effectTime < -10)
+            //9999 = no effect
+            if(m_textObjects[i].effectCopy != 9999.0f)
+                m_textObjects[i].effectCopy -= _dt*10;
+            else
+            {
+                if(m_textObjects[i].kill)
+                    m_textObjects.erase(m_textObjects.begin() +(i));
+            }
+
+            if(m_textObjects[i].effectCopy < -10)
             {  
                 m_textObjects.erase(m_textObjects.begin() +(i));
             }
@@ -381,22 +453,35 @@ void GLGraphics::Free()
     m_standardShaderProgram.~ShaderHandler();
     m_shader2Dprogram.~ShaderHandler();
  
-    for(int i=0;i < m_letters.size(); i++)
-    {
-        m_letters.pop_back();
-    }
+//    for(int i=0;i < m_letters64.size(); i++)
+//    {
+//        m_letters64.pop_back();
+//    }
     
+//    for(int i=m_letters256.size() - 1;i >= 0; i--)
+//    {
+//        free(m_letters256[i]);
+//        m_letters256[i] = nullptr;
+//        m_letters256.pop_back();
+//    }
+
     for(int i=0; i < m_textObjects.size();i++)
     {
         m_textObjects.pop_back();
     }
+    
+    for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
+    {
+        delete(it->second);
+    }
+    m_particleEffects.clear();
     
     printf("Graphics memory cleared\n");
 }
 
     float t;
 
-void GLGraphics::Render(ICamera* _camera) 
+void GLGraphics::Render(float _dt, ICamera* _camera) 
 { 
     glClearColor(0.05, 0.05, 0.05, 1.0);
 
@@ -410,52 +495,122 @@ void GLGraphics::Render(ICamera* _camera)
     
     CameraToRender(_camera);
     
-    RenderInstanced();
-    
-    //RenderStandard();
+    RenderInstanced(_camera);
     
     Render2D();
     
+    RenderParticles(_dt, _camera);
     
     glUseProgram(0);
 
     for(int i=0; i < m_textObjects.size();i++)
     {
-        
-            RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effectTime,m_textObjects[i].kill);
+        if(!m_textObjects[i].kill)
+            RenderText(m_textObjects[i].text,m_textObjects[i].scale,m_textObjects[i].color,m_textObjects[i].x,m_textObjects[i].y,m_textObjects[i].effect,m_textObjects[i].kill);
+        else
+            RenderText(&m_textObjects[i].textCopy,&m_textObjects[i].scaleCopy,&m_textObjects[i].colorCopy,&m_textObjects[i].xCopy,&m_textObjects[i].yCopy,&m_textObjects[i].effectCopy,&m_textObjects[i].kill);
     }
-    
     
     SDL_GL_SwapBuffers( );
 }
 
-void GLGraphics::RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,float effect,bool kill)
+void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 {
-    if(_text == 0)
+	
+	glEnable(GL_BLEND);
+        glEnable(GL_POINT_SPRITE);
+	glDepthMask(GL_FALSE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+        
+	for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
+	{
+            ShaderHandler *tmp;
+            if(it->second->GetName() == "fire")
+                tmp = &m_fireParticlesProgram;
+            else if(it->second->GetName() == "trail")
+                tmp = &m_trailParticlesProgram;
+            
+            tmp->UseProgram();
+            glActiveTexture(GL_TEXTURE0);
+
+            glUniformMatrix4fv(glGetUniformLocation(tmp->GetProgramHandle(), "ProjectionMatrix"), 1, GL_FALSE, &(*_camera->GetProjection())[0][0]);
+            
+            glBindTexture(GL_TEXTURE_2D, *it->second->m_textureHandle);
+
+            //printf("worldPos particles: %f, %f, %f \n\n", m_particlesFire->GetWorldPos().x, m_particlesFire->GetWorldPos().y, m_particlesFire->GetWorldPos().z);
+            glm::mat4 Model = glm::translate(*(it->second->GetWorldPos()));
+            glm::mat4 viewMatrix = *_camera->GetView();
+
+            GLuint location = glGetUniformLocation(tmp->GetProgramHandle(), "Model");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &Model[0][0]); }
+            
+            location = glGetUniformLocation(tmp->GetProgramHandle(), "View");	//gets the UniformLocation
+            if (location >= 0){ glUniformMatrix4fv(location, 1, GL_FALSE, &viewMatrix[0][0]); }
+
+            it->second->Render(tmp, dt);
+	}
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	glUseProgram(0);
+}
+
+void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* _effect,bool kill)
+{
+    if(_text == NULL)
         return;
     
     GLvoid* v;
     
     std::string text = (*_text);
     float scale = (*_scale);
-    unsigned int color = (*_color);
-    int x = (*_x);
-    int y = (*_y);
+    float x = (*_x);
+    float y = (*_y);
     
-    int sign = 1;
-    if(kill)
-        sign = -1;
+    float width;
+    float height;
     
-    glPixelZoom(scale,  scale);
-    for(int i=0; i< text.size();i++)
+    float effect = *_effect;
+    
+    if(effect == 9999.0f)
+        effect = 1.0f;
+    
+    width = 8.0f/m_screenWidth*scale;
+    height = 8.0f/m_screenHeight*scale;
+    
+    int sign = (kill) ? -1 : 1;
+
+    float r_ = _color->x;
+    float g_ = _color->y;
+    float b_ = _color->z;
+    
+    m_textProgram.UseProgram();
+
+    glActiveTexture(GL_TEXTURE0);
+    glEnable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
+
+    glBindVertexArray(m_2DVAO);
+    glBindTexture(GL_TEXTURE_2D, m_TextureInstances.find(999)->second->TexHandle);
+
+    GLint colorLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_color" );
+    glUniform3f(colorLocation, r_,g_,b_);
+
+    for(int i= 0; i < text.size();i++)
     {
-        v = (GLvoid*)m_letters[text.at(i)-32];
-        glRasterPos2i(x+i*8*scale*effect*sign,  y*scale);
-        glDrawPixels(8,8,  color, GL_BYTE,  v);
+        x = ((*_x) + width*i) * (effect);
+        glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
+        GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
+        glUniform1i(letterLocation, text.at(i)-32);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //x += width;
     }
+    glBindVertexArray(0);
+    glActiveTexture(0);
 }
 
-void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y,int _id)
+void GLGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect)
 {
     for(int i = 0; i < m_textObjects.size();i++)
     {
@@ -473,8 +628,8 @@ void GLGraphics::AddTextObject(std::string* _text,float* _scale, unsigned int* _
     textObject.color = _color;
     textObject.x = _x;
     textObject.y = _y;
-    textObject.effectTime = 10;
     textObject.id = _id;
+    textObject.effect = _effect;
     textObject.kill = false;
     m_textObjects.push_back(textObject);
     
@@ -486,6 +641,21 @@ void GLGraphics::RemoveTextObject(int _id)
     {
         if(m_textObjects[i].id == _id)
         {
+            //When textobject is removed from world, copy data to graphics to play out-effect
+            m_textObjects[i].textCopy   = *m_textObjects[i].text;
+            m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
+            m_textObjects[i].colorCopy  = *m_textObjects[i].color;
+            m_textObjects[i].xCopy      = *m_textObjects[i].x;
+            m_textObjects[i].yCopy      = *m_textObjects[i].y;
+            m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+            
+            m_textObjects[i].text   =NULL;
+            m_textObjects[i].scale  =NULL;
+            m_textObjects[i].color  =NULL;
+            m_textObjects[i].x      =NULL;
+            m_textObjects[i].y      =NULL;
+            m_textObjects[i].effect =NULL;
+            
             m_textObjects[i].kill = true;
             break;
         }
@@ -503,6 +673,10 @@ void GLGraphics::Render2D()
     glDisable(GL_DEPTH_TEST);
     for(std::map<int,TextureInfo*>::iterator it = m_TextureInstances.begin(); it != m_TextureInstances.end(); ++it)
     {
+        //fulhax blockerar text-texturen
+        if(it->first == 999)
+            continue;
+        
         glBindVertexArray(m_2DVAO);
         glBindTexture(GL_TEXTURE_2D, it->second->TexHandle);
         //set viewPort (resterande TextureInfo-variabler)
@@ -512,6 +686,7 @@ void GLGraphics::Render2D()
     }
     glBindVertexArray(0);
     glActiveTexture(0);
+    glEnable(GL_DEPTH_TEST);
 }
 
 int GLGraphics::RenderStandard()
@@ -526,7 +701,7 @@ int GLGraphics::RenderStandard()
     }
 }
 
-int GLGraphics::RenderInstanced()
+int GLGraphics::RenderInstanced(ICamera* _camera)
 {
     t+=0.001f;
 
@@ -534,6 +709,8 @@ int GLGraphics::RenderInstanced()
     
     m_standardShaderProgram.UseProgram();
     glEnable(GL_DEPTH_TEST);
+    
+    m_standardShaderProgram.SetUniformV("EyePosition", vec4(_camera->GetPosition(), 1.0f));
     
     for(int i=0; i< m_models.size();i++)
     {
@@ -697,89 +874,105 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 void GLGraphics::RemoveObject(int _id)
 {
     for(int i = m_models.size() - 1; i>= 0; --i)
-        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
-        {
-             m_models.erase(m_models.begin() + i);
-             break;
-        }
-           
+    {
+//        for(int j = m_models[i]->instances.size() -1 ; j >=0 ; j --)
+//        {
+            if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
+            {
+                m_models[i]->instances.erase(m_models[i]->instances.find(_id));
+
+                 break;
+            }
+       // }
+    }
+   // m_models[] m_models[i]->instances.find(_id)
 }
-
-void GLGraphics::LoadLetters()
+/*
+void LoadLetters()
 {
-    m_letters.push_back(&_space);
-    m_letters.push_back(&_exclamation);
-    m_letters.push_back(&_quote);
-    m_letters.push_back(&_number);
-    m_letters.push_back(&_dollar);
-    m_letters.push_back(&_percent);
-    m_letters.push_back(&_ampersand);
-    m_letters.push_back(&_apostrophe);
-    m_letters.push_back(&_leftbrace);
-    m_letters.push_back(&_rightbrace);
-    m_letters.push_back(&_asterisk);
-    m_letters.push_back(&_plus);
-    m_letters.push_back(&_comma);
-    m_letters.push_back(&_minus);
-    m_letters.push_back(&_dot);
-    m_letters.push_back(&_slash);
+    m_letters64.push_back(&_space);
+    m_letters64.push_back(&_exclamation);
+    m_letters64.push_back(&_quote);
+    m_letters64.push_back(&_number);
+    m_letters64.push_back(&_dollar);
+    m_letters64.push_back(&_percent);
+    m_letters64.push_back(&_ampersand);
+    m_letters64.push_back(&_apostrophe);
+    m_letters64.push_back(&_leftbrace);
+    m_letters64.push_back(&_rightbrace);
+    m_letters64.push_back(&_asterisk);
+    m_letters64.push_back(&_plus);
+    m_letters64.push_back(&_comma);
+    m_letters64.push_back(&_minus);
+    m_letters64.push_back(&_dot);
+    m_letters64.push_back(&_slash);
 
-    m_letters.push_back(&_0);
-    m_letters.push_back(&_1);
-    m_letters.push_back(&_2);
-    m_letters.push_back(&_3);
-    m_letters.push_back(&_4);
-    m_letters.push_back(&_5);
-    m_letters.push_back(&_6);
-    m_letters.push_back(&_7);
-    m_letters.push_back(&_8);
-    m_letters.push_back(&_9);
+    m_letters64.push_back(&_0);
+    m_letters64.push_back(&_1);
+    m_letters64.push_back(&_2);
+    m_letters64.push_back(&_3);
+    m_letters64.push_back(&_4);
+    m_letters64.push_back(&_5);
+    m_letters64.push_back(&_6);
+    m_letters64.push_back(&_7);
+    m_letters64.push_back(&_8);
+    m_letters64.push_back(&_9);
 
-    m_letters.push_back(&_colon);
-    m_letters.push_back(&_semicolon);
-    m_letters.push_back(&_lessthan);
-    m_letters.push_back(&_equal);
-    m_letters.push_back(&_morethan);
-    m_letters.push_back(&_question);
-    m_letters.push_back(&_at);
+    m_letters64.push_back(&_colon);
+    m_letters64.push_back(&_semicolon);
+    m_letters64.push_back(&_lessthan);
+    m_letters64.push_back(&_equal);
+    m_letters64.push_back(&_morethan);
+    m_letters64.push_back(&_question);
+    m_letters64.push_back(&_at);
 
-    m_letters.push_back(&A);
-    m_letters.push_back(&B);
-    m_letters.push_back(&C);
-    m_letters.push_back(&D);
-    m_letters.push_back(&E);
-    m_letters.push_back(&F);
-    m_letters.push_back(&G);
-    m_letters.push_back(&H);
-    m_letters.push_back(&I);
-    m_letters.push_back(&J);
-    m_letters.push_back(&K);
-    m_letters.push_back(&L);
-    m_letters.push_back(&M);
-    m_letters.push_back(&N);
-    m_letters.push_back(&O);
-    m_letters.push_back(&P);
-    m_letters.push_back(&Q);
-    m_letters.push_back(&R);
-    m_letters.push_back(&S);
-    m_letters.push_back(&T);
-    m_letters.push_back(&U);
-    m_letters.push_back(&V);
-    m_letters.push_back(&W);
-    m_letters.push_back(&X);
-    m_letters.push_back(&Y);
-    m_letters.push_back(&Z);
+    m_letters64.push_back(&A);
+    m_letters64.push_back(&B);
+    m_letters64.push_back(&C);
+    m_letters64.push_back(&D);
+    m_letters64.push_back(&E);
+    m_letters64.push_back(&F);
+    m_letters64.push_back(&G);
+    m_letters64.push_back(&H);
+    m_letters64.push_back(&I);
+    m_letters64.push_back(&J);
+    m_letters64.push_back(&K);
+    m_letters64.push_back(&L);
+    m_letters64.push_back(&M);
+    m_letters64.push_back(&N);
+    m_letters64.push_back(&O);
+    m_letters64.push_back(&P);
+    m_letters64.push_back(&Q);
+    m_letters64.push_back(&R);
+    m_letters64.push_back(&S);
+    m_letters64.push_back(&T);
+    m_letters64.push_back(&U);
+    m_letters64.push_back(&V);
+    m_letters64.push_back(&W);
+    m_letters64.push_back(&X);
+    m_letters64.push_back(&Y);
+    m_letters64.push_back(&Z);
+    
+//    m_letters256.resize(m_letters64.size());
+//    
+//    for(int i=0; i < m_letters64.size();i++)
+//    {
+////        GLbyte* f;
+////        f = (GLbyte*)malloc(sizeof(GLbyte[256]));
+//
+//        m_letters256[i] = (GLbyte(*)[256])malloc(256);
+//    }
    
 #ifdef SHADE_TEXT
     GLbyte temp;
     
     GLbyte shade = 'm';
     
-    for(int i = 0; i < m_letters.size();i++)
+    for(int i = 0; i < m_letters64.size();i++)
     {
         for(int j = 0; j < 64; j++)
         {
-            temp = (*m_letters[i])[j];
+            temp = (*m_letters64[i])[j];
             if(temp == '~')
             {
 //                if(j-8 > 0)
@@ -790,11 +983,11 @@ void GLGraphics::LoadLetters()
                 
                 if(j+1 < 64)
                 {
-                    if((*m_letters[i])[j+1] == '~')
+                    if((*m_letters64[i])[j+1] == '~')
                     {
                         if(j+8 < 64)
-                            if((*m_letters[i])[j-8] == '~' && !((*m_letters[i])[j-1] == '~'))
-                                (*m_letters[i])[j] -= 40;
+                            if((*m_letters64[i])[j-8] == '~' && !((*m_letters64[i])[j-1] == '~'))
+                                (*m_letters64[i])[j] -= 40;
                     }
                 }
             }
@@ -805,32 +998,38 @@ void GLGraphics::LoadLetters()
                 
                 if(j-8 > 0)
                 {
-                    if((*m_letters[i])[j-8] == '~')
+                    if((*m_letters64[i])[j-8] == '~')
                         a++;
                 }
                 
                 if(j+8 < 64)
                 {
-                    if((*m_letters[i])[j+8] == '~')
+                    if((*m_letters64[i])[j+8] == '~')
                         a++;
                 }
                 
                 if(j-1 > 0)
                 {
-                    if((*m_letters[i])[j-1] == '~')
+                    if((*m_letters64[i])[j-1] == '~')
                         a++;
                 }
                 
                 if(j+1 < 64)
                 {
-                    if((*m_letters[i])[j+1] == '~')
+                    if((*m_letters64[i])[j+1] == '~')
                         a++;
                 }
                 
                 if(a>0)
-                    (*m_letters[i])[j] = ' '*a;
+                    (*m_letters64[i])[j] = ' '*a;
             }
+    
+            (*m_letters256[i])[j*4]     = (*m_letters64[i])[j];
+            (*m_letters256[i])[j*4+1]   = (*m_letters64[i])[j];
+            (*m_letters256[i])[j*4+2]   = 0;
+            (*m_letters256[i])[j*4+3]   = (*m_letters64[i])[j];
         }
     }
 #endif
 }
+*/

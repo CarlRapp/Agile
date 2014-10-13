@@ -28,6 +28,7 @@
 #include "Component/BlockComponent.h"
 #include "Component/TextComponent.h"
 #include "Component/ExplosionComponent.h"
+#include "Component/TNTComponent.h"
 
 class EntityFactory
 {
@@ -45,6 +46,7 @@ public:
 		STANDARD_BLOCK_BLUE,
 		STANDARD_BLOCK_GREEN,
 		INDESTRUCTIBLE_BLOCK,
+		TNT_BLOCK,
 		PAD,
 		SAUSAGE_PAD_MID,
 		SAUSAGE_PAD_EDGE,

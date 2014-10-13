@@ -202,8 +202,13 @@ CombineFinalEffect::CombineFinalEffect(ID3D11Device* _device, const std::wstring
 	m_transparencyColorTech = m_FX->GetTechniqueByName("TransparencyColor");
 	m_alphaTransparencyColorTech = m_FX->GetTechniqueByName("AlphaTransparencyColor");
 	m_alphaClipColorTech = m_FX->GetTechniqueByName("AlphaClipColor");
+	m_textTech = m_FX->GetTechniqueByName("Text");
 
 	m_opacity = m_FX->GetVariableByName("g_Opacity")->AsScalar();
+	m_color = m_FX->GetVariableByName("g_Color")->AsVector();
+
+	m_index = m_FX->GetVariableByName("g_Index")->AsScalar();
+	m_numSymbols = m_FX->GetVariableByName("g_NumSymbols")->AsScalar();
 
 	m_texture = m_FX->GetVariableByName("g_Texture")->AsShaderResource();
 }
