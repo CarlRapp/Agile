@@ -203,7 +203,12 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
-/Breakout/Breakout/dist/
 
+#Breakout/Breakout/dist/
+#Breakout/Breakout/nbproject/
 #Breakout/Breakout/Breakout.vcxproj
 #Breakout/Breakout/Breakout.vcxproj.filters
+#Breakout/Breakout/Makefile
+
+
+
