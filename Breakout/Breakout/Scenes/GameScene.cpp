@@ -170,6 +170,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
 void GameScene::OnInactive()

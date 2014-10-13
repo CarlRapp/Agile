@@ -5,6 +5,7 @@
 #include "../Scene/Scene.h"
 #include "../Scene/SceneManager.h"
 #include "../ComponentSystem/World.h"
+#include "../ComponentSystem/Component/TextComponent.h"
 
 using namespace SceneSystem;
 
@@ -12,12 +13,11 @@ class MainMenuScene : public Scene<MainMenuScene>
 {
 private:
     World* m_world;
-    std::string m_stringPlay;
-    std::string m_stringOptions;
-    std::string m_stringExit;
     int m_playID;
     int m_optionsID;
     int m_exitID;
+
+	TextComponent *m_Start, *m_Options, *m_Exit;
 
 	float m_blockTimer;
 	void CreatePlayField();
