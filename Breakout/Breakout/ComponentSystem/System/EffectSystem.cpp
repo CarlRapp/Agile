@@ -85,6 +85,7 @@ void EffectSystem::UpdateEffects(float _dt)
 		}
 
 
+
 		auto effect = it->second->GetComponent<EffectComponent>();
 		if (effect)
 		{
