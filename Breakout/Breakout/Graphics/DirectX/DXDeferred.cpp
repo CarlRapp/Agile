@@ -833,8 +833,8 @@ void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int,
 
 void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::String *_text)
 {
-	float W = 8.0f / m_width * *_text->Scale;
-	float H = 8.0f / m_height * *_text->Scale;
+	float W = 0.00625 * *_text->Scale;
+	float H = 0.01111 * *_text->Scale;
 
 	float x = *_text->X;
 	float y = (1 - (*_text->Y + H)) * m_height;
