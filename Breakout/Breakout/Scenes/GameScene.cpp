@@ -47,7 +47,7 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
-    UpdateFPS(_dt);
+        UpdateFPS(_dt);
     
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
@@ -74,13 +74,14 @@ void GameScene::Update(float _dt)
                 }
 		return;
 	}
+    
 	if (m_isPaused)
 	{
+            m_world->UpdateTextOnly(_dt);
+            
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
-
-                m_world->UpdateTextOnly(_dt);
-                
+            
 		return;
 	}
         
@@ -220,7 +221,7 @@ void GameScene::Reset()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 30.0f);
+    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 1.0f);
     m_pauseHandle = e->GetId();
     m_world->AddEntity(e);
     
@@ -232,7 +233,6 @@ void GameScene::Reset()
     m_gameOverHandle = e->GetId();
     m_world->AddEntity(e);
 
-    
     e = m_world->GetEntity(m_pauseHandle);
     GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
     
@@ -367,4 +367,35 @@ void GameScene::Reset()
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
 
+        //LEVEL UP STRINGS
+//        e = m_world->CreateEntity();
+//        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+//        auto TC = e->GetComponent<TextComponent>();
+//        TC->Initialize("Empty 1", 0.5f-(7*8.0f)/1280.0f*1.5f, 0.6f, 3.f, VECTOR3(1,1,0), 1.0f);
+//        m_lvlupHandle1 = e->GetId();
+//        m_world->AddEntity(e);
+//        
+//        e = m_world->CreateEntity();
+//        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+//        auto TC = e->GetComponent<TextComponent>();
+//        TC->Initialize("Empty 1", 0.5f-(7*8.0f)/1280.0f*1.5f, 0.6f, 3.f, VECTOR3(1,1,0), 1.0f);
+//        m_lvlupHandle1 = e->GetId();
+//        m_world->AddEntity(e);
+//        
+//        e = m_world->CreateEntity();
+//        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+//        auto TC = e->GetComponent<TextComponent>();
+//        TC->Initialize("Empty 1", 0.5f-(7*8.0f)/1280.0f*1.5f, 0.6f, 3.f, VECTOR3(1,1,0), 1.0f);
+//        m_lvlupHandle1 = e->GetId();
+//        m_world->AddEntity(e);
+}
+
+void GameScene::LevelUp()
+{
+//    Entity* e = m_world->GetEntity(m_levelUpHandle);
+//    auto TC = e->GetComponent<TextComponent>();
+//
+//    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+
+    m_isPaused = true;
 }

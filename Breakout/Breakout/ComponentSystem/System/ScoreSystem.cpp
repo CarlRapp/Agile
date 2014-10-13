@@ -3,6 +3,8 @@
 #include "../Component/ScoreComponent.h"
 #include "../World.h"
 #include "../EntityFactory.h"
+#include "../../Scene/SceneManager.h"
+using namespace SceneSystem;
 
 ScoreSystem::ScoreSystem(World* _world)
 : Base(ComponentFilter().Requires<ScoreComponent>(), _world)
@@ -41,6 +43,8 @@ void ScoreSystem::Update(float _dt)
                 
                 if(m_levelUp)
                 {
+                    SceneManager::GetInstance()->LevelUp();
+
                     printf("DO LEVEL UP %d\n",m_levelUp);
                     m_levelUp = 0;
                 }

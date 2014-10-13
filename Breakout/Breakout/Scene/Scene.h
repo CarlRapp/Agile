@@ -19,6 +19,7 @@ namespace SceneSystem
 
 		virtual void OnActive(){};
 		virtual void OnInactive(){};
+                virtual void LevelUp(){};
 	};
 
 	template <typename C>

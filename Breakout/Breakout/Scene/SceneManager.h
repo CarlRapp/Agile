@@ -28,6 +28,8 @@ namespace SceneSystem
 
 		void Start();
 
+                void LevelUp();
+
 		void Quit()
 		{
 			m_isRunning = false;
@@ -93,6 +95,9 @@ namespace SceneSystem
 			m_activeScene->OnActive();
 		return true;
 	}
+
+        
+        
 
 }
 

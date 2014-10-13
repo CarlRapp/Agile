@@ -37,6 +37,10 @@ private:
         int m_pauseHandle;
         int m_gameOverHandle;
         bool m_gameOver;
+        
+        int m_lvlupHandle1;
+        int m_lvlupHandle2;
+        int m_lvlupHandle3;
 public:
 	GameScene();
 	~GameScene();
@@ -49,6 +53,7 @@ public:
 	void OnActive();
 	void OnInactive();
         void UpdateFPS(float _dt);
+        void LevelUp();
 };
 
 
