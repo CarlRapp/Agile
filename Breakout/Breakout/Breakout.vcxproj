@@ -92,6 +92,7 @@
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="Storage\ModelData.cpp" />
     <ClCompile Include="Storage\ModelLoader.cpp" />
     <ClCompile Include="Storage\MusicLoader.cpp" />
+    <ClCompile Include="Storage\TextLoader.cpp" />
     <ClCompile Include="Storage\WavLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +158,7 @@
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
@@ -181,6 +184,7 @@
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
@@ -221,6 +225,7 @@
     <ClInclude Include="Storage\ModelData.h" />
     <ClInclude Include="Storage\ModelLoader.h" />
     <ClInclude Include="Storage\MusicLoader.h" />
+    <ClInclude Include="Storage\TextLoader.h" />
     <ClInclude Include="Storage\WavLoader.h" />
   </ItemGroup>
   <ItemGroup>
