@@ -892,3 +892,8 @@ void GLGraphics::RemoveObject(int _id)
         }
     }
 }
+
+void GLGraphics::ShowMouseCursor(bool _value)
+{
+     SDL_ShowCursor(_value);
+}
