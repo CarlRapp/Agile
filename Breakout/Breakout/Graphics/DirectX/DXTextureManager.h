@@ -39,7 +39,6 @@ private:
 
 	ID3D11Device* md3dDevice;
 	std::map<std::string, ID3D11ShaderResourceView*> mTextureSRV;
-	std::map<char, ID3D11ShaderResourceView*> mLetterSRV;
 
 	std::map<char, int> m_symbolIndices;
 
@@ -66,7 +65,6 @@ public:
 
 	void CreateSymbolsTexture(ID3D11Device *_device, std::vector<LetterInfo> &_letters);
 
-	void AddSymbolTexture(ID3D11Device *_device, char _c, float* _data);
 	ID3D11ShaderResourceView* GetSymbolTexture(char _c);
 
 	int GetSymbolIndex(char _c) { return m_symbolIndices[_c]; }

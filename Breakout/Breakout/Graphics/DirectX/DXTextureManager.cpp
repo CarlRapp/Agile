@@ -11,15 +11,10 @@ DXTextureManager::~DXTextureManager()
 		ReleaseCOM(it->second);
     }
 
-	for (auto it = mLetterSRV.begin(); it != mLetterSRV.end(); ++it)
-	{
-		ReleaseCOM(it->second);
-	}
-
 	mTextureSRV.clear();
-	mLetterSRV.clear();
 
 	ReleaseCOM(m_RandomTex);
+	ReleaseCOM(m_SymbolsTex);
 }
 
 void DXTextureManager::Init(ID3D11Device* _device)
@@ -150,97 +145,8 @@ void DXTextureManager::InitLetters(ID3D11Device* _device)
 		}
 	}
 
-	
-	//AddSymbolTexture(_device, ':', DXText::A);
-	//AddSymbolTexture(_device, ';', DXText::A);
-	//AddSymbolTexture(_device, '<', DXText::A);
-	//AddSymbolTexture(_device, '=', DXText::A);
-	//AddSymbolTexture(_device, '>', DXText::A);
-	//AddSymbolTexture(_device, '?', DXText::A);
-	//AddSymbolTexture(_device, '@', DXText::A);
-	//AddSymbolTexture(_device, ' ', DXText::A);
-	//AddSymbolTexture(_device, '!', DXText::A);
-	//AddSymbolTexture(_device, '"', DXText::A);
-	//AddSymbolTexture(_device, '#', DXText::A);
-	//AddSymbolTexture(_device, '$', DXText::A);
-	//AddSymbolTexture(_device, '%', DXText::A);
-	//AddSymbolTexture(_device, '&', DXText::A);
-	//AddSymbolTexture(_device, '´', DXText::A);
-	//AddSymbolTexture(_device, '(', DXText::A);
-	//AddSymbolTexture(_device, ')', DXText::A);
-	//AddSymbolTexture(_device, '*', DXText::A);
-	//AddSymbolTexture(_device, '+', DXText::A);
-	//AddSymbolTexture(_device, ',', DXText::A);
-	//AddSymbolTexture(_device, '-', DXText::A);
-	//AddSymbolTexture(_device, '.', DXText::A);
-	//AddSymbolTexture(_device, '/', DXText::A);
-
-
 
 	CreateSymbolsTexture(_device, letters);
-
-
-	AddSymbolTexture(_device, 'A', DXText::A);
-	AddSymbolTexture(_device, 'B', DXText::B);
-	AddSymbolTexture(_device, 'C', DXText::C);
-	AddSymbolTexture(_device, 'D', DXText::D);
-	AddSymbolTexture(_device, 'E', DXText::E);
-	AddSymbolTexture(_device, 'F', DXText::F);
-	AddSymbolTexture(_device, 'G', DXText::G);
-	AddSymbolTexture(_device, 'H', DXText::H);
-	AddSymbolTexture(_device, 'I', DXText::I);
-	AddSymbolTexture(_device, 'J', DXText::J);
-	AddSymbolTexture(_device, 'K', DXText::K);
-	AddSymbolTexture(_device, 'L', DXText::L);
-	AddSymbolTexture(_device, 'M', DXText::M);
-	AddSymbolTexture(_device, 'N', DXText::N);
-	AddSymbolTexture(_device, 'O', DXText::O);
-	AddSymbolTexture(_device, 'P', DXText::P);
-	AddSymbolTexture(_device, 'Q', DXText::Q);
-	AddSymbolTexture(_device, 'R', DXText::R);
-	AddSymbolTexture(_device, 'S', DXText::S);
-	AddSymbolTexture(_device, 'T', DXText::T);
-	AddSymbolTexture(_device, 'U', DXText::U);
-	AddSymbolTexture(_device, 'V', DXText::V);
-	AddSymbolTexture(_device, 'W', DXText::W);
-	AddSymbolTexture(_device, 'X', DXText::X);
-	AddSymbolTexture(_device, 'Y', DXText::Y);
-	AddSymbolTexture(_device, 'Z', DXText::Z);
-
-	AddSymbolTexture(_device, '1', DXText::_1);
-	AddSymbolTexture(_device, '2', DXText::_2);
-	AddSymbolTexture(_device, '3', DXText::_3);
-	AddSymbolTexture(_device, '4', DXText::_4);
-	AddSymbolTexture(_device, '5', DXText::_5);
-	AddSymbolTexture(_device, '6', DXText::_6);
-	AddSymbolTexture(_device, '7', DXText::_7);
-	AddSymbolTexture(_device, '8', DXText::_8);
-	AddSymbolTexture(_device, '9', DXText::_9);
-	AddSymbolTexture(_device, '0', DXText::_0);
-
-	//AddSymbolTexture(_device, ':', DXText::A);
-	//AddSymbolTexture(_device, ';', DXText::A);
-	//AddSymbolTexture(_device, '<', DXText::A);
-	//AddSymbolTexture(_device, '=', DXText::A);
-	//AddSymbolTexture(_device, '>', DXText::A);
-	//AddSymbolTexture(_device, '?', DXText::A);
-	//AddSymbolTexture(_device, '@', DXText::A);
-	//AddSymbolTexture(_device, ' ', DXText::A);
-	//AddSymbolTexture(_device, '!', DXText::A);
-	//AddSymbolTexture(_device, '"', DXText::A);
-	//AddSymbolTexture(_device, '#', DXText::A);
-	//AddSymbolTexture(_device, '$', DXText::A);
-	//AddSymbolTexture(_device, '%', DXText::A);
-	//AddSymbolTexture(_device, '&', DXText::A);
-	//AddSymbolTexture(_device, '´', DXText::A);
-	//AddSymbolTexture(_device, '(', DXText::A);
-	//AddSymbolTexture(_device, ')', DXText::A);
-	//AddSymbolTexture(_device, '*', DXText::A);
-	//AddSymbolTexture(_device, '+', DXText::A);
-	//AddSymbolTexture(_device, ',', DXText::A);
-	//AddSymbolTexture(_device, '-', DXText::A);
-	//AddSymbolTexture(_device, '.', DXText::A);
-	//AddSymbolTexture(_device, '/', DXText::A);
 }
 
 ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
@@ -423,26 +329,6 @@ ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device
 	return letterSRV;
 }
 
-void DXTextureManager::AddSymbolTexture(ID3D11Device *_device, char _c, float* _data)
-{
-	if (mLetterSRV.find(_c) != mLetterSRV.end())
-		return;
-
-	mLetterSRV[_c] = buildLetterTex(_device, _data);
-}
-
-ID3D11ShaderResourceView* DXTextureManager::GetSymbolTexture(char _c)
-{
-	ID3D11ShaderResourceView* srv = 0;
-
-
-	// Does it already exist?
-	if (mLetterSRV.find(_c) != mLetterSRV.end())
-	{
-		srv = mLetterSRV[_c];
-	}
-	return srv;
-}
 
 // Returns random float in [0, 1).
 float DXTextureManager::RandF()
