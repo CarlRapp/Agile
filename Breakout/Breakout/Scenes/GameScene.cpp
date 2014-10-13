@@ -7,6 +7,7 @@
 #include "../ComponentSystem/System/LoseLifeSystem.h"
 #include "../ComponentSystem/Component/TextComponent.h"
 #include "../ComponentSystem/System/TextSystem.h"
+#include "../ComponentSystem/System/PadCollisionSystem.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -197,9 +198,10 @@ void GameScene::Reset()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
+	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
-	m_world->AddSystem<MovementSystem>();
+	m_world->AddSystem<PadCollisionSystem>();
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
@@ -210,7 +212,7 @@ void GameScene::Reset()
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
-                m_world->AddSystem<TextSystem>();
+    m_world->AddSystem<TextSystem>();
 
 	/*	New Implementation	*/
             
@@ -260,24 +262,11 @@ void GameScene::Reset()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
 	m_world->AddEntity(e);*/
 
-	Entity* midPad = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(midPad, EntityFactory::SAUSAGE_PAD_MID);
-	midPad->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
-	midPad->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
-	m_world->AddEntity(midPad);
-	
 	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(1, 1, 1));
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(PI * 0.5f, 0, 0)));
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
 	m_world->AddEntity(e);
-
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(1, 1, 1));
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-        m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

@@ -92,6 +92,7 @@
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />

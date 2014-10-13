@@ -156,6 +156,9 @@
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -414,6 +417,12 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
