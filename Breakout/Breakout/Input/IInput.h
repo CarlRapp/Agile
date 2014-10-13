@@ -29,16 +29,19 @@ private:
 	int m_positionX, m_positionY;
 	int m_oldPositionX, m_oldPositionY;
 	int m_dX, m_dY;
+
+	float m_screenWidth, m_screenHeight;
+
 public:
-	Mouse();
+	Mouse(int _screenWidth, int _screenHeight);
 	void Update();
 
 	InputState GetButtonState(char _button);
-	int GetX();
-	int GetY();
-	int GetdX();
-	int GetdY();
-	void SetMousePosition(int _x, int _y);
+	float GetX();
+	float GetY();
+	float GetdX();
+	float GetdY();
+	void SetMousePosition(float _x, float _y);
 
 };
 

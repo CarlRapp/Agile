@@ -155,6 +155,7 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
         auto model = _e->GetComponent<ModelComponent>();
         std::string tmpString = model->m_modelPath + "_c";
 
+        printf("Health: %i \n", _e->GetComponent<HealthComponent>()->m_currentHealth);
         _e->RemoveComponent<ModelComponent>();
         model = &_e->AddComponent<ModelComponent>();
         model->m_modelPath = tmpString;

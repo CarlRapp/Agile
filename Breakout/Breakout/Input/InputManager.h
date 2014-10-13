@@ -6,7 +6,7 @@
 class InputManager
 {
 private:
-	InputManager();
+	InputManager(int _screenWidth, int _screenHeight);
 
 	static InputManager* m_imInstance;
 	IInput* m_inputDevices;
@@ -15,6 +15,7 @@ public:
 	~InputManager();
 
 	static InputManager* GetInstance();
+	static void Init(int _screenWidth, int _screenHeight);
 	
 	IInput* getInputDevices()
 	{

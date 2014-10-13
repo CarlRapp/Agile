@@ -156,6 +156,12 @@
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+
+    <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -415,6 +421,28 @@
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="BoundingBox2D.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage\TextLoader.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h">
+      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h">
+      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BallComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -485,6 +513,12 @@
     </Filter>
     <Filter Include="Source Files\Graphics\DirectX\Shaders\ParticleSystems">
       <UniqueIdentifier>{a895e345-8f66-49f7-a406-fdfb646f8018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentSystem\Component\Powerups">
+      <UniqueIdentifier>{7d3d6999-c2b0-43d6-a84a-d5b2044cfe40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentSystem\System\Powerups">
+      <UniqueIdentifier>{724d010a-d083-437a-90c0-e86fa7234dc6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

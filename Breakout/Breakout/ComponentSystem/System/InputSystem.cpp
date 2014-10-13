@@ -20,8 +20,8 @@ InputSystem::~InputSystem()
 
 void InputSystem::Update(float _dt)
 {
-	int dx = m_mouse->GetdX() * 5.f;
-	int dy = m_mouse->GetdY() * 5.f;
+	float dx = m_mouse->GetdX() * 5.f * 1280.0f;
+	float dy = m_mouse->GetdY() * 5.f * 720.0f;
 	InputState lButton = m_mouse->GetButtonState(MouseButton::LeftMB);
 	InputState rButton = m_mouse->GetButtonState(MouseButton::RightMB);
 	InputState mButton = m_mouse->GetButtonState(MouseButton::MiddleMB);

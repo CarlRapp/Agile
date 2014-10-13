@@ -169,7 +169,7 @@ public:
         void AddTextObject(int _id, std::string *_text, float *_x, float *_y, float *_scale, VECTOR3 *_color, float *_effect);
         void RemoveTextObject(int _id);
         
-
+        void ShowMouseCursor(bool _value);
 };
 
 

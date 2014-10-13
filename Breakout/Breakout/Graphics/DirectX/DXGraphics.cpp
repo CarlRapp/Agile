@@ -428,3 +428,8 @@ void DXGraphics::RemoveTextObject(int _id)
 		m_texts.erase(_id);
 	}
 }
+
+void DXGraphics::ShowMouseCursor(bool _value)
+{
+	ShowCursor(_value);
+}

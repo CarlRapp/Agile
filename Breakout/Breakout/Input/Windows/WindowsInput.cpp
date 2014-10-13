@@ -5,9 +5,9 @@
 #include <stdio.h>
 
 
-WindowsInput::WindowsInput()
+WindowsInput::WindowsInput(int _screenWidth, int _screenHeight)
 {
-	m_mousePointer = new Mouse();
+	m_mousePointer = new Mouse(_screenWidth, _screenHeight);
 	m_keyboardPointer = new Keyboard();
 }
 
@@ -84,7 +84,7 @@ InputState Keyboard::GetKeyState(char _key)
 #pragma endregion
 
 #pragma region Mouse implementation
-Mouse::Mouse()
+Mouse::Mouse(int _screenWidth, int _screenHeight)
 {
 	for (int n = 0; n < MOUSEBUTTONS; ++n)
 	{
@@ -98,6 +98,9 @@ Mouse::Mouse()
 	m_oldPositionY = 0;
 	m_dX = 0;
 	m_dY = 0;
+
+	m_screenWidth = _screenWidth;
+	m_screenHeight = _screenHeight;
 }
 void Mouse::Update()
 {
@@ -125,12 +128,54 @@ void Mouse::Update()
 	m_oldPositionY = m_positionY;// = A.y;
 		
 }
-int Mouse::GetdX() { return m_dX; }
-int Mouse::GetdY() { return m_dY; }
-int Mouse::GetX() { return m_positionX; }
-int Mouse::GetY() { return m_positionY; }
-void Mouse::SetMousePosition(int _x, int _y)
+
+float GetLeft()
 {
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.left;
+	}
+	return offset;
+}
+
+float GetBottom()
+{
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.bottom;
+	}
+	return offset;
+}
+
+float Mouse::GetdX() { return m_dX / m_screenWidth; }
+float Mouse::GetdY() { return  m_dY / m_screenHeight; }
+float Mouse::GetX() { return  (m_positionX - GetLeft()) / m_screenWidth; }
+float Mouse::GetY() { return  (GetBottom() - m_positionY) / m_screenHeight; }
+
+void Mouse::SetMousePosition(float _x, float _y)
+{
+	_x *= m_screenWidth;
+	_y *= m_screenHeight;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		_x += rect.left;
+		_y = rect.bottom - _y;
+	}
+
 	SetCursorPos(_x, _y);
 	m_positionX = _x;
 	m_positionY = _y;

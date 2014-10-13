@@ -7,7 +7,7 @@
 class LinInput : public IInput
 {
 public:
-    LinInput();
+	LinInput(int _screenWidth, int _screenHeight);
     ~LinInput();
     void Update();
     Mouse* GetMouse();
