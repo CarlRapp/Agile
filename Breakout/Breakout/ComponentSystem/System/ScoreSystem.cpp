@@ -36,5 +36,13 @@ void ScoreSystem::Update(float _dt)
 		SC->AddScore(m_frameScore);
 		SC->SetString();
 		m_frameScore = 0;
+                
+                m_levelUp = SC->CheckLevelUp();
+                
+                if(m_levelUp)
+                {
+                    printf("DO LEVEL UP %d\n",m_levelUp);
+                    m_levelUp = 0;
+                }
 	}
 }

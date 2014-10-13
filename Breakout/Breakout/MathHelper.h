@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 #define MATRIX4 glm::mat4
 #define VECTOR4 glm::vec4
@@ -70,10 +71,7 @@ static void MacroPrintMatrix(glm::mat4* _m)
 
 static glm::quat MacroRotateYawPitchRoll(float _yaw, float _pitch, float _roll)
 {
-	glm::quat rotateX( std::cos( _pitch ), std::sin( _pitch), 0.f, 0.f );
-	glm::quat rotateY( std::cos( _yaw ), 0.f, std::sin( _yaw ), 0.f );
-	glm::quat rotateZ( std::cos( _roll ), 0.f, 0.f, std::sin( _roll ) );
-	return rotateZ * rotateY * rotateX;
+	return glm::quat_cast(glm::eulerAngleYXZ(_yaw, _pitch, _roll));
 }
 static glm::quat MacroRotateYawPitchRollFromVector(glm::vec3 _rot)
 {

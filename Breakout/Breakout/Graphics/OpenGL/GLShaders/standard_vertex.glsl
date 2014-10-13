@@ -7,6 +7,7 @@ layout (location = 4) in vec4   m_color;
 layout (location = 5) in mat4   m_matModel;
 
 layout (location = 9) in vec2   m_texCoord;
+layout (location = 10) in vec2   pad2;
 
 
 uniform mat4 m_matView;
@@ -22,6 +23,7 @@ out VS_GS
     vec4    color;
     mat4    matModel;
     vec2    texCoord;
+    vec2    pad;
 } vertex;
 
 

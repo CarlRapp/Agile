@@ -14,8 +14,9 @@ in GS_FS
     vec4    worldPos;
     vec4    color;
     vec3    normal;
-    float   pad;
+    float   pad1;
     vec2    texCoord;
+    vec2    pad2;
 
 } vertex;
 

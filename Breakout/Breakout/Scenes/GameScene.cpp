@@ -43,12 +43,12 @@ void GameScene::Initialize()
 void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
-
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
 {
+    UpdateFPS(_dt);
+    
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
 		m_isPaused = !m_isPaused;
@@ -56,12 +56,6 @@ void GameScene::Update(float _dt)
 
 		if (m_isPaused)
                 {
-			/*GM->Add2DTexture(
-				GetMemoryID(m_pauseBackground), m_pauseBackground->m_textureName, 
-				&m_pauseBackground->m_positionX, &m_pauseBackground->m_positionY, 
-				&m_pauseBackground->m_imageWidth, &m_pauseBackground->m_imageHeight
-
-			);*/
                    
                     if(!m_gameOver)
                     {
@@ -85,9 +79,13 @@ void GameScene::Update(float _dt)
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 
+                m_world->UpdateTextOnly(_dt);
+                
 		return;
 	}
-		
+        
+        
+	
 
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
         
@@ -146,7 +144,7 @@ void GameScene::Update(float _dt)
             //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
 
-        UpdateFPS(_dt);
+        
         
 }
 
@@ -222,7 +220,7 @@ void GameScene::Reset()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 1.0f);
+    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 30.0f);
     m_pauseHandle = e->GetId();
     m_world->AddEntity(e);
     
@@ -270,7 +268,7 @@ void GameScene::Reset()
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(1, 1, 1));
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(PI * 0.5f, 0, 0)));
+	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(0, PI * 0.5f, 0)));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();

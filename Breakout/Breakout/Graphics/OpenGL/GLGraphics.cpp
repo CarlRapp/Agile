@@ -80,7 +80,6 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_tH = 8.0f/(m_screenHeight);
     
     m_texManager.LoadLetters();
-    //LoadTexture("TEXT");
     Add2DTexture(999, "TEXT", &m_tX, &m_tY, &m_tW, &m_tH); 
     
 //------------------------------------------------------------------------------------
@@ -197,14 +196,13 @@ void GLGraphics::LoadModel(std::string _path)
         int color           = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_color");
         int matrix          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_matModel");
         int texCoord        = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_texCoord");
+        int pad2            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad2");
         
 	glGenBuffers(6, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_READ);
-        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
-        //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
         
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_READ);
@@ -216,7 +214,7 @@ void GLGraphics::LoadModel(std::string _path)
         glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_STATIC_READ);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]); 
         glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
@@ -229,7 +227,7 @@ void GLGraphics::LoadModel(std::string _path)
 	glEnableVertexAttribArray(pos);         // position     0
         glEnableVertexAttribArray(pos+1);       // pad          1
 	glEnableVertexAttribArray(normal);      // normal       2
-        glEnableVertexAttribArray(explosion);    // explosion   3
+        glEnableVertexAttribArray(explosion);   // explosion   3
         glEnableVertexAttribArray(color);       // color        4
 
         glEnableVertexAttribArray(matrix);      //matrix        5
@@ -238,10 +236,11 @@ void GLGraphics::LoadModel(std::string _path)
         glEnableVertexAttribArray(matrix+3);    //matrix        8
         
         glEnableVertexAttribArray(texCoord);    //matrix        9
+        glEnableVertexAttribArray(texCoord+1);  //pad        10
 
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
-	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
         //pad
         //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
@@ -249,16 +248,16 @@ void GLGraphics::LoadModel(std::string _path)
 
         //normal
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
-	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         
         //explosion
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]);
-        glVertexAttribPointer(explosion, 1, GL_FLOAT, GL_FALSE, 0, NULL);
+        glVertexAttribPointer(explosion, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         glVertexAttribDivisor(explosion, 1);
 
         //color
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
         glVertexAttribDivisor(color, 1);
         
 
@@ -277,6 +276,8 @@ void GLGraphics::LoadModel(std::string _path)
 	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 
+        glVertexAttribPointer(texCoord+1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec2)));
+        
         glBindVertexArray(0); // disable VAO
         glUseProgram(0); // disable shader programme
     }
@@ -398,14 +399,9 @@ void GLGraphics::Update(float _dt)
     {
         if(m_textObjects[i].text == NULL)
         {
-            //9999 = no effect
-            if(m_textObjects[i].effectCopy != 9999.0f)
-                m_textObjects[i].effectCopy -= _dt*10;
-            else
-            {
-                if(m_textObjects[i].kill)
-                    m_textObjects.erase(m_textObjects.begin() +(i));
-            }
+
+            if(m_textObjects[i].kill)
+                m_textObjects.erase(m_textObjects.begin() +(i));
 
             if(m_textObjects[i].effectCopy < -10)
             {  
@@ -497,12 +493,10 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     
     RenderInstanced(_camera);
     
-    Render2D();
+    //Render2D();
     
     RenderParticles(_dt, _camera);
     
-    glUseProgram(0);
-
     for(int i=0; i < m_textObjects.size();i++)
     {
         if(!m_textObjects[i].kill)
@@ -510,6 +504,10 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
         else
             RenderText(&m_textObjects[i].textCopy,&m_textObjects[i].scaleCopy,&m_textObjects[i].colorCopy,&m_textObjects[i].xCopy,&m_textObjects[i].yCopy,&m_textObjects[i].effectCopy,&m_textObjects[i].kill);
     }
+    
+    
+    
+    glUseProgram(0);
     
     SDL_GL_SwapBuffers( );
 }
@@ -553,6 +551,9 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	glUseProgram(0);
+        
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* _effect,bool kill)
@@ -571,10 +572,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     float height;
     
     float effect = *_effect;
-    
-    if(effect == 9999.0f)
-        effect = 1.0f;
-    
+
     width = 8.0f/m_screenWidth*scale;
     height = 8.0f/m_screenHeight*scale;
     
@@ -595,17 +593,19 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 
     GLint colorLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_color" );
     glUniform3f(colorLocation, r_,g_,b_);
+    
+    GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
 
     for(int i= 0; i < text.size();i++)
     {
         x = ((*_x) + width*i) * (effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
-        GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
+        
         glUniform1i(letterLocation, text.at(i)-32);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
-        //x += width;
     }
+
     glBindVertexArray(0);
     glActiveTexture(0);
 }
@@ -875,161 +875,11 @@ void GLGraphics::RemoveObject(int _id)
 {
     for(int i = m_models.size() - 1; i>= 0; --i)
     {
-//        for(int j = m_models[i]->instances.size() -1 ; j >=0 ; j --)
-//        {
-            if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
-            {
-                m_models[i]->instances.erase(m_models[i]->instances.find(_id));
-
-                 break;
-            }
-       // }
-    }
-   // m_models[] m_models[i]->instances.find(_id)
-}
-/*
-void LoadLetters()
-{
-    m_letters64.push_back(&_space);
-    m_letters64.push_back(&_exclamation);
-    m_letters64.push_back(&_quote);
-    m_letters64.push_back(&_number);
-    m_letters64.push_back(&_dollar);
-    m_letters64.push_back(&_percent);
-    m_letters64.push_back(&_ampersand);
-    m_letters64.push_back(&_apostrophe);
-    m_letters64.push_back(&_leftbrace);
-    m_letters64.push_back(&_rightbrace);
-    m_letters64.push_back(&_asterisk);
-    m_letters64.push_back(&_plus);
-    m_letters64.push_back(&_comma);
-    m_letters64.push_back(&_minus);
-    m_letters64.push_back(&_dot);
-    m_letters64.push_back(&_slash);
-
-    m_letters64.push_back(&_0);
-    m_letters64.push_back(&_1);
-    m_letters64.push_back(&_2);
-    m_letters64.push_back(&_3);
-    m_letters64.push_back(&_4);
-    m_letters64.push_back(&_5);
-    m_letters64.push_back(&_6);
-    m_letters64.push_back(&_7);
-    m_letters64.push_back(&_8);
-    m_letters64.push_back(&_9);
-
-    m_letters64.push_back(&_colon);
-    m_letters64.push_back(&_semicolon);
-    m_letters64.push_back(&_lessthan);
-    m_letters64.push_back(&_equal);
-    m_letters64.push_back(&_morethan);
-    m_letters64.push_back(&_question);
-    m_letters64.push_back(&_at);
-
-    m_letters64.push_back(&A);
-    m_letters64.push_back(&B);
-    m_letters64.push_back(&C);
-    m_letters64.push_back(&D);
-    m_letters64.push_back(&E);
-    m_letters64.push_back(&F);
-    m_letters64.push_back(&G);
-    m_letters64.push_back(&H);
-    m_letters64.push_back(&I);
-    m_letters64.push_back(&J);
-    m_letters64.push_back(&K);
-    m_letters64.push_back(&L);
-    m_letters64.push_back(&M);
-    m_letters64.push_back(&N);
-    m_letters64.push_back(&O);
-    m_letters64.push_back(&P);
-    m_letters64.push_back(&Q);
-    m_letters64.push_back(&R);
-    m_letters64.push_back(&S);
-    m_letters64.push_back(&T);
-    m_letters64.push_back(&U);
-    m_letters64.push_back(&V);
-    m_letters64.push_back(&W);
-    m_letters64.push_back(&X);
-    m_letters64.push_back(&Y);
-    m_letters64.push_back(&Z);
-    
-//    m_letters256.resize(m_letters64.size());
-//    
-//    for(int i=0; i < m_letters64.size();i++)
-//    {
-////        GLbyte* f;
-////        f = (GLbyte*)malloc(sizeof(GLbyte[256]));
-//
-//        m_letters256[i] = (GLbyte(*)[256])malloc(256);
-//    }
-   
-#ifdef SHADE_TEXT
-    GLbyte temp;
-    
-    GLbyte shade = 'm';
-    
-    for(int i = 0; i < m_letters64.size();i++)
-    {
-        for(int j = 0; j < 64; j++)
+        if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
         {
-            temp = (*m_letters64[i])[j];
-            if(temp == '~')
-            {
-//                if(j-8 > 0)
-//                {
-//                    if((*m_letters[i])[j-8] != '~')
-//                    (*m_letters[i])[j-8] += 40;  
-//                }
-                
-                if(j+1 < 64)
-                {
-                    if((*m_letters64[i])[j+1] == '~')
-                    {
-                        if(j+8 < 64)
-                            if((*m_letters64[i])[j-8] == '~' && !((*m_letters64[i])[j-1] == '~'))
-                                (*m_letters64[i])[j] -= 40;
-                    }
-                }
-            }
-            
-            if(temp == 0)
-            {
-                int a =0;
-                
-                if(j-8 > 0)
-                {
-                    if((*m_letters64[i])[j-8] == '~')
-                        a++;
-                }
-                
-                if(j+8 < 64)
-                {
-                    if((*m_letters64[i])[j+8] == '~')
-                        a++;
-                }
-                
-                if(j-1 > 0)
-                {
-                    if((*m_letters64[i])[j-1] == '~')
-                        a++;
-                }
-                
-                if(j+1 < 64)
-                {
-                    if((*m_letters64[i])[j+1] == '~')
-                        a++;
-                }
-                
-                if(a>0)
-                    (*m_letters64[i])[j] = ' '*a;
-            }
-    
-            (*m_letters256[i])[j*4]     = (*m_letters64[i])[j];
-            (*m_letters256[i])[j*4+1]   = (*m_letters64[i])[j];
-            (*m_letters256[i])[j*4+2]   = 0;
-            (*m_letters256[i])[j*4+3]   = (*m_letters64[i])[j];
+            m_models[i]->instances.erase(m_models[i]->instances.find(_id));
+
+             break;
         }
     }
-#endif
 }
-*/
