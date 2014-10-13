@@ -156,6 +156,12 @@
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -415,6 +421,18 @@
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\PowerUps</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BallComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h">
+      <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h">
+      <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -485,6 +503,12 @@
     </Filter>
     <Filter Include="Source Files\Graphics\DirectX\Shaders\ParticleSystems">
       <UniqueIdentifier>{a895e345-8f66-49f7-a406-fdfb646f8018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentSystem\Component\PowerUps">
+      <UniqueIdentifier>{9bfb8559-4bdb-4495-8fd8-391332c64cb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComponentSystem\System\Powerup">
+      <UniqueIdentifier>{886352fa-2af2-47dd-bad1-e87ceaad7a12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

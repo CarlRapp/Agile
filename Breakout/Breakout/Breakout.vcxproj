@@ -83,6 +83,7 @@
     <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
     <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDeflectionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\EffectSystem.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
@@ -138,6 +140,7 @@
     <ClInclude Include="Audio\WinAudio.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BounceComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
@@ -155,6 +158,7 @@
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
@@ -171,6 +175,7 @@
     <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
     <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
     <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
+    <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDeflectionSystem.h" />
     <ClInclude Include="ComponentSystem\System\EffectSystem.h" />
@@ -181,6 +186,7 @@
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
+    <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
