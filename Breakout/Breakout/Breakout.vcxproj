@@ -136,6 +136,7 @@
     <ClInclude Include="Audio\IAudio.h" />
     <ClInclude Include="Audio\LinAudio.h" />
     <ClInclude Include="Audio\WinAudio.h" />
+    <ClInclude Include="BoundingBox2D.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />

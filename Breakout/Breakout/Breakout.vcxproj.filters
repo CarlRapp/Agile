@@ -415,6 +415,9 @@
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBox2D.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
