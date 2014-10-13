@@ -2,6 +2,7 @@
 #define TEXTCOMPONENT_H
 
 #include "IComponent.h"
+#include "../../BoundingBox2D.h"
 
 struct TextComponent : Component<TextComponent>
 {
@@ -9,7 +10,7 @@ private:
 
 
 public:
-        std::string* m_text;
+        std::string* m_text=NULL;
         float m_scale;
         VECTOR3 m_color;
         float m_x;
@@ -37,6 +38,16 @@ public:
         {
             m_text = _text;
         }
+
+
+		BoundingBox2D GetBoundingBox2D()
+		{
+			VECTOR2 Min(m_x, m_y);
+			float maxX = (m_x + 0.00625 * m_text->size()) * m_effect + 0.00625;
+			VECTOR2 Max(maxX, m_y + 0.01111f);
+			return BoundingBox2D(Min, Max);
+		}
+
         
 	void Reset()
 	{

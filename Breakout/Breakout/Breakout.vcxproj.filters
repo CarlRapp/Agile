@@ -156,6 +156,9 @@
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
     </ClCompile>
@@ -420,6 +423,11 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>    <ClInclude Include="BoundingBox2D.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>  </ItemGroup>
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h">
       <Filter>Source Files\ComponentSystem\Component\PowerUps</Filter>

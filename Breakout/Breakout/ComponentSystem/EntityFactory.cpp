@@ -128,29 +128,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
-		break;
-	case EntityFactory::SAUSAGE_PAD_MID:
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<VelocityComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Pad_MidSection";
-		_entity->AddComponent<MouseInputComponent>();
-		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
-		break;
-	case EntityFactory::SAUSAGE_PAD_EDGE:
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<VelocityComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Pad_Edge";
-		_entity->AddComponent<MouseInputComponent>();
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<PadCollisionComponent>();
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
 		break;
 	case EntityFactory::BALL:

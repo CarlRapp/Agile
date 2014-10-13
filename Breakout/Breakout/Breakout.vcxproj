@@ -93,6 +93,7 @@
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\MovementSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\PhysicsSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Audio\IAudio.h" />
     <ClInclude Include="Audio\LinAudio.h" />
     <ClInclude Include="Audio\WinAudio.h" />
+    <ClInclude Include="BoundingBox2D.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
@@ -185,6 +188,7 @@
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
     <ClInclude Include="ComponentSystem\System\MovementSystem.h" />
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h" />
     <ClInclude Include="ComponentSystem\System\PhysicsSystem.h" />
     <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />

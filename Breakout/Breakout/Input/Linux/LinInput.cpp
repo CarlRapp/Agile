@@ -3,9 +3,9 @@
 #include <vector>
 #include <SDL/SDL.h>
 
-LinInput::LinInput()
+LinInput::LinInput(int _screenWidth, int _screenHeight)
 {
-	m_mousePointer = new Mouse();
+	m_mousePointer = new Mouse(_screenWidth, _screenHeight);
 	m_keyboardPointer = new Keyboard();
         SDL_EnableKeyRepeat(0,0);
 }
@@ -108,7 +108,7 @@ InputState Keyboard::GetKeyState(char _key)
 #pragma endregion
 
 #pragma region Mouse implementation
-Mouse::Mouse()
+Mouse::Mouse(int _screenWidth, int _screenHeight)
 {
 	for (int n = 0; n < MOUSEBUTTONS; ++n)
 	{
@@ -120,6 +120,9 @@ Mouse::Mouse()
 	m_positionY = 0;
 	m_dX = 0;
 	m_dY = 0;
+
+	m_screenWidth = _screenWidth;
+	m_screenHeight = _screenHeight;
 }
 void Mouse::Update()
 {
@@ -181,12 +184,16 @@ void Mouse::Update()
     
     sdlEvents.clear();
 }
-int Mouse::GetdX() { return m_dX; }
-int Mouse::GetdY() { return m_dY; }
-int Mouse::GetX() { return m_positionX; }
-int Mouse::GetY() { return m_positionY; }
+int Mouse::GetdX() { return m_dX / m_screenWidth; }
+int Mouse::GetdY() { return m_dY / m_screenHeight; }
+int Mouse::GetX() { return m_positionX / m_screenWidth; }
+int Mouse::GetY() { return m_positionY / m_screenHeight; }
 
 void Mouse::SetMousePosition(int _x, int _y){
+
+	_x *= m_screenWidth;
+	_y *= m_screenHeight;
+
     SDL_WarpMouse(_x, _y);
     m_positionX = _x;
     m_positionY = _y;

@@ -72,6 +72,8 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	//TPM = mats[0].DiffuseMapNames.size();
 	for(UINT i = 0; i < SubsetCount; ++i)
 	{
+		DXMaterial m;
+
 		if (data->Groups[i]->material)
 		{
 			if (data->Groups[i]->material->Map_Kd != "none")
@@ -86,12 +88,16 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
 				NormalMapSRV.push_back(normalMapSRV);
 			}
+
+			m.SpecPower = data->Groups[i]->material->Ns;
+			m.SpecIntensity = data->Groups[i]->material->Ks[0];
+		}
+		else
+		{
+			m.SpecPower = 1.0f;
+			m.SpecIntensity = 0.0f;
 		}
 		
-
-		DXMaterial m;
-		m.SpecPower = data->Groups[i]->material->Ns;
-		m.SpecIntensity = data->Groups[i]->material->Ks[0];
 
 		Mat.push_back(m);
 

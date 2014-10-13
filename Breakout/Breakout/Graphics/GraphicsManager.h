@@ -3,6 +3,7 @@
 #include "IGraphics.h"
 #include "ICamera.h"
 #include "../stdafx.h"
+#include "../BoundingBox2D.h"
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -26,6 +27,14 @@ public:
 	float m_imageWidth, m_imageHeight;
 	float m_positionX, m_positionY;
 	std::string m_textureName;
+
+
+	BoundingBox2D GetBoundingBox2D()
+	{
+		VECTOR2 Min(m_positionX, m_positionY);
+		VECTOR2 Max(m_positionX + m_imageWidth, m_positionY + m_imageHeight);
+		return BoundingBox2D(Min, Max);
+	};
 };
 
 class GraphicsManager

@@ -7,6 +7,7 @@
 #include "../ComponentSystem/System/LoseLifeSystem.h"
 #include "../ComponentSystem/Component/TextComponent.h"
 #include "../ComponentSystem/System/TextSystem.h"
+#include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
 
@@ -91,7 +92,7 @@ void GameScene::Update(float _dt)
 	}
 		
 
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
@@ -199,9 +200,10 @@ void GameScene::Reset()
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
+	m_world->AddSystem<MovementSystem>();
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
-	m_world->AddSystem<MovementSystem>();
+	m_world->AddSystem<PadCollisionSystem>();
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
@@ -213,8 +215,8 @@ void GameScene::Reset()
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
-	m_world->AddSystem<SpawnPowerUpSystem>();
     m_world->AddSystem<TextSystem>();
+	m_world->AddSystem<SpawnPowerUpSystem>();
 
 	/*	New Implementation	*/
             
@@ -264,24 +266,11 @@ void GameScene::Reset()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
 	m_world->AddEntity(e);*/
 
-	Entity* midPad = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(midPad, EntityFactory::SAUSAGE_PAD_MID);
-	midPad->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
-	midPad->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
-	m_world->AddEntity(midPad);
-	
 	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(1, 1, 1));
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-	e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(0, PI * 0.5f, 0)));
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
 	m_world->AddEntity(e);
-
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SAUSAGE_PAD_EDGE);
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(1, 1, 1));
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
-        m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
@@ -337,15 +326,18 @@ void GameScene::Reset()
 
         //PLAYER SCORE >>
         auto SC = e->GetComponent<ScoreComponent>();
-
+        
         Entity* t = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(t, EntityFactory::TEXT);
         TC = t->GetComponent<TextComponent>();
-
-		TC->Initialize(SC->GetString(), 0.005f, 0.9f, 2.f, VECTOR3(0, 1, 1), 5);
+        SC->SetString();
         m_world->AddEntity(t);
+        
+	TC->Initialize(SC->GetString(), 0.005f, 0.9f, 2.f, VECTOR3(0, 1, 1), 5);
+        
+        
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(t), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-	SC->SetString();
+	
 
 
 	auto LC = e->GetComponent<LifeComponent>();
@@ -368,6 +360,6 @@ void GameScene::Reset()
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 
 }
