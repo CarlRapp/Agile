@@ -9,6 +9,7 @@ private:
 	int m_frameScore;
 	void OnEntityAdded(Entity* _e);
 	void OnEntityRemoved(Entity* _e);
+        int m_levelUp = 0;
 
 public:
 

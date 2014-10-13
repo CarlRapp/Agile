@@ -10,12 +10,6 @@
 namespace DXText
 {
 
-	struct Letter
-	{
-		ID3D11ShaderResourceView* SRV;
-
-	};
-
 	struct String
 	{
 		std::string *Text;

@@ -1,5 +1,5 @@
 #include "World.h"
-
+#include "System/TextSystem.h"
 World::World()
 {
 	Start();
@@ -92,6 +92,37 @@ void World::Update(float _dt)
 		}
 		
 	}
+}
+
+void World::UpdateTextOnly(float _dt)
+{  
+        if(m_systems.find(TextSystem::GetTypeID()) != m_systems.end())
+            m_systems.find(TextSystem::GetTypeID())->second->Update(_dt);
+
+//	EntityMap::iterator eIT = m_activeEntities.begin();
+//	while (eIT != m_activeEntities.end())
+//	{
+//		Entity* e = eIT->second;
+//
+//		switch (e->GetState())
+//		{
+//		case Entity::CHANGED:
+//			EntityChanged(e);
+//			e->SetState(Entity::ALIVE);
+//			++eIT;
+//			break;
+//
+//		case Entity::SOON_DEAD:
+//			KillEntity(e);
+//			m_activeEntities.erase(eIT++);
+//			break;
+//
+//		default:
+//			++eIT;
+//			break;
+//		}
+//		
+//	}
 }
 
 void World::EntityChanged(Entity* _e)

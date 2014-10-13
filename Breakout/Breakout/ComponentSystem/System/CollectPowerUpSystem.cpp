@@ -87,9 +87,9 @@ void CollectPowerUpSystem::SpawnMultiBalls()
 			);
 
 		newBall->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(bVelocity.x, bVelocity.y, 0);
-		newBall->GetComponent<PositionComponent>()->SetPosition(POS->GetPosition() + VECTOR3(1.5f*bVelocity.x, 1.5f*bVelocity.y, 0));
+		newBall->GetComponent<PositionComponent>()->SetPosition(POS->GetPosition() + VECTOR3(2.f*bVelocity.x, 2.f*bVelocity.y, 0));
 		tBall->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(aVelocity.x, aVelocity.y, 0);
-		tBall->GetComponent<PositionComponent>()->SetPosition(POS->GetPosition() + VECTOR3(1.5f*aVelocity.x, 1.5f*aVelocity.y, 0));
+		tBall->GetComponent<PositionComponent>()->SetPosition(POS->GetPosition() + VECTOR3(2.f*aVelocity.x, 2.f*aVelocity.y, 0));
 
 		m_world->AddEntity(newBall);
 	}

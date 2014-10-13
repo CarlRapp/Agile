@@ -61,7 +61,7 @@ public:
 		PLAYER,
 		POINTLIGHT,
 		PLANE,
-        TEXT,
+                TEXT,
 		EXPLOSION,
 		SHATTER,
 		STANDARD_HORIZONTAL_RECTANGLE
