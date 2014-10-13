@@ -165,6 +165,9 @@
     <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerup</Filter>
     </ClCompile>
+    <ClCompile Include="Storage\TextLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -423,11 +426,18 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\TextSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\PadCollisionSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>    <ClInclude Include="BoundingBox2D.h">
+    </ClInclude>
+    <ClInclude Include="BoundingBox2D.h">
       <Filter>Source Files</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="Storage\TextLoader.h" />
+    <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+  </ItemGroup>
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h">
       <Filter>Source Files\ComponentSystem\Component\PowerUps</Filter>
