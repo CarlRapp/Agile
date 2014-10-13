@@ -119,7 +119,7 @@ void PhysicsSystem::Update(float _dt)
 		if (rotation)
 		{
 			QUAT rot = rotation->GetRotation();
-			//rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
+			rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
 		}
 	}
 
@@ -236,27 +236,8 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::PAD:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(2.5f, 0.5f);
-		fixDef->shape = polygonShape;
-		fixDef->filter.categoryBits = CollisionCategory::PAD;
-		_b2FixtureDefs.push_back(fixDef);
-		_b2BodyDef->type = b2_kinematicBody;
-		break;
-	case EntityFactory::SAUSAGE_PAD_MID:
-		fixDef = new b2FixtureDef();
-		polygonShape = new b2PolygonShape();
 		polygonShape->SetAsBox(0.5f, 0.5f);
 		fixDef->shape = polygonShape;
-		fixDef->filter.categoryBits = CollisionCategory::PAD;
-		_b2FixtureDefs.push_back(fixDef);
-		_b2BodyDef->type = b2_kinematicBody;
-		break;
-	case EntityFactory::SAUSAGE_PAD_EDGE:
-		fixDef = new b2FixtureDef();
-		circleShape = new b2CircleShape();
-		circleShape->m_p.Set(0, 0);
-		circleShape->m_radius = 0.5f;
-		fixDef->shape = circleShape;
 		fixDef->filter.categoryBits = CollisionCategory::PAD;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_kinematicBody;
@@ -284,8 +265,6 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
-	case EntityFactory::POWERUP:
-		break;
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
@@ -308,6 +287,21 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::POWERUP:
+		fixDef = new b2FixtureDef();
+		circleShape = new b2CircleShape();
+		circleShape->m_p.Set(0, 0);
+		circleShape->m_radius = 1.0f;
+		fixDef->shape = circleShape;
+		fixDef->friction = 0.0f;
+		fixDef->restitution = 1.0f;
+		fixDef->filter.categoryBits = CollisionCategory::POWERUP;
+		fixDef->filter.maskBits = CollisionCategory::PAD | CollisionCategory::WALL | CollisionCategory::INVISIBLEWALL;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_dynamicBody;
+		_b2BodyDef->fixedRotation = false;
+		break;
 	default:
 		break;
 	}

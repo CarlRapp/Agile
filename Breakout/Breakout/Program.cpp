@@ -27,23 +27,28 @@ AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
 SceneManager* m_SceneManager;
 
+#define SCREENWIDTH 1280
+#define SCREENHEIGHT 720
+
 int main(int argc, char** argv)
 {
 	printf("Application started!\n");
 	
+
 #ifdef WINDOWS
 	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
 #endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 350, 1280, 720, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, SCREENWIDTH, SCREENHEIGHT, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
 	AudioManager::GetInstance();
 
 	/*	INPUT RELATED SHIT GOES HERE	*/
+	InputManager::Init(SCREENWIDTH, SCREENHEIGHT);
 	InputManager::GetInstance();
 
 	/*	CREATE SCENE MANAGER HERE	*/
