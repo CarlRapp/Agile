@@ -110,26 +110,32 @@ void GLParticleSystem::CreateFire()
 		glBindVertexArray(m_particleArray[i]);
 
 		// enable "vertex attribute arrays"
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glEnableVertexAttribArray(3);
-		glEnableVertexAttribArray(4);
+		glEnableVertexAttribArray(0); //3
+                glEnableVertexAttribArray(1); //pad1
+		glEnableVertexAttribArray(2); //3
+		glEnableVertexAttribArray(3); //1
+		glEnableVertexAttribArray(4); //3
+                glEnableVertexAttribArray(5); //pad2
+		glEnableVertexAttribArray(6); //3
+                glEnableVertexAttribArray(7); //pad3
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_posBuf[i]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+                glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_velBuf[i]);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_startTime[i]);
-		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_initVelBuf);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-
-		glBindBuffer(GL_ARRAY_BUFFER, m_initPosBuf);
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+                glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
+                
+		glBindBuffer(GL_ARRAY_BUFFER, m_initPosBuf);
+		glVertexAttribPointer(6, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+                glVertexAttribPointer(7, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
 	}
 	glBindVertexArray(0);
 
@@ -158,20 +164,20 @@ void GLParticleSystem::CreateFire()
 	// Transform feedback 0
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_feedback[0]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_posBuf[0]);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_velBuf[0]);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_startTime[0]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_velBuf[0]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, m_startTime[0]);
 
 	// Transform feedback 1
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, m_feedback[1]);
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, m_posBuf[1]);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, m_velBuf[1]);
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_startTime[1]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, m_velBuf[1]);
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 3, m_startTime[1]);
 }
 
 float m_rate;
 void GLParticleSystem::CreateTrail()
 {
-	// Create and allocate buffers A and B for posBuf, velBuf
+                // Create and allocate buffers A and B for posBuf, velBuf
 	// and startTime
 	//�
         float scale = 0.30f;
@@ -221,18 +227,20 @@ void GLParticleSystem::CreateTrail()
 		glBindVertexArray(m_particleArray[i]);
 
 		// enable "vertex attribute arrays"
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(0); //pos
+		glEnableVertexAttribArray(1); //pad
+		glEnableVertexAttribArray(2); //vel
+                glEnableVertexAttribArray(3); //start
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_posBuf[i]);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-
+                glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
+                
 		glBindBuffer(GL_ARRAY_BUFFER, m_velBuf[i]);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_startTime[i]);
-		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+		glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 	}
 	glBindVertexArray(0);
 
@@ -441,5 +449,6 @@ void GLParticleSystem::Render(ShaderHandler *particleProg, float dt)
 	glDrawArrays(GL_POINTS, 0, m_noParticles);
 	// Swap buffers
 	m_drawBuf = 1 - m_drawBuf;
+
         
 }

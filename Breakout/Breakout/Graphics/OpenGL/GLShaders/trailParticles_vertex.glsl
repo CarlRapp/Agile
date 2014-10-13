@@ -2,13 +2,16 @@
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 layout (location = 0) in vec3 VertexPosition;
-layout (location = 1) in vec3 VertexVelocity;
-layout (location = 2) in float VertexStartTime;
+layout (location = 1) in float pad1;
+layout (location = 2) in vec3 VertexVelocity;
+layout (location = 3) in float VertexStartTime;
 
 out vec3 Position; // To transform feedback
 out vec3 Velocity; // To transform feedback
 out float StartTime; // To transform feedback
+
 out float Transp; // To fragment shader
+
 
 uniform float Time; // Simulation time (elapsed time)
 uniform float DeltaTime; // Elapsed time between frames dt
