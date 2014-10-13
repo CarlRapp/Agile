@@ -29,10 +29,6 @@ void MainMenuScene::Initialize()
 void MainMenuScene::LoadContent()
 {
 	printf("Loading Content (Main Menu)\n");
-
-    m_stringPlay        = "--START--";
-    m_stringOptions     = "--OPTIONS--";
-    m_stringExit        = "--EXIT--";
         
 
         //GraphicsManager::GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_exitID);
@@ -46,10 +42,13 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
+	GM->ShowMouseCursor(true);
+
     Entity* e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_stringPlay, 0.05f, 0.9f, 2.f, VECTOR3(0,1,0), 20.0f);
+	m_Start = TC;
+	TC->Initialize("--START--", 0.05f, 0.9f, 4.f, VECTOR3(0, 1, 0), 20.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
    // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
@@ -58,7 +57,8 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringOptions, 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
+	m_Options = TC;
+	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 4.f, VECTOR3(0, 1, 0), 20.0f);
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
@@ -67,7 +67,8 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	TC->Initialize(&m_stringExit, 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20.0f);
+	m_Exit = TC;
+	TC->Initialize("--EXIT--", 0.05f, 0.8f, 4.f, VECTOR3(0, 1, 0), 20.0f);
     //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
@@ -104,7 +105,45 @@ void MainMenuScene::Update(float _dt)
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
 		return;
 	}
-		
+	
+	float x = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetX();
+	float y = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetY();
+
+	bool pressed = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(MouseButton::LeftMB) == InputState::Pressed;
+
+	//START
+	if (m_Start->GetBoundingBox2D().Intersects(VECTOR2(x, y)))
+	{
+		m_Start->m_color = VECTOR3(1, 0, 0);
+
+		if (pressed)
+		{
+			SceneManager::GetInstance()->ChangeScene<GameScene>();
+			return;
+		}
+	}
+	else
+		m_Start->m_color = VECTOR3(0, 1, 0);
+	//OPTIONS
+	if (m_Options->GetBoundingBox2D().Intersects(VECTOR2(x, y)))
+	{
+		m_Options->m_color = VECTOR3(1, 0, 0);
+	}
+	else
+		m_Options->m_color = VECTOR3(0, 1, 0);
+	//EXIT
+	if (m_Exit->GetBoundingBox2D().Intersects(VECTOR2(x, y)))
+	{
+		m_Exit->m_color = VECTOR3(1, 0, 0);
+		if (pressed)
+		{			
+			SceneManager::GetInstance()->Quit();
+		}
+	}
+	else
+		m_Exit->m_color = VECTOR3(0, 1, 0);
+	
+
 
 	m_world->Update(_dt);
 

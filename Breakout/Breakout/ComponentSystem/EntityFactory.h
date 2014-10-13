@@ -29,6 +29,7 @@
 #include "Component/TextComponent.h"
 #include "Component/ExplosionComponent.h"
 #include "Component/TNTComponent.h"
+#include "Component/PadCollisionComponent.h"
 
 class EntityFactory
 {
@@ -49,7 +50,8 @@ public:
 		TNT_BLOCK,
 		PAD,
 		SAUSAGE_PAD_MID,
-		SAUSAGE_PAD_EDGE,
+		SAUSAGE_PAD_LEFT,
+		SAUSAGE_PAD_RIGHT,
 		BALL,
 		POWERUP,
 		WALL,
