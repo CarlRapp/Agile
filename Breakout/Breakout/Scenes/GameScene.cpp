@@ -170,7 +170,6 @@ void GameScene::Reset()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<MovementSystem>();
-	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
@@ -225,7 +224,7 @@ void GameScene::Reset()
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-midPad->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, -20, 0));
 	m_world->AddEntity(e);
-
+	
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 20));
