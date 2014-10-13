@@ -32,20 +32,20 @@ struct LightInfo{
 uniform LightInfo Lights[nrOfLights];
 
 struct MaterialInfo{
-	vec3 Ka;			// Ambient reflectivity
-	vec3 Kd;		    // Diffuse reflectivity
-	vec3 Ks;			// Specular reflectivity
-	float Shininess;	// Specular shininess factor
+	//vec3 Ka;			// Ambient reflectivity
+	//vec3 Kd;		    // Diffuse reflectivity
+	float Ks;			// Specular reflectivity
+	float Ns;	// Specular shininess factor
 };
-MaterialInfo Material;
+uniform MaterialInfo Material;
 
 void phongModel(int index, vec3 toEye, out vec3 ambient, out vec3 diffuse, out vec3 spec) {
 
         //tmp material
-        Material.Ka = vec3(0.2);
-        Material.Kd = vec3(0.9);
-        Material.Ks = vec3(1.0);
-        Material.Shininess = 100.0;
+    //    Material.Ka = vec3(0.2);
+    //    Material.Kd = vec3(0.9);
+    //    Material.Ks = vec3(1.0);
+    //    Material.Shininess = 100.0;
 
         ambient = Lights[index].Color * Lights[index].Intensity.x;
         diffuse = vec3(0.0);
@@ -64,7 +64,7 @@ void phongModel(int index, vec3 toEye, out vec3 ambient, out vec3 diffuse, out v
         if(diffuseFactor > 0)
         {
             vec3 v = reflect( -lightVec, vertex.normal );
-            float specFactor = pow( max( dot(v, toEye), 0.0 ), Material.Shininess );
+            float specFactor = pow( max( dot(v, toEye), 0.0 ), Material.Ns );
 
             diffuse = diffuseFactor * Lights[index].Color * Lights[index].Intensity.y;
             spec = specFactor * Lights[index].Color * Lights[index].Intensity.z * Material.Ks;

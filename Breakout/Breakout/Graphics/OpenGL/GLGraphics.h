@@ -50,6 +50,8 @@ class GLGraphics : public IGraphics
         std::string name;
         std::map<int, ModelInstance*> instances;
         
+        float MaterialKs, MaterialNs;
+        
         GLuint buffers[6];
         
         ModelRenderInfo(){}

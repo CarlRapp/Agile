@@ -179,12 +179,16 @@ void GLGraphics::LoadModel(std::string _path)
             m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE0);
             m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
           //  printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
+            m_models[index]->MaterialKs = (*groupIt)->material->Ks[0];
+            m_models[index]->MaterialNs = (*groupIt)->material->Ns;
         }
         else
         {
             m_texManager.Load2DTexture("whitePixel.png", GL_TEXTURE0);
             m_models[index]->texHandle = m_texManager.GetTexture("whitePixel.png");
            // printf("NO MATERIAL FILE: using %s \n", "whitePixel.png");
+            m_models[index]->MaterialKs = 0.0f;
+            m_models[index]->MaterialNs = 1.0f;
         }
         
         m_testMatrices.push_back(glm::mat4(1.0f));
@@ -382,7 +386,7 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
     }
     else if(_effect == "trail")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 300, 1000, 35.f, 
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("trail", _pos, 250, 500, 35.f, 
                                                                                     m_texManager.GetTexturePointer("circle_blue.png"), m_trailParticlesProgram.GetProgramHandlePointer())));
     }
 }
@@ -573,8 +577,11 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     
     float effect = *_effect;
 
-    width = 8.0f/m_screenWidth*scale;
-    height = 8.0f/m_screenHeight*scale;
+    //width = 8.0f/m_screenWidth*scale;
+    //height = 8.0f/m_screenHeight*scale;
+    
+    width = 0.00625*scale;
+    height = 0.01111*scale;
     
     int sign = (kill) ? -1 : 1;
 
@@ -714,6 +721,8 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
     
     for(int i=0; i< m_models.size();i++)
     {
+        m_standardShaderProgram.SetUniformV("Material.Ks", m_models[i]->MaterialKs);
+        m_standardShaderProgram.SetUniformV("Material.Ns", m_models[i]->MaterialNs);
         MRI = m_models[i];
         int instances = m_models[i]->instances.size();
         
