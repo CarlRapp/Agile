@@ -8,6 +8,8 @@
 #include "../ComponentSystem/Component/TextComponent.h"
 #include "../ComponentSystem/System/TextSystem.h"
 #include "../ComponentSystem/System/PadCollisionSystem.h"
+#include "../ComponentSystem/System/SpawnPowerUpSystem.h"
+#include "../ComponentSystem/System/CollectPowerUpSystem.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -206,6 +208,7 @@ void GameScene::Reset()
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<CollectPowerUpSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<LoseLifeSystem>();
@@ -214,6 +217,7 @@ void GameScene::Reset()
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
+	m_world->AddSystem<SpawnPowerUpSystem>();
 
 	/*	New Implementation	*/
             

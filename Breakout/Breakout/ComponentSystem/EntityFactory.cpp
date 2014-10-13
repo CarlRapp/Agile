@@ -1,6 +1,7 @@
 #include "../stdafx.h"
 
 #include "EntityFactory.h"
+#include "Component/BallComponent.h"
 
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
@@ -142,10 +143,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<DamageComponent>(10);
 		_entity->AddComponent<HealthComponent>(10);
 		_entity->AddComponent<LoseLifeComponent>();
-
+		_entity->AddComponent<BallComponent>();
 		_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
-		break;
-	case EntityFactory::POWERUP:
 		break;
 	case EntityFactory::WALL:
 		_entity->AddComponent<PositionComponent>();
@@ -213,6 +212,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 			_entity->AddComponent<PositionComponent>();
 			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
 		break;
+		case EntityFactory::POWERUP:
+			_entity->AddComponent<PositionComponent>();
+			break;
 	default:
 		break;
 	}
