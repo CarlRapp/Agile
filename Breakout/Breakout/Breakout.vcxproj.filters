@@ -564,5 +564,8 @@
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
     </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\CubeMap.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
