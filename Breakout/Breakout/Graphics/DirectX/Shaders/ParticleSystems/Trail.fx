@@ -1,7 +1,7 @@
 #include "ParticleSystem.fx"
 
 
-float aliveTime = 2.0f;
+float aliveTime = 0.5f;
 
 
 DepthStencilState DisableDepth

@@ -240,5 +240,5 @@ void MainMenuScene::CreatePlayField()
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 }
