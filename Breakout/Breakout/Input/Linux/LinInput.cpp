@@ -3,6 +3,7 @@
 #include <vector>
 #include <SDL/SDL.h>
 
+
 LinInput::LinInput(int _screenWidth, int _screenHeight)
 {
 	m_mousePointer = new Mouse(_screenWidth, _screenHeight);
@@ -177,7 +178,6 @@ void Mouse::Update()
     SDL_GetMouseState(&m_positionX, &m_positionY);
     m_dX = m_positionX - tX;
     m_dY = m_positionY - tY;
-
     
     for(int i = sdlEvents.size() - 1; i >= 0; --i)
         SDL_PushEvent(&sdlEvents[i]);
@@ -185,15 +185,19 @@ void Mouse::Update()
     sdlEvents.clear();
 }
 float Mouse::GetdX() { return m_dX / m_screenWidth; }
-float Mouse::GetdY() { return m_dY / m_screenHeight; }
+float Mouse::GetdY() { return 1.0f - m_dY / m_screenHeight; }
 float Mouse::GetX() { return m_positionX / m_screenWidth; }
-float Mouse::GetY() { return m_positionY / m_screenHeight; }
+float Mouse::GetY() { return 1.0f - m_positionY / m_screenHeight; }
 
-void Mouse::SetMousePosition(float _x, float _y){
+void Mouse::SetMousePosition(float _x, float _y)
+{
 
-	_x *= m_screenWidth;
-	_y *= m_screenHeight;
-
+    _x *= m_screenWidth;
+    _y *= m_screenHeight;
+    
+    _x;
+    _y;
+    
     SDL_WarpMouse(_x, _y);
     m_positionX = _x;
     m_positionY = _y;

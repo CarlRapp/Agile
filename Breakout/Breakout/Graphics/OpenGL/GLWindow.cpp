@@ -33,8 +33,7 @@ bool GLWindow::InitWnd()
     if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) 
     { return false; } 
     //Create Window 
-    m_surface = SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL );
-    if( m_surface == NULL ) 
+    if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL ) == NULL ) 
     { return false; } 
     //Set caption 
     
@@ -101,11 +100,6 @@ bool GLWindow::InitWndApp()
 {
 
 	return true;
-}
-
-SDL_Surface* GLWindow::GetSurface()
-{
-    return m_surface;
 }
 
 

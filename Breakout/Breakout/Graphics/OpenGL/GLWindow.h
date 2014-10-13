@@ -16,7 +16,6 @@ private:
 	int				Render(float deltaTime);
 	int				Update(float deltaTime);
 	char*				FeatureLevelToString();
-        SDL_Surface*                    m_surface;
 
 	int m_width, m_height;
 
@@ -27,7 +26,6 @@ public:
 
 	bool InitWindow(int width, int height);
         bool InitGL();
-        SDL_Surface* GetSurface();
 	
 };
 
