@@ -3,6 +3,7 @@
 #include "../Component/ScoreComponent.h"
 #include "../World.h"
 #include "../EntityFactory.h"
+#include "../../Scenes/GameScene.h"
 #include "../../Scene/SceneManager.h"
 using namespace SceneSystem;
 
@@ -43,8 +44,8 @@ void ScoreSystem::Update(float _dt)
                 
                 if(m_levelUp)
                 {
-                    SceneManager::GetInstance()->LevelUp();
-
+                    GameScene* gScene = SceneManager::GetInstance()->GetScene<GameScene>();
+                    gScene->LevelUp(m_levelUp);
                     printf("DO LEVEL UP %d\n",m_levelUp);
                     m_levelUp = 0;
                 }

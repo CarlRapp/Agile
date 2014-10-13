@@ -25,10 +25,10 @@ namespace SceneSystem
 
 		template <typename T>
 		bool ChangeScene();
+                template <typename T>
+		T* GetScene();
 
 		void Start();
-
-                void LevelUp();
 
 		void Quit()
 		{
@@ -45,6 +45,7 @@ namespace SceneSystem
 
 		template <typename T>
 		bool HasScene() const;
+
 
 		void InitScene(BaseScene* _scene);
 		float GetDeltaTime();
@@ -96,7 +97,14 @@ namespace SceneSystem
 		return true;
 	}
 
-        
+        template <typename T>
+	T* SceneManager::GetScene()
+        {
+            if(m_scenes.find(T::GetSceneID()) != m_scenes.end())
+                return (T*)m_scenes[T::GetSceneID()];
+            
+            return 0;
+        }
         
 
 }

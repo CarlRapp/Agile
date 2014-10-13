@@ -74,9 +74,3 @@ void SceneManager::Start()
 
 	}
 }
-
-void SceneManager::LevelUp()
-{
-    m_activeScene->LevelUp();
-    
-}

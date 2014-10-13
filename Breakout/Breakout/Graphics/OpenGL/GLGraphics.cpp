@@ -405,7 +405,8 @@ void GLGraphics::Update(float _dt)
         {
 
             if(m_textObjects[i].kill)
-                m_textObjects.erase(m_textObjects.begin() +(i));
+                m_textObjects[i].effectCopy -= _dt*3;
+                //m_textObjects.erase(m_textObjects.begin() +(i));
 
             if(m_textObjects[i].effectCopy < -10)
             {  
