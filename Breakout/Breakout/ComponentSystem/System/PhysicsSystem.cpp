@@ -19,6 +19,8 @@ PhysicsSystem::~PhysicsSystem()
 
 void PhysicsSystem::Update(float _dt)
 {
+	if (_dt>0.016f)
+		_dt = 0.016f;
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -268,7 +270,18 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 30.0f);
+		polygonShape->SetAsBox(0.5f, 300.0f);
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::WALL;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::H_WALL:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(800.f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
@@ -282,9 +295,8 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		polygonShape->SetAsBox(47.f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-	
 		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
+		fixDef->filter.categoryBits = CollisionCategory::KILLONTOUCH;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 		break;

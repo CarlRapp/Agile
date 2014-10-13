@@ -7,6 +7,10 @@ class CollectPowerUpSystem : public System<CollectPowerUpSystem>
 {
 private:
 
+	void TriggerPowerUp(Entity* _powerUp);
+
+
+	void SpawnMultiBalls();
 public:
 	CollectPowerUpSystem(World* _world);
 	~CollectPowerUpSystem();

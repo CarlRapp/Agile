@@ -165,6 +165,9 @@
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -445,6 +448,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\BallComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,9 @@
 #include "RespawnBallSystem.h"
 #include "../World.h"
+#include "../Component/BallComponent.h"
 
 RespawnBallSystem::RespawnBallSystem(World* _world)
-: Base(ComponentFilter().Requires<LoseLifeComponent>(), _world), m_numBallsLeft(0)
+: Base(ComponentFilter().Requires<BallComponent>(), _world), m_numBallsLeft(0)
 {
 }
 
@@ -37,6 +38,29 @@ void RespawnBallSystem::Update(float _dt)
 				}
 			}
 		}
+
+	//	kill balls outside range
+	std::vector<Entity*>* balls = m_world->GetEntities<BallComponent>();
+	if (balls)
+	{
+		for (int i = balls->size() - 1; i >= 0; --i)
+		{
+			PositionComponent* POS = balls->at(i)->GetComponent<PositionComponent>();
+			if (!POS)
+			{
+				balls->at(i)->SetState(Entity::SOON_DEAD);
+				continue;
+			}
+			Entity* tBall = balls->at(i);
+			VECTOR3 vPos = POS->GetPosition();
+			if (vPos.x < -100 || vPos.x > 100)
+				tBall->SetState(Entity::SOON_DEAD);
+			if (vPos.y < -100 || vPos.y > 100)
+				tBall->SetState(Entity::SOON_DEAD);
+
+		}
+
+	}
 }
 
 void RespawnBallSystem::OnEntityAdded(Entity* _e)
@@ -47,4 +71,10 @@ void RespawnBallSystem::OnEntityAdded(Entity* _e)
 void RespawnBallSystem::OnEntityRemoved(Entity* _e)
 {
 	--m_numBallsLeft;
+	if (m_numBallsLeft == 0)
+	{
+		Entity* e = m_world->CreateEntity();
+		e->AddComponent<LoseLifeComponent>();
+		m_world->AddEntity(e);
+	}
 }
