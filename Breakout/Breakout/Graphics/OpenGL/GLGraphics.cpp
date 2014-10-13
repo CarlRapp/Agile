@@ -579,8 +579,8 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     if(effect == 9999.0f)
         effect = 1.0f;
     
-    width = 8.0f/m_screenWidth*scale;
-    height = 8.0f/m_screenHeight*scale;
+    width = 0.00625*scale;
+    height = 0.01111*scale;
     
     int sign = (kill) ? -1 : 1;
 
