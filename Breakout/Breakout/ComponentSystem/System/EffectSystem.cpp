@@ -210,6 +210,22 @@ void EffectSystem::OnEverySecond(Entity* _e, float _dt)
 }
 void EffectSystem::OnCollision(Entity* _e, float _dt)
 {
+    
+    if((m_flags.OnCollide & EffectFlags::CHANGE_MODEL) == EffectFlags::CHANGE_MODEL && _e->GetComponent<HealthComponent>()->m_currentHealth > 0)
+    {
+        GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_e));
+        
+        auto model = _e->GetComponent<ModelComponent>();
+        std::string tmpString = model->m_modelPath + "_c";
+
+        printf("Health: %i \n", _e->GetComponent<HealthComponent>()->m_currentHealth);
+        _e->RemoveComponent<ModelComponent>();
+        model = &_e->AddComponent<ModelComponent>();
+        model->m_modelPath = tmpString;
+        GraphicsManager::GetInstance()->AddObject(GetMemoryID(_e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix , 0);
+ 
+    }
+    
 }
 
 

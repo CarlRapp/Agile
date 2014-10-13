@@ -136,13 +136,14 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<DeflectionComponent>(30.f);
 		_entity->AddComponent<HealthComponent>(20);
 		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 2;
+                _entity->AddComponent<ScoreComponent>().m_score = 2;
 		_entity->AddComponent<BlockComponent>();
 		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
 
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		effect->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
 		break;
 	}
 	case EntityFactory::PAD:

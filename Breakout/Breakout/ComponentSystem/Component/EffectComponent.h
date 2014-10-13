@@ -11,6 +11,7 @@ enum EffectFlags
 	INVISIBLE			= 1 << 2,
 	TRAIL				= 1 << 3,
 	SCALE_MIN_TO_MAX	= 1 << 4,
+	CHANGE_MODEL    = 1 << 5,
 
 	NO_EFFECT = 1 << 10,
 };

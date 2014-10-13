@@ -46,12 +46,12 @@ void GameScene::Initialize()
 void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
-
-	GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
 void GameScene::Update(float _dt)
 {
+    UpdateFPS(_dt);
+    
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
 		m_isPaused = !m_isPaused;
@@ -59,12 +59,6 @@ void GameScene::Update(float _dt)
 
 		if (m_isPaused)
                 {
-			/*GM->Add2DTexture(
-				GetMemoryID(m_pauseBackground), m_pauseBackground->m_textureName, 
-				&m_pauseBackground->m_positionX, &m_pauseBackground->m_positionY, 
-				&m_pauseBackground->m_imageWidth, &m_pauseBackground->m_imageHeight
-
-			);*/
                    
                     if(!m_gameOver)
                     {
@@ -88,11 +82,14 @@ void GameScene::Update(float _dt)
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 
+                m_world->UpdateTextOnly(_dt);
+                
 		return;
 	}
-		
-
+        
+        
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
+
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
@@ -149,7 +146,7 @@ void GameScene::Update(float _dt)
             //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
 
-        UpdateFPS(_dt);
+        
         
 }
 
@@ -229,7 +226,7 @@ void GameScene::Reset()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 1.0f);
+    TC->Initialize(&m_pauseString, 0.5f-(m_pauseString.size()*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(1,1,0), 30.0f);
     m_pauseHandle = e->GetId();
     m_world->AddEntity(e);
     

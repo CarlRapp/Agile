@@ -1,5 +1,6 @@
 #include "PhysicsSystem.h"
 #include "../World.h"
+#include <glm/gtx/quaternion.hpp>
 
 PhysicsSystem::PhysicsSystem(World* _world) 
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
@@ -118,8 +119,7 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			QUAT rot = rotation->GetRotation();
-			rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
+			//rotation->SetRotation(ROTATEYAWPITCHROLL(lol.x, lol.y, lol.z));
 		}
 	}
 

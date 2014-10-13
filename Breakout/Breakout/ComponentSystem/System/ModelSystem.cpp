@@ -6,6 +6,7 @@
 #include "../Component/RotationComponent.h"
 #include "../Component/ScaleComponent.h"
 #include "../Component/ShatterComponent.h"
+#include <glm/gtx/euler_angles.hpp>
 
 
 ModelSystem::ModelSystem(World* _world)
@@ -61,6 +62,13 @@ void ModelSystem::Update(float _dt)
 		if (change)
 		{
 #ifdef OPENGL
+                    float x = rotation->GetRotation().x;
+                     float y = rotation->GetRotation().y;
+                      float z = rotation->GetRotation().z;
+                      
+                    glm::mat4 bajs = glm::eulerAngleYXZ(y, x, z);
+                  
+                      
 			model->m_worldMatrix = TRANSLATE(position->GetPosition()) * ROTATE(rotation->GetRotation()) * SCALE(scale->GetScale());
 #else
 			model->m_worldMatrix =  SCALE(scale->GetScale()) * ROTATE(rotation->GetRotation())* TRANSLATE(position->GetPosition());

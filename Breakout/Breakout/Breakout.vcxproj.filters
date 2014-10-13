@@ -159,12 +159,9 @@
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp">
-      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
-    </ClCompile>
+
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
