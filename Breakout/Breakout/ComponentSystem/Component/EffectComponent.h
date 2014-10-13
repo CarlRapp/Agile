@@ -10,6 +10,8 @@ enum EffectFlags
 	EXPLODE		= 1 << 1,
 	INVISIBLE	= 1 << 2,
 	TRAIL		= 1 << 3,
+        
+        CHANGE_MODEL    = 1 << 5,
 
 	NO_EFFECT = 1 << 10,
 };

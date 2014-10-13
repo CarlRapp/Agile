@@ -1,5 +1,6 @@
 #include "PhysicsSystem.h"
 #include "../World.h"
+#include <glm/gtx/quaternion.hpp>
 
 PhysicsSystem::PhysicsSystem(World* _world) 
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
@@ -19,6 +20,8 @@ PhysicsSystem::~PhysicsSystem()
 
 void PhysicsSystem::Update(float _dt)
 {
+	if (_dt>0.016f)
+		_dt = 0.016f;
 	for (auto it = m_entityMap.begin(); it != m_entityMap.end(); ++it)
 	{
 		Entity* e = it->second;
@@ -118,8 +121,7 @@ void PhysicsSystem::Update(float _dt)
 		}
 		if (rotation)
 		{
-			QUAT rot = rotation->GetRotation();
-			//rotation->SetRotation(QUAT(rot.x, rot.y, b2Body->GetAngle(), rot.w));
+			//rotation->SetRotation(ROTATEYAWPITCHROLL(lol.x, lol.y, lol.z));
 		}
 	}
 
@@ -265,12 +267,21 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
-	case EntityFactory::POWERUP:
-		break;
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 30.0f);
+		polygonShape->SetAsBox(0.5f, 300.0f);
+		fixDef->shape = polygonShape;
+		fixDef->density = 1.0f;
+		fixDef->friction = 0.0f;
+		fixDef->filter.categoryBits = CollisionCategory::WALL;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::H_WALL:
+		fixDef = new b2FixtureDef();
+		polygonShape = new b2PolygonShape();
+		polygonShape->SetAsBox(800.f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
@@ -284,11 +295,25 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		polygonShape->SetAsBox(47.f, 0.5f);
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
-	
 		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL;
+		fixDef->filter.categoryBits = CollisionCategory::KILLONTOUCH;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
+		break;
+	case EntityFactory::POWERUP:
+		fixDef = new b2FixtureDef();
+		circleShape = new b2CircleShape();
+		circleShape->m_p.Set(0, 0);
+		circleShape->m_radius = 1.0f;
+		fixDef->shape = circleShape;
+		fixDef->friction = 0.0f;
+		fixDef->restitution = 1.0f;
+		fixDef->filter.categoryBits = CollisionCategory::POWERUP;
+		fixDef->filter.maskBits = CollisionCategory::PAD | CollisionCategory::WALL | CollisionCategory::INVISIBLEWALL;
+		_b2FixtureDefs.push_back(fixDef);
+		_b2BodyDef->type = b2_dynamicBody;
+		_b2BodyDef->fixedRotation = false;
+		break;
 	default:
 		break;
 	}

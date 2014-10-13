@@ -12,7 +12,7 @@ BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
 	m_blockGrid = 0;
-	SetSettings(20, 15, 20, 0);
+	SetSettings(40, 15, 20, 0);
 }
 
 BlockSystem::~BlockSystem()

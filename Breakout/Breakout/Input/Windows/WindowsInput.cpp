@@ -128,15 +128,53 @@ void Mouse::Update()
 	m_oldPositionY = m_positionY;// = A.y;
 		
 }
+
+float GetLeft()
+{
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.left;
+	}
+	return offset;
+}
+
+float GetBottom()
+{
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.bottom;
+	}
+	return offset;
+}
+
 float Mouse::GetdX() { return m_dX / m_screenWidth; }
-float Mouse::GetdY() { return m_dY / m_screenHeight; }
-float Mouse::GetX() { return m_positionX / m_screenWidth; }
-float Mouse::GetY() { return m_positionY / m_screenHeight; }
+float Mouse::GetdY() { return  m_dY / m_screenHeight; }
+float Mouse::GetX() { return  (m_positionX - GetLeft()) / m_screenWidth; }
+float Mouse::GetY() { return  (GetBottom() - m_positionY) / m_screenHeight; }
 
 void Mouse::SetMousePosition(float _x, float _y)
 {
 	_x *= m_screenWidth;
 	_y *= m_screenHeight;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		_x += rect.left;
+		_y = rect.bottom - _y;
+	}
 
 	SetCursorPos(_x, _y);
 	m_positionX = _x;

@@ -45,8 +45,8 @@
     <ExcludePath>$(ExcludePath)</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\GL;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\glm;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\SDL2;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\lib\SDL2\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)/../External/include/GL;$(SolutionDir)/../External/include/glm;$(SolutionDir)/../External/include/SDL2;$(SolutionDir)/../External/D3D/Include;$(SolutionDir)/../External/include/;$(SolutionDir)/../External/include/Box2D;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/../External/lib/SDL2/x86;$(SolutionDir)/../External/D3D/Lib/x86;$(SolutionDir)/../External/lib/Box2D;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -72,6 +72,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11.lib;Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -83,11 +85,13 @@
     <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
     <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDeflectionSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\EffectSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\InputSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ISystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
@@ -97,6 +101,7 @@
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
     <ClCompile Include="Graphics\DirectX\DXCamera.cpp" />
@@ -127,10 +132,10 @@
     <ClCompile Include="Scenes\MainMenuScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="Storage\HighScoreLoader.cpp" />
     <ClCompile Include="Storage\ModelData.cpp" />
     <ClCompile Include="Storage\ModelLoader.cpp" />
     <ClCompile Include="Storage\MusicLoader.cpp" />
-    <ClCompile Include="Storage\HighScoreLoader.cpp" />
     <ClCompile Include="Storage\WavLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +146,7 @@
     <ClInclude Include="BoundingBox2D.h" />
     <ClInclude Include="ComponentSystem\ClassTypeID.h" />
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BounceComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
@@ -158,6 +164,7 @@
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ModelComponent.h" />
     <ClInclude Include="ComponentSystem\Component\MouseInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\MultiBallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerComponent.h" />
     <ClInclude Include="ComponentSystem\Component\PlayerLifeComponent.h" />
@@ -175,11 +182,13 @@
     <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
     <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
     <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
+    <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDeflectionSystem.h" />
     <ClInclude Include="ComponentSystem\System\EffectSystem.h" />
     <ClInclude Include="ComponentSystem\System\InputSystem.h" />
     <ClInclude Include="ComponentSystem\System\ISystem.h" />
+    <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h" />
     <ClInclude Include="ComponentSystem\System\LightSystem.h" />
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
@@ -189,6 +198,7 @@
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
+    <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\TextSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />
     <ClInclude Include="Graphics\DirectX\DXCamera.h" />
@@ -222,10 +232,11 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="Storage\HighScoreLoader.h" />
     <ClInclude Include="Storage\ModelData.h" />
     <ClInclude Include="Storage\ModelLoader.h" />
     <ClInclude Include="Storage\MusicLoader.h" />
-    <ClInclude Include="Storage\HighScoreLoader.h" />
+    <ClInclude Include="Storage\TextLoader.h" />
     <ClInclude Include="Storage\WavLoader.h" />
   </ItemGroup>
   <ItemGroup>
@@ -298,6 +309,14 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RelativeDir)\%(Filename).fxo;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Graphics\DirectX\Shaders\CubeMap.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>

@@ -1,5 +1,5 @@
 #include "World.h"
-
+#include "System/TextSystem.h"
 World::World()
 {
 	Start();
@@ -94,6 +94,37 @@ void World::Update(float _dt)
 	}
 }
 
+void World::UpdateTextOnly(float _dt)
+{  
+        if(m_systems.find(TextSystem::GetTypeID()) != m_systems.end())
+            m_systems.find(TextSystem::GetTypeID())->second->Update(_dt);
+
+//	EntityMap::iterator eIT = m_activeEntities.begin();
+//	while (eIT != m_activeEntities.end())
+//	{
+//		Entity* e = eIT->second;
+//
+//		switch (e->GetState())
+//		{
+//		case Entity::CHANGED:
+//			EntityChanged(e);
+//			e->SetState(Entity::ALIVE);
+//			++eIT;
+//			break;
+//
+//		case Entity::SOON_DEAD:
+//			KillEntity(e);
+//			m_activeEntities.erase(eIT++);
+//			break;
+//
+//		default:
+//			++eIT;
+//			break;
+//		}
+//		
+//	}
+}
+
 void World::EntityChanged(Entity* _e)
 {
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
@@ -117,6 +148,19 @@ void World::KillEntity(Entity* _e)
 {
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
+
+	std::vector<IComponent*>* componentList = _e->GetComponents();
+	for (int i = 0; i < componentList->size(); ++i)
+	{
+		IComponent* tComponent = componentList->at(i);
+		std::vector<Entity*>* tList = m_componentEntityPool[tComponent->m_ID];
+		for (int i = 0; i < tList->size(); ++i)
+			if (tList->at(i)->GetId() == _e->GetId())
+			{
+				tList->erase(tList->begin() + i);
+				break;
+			}
+	}
 
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);

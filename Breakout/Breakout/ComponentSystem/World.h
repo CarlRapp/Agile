@@ -30,7 +30,8 @@ public:
 	~World();
 
 	void Update(float _dt);
-
+        void UpdateTextOnly(float _dt);
+        
 	bool AddEntity(Entity* _e);
 	Entity* CreateEntity();
 

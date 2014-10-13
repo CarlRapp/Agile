@@ -33,6 +33,7 @@ void GameOverScene::LoadContent()
 void GameOverScene::OnActive()
 {
 	GraphicsManager* GM = GraphicsManager::GetInstance();
+	GM->ShowMouseCursor(true);
 	GM->Add2DTexture(
 		GetMemoryID(m_background), m_background->m_textureName,
 		&m_background->m_positionX, &m_background->m_positionY,

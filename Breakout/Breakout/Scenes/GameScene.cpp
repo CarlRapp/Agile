@@ -8,6 +8,10 @@
 #include "../ComponentSystem/Component/TextComponent.h"
 #include "../ComponentSystem/System/TextSystem.h"
 #include "../ComponentSystem/System/PadCollisionSystem.h"
+#include "../ComponentSystem/System/SpawnPowerUpSystem.h"
+#include "../ComponentSystem/System/CollectPowerUpSystem.h"
+#include "../ComponentSystem/System/KillOnTouchSystem.h"
+#include "../ComponentSystem/Component/BallComponent.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -57,6 +61,14 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
+        UpdateFPS(_dt);
+    
+        if(m_levelUp)
+        {
+            LevelUpMenu(_dt);
+            return;
+        }
+        
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
 		m_isPaused = !m_isPaused;
@@ -64,12 +76,6 @@ void GameScene::Update(float _dt)
 
 		if (m_isPaused)
                 {
-			/*GM->Add2DTexture(
-				GetMemoryID(m_pauseBackground), m_pauseBackground->m_textureName, 
-				&m_pauseBackground->m_positionX, &m_pauseBackground->m_positionY, 
-				&m_pauseBackground->m_imageWidth, &m_pauseBackground->m_imageHeight
-
-			);*/
                    
                     if(!m_gameOver)
                     {
@@ -88,16 +94,20 @@ void GameScene::Update(float _dt)
                 }
 		return;
 	}
+    
 	if (m_isPaused)
 	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
-			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+            m_world->UpdateTextOnly(_dt);
 
-		return;
+            if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+                    SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+
+            return;
 	}
-		
-
+        
+        
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
+
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
@@ -140,6 +150,7 @@ void GameScene::Update(float _dt)
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
+			
 	}
 
 	m_world->Update(_dt);
@@ -154,7 +165,7 @@ void GameScene::Update(float _dt)
             //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
 
-        UpdateFPS(_dt);
+        
         
 }
 
@@ -178,6 +189,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
 void GameScene::OnInactive()
@@ -202,6 +214,7 @@ void GameScene::OnInactive()
 
 void GameScene::Reset()
 {
+    m_levelUp=0;
 	/*	New Implementation	*/
 	m_world = new World();
 	m_world->AddSystem<InputSystem>();
@@ -212,6 +225,7 @@ void GameScene::Reset()
 	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
+	m_world->AddSystem<CollectPowerUpSystem>();
 	m_world->AddSystem<CollisionDeflectionSystem>();
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<LoseLifeSystem>();
@@ -220,6 +234,8 @@ void GameScene::Reset()
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
+	m_world->AddSystem<SpawnPowerUpSystem>();
+	m_world->AddSystem<KillOnTouchSystem>();
 
 	/*	New Implementation	*/
             
@@ -243,7 +259,6 @@ void GameScene::Reset()
     m_gameOverHandle = e->GetId();
     m_world->AddEntity(e);
 
-    
     e = m_world->GetEntity(m_pauseHandle);
     GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
     
@@ -274,6 +289,8 @@ void GameScene::Reset()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
 	m_world->AddEntity(e);
+        
+        m_playerID = e->GetId();
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
@@ -365,4 +382,131 @@ void GameScene::Reset()
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 
+        //LEVEL UP STRINGS
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize("LEVEL UP - SELECT STATS", 0.5f-(23*8.0f)/1280.0f*2.0f, 0.7f, 4.f, VECTOR3(0.7f,1.0f,0.7f), 10.0f);
+        m_lvlUpHandle0 = e->GetId();
+        m_world->AddEntity(e);
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize("SPEED", 0.5f-(5*8.0f)/1280.0f*1.5f, 0.6f, 3.f, VECTOR3(0.7f,0.1f,0), 10.0f);
+        m_lvlUpHandle1 = e->GetId();
+        m_world->AddEntity(e);
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize("SIZE", 0.5f-(4*8.0f)/1280.0f*1.5f, 0.5f, 3.f, VECTOR3(0.7f,0.1f,0), 10.0f);
+        m_lvlUpHandle2 = e->GetId();
+        m_world->AddEntity(e);
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize("DAMAGE", 0.5f-(6*8.0f)/1280.0f*1.5f, 0.4f, 3.f, VECTOR3(0.7f,0.1f,0), 10.0f);
+        m_lvlUpHandle3 = e->GetId();
+        m_world->AddEntity(e);
+}
+
+void GameScene::LevelUp(int _lvlUp)
+{
+    m_levelUp = _lvlUp;
+    
+    Entity* e = m_world->GetEntity(m_lvlUpHandle0);
+    auto TC = e->GetComponent<TextComponent>();
+    TC->m_color = VECTOR3(0.1f,1.0f,0.1f);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    
+    e = m_world->GetEntity(m_lvlUpHandle1);
+    TC = e->GetComponent<TextComponent>();
+    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    e = m_world->GetEntity(m_lvlUpHandle2);
+    TC = e->GetComponent<TextComponent>();
+    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    e = m_world->GetEntity(m_lvlUpHandle3);
+    TC = e->GetComponent<TextComponent>();
+    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+}
+
+void GameScene::LevelUpMenu(float _dt)
+{
+    //CHECK FOR BUTTON TO CHOOSE STATS
+    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(49) == InputState::Pressed)
+    {
+        Entity* e = m_world->GetEntity(m_lvlUpHandle1);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->m_color = VECTOR3(0,0.5f,1);
+        
+        //TODO SPEED INCREASE
+        
+        m_levelUp--;
+    }
+    else if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(50) == InputState::Pressed)
+    {
+        //INCREASE SIZE
+        Entity* e = m_world->GetEntity(m_lvlUpHandle2);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->m_color = VECTOR3(0,0.5f,1);
+        
+        e = m_world->GetEntity(m_playerID);
+        
+        e->SetState(Entity::ENTITY_STATE::SOON_DEAD);
+        auto SC = m_world->GetEntity(m_playerID)->GetComponent<ScaleComponent>();
+        
+        VECTOR3 lastScale = SC->GetScale();
+        
+        auto PC = m_world->GetEntity(m_playerID)->GetComponent<PositionComponent>();
+        
+        VECTOR3 lastPos = PC->GetPosition();
+        
+        e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	e->GetComponent<PositionComponent>()->SetPosition(lastPos);
+	e->GetComponent<ScaleComponent>()->SetScale(lastScale + VECTOR3(2, 0, 0));
+	m_world->AddEntity(e);
+        
+        m_playerID = e->GetId();
+        
+        m_levelUp--;
+    }
+    else if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(51) == InputState::Pressed)
+    {
+        Entity* e = m_world->GetEntity(m_lvlUpHandle3);
+        auto TC = e->GetComponent<TextComponent>();  
+        TC->m_color = VECTOR3(0,0.5f,1);
+        
+        //TODO DAMAGE INCREASE
+        //m_world->GetEntities<BallComponent>();
+        
+        
+        m_levelUp--;
+    }
+    
+    //REMOVE LEVEL UP STRINGS
+    if(!m_levelUp)
+    {
+        Entity* e = m_world->GetEntity(m_lvlUpHandle0);
+        GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+        
+        e = m_world->GetEntity(m_lvlUpHandle1);
+        GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+        
+        e = m_world->GetEntity(m_lvlUpHandle2);
+        GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+        
+        e = m_world->GetEntity(m_lvlUpHandle3);
+        GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+    }
+    
+    m_world->UpdateTextOnly(_dt);
 }

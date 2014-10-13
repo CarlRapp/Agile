@@ -2,13 +2,16 @@
 subroutine void RenderPassType();
 subroutine uniform RenderPassType RenderPass;
 layout (location = 0) in vec3 VertexPosition;
-layout (location = 1) in vec3 VertexVelocity;
-layout (location = 2) in float VertexStartTime;
+layout (location = 1) in float pad1;
+layout (location = 2) in vec3 VertexVelocity;
+layout (location = 3) in float VertexStartTime;
 
 out vec3 Position; // To transform feedback
 out vec3 Velocity; // To transform feedback
 out float StartTime; // To transform feedback
+
 out float Transp; // To fragment shader
+
 
 uniform float Time; // Simulation time (elapsed time)
 uniform float DeltaTime; // Elapsed time between frames dt
@@ -63,7 +66,7 @@ void render()
 	if(Time >= VertexStartTime)
 	{
             sizeFactor = 1.0-(age/ParticleLifetime)*0.8;
-            Transp = 1.0 - age / ParticleLifetime;
+            Transp = 1.0 - smoothstep(0.0f, 1.0f, age / ParticleLifetime);
 	}
 
 	gl_PointSize = 200 * Size * sizeFactor /-eyep.z;

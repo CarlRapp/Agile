@@ -16,6 +16,8 @@ enum CollisionCategory {
 	PAD = 0x0004,
 	BLOCK = 0x0008,
 	BALL = 0x0010,
+	POWERUP = 0x0020,
+	KILLONTOUCH = 0x0040
 };
 
 class PhysicsSystem : public System<PhysicsSystem>
