@@ -159,7 +159,7 @@
     <ClCompile Include="ComponentSystem\System\PadCollisionSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="Storage\TextLoader.cpp">
+    <ClCompile Include="Storage\HighScoreLoader.cpp">
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
   </ItemGroup>
@@ -427,9 +427,11 @@
     <ClInclude Include="BoundingBox2D.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Storage\TextLoader.h" />
     <ClInclude Include="ComponentSystem\Component\PadCollisionComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage\HighScoreLoader.h">
+      <Filter>Source Files\Storage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
