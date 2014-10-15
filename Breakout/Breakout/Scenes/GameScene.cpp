@@ -222,7 +222,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
-	GraphicsManager::GetInstance()->SetSky("space");
+	GraphicsManager::GetInstance()->SetSky("space2");
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
