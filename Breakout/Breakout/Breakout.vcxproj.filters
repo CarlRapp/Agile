@@ -540,12 +540,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Graphics\DirectX\Shaders\BuildShadowMap.fx">
-      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Graphics\DirectX\Shaders\ClearGBuffer.fx">
-      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
-    </CustomBuild>
     <CustomBuild Include="Graphics\DirectX\Shaders\CombineFinal.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
@@ -553,9 +547,6 @@
       <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Graphics\DirectX\Shaders\ObjectDeferred.fx">
-      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
-    </CustomBuild>
-    <CustomBuild Include="Graphics\DirectX\Shaders\ShadowMap.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
     <CustomBuild Include="Graphics\DirectX\Shaders\TiledLightning.fx">

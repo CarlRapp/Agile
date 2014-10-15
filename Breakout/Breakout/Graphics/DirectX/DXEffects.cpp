@@ -253,36 +253,26 @@ SkyEffect::~SkyEffect()
 #pragma endregion
 
 #pragma region DXEffects
-
-BuildShadowMapEffect*  DXEffects::m_buildShadowMapFX = 0;
-ClearGBufferEffect*    DXEffects::m_clearGBufferFX = 0;
-CombineFinalEffect*	   DXEffects::m_combineFinalFX = 0;
-ObjectDeferredEffect*  DXEffects::m_objectDeferredFX = 0;
-TiledLightningEffect*  DXEffects::m_tiledLightningFX = 0;
-//ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
-RenderTextEffect*	   DXEffects::m_renderTextFX = 0;
+CombineFinalEffect*		DXEffects::m_combineFinalFX = 0;
+ObjectDeferredEffect*	DXEffects::m_objectDeferredFX = 0;
+TiledLightningEffect*	DXEffects::m_tiledLightningFX = 0;
+RenderTextEffect*		DXEffects::m_renderTextFX = 0;
 SkyEffect*				DXEffects::m_skyFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* _device)
 {
-	m_buildShadowMapFX = new BuildShadowMapEffect(_device, L"Graphics/DirectX/Shaders/BuildShadowMap.fxo");
-	m_clearGBufferFX = new ClearGBufferEffect(_device, L"Graphics/DirectX/Shaders/ClearGBuffer.fxo");
 	m_combineFinalFX = new CombineFinalEffect(_device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
 	m_objectDeferredFX = new ObjectDeferredEffect(_device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
 	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
-	//m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
 	m_renderTextFX = new RenderTextEffect(_device, L"Graphics/DirectX/Shaders/RenderText.fxo");
 	m_skyFX = new SkyEffect(_device, L"Graphics/DirectX/Shaders/Sky.fxo");
 }
 
 void DXEffects::DestroyAll()
 {
-	SafeDelete(m_buildShadowMapFX);
-	SafeDelete(m_clearGBufferFX);
 	SafeDelete(m_combineFinalFX);
 	SafeDelete(m_objectDeferredFX);
 	SafeDelete(m_tiledLightningFX);
-	//SafeDelete(m_shadowMapFX);
 	SafeDelete(m_renderTextFX);
 	SafeDelete(m_skyFX);
 }

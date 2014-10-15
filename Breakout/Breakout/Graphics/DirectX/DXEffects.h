@@ -334,13 +334,9 @@ public:
 	static void InitAll(ID3D11Device* _device);
 	static void DestroyAll();
 
-	static BuildShadowMapEffect* m_buildShadowMapFX;
-
-	static ClearGBufferEffect* m_clearGBufferFX;
 	static CombineFinalEffect* m_combineFinalFX;
 	static ObjectDeferredEffect* m_objectDeferredFX;
 	static TiledLightningEffect* m_tiledLightningFX;
-	//static ShadowMapEffect*	m_shadowMapFX;
 	static RenderTextEffect*	m_renderTextFX;
 	static SkyEffect*			m_skyFX;
 };
