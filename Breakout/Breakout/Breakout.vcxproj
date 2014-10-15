@@ -171,6 +171,7 @@
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\RotationComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScaleComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\WarpComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScoreComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h" />

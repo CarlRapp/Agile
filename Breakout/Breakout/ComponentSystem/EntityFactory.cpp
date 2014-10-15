@@ -2,6 +2,7 @@
 
 #include "EntityFactory.h"
 #include "Component/BallComponent.h"
+#include "Component/WarpComponent.h"
 
 
 EntityFactory* EntityFactory::m_entityFactory = 0;
@@ -49,6 +50,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
 		break;
 	}
 	case EntityFactory::STANDARD_BLOCK_GREEN:
@@ -70,6 +72,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
 		break;
 	}
 	case EntityFactory::STANDARD_BLOCK_BLUE:
@@ -93,6 +96,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
+		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
 		break;
 	}
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:
@@ -317,6 +321,21 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 			_entity->AddComponent<PositionComponent>();
 			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
 		break;
+		case EntityFactory::SCALE:
+		{
+			_entity->AddComponent<PositionComponent>();
+			_entity->AddComponent<RotationComponent>();
+			_entity->AddComponent<ScaleComponent>();
+			_entity->AddComponent<ModelComponent>();
+
+			auto warp = &_entity->AddComponent<WarpComponent>();
+			warp->m_warpState = WarpComponent::FIRST_WARP;
+			warp->m_finishedSize = 0.f;
+			warp->m_maxSize = 3.f;
+			warp->m_multiply = 50;
+			warp->m_newScale = VECTOR3(2, 2, 2);
+			break;
+		}
 		case EntityFactory::POWERUP:
 			break;
 	default:

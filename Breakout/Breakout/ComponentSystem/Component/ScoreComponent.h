@@ -52,7 +52,7 @@ struct ScoreComponent : Component<ScoreComponent>
         
         void SetNextLevelUpScore()
         {
-            m_nextLevel += 5;
+            m_nextLevel += 5000;
         }
 
 };
