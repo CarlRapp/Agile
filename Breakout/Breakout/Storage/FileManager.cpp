@@ -58,7 +58,7 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 
 	FindClose(dir);
 #else
-	DIR *dir;
+	/*DIR *dir;
 	class dirent *ent;
 	class stat st;
 
@@ -80,7 +80,7 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 
 		out.push_back(full_file_name);
 	}
-	closedir(dir);
+	closedir(dir);*/
 #endif
 }
 

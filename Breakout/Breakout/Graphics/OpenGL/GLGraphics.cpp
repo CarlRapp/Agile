@@ -114,7 +114,7 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_skyboxProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
 
-    m_skybox = new GLSkybox(GetFile("CubeMaps/space", TEXTURE_ROOT));
+    m_skybox = new GLSkybox(GetFile("CubeMaps/space2", TEXTURE_ROOT));
     m_skybox->CreateBuffers();
     
     glEnable(GL_BLEND);

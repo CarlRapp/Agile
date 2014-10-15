@@ -81,6 +81,6 @@ int main(int argc, char** argv)
 	SafeDelete(m_fileManager);
 	SafeDelete(m_EntityFactory);
 
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

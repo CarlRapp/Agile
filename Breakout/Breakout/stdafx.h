@@ -1,16 +1,7 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 
-#ifdef _DEBUG
-#ifndef DBG_NEW
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#define new DBG_NEW
-#endif
-#endif  // _DEBUG
 
 #include <string>
 
@@ -18,6 +9,7 @@
 #define LINUX
 #define OPENGL
 #include <unistd.h>
+#include <stdlib.h>
 
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
@@ -69,6 +61,16 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define HIGHSCORE_ROOT "../../Data/SaveData/"
 
 #include <Windows.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
 
 
 #endif

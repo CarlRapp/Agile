@@ -51,15 +51,15 @@ void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
 
-	//VECTOR3 pos = m_ICamera->GetPosition();
+	VECTOR3 pos = m_ICamera->GetPosition();
 
-	//test += _dt * 0.5f;
-	//pos.y = 20;
-	//pos.x = 0 + 100 * sinf(test);
-	//pos.z = 100 * cosf(test);
-
-	//m_ICamera->SetPosition(pos);
-	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
+//	test += _dt * 0.5f;
+//	pos.y = 20;
+//	pos.x = 0 + 100 * sinf(test);
+//	pos.z = 100 * cosf(test);
+//
+//	m_ICamera->SetPosition(pos);
+//	m_ICamera->SetLookAt(VECTOR3(0, 40, 0));
 }
 
 

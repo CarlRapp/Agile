@@ -9,7 +9,7 @@ std::vector<HighScore> HighScoreLoader::LoadHighScores(std::string _path)
 	std::ifstream file(_path);
 	if (!file)
 	{
-		printf("ERROR: Cannot open high score file: %s\n", _path);
+		printf("ERROR: Cannot open high score file: %s\n", _path.c_str());
 		return std::vector<HighScore>();
 	}
 	std::vector<HighScore> lines;
@@ -31,7 +31,7 @@ void HighScoreLoader::CreateHighScores(std::string _path, std::vector<HighScore>
 	std::ofstream file(_path);
 	if (!file)
 	{
-		printf("ERROR: Cannot open high score file: %s\n", _path);
+		printf("ERROR: Cannot open high score file: %s\n", _path.c_str());
 		return;
 	}
 	for (auto highScore : _data)
