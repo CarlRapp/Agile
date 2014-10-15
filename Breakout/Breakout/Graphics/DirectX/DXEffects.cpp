@@ -236,6 +236,22 @@ RenderTextEffect::~RenderTextEffect()
 }
 #pragma endregion
 
+#pragma region SkyEffect
+SkyEffect::SkyEffect(ID3D11Device* _device, const std::wstring& _filename)
+	: DXEffect(_device, _filename)
+{
+	m_skyTech = m_FX->GetTechniqueByName("SkyTech");
+
+	m_WVP = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
+
+	m_cubemap = m_FX->GetVariableByName("gCubeMap")->AsShaderResource();
+}
+
+SkyEffect::~SkyEffect()
+{
+}
+#pragma endregion
+
 #pragma region DXEffects
 
 BuildShadowMapEffect*  DXEffects::m_buildShadowMapFX = 0;
@@ -245,6 +261,7 @@ ObjectDeferredEffect*  DXEffects::m_objectDeferredFX = 0;
 TiledLightningEffect*  DXEffects::m_tiledLightningFX = 0;
 //ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
 RenderTextEffect*	   DXEffects::m_renderTextFX = 0;
+SkyEffect*				DXEffects::m_skyFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* _device)
 {
@@ -255,6 +272,7 @@ void DXEffects::InitAll(ID3D11Device* _device)
 	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
 	//m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
 	m_renderTextFX = new RenderTextEffect(_device, L"Graphics/DirectX/Shaders/RenderText.fxo");
+	m_skyFX = new SkyEffect(_device, L"Graphics/DirectX/Shaders/Sky.fxo");
 }
 
 void DXEffects::DestroyAll()
@@ -266,6 +284,7 @@ void DXEffects::DestroyAll()
 	SafeDelete(m_tiledLightningFX);
 	//SafeDelete(m_shadowMapFX);
 	SafeDelete(m_renderTextFX);
+	SafeDelete(m_skyFX);
 }
 
 #pragma endregion

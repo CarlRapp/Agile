@@ -35,6 +35,8 @@ DXGraphics::~DXGraphics(void)
 	ReleaseCOM(m_device);
 	ReleaseCOM(m_deviceContext);
 	ReleaseCOM(m_finalUAV);
+
+	delete(sky);
 }
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -80,6 +82,11 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	
 
 	m_textureManager.Init(m_device);
+
+	sky = new DXSky(m_device, "grasscube1024.dds", &m_textureManager);
+	//sky = new DXSky(m_device, "desertcube1024.dds", &m_textureManager);
+	//sky = new DXSky(m_device, "snowcube1024.dds", &m_textureManager);
+	//sky = new DXSky(m_device, "sunsetcube1024.dds", &m_textureManager);
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -292,7 +299,8 @@ void DXGraphics::Render(float _dt, ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), sky, _camera);
+
 
 	m_swapChain->Present(0, 0);
 

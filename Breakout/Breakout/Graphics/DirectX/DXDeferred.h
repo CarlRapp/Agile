@@ -24,6 +24,7 @@
 #include "DXStructuredBuffer.h"
 #include "DXLightHelper.h"
 #include "DXParticleSystem.h"
+#include "DXSky.h"
 
 class DXDeferred
 {
@@ -58,6 +59,8 @@ private:
 	DXStructuredBuffer<GPUPointLight>			*m_pointLightBuffer;
 	DXStructuredBuffer<GPUSpotLight>			*m_spotLightBuffer;
 
+
+
 	//TEST
 	void					RenderQuad(D3D11_VIEWPORT &_vp, ID3D11ShaderResourceView* _SRV, ID3DX11EffectTechnique* _tech);
 	ID3D11Buffer			*m_fullSceenQuad;
@@ -86,6 +89,8 @@ private:
 	void					RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts, ID3D11ShaderResourceView* _symbolsTex, int _numSymbols);
 	void					RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::String *_text);
 
+	void					RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sky, ICamera* _camera);
+
 public:
 
 	DXDeferred(void);
@@ -102,6 +107,7 @@ public:
 		map<int, DXText::String*>		&_texts,
 		ID3D11ShaderResourceView* _symbolsTex,
 		int _numSymbols,
+		DXSky* _sky,
 		ICamera* _camera);
 
 	void SetDirectionLightMap(map<int, DirectionalLight*> *map) { m_dirLights = map; }

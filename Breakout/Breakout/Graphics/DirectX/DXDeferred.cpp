@@ -780,6 +780,7 @@ void DXDeferred::Render(float _dt,
 	map<int, DXText::String*>		&_texts,
 	ID3D11ShaderResourceView* _symbolsTex,
 	int _numSymbols,
+	DXSky* _sky,
 	ICamera* _camera)
 {
 
@@ -792,8 +793,12 @@ void DXDeferred::Render(float _dt,
 
 
 	UpdateLights();
+
+
 	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
+
+	RenderSky(_renderTargetView, _sky, _camera);
 
 	RenderParticleSystems(_dt, _renderTargetView, _particleSystems, _camera);
 
@@ -807,6 +812,16 @@ void DXDeferred::Render(float _dt,
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
 }
+
+void DXDeferred::RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sky, ICamera* _camera)
+{
+
+	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
+	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
+	_sky->Draw(m_deviceContext, _camera);
+}
+
+
 void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts, ID3D11ShaderResourceView* _symbolsTex, int _numSymbols)
 {
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
