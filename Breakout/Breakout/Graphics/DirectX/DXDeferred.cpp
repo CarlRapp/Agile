@@ -389,7 +389,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 {
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
-	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
+	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -825,8 +825,6 @@ void DXDeferred::Render(float _dt,
 
 void DXDeferred::RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sky, ICamera* _camera)
 {
-
-	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
 	_sky->Draw(m_deviceContext, _camera);
 }
