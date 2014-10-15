@@ -59,6 +59,14 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11D.lib;Box2Dd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
+xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\Shaders\ParticleSystems" /Y /I</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -75,6 +83,14 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11.lib;Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
+xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\Shaders\ParticleSystems" /Y /I</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioManager.cpp" />

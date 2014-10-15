@@ -52,10 +52,20 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define WINDOWS
 #define DIRECTX
 
+#ifdef _DEBUG
 #define MODEL_ROOT "../../Data/Models/"
 #define AUDIO_ROOT "../../Data/Audio/"
 #define TEXTURE_ROOT "../../Data/Textures/"
 #define HIGHSCORE_ROOT "../../Data/SaveData/"
+#else
+#define MODEL_ROOT "/Data/Models/"
+#define AUDIO_ROOT "/Data/Audio/"
+#define TEXTURE_ROOT "/Data/Textures/"
+#define HIGHSCORE_ROOT "/Data/SaveData/"
+#endif
+
+#include <direct.h>
+#define GetCurrentDir _getcwd
 
 #include <Windows.h>
 
