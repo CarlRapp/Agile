@@ -157,7 +157,7 @@ void GameScene::Update(float _dt)
             //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
 	}
 
-        
+
         
 }
 
@@ -223,11 +223,13 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+	GraphicsManager::GetInstance()->SetSky("space");
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
 void GameScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->ClearSky();
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 	if (m_world)
@@ -404,8 +406,7 @@ void GameScene::Reset()
 	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
 	//m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
-	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
+        
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 
         //LEVEL UP STRINGS
@@ -453,9 +454,17 @@ void GameScene::Reset()
         
         m_playerID = e->GetId();
         
+        // CAMERA --------------------------------------------------------------------------
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
+	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
+        //----------------------------------------------------------------------------------
+        
         Update(0.01f);
         Render(0.01f);
+        
+        
         LevelUp(STATS_INIT,true);
+        
 }
 
 void GameScene::LevelUp(int _lvlUp, bool _addStrings)

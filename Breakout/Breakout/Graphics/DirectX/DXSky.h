@@ -12,14 +12,17 @@
 #include "DXTextureManager.h"
 #include "../ICamera.h"
 
+
+
 class DXSky
 {
 public:
-	DXSky(ID3D11Device* _device, std::string _cubemapFilename, DXTextureManager* _texMgr);
+	DXSky(ID3D11Device* _device);
 	~DXSky();
 
 	ID3D11ShaderResourceView* CubeMapSRV();
 
+	bool Load(std::string _cubemapFilename, DXTextureManager* _texMgr);
 	void Draw(ID3D11DeviceContext* _dc, ICamera* _camera);
 
 private:

@@ -46,6 +46,7 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
+	GM->SetSky("space");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();
@@ -82,6 +83,7 @@ void MainMenuScene::OnActive()
 }
 void MainMenuScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->ClearSky();
 	if (m_world)
 	{
 		//GraphicsManager::GetInstance()->Clear();
@@ -98,7 +100,7 @@ void MainMenuScene::OnInactive()
 		SafeDelete(m_world);
 	}
 }
-
+float test = 0.0f;
 void MainMenuScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
@@ -164,13 +166,24 @@ void MainMenuScene::Update(float _dt)
                 
 	}
         
+        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
+	test += _dt * 0.5f;
+	pos.y = 20;
+	pos.x = 0 + 100 * sinf(test);
+	pos.z = 100 * cosf(test);
+
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
+        
         if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
         {
             SceneManager::GetInstance()->ChangeScene<GameScene>();
         }
+        
+        
 }
 
-// Denna lär plockas bort sen
+// Denna lï¿½r plockas bort sen
 EntityFactory::EntityType MainMenuScene::RandomizeType(void)
 {
 	EntityFactory::EntityType type;
@@ -313,7 +326,8 @@ void MainMenuScene::CreatePlayField()
 	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
 	//m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
+        //CAMERA
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1,67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
 	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 }

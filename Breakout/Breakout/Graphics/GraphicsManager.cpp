@@ -46,20 +46,9 @@ void GraphicsManager::Render(float _dt)
 	m_IGraphics->Render(_dt, m_ICamera);
 }
 
-float test = 0.0f;
 void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
-
-	VECTOR3 pos = m_ICamera->GetPosition();
-
-//	test += _dt * 0.5f;
-//	pos.y = 20;
-//	pos.x = 0 + 100 * sinf(test);
-//	pos.z = 100 * cosf(test);
-//
-//	m_ICamera->SetPosition(pos);
-//	m_ICamera->SetLookAt(VECTOR3(0, 40, 0));
 }
 
 
@@ -132,4 +121,14 @@ void GraphicsManager::ShowMouseCursor(bool _value)
 void GraphicsManager::Clear(void)
 {
 	m_IGraphics->Clear();
+}
+
+void GraphicsManager::SetSky(std::string _name)
+{
+	m_IGraphics->SetSky(_name);
+}
+
+void GraphicsManager::ClearSky()
+{
+	m_IGraphics->ClearSky();
 }

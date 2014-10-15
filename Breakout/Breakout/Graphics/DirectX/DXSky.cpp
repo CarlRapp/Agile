@@ -10,19 +10,22 @@
 #include "DXEffects.h"
 
 
-DXSky::DXSky(ID3D11Device* _device, std::string _cubemapFilename, DXTextureManager* _texMgr)
+DXSky::DXSky(ID3D11Device* _device)
 {
-	m_cubeMapSRV = _texMgr->CreateTexture(_cubemapFilename);
-
 	GenerateSphear(_device);
-    
 }
 
 DXSky::~DXSky()
 {
 	ReleaseCOM(m_VB);
 	ReleaseCOM(m_IB);
-	ReleaseCOM(m_cubeMapSRV);
+}
+
+bool DXSky::Load(std::string _cubemapFilename, DXTextureManager* _texMgr)
+{
+	m_cubeMapSRV = _texMgr->CreateTexture("CubeMaps/" + _cubemapFilename + ".dds");
+
+	return m_cubeMapSRV;
 }
 
 ID3D11ShaderResourceView* DXSky::CubeMapSRV()
@@ -70,7 +73,7 @@ void DXSky::Draw(ID3D11DeviceContext* _dc, ICamera* _camera)
 
 void DXSky::GenerateSphear(ID3D11Device* _device)
 {
-	float radius = 30;
+	float radius = 1;
 	UINT stackCount = 30;
 	UINT sliceCount = 30;
 
