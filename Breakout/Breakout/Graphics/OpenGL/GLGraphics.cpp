@@ -650,21 +650,27 @@ void GLGraphics::RemoveTextObject(int _id)
         if(m_textObjects[i].id == _id)
         {
             //When textobject is removed from world, copy data to graphics to play out-effect
-            m_textObjects[i].textCopy   = *m_textObjects[i].text;
-            m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
-            m_textObjects[i].colorCopy  = *m_textObjects[i].color;
-            m_textObjects[i].xCopy      = *m_textObjects[i].x;
-            m_textObjects[i].yCopy      = *m_textObjects[i].y;
-            m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+            if(m_textObjects[i].text != NULL)
+            {
+                m_textObjects[i].textCopy   = *m_textObjects[i].text;
+                m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
+                m_textObjects[i].colorCopy  = *m_textObjects[i].color;
+                m_textObjects[i].xCopy      = *m_textObjects[i].x;
+                m_textObjects[i].yCopy      = *m_textObjects[i].y;
+                m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+
+                m_textObjects[i].text   =NULL;
+                m_textObjects[i].scale  =NULL;
+                m_textObjects[i].color  =NULL;
+                m_textObjects[i].x      =NULL;
+                m_textObjects[i].y      =NULL;
+                m_textObjects[i].effect =NULL;
+
+                m_textObjects[i].kill = true;
+            }
+            else
+                m_textObjects.erase(m_textObjects.begin() +(i));
             
-            m_textObjects[i].text   =NULL;
-            m_textObjects[i].scale  =NULL;
-            m_textObjects[i].color  =NULL;
-            m_textObjects[i].x      =NULL;
-            m_textObjects[i].y      =NULL;
-            m_textObjects[i].effect =NULL;
-            
-            m_textObjects[i].kill = true;
             break;
         }
     }

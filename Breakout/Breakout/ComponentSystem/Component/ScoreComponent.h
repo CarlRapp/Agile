@@ -8,7 +8,7 @@ struct ScoreComponent : Component<ScoreComponent>
 	int m_score=0;
 	bool wasHit=false; // temp
         std::string m_scoreStr = "SCORE :";
-        int m_nextLevel = 10;
+        int m_nextLevel = 5;
 
 	ScoreComponent()
 	{
@@ -52,7 +52,7 @@ struct ScoreComponent : Component<ScoreComponent>
         
         void SetNextLevelUpScore()
         {
-            m_nextLevel *= 2;
+            m_nextLevel += 5;
         }
 
 };

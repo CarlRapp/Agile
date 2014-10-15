@@ -10,6 +10,15 @@
 #include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
+#include "../ComponentSystem/Component/BallComponent.h"
+
+#define STATS_INC_SPEED     5
+#define STATS_INC_SIZE      1
+#define STATS_INC_DAMAGE    1
+#define STATS_LIM_SPEED     200
+#define STATS_LIM_SIZE      50
+#define STATS_LIM_DAMAGE    500
+#define STATS_INIT          30
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -266,18 +275,7 @@ void GameScene::Reset()
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
-	/*e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
-	m_world->AddEntity(e);*/
-
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(10, 1, 1));
-	m_world->AddEntity(e);
         
-        m_playerID = e->GetId();
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
@@ -327,7 +325,7 @@ void GameScene::Reset()
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(49.5f + e->GetComponent<ScaleComponent>()->GetScale().x * 0.5f, 0, 0));
 	m_world->AddEntity(e);
 
-	e = m_world->CreateEntity();	
+        e = m_world->CreateEntity();	
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLAYER);
 	m_world->AddEntity(e);
 
@@ -397,61 +395,180 @@ void GameScene::Reset()
         TC->Initialize("DAMAGE", 0.5f-(6*8.0f)/1280.0f*1.5f, 0.4f, 3.f, VECTOR3(0.7f,0.1f,0), 10.0f);
         m_lvlUpHandle3 = e->GetId();
         m_world->AddEntity(e);
+        
+        Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(player->GetComponent<PlayerComponent>()->m_size, 1, 1));
+	m_world->AddEntity(e);
+        
+        m_playerID = e->GetId();
+        
+        Update(0.01f);
+        Render(0.01f);
+        LevelUp(STATS_INIT,true);
 }
 
-void GameScene::LevelUp(int _lvlUp)
+void GameScene::LevelUp(int _lvlUp, bool _addStrings)
 {
     m_levelUp = _lvlUp;
+    
+    int checkMaxLevel = 0;
     
     Entity* e = m_world->GetEntity(m_lvlUpHandle0);
     auto TC = e->GetComponent<TextComponent>();
     TC->m_color = VECTOR3(0.1f,1.0f,0.1f);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
     
+    std::string add = "LEVEL UP - SELECT STATS (";
+    add += std::to_string(m_levelUp);
+    add += ")";
+    
+    TC->m_x = 0.5f-(add.size()*8.0f)/1280.0f*TC->m_scale*0.5;
+    TC->SetText(add);
+    
+    if(_addStrings)
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
     
     e = m_world->GetEntity(m_lvlUpHandle1);
     TC = e->GetComponent<TextComponent>();
-    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+    if(player->GetComponent<PlayerComponent>()->m_maxSpeedBall >= STATS_LIM_SPEED)
+    {
+        TC->m_color = VECTOR3(1.f,1.f,0.0f);
+        checkMaxLevel++;
+    }
+    else
+        TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+        
+    add = "<1> - SPEED - (";
+    add += std::to_string((int)player->GetComponent<PlayerComponent>()->m_maxSpeedBall);
+    add += "/";
+    add += std::to_string(STATS_LIM_SPEED);
+    add += ")";
+            
+    TC->m_x = 0.5f-(add.size()*8.0f)/1280.0f*TC->m_scale*0.5;
+    TC->SetText(add);
+    if(_addStrings)
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
     
     e = m_world->GetEntity(m_lvlUpHandle2);
     TC = e->GetComponent<TextComponent>();
-    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    if(m_world->GetEntity(m_playerID)->GetComponent<ScaleComponent>()->GetScale().x >= STATS_LIM_SIZE)
+    {
+        TC->m_color = VECTOR3(1.f,1.f,0.0f);
+        checkMaxLevel++;
+    }
+    else
+        TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+    
+    auto SC = m_world->GetEntity(m_playerID)->GetComponent<ScaleComponent>();
+    
+    add = "<2> - SIZE - (";
+    add += std::to_string((int)SC->GetScale().x);
+    add += "/";
+    add += std::to_string(STATS_LIM_SIZE);
+    add += ")";
+            
+    TC->m_x = 0.5f-(add.size()*8.0f)/1280.0f*TC->m_scale*0.5;
+    TC->SetText(add);
+    if(_addStrings)
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
     
     e = m_world->GetEntity(m_lvlUpHandle3);
     TC = e->GetComponent<TextComponent>();
-    TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
-    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    if(player->GetComponent<PlayerComponent>()->m_damage >= STATS_LIM_DAMAGE)
+    {
+        TC->m_color = VECTOR3(1.f,1.f,0.0f);
+        checkMaxLevel++;
+    }
+    else
+        TC->m_color = VECTOR3(1.0f,1.0f,1.0f);
+    
+    player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+    add = "<3> - DAMAGE - (";
+    add += std::to_string((int)player->GetComponent<PlayerComponent>()->m_damage);
+    add += "/";
+    add += std::to_string(STATS_LIM_DAMAGE);
+    add += ")";
+    
+    TC->m_x = 0.5f-(add.size()*8.0f)/1280.0f*TC->m_scale*0.5;
+    TC->SetText(add);
+    
+    if(_addStrings)
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    if(checkMaxLevel >= 3)
+    {
+        m_playerIsMaxLevel = true;
+    }
 }
 
 void GameScene::LevelUpMenu(float _dt)
 {
+    if(m_playerIsMaxLevel)
+        m_levelUp = 0;
+    
     //CHECK FOR BUTTON TO CHOOSE STATS
     if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(49) == InputState::Pressed)
     {
+        //INCREASE SPEED
+        Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+        if(player->GetComponent<PlayerComponent>()->m_maxSpeedBall >= STATS_LIM_SPEED)
+        {
+            return;
+        }
+        
         Entity* e = m_world->GetEntity(m_lvlUpHandle1);
         auto TC = e->GetComponent<TextComponent>();
         TC->m_color = VECTOR3(0,0.5f,1);
         
-        //TODO SPEED INCREASE
+        player->GetComponent<PlayerComponent>()->m_maxSpeedBall += 1;
+        player->GetComponent<PlayerComponent>()->m_minSpeedBall += 1;
+        
+        float maxSpeed = player->GetComponent<PlayerComponent>()->m_maxSpeedBall;
+        float minSpeed = player->GetComponent<PlayerComponent>()->m_minSpeedBall;
+        std::vector<Entity*>* ballList = m_world->GetEntities<BallComponent>();
+        if(ballList)
+            for (int n = 0; n != ballList->size(); ++n)
+            {
+                Entity* ball = ballList->at(n);
+                if(ball->GetState() == Entity::ALIVE)
+                {
+                    ball->GetComponent<CollisionStatsComponent>()->SetMaxSpeed(maxSpeed);
+                    ball->GetComponent<CollisionStatsComponent>()->SetMinSpeed(minSpeed);
+                }
+            }
+        
         
         m_levelUp--;
     }
     else if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(50) == InputState::Pressed)
     {
         //INCREASE SIZE
+        
+        if(m_world->GetEntity(m_playerID)->GetComponent<ScaleComponent>()->GetScale().x >= STATS_LIM_SIZE)
+        {
+            return;
+        }
+        
         Entity* e = m_world->GetEntity(m_lvlUpHandle2);
         auto TC = e->GetComponent<TextComponent>();
         TC->m_color = VECTOR3(0,0.5f,1);
         
         e = m_world->GetEntity(m_playerID);
         
+        Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        player->GetComponent<PlayerComponent>()->m_size += STATS_INC_SIZE;
+        
         e->SetState(Entity::ENTITY_STATE::SOON_DEAD);
-        auto SC = m_world->GetEntity(m_playerID)->GetComponent<ScaleComponent>();
-        
-        VECTOR3 lastScale = SC->GetScale();
-        
+                
         auto PC = m_world->GetEntity(m_playerID)->GetComponent<PositionComponent>();
         
         VECTOR3 lastPos = PC->GetPosition();
@@ -459,7 +576,7 @@ void GameScene::LevelUpMenu(float _dt)
         e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(lastPos);
-	e->GetComponent<ScaleComponent>()->SetScale(lastScale + VECTOR3(2, 0, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(player->GetComponent<PlayerComponent>()->m_size, 1, 1));
 	m_world->AddEntity(e);
         
         m_playerID = e->GetId();
@@ -468,32 +585,62 @@ void GameScene::LevelUpMenu(float _dt)
     }
     else if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(51) == InputState::Pressed)
     {
+        //INCREASE DAMAGE
+        Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+        if(player->GetComponent<PlayerComponent>()->m_damage >= STATS_LIM_DAMAGE)
+        {
+            return;
+        }
+        
         Entity* e = m_world->GetEntity(m_lvlUpHandle3);
         auto TC = e->GetComponent<TextComponent>();  
         TC->m_color = VECTOR3(0,0.5f,1);
         
-        //TODO DAMAGE INCREASE
-        //m_world->GetEntities<BallComponent>();
+        player->GetComponent<PlayerComponent>()->m_damage += 1;
         
+        float damage = player->GetComponent<PlayerComponent>()->m_damage;
+        
+        std::vector<Entity*>* ballList = m_world->GetEntities<BallComponent>();
+        if(ballList)
+            for (int n = 0; n != ballList->size(); ++n)
+            {
+                Entity* ball = ballList->at(n);
+                if(ball->GetState() == Entity::ALIVE)
+                {
+                   ball->GetComponent<DamageComponent>()->m_damage = damage;
+                }
+            }
         
         m_levelUp--;
     }
+    else if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
+        m_levelUp = 0;
+    else if(!m_playerIsMaxLevel)
+    {
+        m_world->UpdateTextOnly(_dt);
+        return;
+    }
     
-    //REMOVE LEVEL UP STRINGS
+    //REMOVE LEVEL UP STRINGS IF NO MORE LEVELS
     if(!m_levelUp)
     {
         Entity* e = m_world->GetEntity(m_lvlUpHandle0);
         GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-        
+
         e = m_world->GetEntity(m_lvlUpHandle1);
         GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-        
+
         e = m_world->GetEntity(m_lvlUpHandle2);
         GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-        
+
         e = m_world->GetEntity(m_lvlUpHandle3);
         GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
     }
+    else
+         LevelUp(m_levelUp,false);
+
+    
     
     m_world->UpdateTextOnly(_dt);
 }
