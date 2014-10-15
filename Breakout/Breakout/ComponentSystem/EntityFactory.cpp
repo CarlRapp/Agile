@@ -125,13 +125,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<PadCollisionComponent>();
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Pad_Bounce.wav";
 		break;
 	case EntityFactory::BALL:
 		_entity->AddComponent<PositionComponent>();
@@ -156,7 +156,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(50.0f);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall_Bounce.wav";
 		break;
 	case EntityFactory::H_WALL:
 		_entity->AddComponent<PositionComponent>();
@@ -165,7 +165,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		//_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
 		PhysicsSystem::GenerateBody(H_WALL, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall_Bounce.wav";
 		break;
 	case EntityFactory::INVISIBLE_WALL:
 		_entity->AddComponent<PositionComponent>();
@@ -173,7 +173,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DamageComponent>(10);
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Invisible_Wall.wav";
+		//_entity->AddComponent<DamageComponent>(100);
 		break;
 	case EntityFactory::PROJECTILE:
 		_entity->AddComponent<PositionComponent>();

@@ -352,9 +352,6 @@
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\BounceComponent.h">
-      <Filter>Source Files\ComponentSystem\Component</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
