@@ -326,17 +326,17 @@ check_gl_error();
 
         int location = glGetUniformLocation(m_computeProgram, "Models[0].pos");
         if (location >= 0)
-            glUniform3fv(location, m_models[index]->vertices/3, m_models[index]->vertexArray);
+            glUniform3fv(location, 132, m_models[index]->vertexArray);
         check_gl_error();
         
         location = glGetUniformLocation(m_computeProgram, "Models[0].normal");
         if (location >= 0)
-            glUniform3fv(location, m_models[index]->vertices/3, m_models[index]->normalArray);
+            glUniform3fv(location, 132, m_models[index]->normalArray);
         check_gl_error();
         
         location = glGetUniformLocation(m_computeProgram, "Models[0].texCoord");
         if (location >= 0)
-            glUniform2fv(location, m_models[index]->vertices/3, m_models[index]->texCoordArray);
+            glUniform2fv(location, 132, m_models[index]->texCoordArray);
         check_gl_error();
         //SetUniformV(m_computeProgram, positionStr, m_models[index]->vertexArray);
 
@@ -600,37 +600,34 @@ void GLGraphics::Free() {
 float t;
 
 void GLGraphics::Render(ICamera* _camera) {
-    glClearColor(0.4, 0.4, 0.8, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(m_program);
 
-    glViewport(0, 0, m_screenWidth, m_screenHeight);
+    glViewport(0, 0, m_screenWidth, m_screenHeight-16.0);
 
     UpdateLights();
 
     CameraToRender(_camera);
 
-    //RenderInstanced();
-
-    //RenderStandard();
-
     RenderCompute();
 
     //Render2D();
 
-
-    glUseProgram(0);
-
-    for (int i = 0; i < m_textObjects.size(); i++) {
+    for (int i = 0; i < m_textObjects.size(); i++) 
+    {
         RenderText(m_textObjects[i].text, m_textObjects[i].scale, m_textObjects[i].color, m_textObjects[i].x, m_textObjects[i].y);
     }
 
     SDL_GL_SwapBuffers();
+    
+
 }
 
-void GLGraphics::RenderText(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y) {
+void GLGraphics::RenderText(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y) 
+{
     GLvoid* v;
 
     std::string text = (*_text);
@@ -647,7 +644,8 @@ void GLGraphics::RenderText(std::string* _text, float* _scale, unsigned int* _co
     }
 }
 
-void GLGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y) {
+void GLGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* _color, int* _x, int* _y) 
+{
     TextObject textObject;
     textObject.text = _text;
     textObject.scale = _scale;
@@ -713,16 +711,16 @@ void GLGraphics::Render2D() {
     glActiveTexture(0);
 }
 
-int GLGraphics::RenderStandard() {
-    //    for(int i=0;i<m_models.size();i++)
-    //    {
-    //        glBindVertexArray(m_models[i]->bufferVAOID);
-    //
-    //        
-    //        glDrawArrays(GL_TRIANGLES,0,m_models[i]->vertices);
-    //    
-    //        glBindVertexArray(0);
-    //    }
+int GLGraphics::RenderStandard() 
+{
+//    for(int i=0;i<m_models.size();i++)
+//    {
+//        glBindVertexArray(m_models[i]->bufferVAOID);
+//
+//        glDrawArrays(GL_TRIANGLES,0,m_models[i]->vertices);
+//
+//        glBindVertexArray(0);
+//    }
 }
 
 int GLGraphics::RenderInstanced() {
@@ -827,13 +825,14 @@ void GLGraphics::UpdateLights() {
     }
 }
 
-void GLGraphics::CameraToRender(ICamera* _camera) {
+void GLGraphics::CameraToRender(ICamera* _camera) 
+{
+    
     glm::mat4* temp1 = _camera->GetProjection();
-
     GLint projection = glGetUniformLocation(m_computeProgram, "m_matProj");
     glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
+    
     temp1 = _camera->GetView();
-
     GLint view = glGetUniformLocation(m_computeProgram, "m_matView");
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
 }

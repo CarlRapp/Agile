@@ -48,14 +48,7 @@ void GameScene::Initialize()
 
 	counter = 0;
 
-//        //FPS COUNTER
-//        e = m_world->CreateEntity();
-//        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
-//        auto TC = e->GetComponent<TextComponent>();
-//        TC->Initialize("FPS: ",2.f,0x1904 ,10,10);
-//        m_fpsCounterID = e->GetId();
-//        m_world->AddEntity(e);
-//        GraphicsManager::GetInstance()->AddTextObject(&TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
+
 //        
 //	m_x = 0;
 //	m_y = 0;
@@ -72,6 +65,7 @@ void GameScene::LoadContent()
 	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
+float asdf = 0;
 void GameScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
@@ -91,46 +85,44 @@ void GameScene::Update(float _dt)
 	}
 	if (m_isPaused)
 	{
-		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
-			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+            exit(0);
+		//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+		//	SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 
 		return;
 	}
 		
 
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 500);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(256, 256);
         
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
-		this->Reset();
-
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('c') == InputState::Down)
-		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
-		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(-50 * _dt, 0, 0));
+		GraphicsManager::GetInstance()->GetICamera()->Strafe(-10 *_dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('d') == InputState::Down)
-		GraphicsManager::GetInstance()->GetICamera()->Move(VECTOR3(50 * _dt, 0, 0));
+		GraphicsManager::GetInstance()->GetICamera()->Strafe(10 *_dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('w') == InputState::Down)
-		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
+		GraphicsManager::GetInstance()->GetICamera()->Move(-10 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
-		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
+		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 
-	counter += _dt;
-	if (counter > .5f)
-	{
-		Entity* e;
-		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		m_world->AddEntity(e);
-		counter = 0;
-	}
+        asdf += _dt*0.01f;
+        
+        if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdX())
+            GraphicsManager::GetInstance()->GetICamera()->RotateY(InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdX()*_dt*15);
+        if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdY())
+            GraphicsManager::GetInstance()->GetICamera()->Pitch(-InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdY()*_dt*15);
+        
+//	counter += _dt;
+//	if (counter > .5f)
+//	{
+//		Entity* e;
+//		e = m_world->CreateEntity();
+//		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
+//		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+//		m_world->AddEntity(e);
+//		counter = 0;
+//	}
 
 	m_world->Update(_dt);
-
-	if (!m_world->IsAlive())
-	{
-		SceneManager::GetInstance()->ChangeScene<GameOverScene>();
-	}
 
         UpdateFPS(_dt);
         
@@ -138,16 +130,16 @@ void GameScene::Update(float _dt)
 
 void GameScene::UpdateFPS(float _dt)
 {
-  //      
-  //      float fps = 1.0f / _dt;
-  //      std::string fpsString= "FPS: ";
-  //      fpsString.append(std::to_string(fps));
-  //      fpsString += " DT: ";
-  //      fpsString.append(std::to_string(_dt));
-  //      Entity* e = m_world->GetEntity(m_fpsCounterID);
-  //      auto TC = e->GetComponent<TextComponent>();
-		//if(TC)
-		//	TC->SetText(fpsString);
+        
+        float fps = 1.0f / _dt;
+        std::string fpsString= "FPS: ";
+        fpsString.append(std::to_string((int)fps));
+        fpsString += " DT: ";
+        fpsString.append(std::to_string(_dt));
+        Entity* e = m_world->GetEntity(m_fpsCounterID);
+        auto TC = e->GetComponent<TextComponent>();
+	if(TC)
+	TC->SetText(fpsString);
 }
 
 void GameScene::Render(float _dt)
@@ -181,7 +173,7 @@ void GameScene::Reset()
 
 	/*	New Implementation	*/
 	Entity* e;
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BLOCK);
@@ -195,27 +187,27 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 20));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(20, 20, 0));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.2f, 0.2f, 0.7f));
 	m_world->AddEntity(e);
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
-	m_world->AddEntity(e);
+//	e = m_world->CreateEntity();
+//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
+//	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+//	m_world->AddEntity(e);
+//
+//	e = m_world->CreateEntity();
+//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(20, 0, 0));
+//	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+//	m_world->AddEntity(e);
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, 0, 0));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
-	m_world->AddEntity(e);
-
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(50, 0, 0));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
-	m_world->AddEntity(e);
+//	e = m_world->CreateEntity();
+//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(50, 0, 0));
+//	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+//	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
@@ -249,8 +241,17 @@ void GameScene::Reset()
 	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(100, 60, 1));
 	m_world->AddEntity(e);
 
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
-	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(500, 300);
+	//GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
+	//GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));
+	//InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(12, 12);
+        
+        //        //FPS COUNTER
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->Initialize("FPS: ",2.f,0x1904 ,0,0);
+        m_fpsCounterID = e->GetId();
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(&TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y);
 
 }

@@ -32,9 +32,9 @@ bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, Displa
 {
 
 	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
-	m_ICamera->SetPosition(VECTOR3(0, 0, 10));
+	//m_ICamera->SetPosition(VECTOR3(0, 0, 10));
 
-	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
+	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 
 	m_ICamera->SetViewPort(0, 0, _width, _height);
 	return m_IGraphics->InitWindow(_x, _y, _width, _height, _displayMode);
@@ -50,15 +50,8 @@ float test = 0.0f;
 void GraphicsManager::Update()
 {
 	m_IGraphics->Update();
-
-	VECTOR3 pos = m_ICamera->GetPosition();
-	//pos.z += dt * 10.0f;
-
-	test += 0.001f * 0.4;
         
-	m_ICamera->Roll(sin(test));
-        //m_ICamera->RotateY(test);
-        //m_ICamera->Pitch(test);
+
 }
 
 
