@@ -165,6 +165,15 @@
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXSky.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Storage\HighScoreLoader.cpp">
+      <Filter>Source Files\Storage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -443,6 +452,15 @@
     <ClInclude Include="ComponentSystem\Component\BallComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Storage\HighScoreLoader.h">
+      <Filter>Source Files\Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXSky.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -554,6 +572,9 @@
     </CustomBuild>
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Graphics\DirectX\Shaders\Sky.fx">
+      <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

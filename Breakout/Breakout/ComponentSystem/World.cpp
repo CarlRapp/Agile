@@ -177,6 +177,19 @@ void World::KillEntity(Entity* _e)
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
 
+	std::vector<IComponent*>* componentList = _e->GetComponents();
+	for (int i = 0; i < componentList->size(); ++i)
+	{
+		IComponent* tComponent = componentList->at(i);
+		std::vector<Entity*>* tList = m_componentEntityPool[tComponent->m_ID];
+		for (int i = 0; i < tList->size(); ++i)
+			if (tList->at(i)->GetId() == _e->GetId())
+			{
+				tList->erase(tList->begin() + i);
+				break;
+			}
+	}
+
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);
 	_e->RemoveAllComponents();

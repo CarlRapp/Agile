@@ -10,6 +10,7 @@
 #include "DX2DTextureInstance.h"
 #include "DXParticleSystem.h"
 #include "DXText.h"
+#include "DXSky.h"
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
@@ -41,7 +42,7 @@ private:
 	map<int, DXParticleSystem*>			m_particleSystems;
 	map<int, DXText::String*>			m_texts;
 
-
+	DXSky *sky;
 
 	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;

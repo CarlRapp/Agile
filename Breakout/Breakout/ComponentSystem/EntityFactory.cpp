@@ -217,13 +217,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "pad";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<PadCollisionComponent>();
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Kettle-Drum-1.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Pad_Bounce.wav";
 		break;
 	case EntityFactory::BALL:
 		bodyDef = new b2BodyDef();
@@ -237,8 +237,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<CollisionStatsComponent>(50.0f, 100.0f, 40.0f, 20.0f);
 		_entity->AddComponent<DamageComponent>(10);
-		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<LoseLifeComponent>();
+		//_entity->AddComponent<HealthComponent>(10);
+		//_entity->AddComponent<LoseLifeComponent>();
 		_entity->AddComponent<BallComponent>();
 		_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
 		break;
@@ -252,7 +252,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(50.0f);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall_Bounce.wav";
 		break;
 	case EntityFactory::H_WALL:
 		bodyDef = new b2BodyDef();
@@ -261,9 +261,9 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		//_entity->AddComponent<ModelComponent>().m_modelPath = "wallH";
-		PhysicsSystem::GenerateBody(INVISIBLE_WALL, bodyDef, fixDefs);
+		PhysicsSystem::GenerateBody(H_WALL, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall.wav";
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Wall_Bounce.wav";
 		break;
 	case EntityFactory::INVISIBLE_WALL:
 		bodyDef = new b2BodyDef();
@@ -273,7 +273,8 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<ScaleComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DamageComponent>(10);
+		_entity->AddComponent<AudioComponent>().m_audioPath = "Invisible_Wall.wav";
+		//_entity->AddComponent<DamageComponent>(100);
 		break;
 	case EntityFactory::PROJECTILE:
 		bodyDef = new b2BodyDef();
@@ -317,7 +318,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
 		break;
 		case EntityFactory::POWERUP:
-			_entity->AddComponent<PositionComponent>();
 			break;
 	default:
 		break;

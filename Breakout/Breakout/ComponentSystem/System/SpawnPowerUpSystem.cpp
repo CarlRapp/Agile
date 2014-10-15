@@ -3,6 +3,7 @@
 #include "../World.h"
 #include "../Component/BlockComponent.h"
 #include "../Component/MultiBallComponent.h"
+#include "../../Audio/AudioManager.h"
 
 SpawnPowerUpSystem::SpawnPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent>(), _world)
@@ -22,17 +23,14 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 {
 	int spawnPowerUp = rand() % 100;
 
-	printf("Spawn: %d\n", spawnPowerUp);
-
-	if (spawnPowerUp > 50)
+	if (spawnPowerUp < 10)
 	{
 		Entity* _newPowerUp = CreatePowerUp(MULTIBALL);
-		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
-		
+		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
+		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 5, 0);
 		m_world->AddEntity(_newPowerUp);
-		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(0, -50, 0);
+		AudioManager::GetInstance()->PlaySoundEffect("PowerUp_Spawn.wav");
 	}
-	
 }
 
 Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
@@ -46,7 +44,6 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 	_entity->AddComponent<ScaleComponent>();
 	_entity->AddComponent<ModelComponent>().m_modelPath = "sphere";
 	_entity->AddComponent<VelocityComponent>();
-	
 	PhysicsSystem::GenerateBody(EntityFactory::POWERUP, bodyDef, fixDefs);
 	_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 	_entity->AddComponent<CollisionStatsComponent>(40.0f, 60.0f, 40.0f, 20.0f);

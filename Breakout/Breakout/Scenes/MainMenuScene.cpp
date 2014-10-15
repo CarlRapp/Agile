@@ -84,6 +84,7 @@ void MainMenuScene::OnInactive()
 {
 	if (m_world)
 	{
+		//GraphicsManager::GetInstance()->Clear();
 		EntityMap::iterator eIT;
 		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
 		{
@@ -94,7 +95,6 @@ void MainMenuScene::OnInactive()
 			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}
-		GraphicsManager::GetInstance()->Clear();
 		SafeDelete(m_world);
 	}
 }
@@ -278,6 +278,7 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
+	e->RemoveComponent<AudioComponent>();
 	e->RemoveComponent<DamageComponent>();
 	m_world->AddEntity(e);
 
@@ -302,11 +303,11 @@ void MainMenuScene::CreatePlayField()
 	//PLAYER SCORE <<
 
 	//	Background
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
+	//m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));

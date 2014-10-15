@@ -22,6 +22,7 @@
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
 #define TEXTURE_ROOT "/../../Data/Textures/"
+#define HIGHSCORE_ROOT "/../../Data/SaveData/"
 
 typedef signed char         INT8, *PINT8;
 typedef signed short        INT16, *PINT16;
@@ -65,6 +66,7 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define MODEL_ROOT "../../Data/Models/"
 #define AUDIO_ROOT "../../Data/Audio/"
 #define TEXTURE_ROOT "../../Data/Textures/"
+#define HIGHSCORE_ROOT "../../Data/SaveData/"
 
 #include <Windows.h>
 
