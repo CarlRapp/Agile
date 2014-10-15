@@ -101,7 +101,7 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 
 	m_textureManager.Init(m_device);
 
-	sky = new DXSky(m_device, "grasscube1024.dds", &m_textureManager);
+	sky = new DXSky(m_device, "SKYBOX.dds", &m_textureManager);
 	//sky = new DXSky(m_device, "desertcube1024.dds", &m_textureManager);
 	//sky = new DXSky(m_device, "snowcube1024.dds", &m_textureManager);
 	//sky = new DXSky(m_device, "sunsetcube1024.dds", &m_textureManager);

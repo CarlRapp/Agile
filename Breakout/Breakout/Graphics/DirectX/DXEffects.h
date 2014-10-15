@@ -19,7 +19,12 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#ifdef _DEBUG
 #pragma comment(lib, "Effects11D.lib")
+#else
+#pragma comment(lib, "Effects11.lib")
+#endif
+
 
 #pragma region DXEffect
 class DXEffect
@@ -334,13 +339,9 @@ public:
 	static void InitAll(ID3D11Device* _device);
 	static void DestroyAll();
 
-	static BuildShadowMapEffect* m_buildShadowMapFX;
-
-	static ClearGBufferEffect* m_clearGBufferFX;
 	static CombineFinalEffect* m_combineFinalFX;
 	static ObjectDeferredEffect* m_objectDeferredFX;
 	static TiledLightningEffect* m_tiledLightningFX;
-	//static ShadowMapEffect*	m_shadowMapFX;
 	static RenderTextEffect*	m_renderTextFX;
 	static SkyEffect*			m_skyFX;
 };

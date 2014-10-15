@@ -19,7 +19,11 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#ifdef _DEBUG
 #pragma comment(lib, "Effects11D.lib")
+#else
+#pragma comment(lib, "Effects11.lib")
+#endif
 
 namespace DXVertex
 {
