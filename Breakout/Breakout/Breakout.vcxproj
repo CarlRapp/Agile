@@ -45,8 +45,8 @@
     <ExcludePath>$(ExcludePath)</ExcludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\GL;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\glm;C:\Users\GetName\Documents\GitHub Carl\Agile\External\include\SDL2;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\GetName\Documents\GitHub Carl\Agile\External\lib\SDL2\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)/../External/include/GL;$(SolutionDir)/../External/include/glm;$(SolutionDir)/../External/include/SDL2;$(SolutionDir)/../External/D3D/Include;$(SolutionDir)/../External/include/;$(SolutionDir)/../External/include/Box2D;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/../External/lib/SDL2/x86;$(SolutionDir)/../External/D3D/Lib/x86;$(SolutionDir)/../External/lib/Box2D;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -72,6 +72,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11.lib;Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -131,6 +133,7 @@
     <ClCompile Include="Scenes\MainMenuScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Storage\FileManager.cpp" />
+    <ClCompile Include="Storage\HighScoreLoader.cpp" />
     <ClCompile Include="Storage\ModelData.cpp" />
     <ClCompile Include="Storage\ModelLoader.cpp" />
     <ClCompile Include="Storage\MusicLoader.cpp" />
@@ -231,6 +234,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Storage\FileManager.h" />
+    <ClInclude Include="Storage\HighScoreLoader.h" />
     <ClInclude Include="Storage\ModelData.h" />
     <ClInclude Include="Storage\ModelLoader.h" />
     <ClInclude Include="Storage\MusicLoader.h" />

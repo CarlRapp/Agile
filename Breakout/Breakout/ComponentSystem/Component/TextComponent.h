@@ -35,18 +35,18 @@ public:
             m_effectSpeed = 20.0f;
         }
 
-		void Initialize(std::string _text, float _x, float _y, float _scale, VECTOR3 _color, float _effect)
-		{
-			m_textData = _text;
-			m_text = &m_textData,
-			m_scale = _scale;
-			m_color = _color;
-			m_x = _x;
-			m_y = _y;
-			m_effect = _effect;
-			m_effectStop = 1.0f;
-			m_effectSpeed = 20.0f;
-		}
+        void Initialize(std::string _text, float _x, float _y, float _scale, VECTOR3 _color, float _effect)
+        {
+                m_textData = _text;
+                m_text = &m_textData,
+                m_scale = _scale;
+                m_color = _color;
+                m_x = _x;
+                m_y = _y;
+                m_effect = _effect;
+                m_effectStop = 1.0f;
+                m_effectSpeed = 20.0f;
+        }
         
         void SetText(std::string* _text)
         {
