@@ -37,7 +37,7 @@ void GLParticleSystem::CreateFire()
 	// Create and allocate buffers A and B for posBuf, velBuf
 	// and startTime
 	//�
-        float scale = 0.25f;
+        float scale = 0.21f;
         m_size *= scale;
         elapsedTime = 0.0f;
 	m_accel = vec3(0, -0.00001, 0);

@@ -81,7 +81,7 @@ bool GLWindow::InitGL()
     //Set blending
     glEnable( GL_BLEND );
     glEnable( GL_DEPTH_TEST );
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
     //Check for error
     GLenum error = glGetError();

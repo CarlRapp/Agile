@@ -7,6 +7,7 @@
 #include "GLTextureManager.h"
 #include "GLText.h"
 #include "GLParticleSystem.h"
+#include "GLSkybox.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -99,12 +100,14 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
+        GLSkybox*        m_skybox;
 
         ShaderHandler m_standardShaderProgram, 
                       m_shader2Dprogram, 
                       m_fireParticlesProgram, 
                       m_trailParticlesProgram, 
-                      m_textProgram;
+                      m_textProgram,
+                      m_skyboxProgram;
 
         GLuint m_2DVAO;
         
@@ -134,6 +137,7 @@ private:
         int RenderStandard();
         void Render2D();
         void RenderParticles(float dt, ICamera* _camera);
+        void RenderSkybox(ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         //void LoadLetters();
