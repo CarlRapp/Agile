@@ -48,6 +48,7 @@ class GLGraphics : public IGraphics
         int vertices;
         GLuint bufferVAOID;
         GLuint texHandle;
+        GLuint blendTexHandle;
         std::string name;
         std::map<int, ModelInstance*> instances;
         
@@ -151,7 +152,7 @@ public:
         void Render(float _dt, ICamera* _camera);
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
-        void Free();
+        void Clear();
         void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
@@ -174,6 +175,9 @@ public:
         void RemoveTextObject(int _id);
         
         void ShowMouseCursor(bool _value);
+        
+        void SetSky(std::string _name);
+	void ClearSky();
 };
 
 

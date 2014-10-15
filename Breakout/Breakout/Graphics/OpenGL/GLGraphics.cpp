@@ -11,7 +11,7 @@ GLGraphics::GLGraphics(void)
 
 GLGraphics::~GLGraphics(void)
 {
-    Free();
+    Clear();
 }
 
 bool GLGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -114,9 +114,6 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_skyboxProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
 
-    m_skybox = new GLSkybox(GetFile("CubeMaps/space2", TEXTURE_ROOT));
-    m_skybox->CreateBuffers();
-    
     glEnable(GL_BLEND);
     glEnable(GL_POINT_SPRITE);
    
@@ -434,7 +431,7 @@ void GLGraphics::Resize(int _width, int _height)
     glViewport(0, 0, m_screenWidth, m_screenHeight);
 }
 
-void GLGraphics::Free()
+void GLGraphics::Clear()
 {
     for(int i = m_models.size()-1; i > -1;i--)
     {
@@ -919,4 +916,19 @@ void GLGraphics::RemoveObject(int _id)
 void GLGraphics::ShowMouseCursor(bool _value)
 {
      SDL_ShowCursor(_value);
+}
+
+void GLGraphics::SetSky(std::string _name)
+{
+    m_skybox = new GLSkybox(GetFile("CubeMaps/"+_name, TEXTURE_ROOT));
+    if(!m_skybox->CheckOK())
+    {
+        SafeDelete(m_skybox);
+    }
+    else
+        m_skybox->CreateBuffers();
+}
+void GLGraphics::ClearSky()
+{
+    SafeDelete(m_skybox);
 }
