@@ -3,8 +3,8 @@
 #include "../World.h"
 #include "../Component/BlockComponent.h"
 #include "../Component/MultiBallComponent.h"
+#include "../Component/LaserComponent.h"
 #include "../../Audio/AudioManager.h"
-
 SpawnPowerUpSystem::SpawnPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent>(), _world)
 {
@@ -23,9 +23,9 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 {
 	int spawnPowerUp = rand() % 100;
 
-	if (spawnPowerUp < 10)
+	if (spawnPowerUp <= 5)
 	{
-		Entity* _newPowerUp = CreatePowerUp(MULTIBALL);
+		Entity* _newPowerUp = CreatePowerUp(SHOOTLASER);
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
 		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 5, 0);
 		m_world->AddEntity(_newPowerUp);
@@ -55,6 +55,9 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 	{
 	case SpawnPowerUpSystem::MULTIBALL:
 		_entity->AddComponent<MultiBallComponent>();
+		break;
+	case SpawnPowerUpSystem::SHOOTLASER:
+		_entity->AddComponent<LaserComponent>();
 		break;
 	default:
 		break;

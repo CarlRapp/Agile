@@ -1,6 +1,7 @@
 #include "CollectPowerUpSystem.h"
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
+#include "ShootLaserSystem.h"
 #include "../World.h"
 
 #include "../EntityFactory.h"
@@ -8,6 +9,7 @@
 #include "../Component/VelocityComponent.h"
 #include "../Component/BallComponent.h"
 #include "../Component/MultiBallComponent.h"
+#include "../Component/LaserComponent.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<CollisionComponent>().RequiresOneOf<MultiBallComponent>(), _world)
@@ -56,10 +58,20 @@ void CollectPowerUpSystem::Update(float _dt)
 }
 void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 {
-	MultiBallComponent* isMultiBall = _powerUp->GetComponent<MultiBallComponent>();
+	auto isMultiBall = _powerUp->GetComponent<MultiBallComponent>();
+	auto isLaser = _powerUp->GetComponent<LaserComponent>();
 
 	if (isMultiBall)
 		SpawnMultiBalls();
+	if (isLaser)
+	{
+		ShootLaserSystem* shootLaserSystem = m_world->GetSystem<ShootLaserSystem>();
+		if (shootLaserSystem)
+			shootLaserSystem->ResetDuration();
+		else
+			m_world->AddSystem<ShootLaserSystem>();
+	}
+
 
 	_powerUp->SetState(Entity::SOON_DEAD);
 }
