@@ -99,12 +99,12 @@ void CollectPowerUpSystem::SpawnMultiBalls()
 		VECTOR2 aVelocity = VECTOR2
 			(
 			cos(velAngle + PI*0.25f)*velLength,
-			sin(velAngle + PI*0.25f)*velLength
+			1*velLength
 			);
 		VECTOR2 bVelocity = VECTOR2
 			(
 			cos(velAngle - PI*0.25f)*velLength,
-			sin(velAngle - PI*0.25f)*velLength
+			1*velLength
 			);
 
 		newBall->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(bVelocity.x, bVelocity.y, 0);

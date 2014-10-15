@@ -6,10 +6,19 @@ GLSkybox::GLSkybox()
 { }
 
 GLSkybox::~GLSkybox()
-{ }
+{
+    
+}
+
+void GLSkybox::Free()
+{
+    glDeleteBuffers(1,&vboCubeVertices);
+    glDeleteBuffers(1,&iboCubeIndices);
+}
 
 GLSkybox::GLSkybox(std::string mapName)
 {
+    m_ok = true;
     printf("mapName: %s \n\n", mapName.c_str());
     
 	glActiveTexture(GL_TEXTURE0);
@@ -41,6 +50,8 @@ GLSkybox::GLSkybox(std::string mapName)
 	
 		// Load texture file and convert to openGL format
 		unsigned char* imgData = SOIL_load_image(texName.c_str(), &width, &height, &channels, 4 );
+                if(!imgData)
+                    m_ok = false;
 	
 		glTexImage2D(targets[i], 0, GL_RGBA,
 					width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgData);
@@ -87,7 +98,7 @@ void GLSkybox::CreateBuffers()
 	glGenVertexArrays(1, &mVAOHandle);
 	glBindVertexArray(mVAOHandle);
 
-	GLuint vboCubeVertices;
+	vboCubeVertices;
 	glGenBuffers(1, &vboCubeVertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vboCubeVertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
@@ -95,7 +106,7 @@ void GLSkybox::CreateBuffers()
 	//glEnableVertexAttribArray(0);  // Vertex position.
  
 
-	GLuint iboCubeIndices;
+	iboCubeIndices;
 	glGenBuffers(1, &iboCubeIndices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboCubeIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);

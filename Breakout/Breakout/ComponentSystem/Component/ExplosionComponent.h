@@ -16,7 +16,7 @@ struct ExplosionComponent : Component<ExplosionComponent>
 	};
 
 	float m_explosion = 0.0f;
-	float m_maxExplosionTime = .3f;
+	float m_maxExplosionTime = .45f;
 	float m_expansionRate = 20.0f;
 	ExplosionState m_explosionState = NONE;
 

@@ -192,7 +192,8 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 		Entity* e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::EXPLOSION);
 		VECTOR3 pos = _e->GetComponent<PositionComponent>()->GetPosition();
-		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(pos.x,pos.y,pos.z +5));
+		e->GetComponent<PositionComponent>()->SetPosition(pos + NORMALIZE(GraphicsManager::GetInstance()->GetICamera()->GetPosition()-pos)); 
+                
 		m_effects[e->GetId()] = e;
 
 		m_world->AddEntity(e);

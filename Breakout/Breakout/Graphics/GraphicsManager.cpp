@@ -49,8 +49,7 @@ void GraphicsManager::Render(float _dt)
 void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
-
-}
+	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));}
 
 
 bool GraphicsManager::Init3D(DisplayMode _displayMode)
