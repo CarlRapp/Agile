@@ -42,7 +42,7 @@ private:
 	map<int, DXParticleSystem*>			m_particleSystems;
 	map<int, DXText::String*>			m_texts;
 
-	DXSky *sky;
+	DXSky* m_sky = NULL;
 
 	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;
@@ -98,6 +98,10 @@ public:
 	void ShowMouseCursor(bool _value);
 
 	void Clear(void);
+
+	void SetSky(std::string _name);
+	void ClearSky();
+
 };
 
 

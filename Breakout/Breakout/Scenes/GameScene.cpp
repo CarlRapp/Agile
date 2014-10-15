@@ -222,11 +222,13 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+	GraphicsManager::GetInstance()->SetSky("snowcube1024");
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
 void GameScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->ClearSky();
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 	if (m_world)

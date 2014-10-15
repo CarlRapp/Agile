@@ -47,6 +47,7 @@ float4 PS(VertexOut pin) : SV_Target
 RasterizerState NoCull
 {
 	CullMode = None;
+	//FillMode = 2;
 };
 
 DepthStencilState LessEqualDSS

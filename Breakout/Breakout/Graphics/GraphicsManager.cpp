@@ -122,3 +122,13 @@ void GraphicsManager::Clear(void)
 {
 	m_IGraphics->Clear();
 }
+
+void GraphicsManager::SetSky(std::string _name)
+{
+	m_IGraphics->SetSky(_name);
+}
+
+void GraphicsManager::ClearSky()
+{
+	m_IGraphics->ClearSky();
+}
