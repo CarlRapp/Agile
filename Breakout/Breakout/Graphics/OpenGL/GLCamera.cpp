@@ -18,6 +18,10 @@ GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _far
 
     m_nearZ = _nearZ;
     m_farZ = _farZ;
+    
+    m_pitch     = 0.0f;
+    m_yaw       = 180.0f;
+    m_sens      = 0.001f;
 
     m_position  = glm::vec3(0, 0, 5);
     m_forward   = glm::vec3(0, 0, -1);
@@ -121,6 +125,27 @@ void GLCamera::UpdateProjection()
 //        printf("\n");
 //    }
 //    printf("PROJECTION END\n");
+}
+#include "../../Input/InputManager.h"
+void GLCamera::Update(float _dt)
+{
+//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('j') == InputState::Down)
+//    {
+//        printf("J Pressed \n\n");
+//	m_yaw += m_sens*_dt;
+//    }
+//    
+//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('i') == InputState::Down)
+//        m_pitch += m_sens*_dt;
+//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('k') == InputState::Down)
+//        m_pitch -= m_sens*_dt;
+//
+//    float pitch = m_pitch * (M_PI / 180.f);
+//    float yaw = m_yaw * (M_PI / 180.f);
+//
+//    m_forward = glm::vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch)*cos(yaw));
+//    m_right = glm::vec3(sin(yaw - M_PI / 2.0f), 0, cos(yaw - M_PI / 2.0f));
+//    m_up = glm::cross(m_right, m_forward);
 }
 
 MATRIX4 *GLCamera::GetProjection()
