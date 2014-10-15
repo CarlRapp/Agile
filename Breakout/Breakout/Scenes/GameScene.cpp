@@ -222,7 +222,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
-	GraphicsManager::GetInstance()->SetSky("snowcube1024");
+	GraphicsManager::GetInstance()->SetSky("space");
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }

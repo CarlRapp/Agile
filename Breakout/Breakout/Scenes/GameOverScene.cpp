@@ -35,7 +35,7 @@ void GameOverScene::LoadContent()
 void GameOverScene::OnActive()
 {
 	GraphicsManager* GM = GraphicsManager::GetInstance();
-	GM->SetSky("grasscube1024");
+	GM->SetSky("space");
 	GM->ShowMouseCursor(true);
 	GM->Add2DTexture(
 		GetMemoryID(m_background), m_background->m_textureName,
