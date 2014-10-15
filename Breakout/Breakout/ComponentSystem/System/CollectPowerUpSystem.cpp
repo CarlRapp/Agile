@@ -10,7 +10,7 @@
 #include "../Component/MultiBallComponent.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
-: Base(ComponentFilter().Requires<CollisionComponent>(), _world)
+: Base(ComponentFilter().Requires<CollisionComponent>().RequiresOneOf<MultiBallComponent>(), _world)
 {
 }
 
@@ -43,6 +43,15 @@ void CollectPowerUpSystem::Update(float _dt)
 			}
 
 		}
+	}
+
+	for (auto entityPair : m_entityMap)
+	{
+		Entity* e = entityPair.second;
+		if ((e->GetState() != Entity::ALIVE))
+			continue;
+
+		e->GetComponent<VelocityComponent>()->m_velocity.y -= 5*_dt;
 	}
 }
 void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)

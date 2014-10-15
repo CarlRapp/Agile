@@ -146,6 +146,7 @@ void GameScene::Update(float _dt)
 		else if (rnd >= 90 && rnd < 100)
 			type = EntityFactory::TNT_BLOCK;
 
+		type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
 		EntityFactory::GetInstance()->CreateEntity(e, type);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);

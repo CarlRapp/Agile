@@ -247,6 +247,7 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
+	e->RemoveComponent<AudioComponent>();
 	e->RemoveComponent<DamageComponent>();
 	m_world->AddEntity(e);
 

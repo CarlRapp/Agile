@@ -150,16 +150,21 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
     
     if((m_flags.OnCollide & EffectFlags::CHANGE_MODEL) == EffectFlags::CHANGE_MODEL && _e->GetComponent<HealthComponent>()->m_currentHealth > 0)
     {
-        GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_e));
+        
         
         auto model = _e->GetComponent<ModelComponent>();
         std::string tmpString = model->m_modelPath + "_c";
+		if (FileManager::GetInstance().LoadModel(GetFile(tmpString.c_str(), MODEL_ROOT)) != 0)
+		{
+			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_e));
+			model->m_modelPath = tmpString;
+			GraphicsManager::GetInstance()->AddObject(GetMemoryID(_e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
+		}
 
-        printf("Health: %i \n", _e->GetComponent<HealthComponent>()->m_currentHealth);
-        _e->RemoveComponent<ModelComponent>();
-        model = &_e->AddComponent<ModelComponent>();
-        model->m_modelPath = tmpString;
-        GraphicsManager::GetInstance()->AddObject(GetMemoryID(_e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix , 0);
+		//printf("Health: %i (Entity #%d) \n", _e->GetComponent<HealthComponent>()->m_currentHealth, _e->GetId());
+        //e->RemoveComponent<ModelComponent>();
+        //model = &_e->AddComponent<ModelComponent>();
+
  
     }
     
