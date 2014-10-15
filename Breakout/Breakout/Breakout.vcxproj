@@ -115,6 +115,7 @@
     <ClCompile Include="Graphics\DirectX\DXParticleSystem.cpp" />
     <ClCompile Include="Graphics\DirectX\DXRenderStates.cpp" />
     <ClCompile Include="Graphics\DirectX\DXShadowMap.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXSky.cpp" />
     <ClCompile Include="Graphics\DirectX\DXTextureManager.cpp" />
     <ClCompile Include="Graphics\DirectX\DXVertex.cpp" />
     <ClCompile Include="Graphics\DirectX\DXWindow.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Graphics\DirectX\DXParticleSystem.h" />
     <ClInclude Include="Graphics\DirectX\DXRenderStates.h" />
     <ClInclude Include="Graphics\DirectX\DXShadowMap.h" />
+    <ClInclude Include="Graphics\DirectX\DXSky.h" />
     <ClInclude Include="Graphics\DirectX\DXText.h" />
     <ClInclude Include="Graphics\DirectX\DXTextureManager.h" />
     <ClInclude Include="Graphics\DirectX\DXVertex.h" />
@@ -312,7 +314,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="Graphics\DirectX\Shaders\CubeMap.fx">
+    <CustomBuild Include="Graphics\DirectX\Shaders\Sky.fx">
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc /T fx_5_0 /Fo "%(RelativeDir)\%(Filename).fxo" "%(FullPath)"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">fxc compile for release: %(FullPath)</Message>

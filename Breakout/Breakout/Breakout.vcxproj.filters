@@ -168,6 +168,9 @@
     <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXSky.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -452,6 +455,9 @@
     <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXSky.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -564,7 +570,7 @@
     <CustomBuild Include="Graphics\DirectX\Shaders\ParticleSystems\ParticleSystem.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders\ParticleSystems</Filter>
     </CustomBuild>
-    <CustomBuild Include="Graphics\DirectX\Shaders\CubeMap.fx">
+    <CustomBuild Include="Graphics\DirectX\Shaders\Sky.fx">
       <Filter>Source Files\Graphics\DirectX\Shaders</Filter>
     </CustomBuild>
   </ItemGroup>

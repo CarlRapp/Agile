@@ -427,8 +427,10 @@ void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 	//gOutput[dispatchThreadID.xy] = albedo;
 	//gOutput[dispatchThreadID.xy] = normalW;
 	//gOutput[dispatchThreadID.xy] = normalspec;
+
+
 	gOutput[dispatchThreadID.xy] = albedo * (ambient + diffuse) + spec;
-	//gOutput[dispatchThreadID.xy] = albedo * diffuse;
+	//gOutput[dispatchThreadID.xy] = diffuse;
 	//gOutput[dispatchThreadID.xy] = viewportColor * (albedo * (ambient + diffuse) + spec);
 }
 

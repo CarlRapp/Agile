@@ -3,6 +3,12 @@
 
 #pragma region DXInputLayoutDesc
 
+
+const D3D11_INPUT_ELEMENT_DESC DXInputLayoutDesc::m_pos[1] =
+{
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
+
 const D3D11_INPUT_ELEMENT_DESC DXInputLayoutDesc::m_quad[2] = 
 {
 	{"POSITION", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
@@ -115,6 +121,9 @@ void DXInputLayouts::InitAll(ID3D11Device* _device)
 
 	DXEffects::m_combineFinalFX->m_colorTech->GetPassByIndex(0)->GetDesc(&passDesc);
 	_device->CreateInputLayout(DXInputLayoutDesc::m_quad, 2, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_quad);
+
+	DXEffects::m_skyFX->m_skyTech->GetPassByIndex(0)->GetDesc(&passDesc);
+	_device->CreateInputLayout(DXInputLayoutDesc::m_pos, 1, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_pos);
 
 }
 

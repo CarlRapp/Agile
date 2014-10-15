@@ -354,11 +354,11 @@ void GameScene::Reset()
 	LC->SetString();
         
 	//	Background
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
+	//m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));

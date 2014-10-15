@@ -25,6 +25,11 @@ namespace DXVertex
 {
 	const int NUMBER_OF_BONES_PER_VERTEX = 4;
 
+	struct Pos
+	{
+		DirectX::XMFLOAT3 pos;
+	};
+
 	struct Quad
 	{
 		DirectX::XMFLOAT2 pos;
@@ -77,6 +82,7 @@ class DXInputLayoutDesc
 {
 public:
 	// Init like const int A::a[4] = {0, 1, 2, 3}; in .cpp file.
+	static const D3D11_INPUT_ELEMENT_DESC m_pos[1];
 	static const D3D11_INPUT_ELEMENT_DESC m_quad[2];
 	static const D3D11_INPUT_ELEMENT_DESC m_posTex[2];
 	//static const D3D11_INPUT_ELEMENT_DESC m_basic32[3];

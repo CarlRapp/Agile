@@ -30,7 +30,7 @@ GraphicsManager::~GraphicsManager(void)
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera(45.0f, _width, _height, 0.1f, 100.0f);
+	m_ICamera = ICamera::GetICamera(45.0f, _width, _height, 0.1f, 250.0f);
 	m_ICamera->SetPosition(VECTOR3(0, 0, 10));
 
 	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
@@ -50,13 +50,12 @@ void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
 
-	VECTOR3 pos = m_ICamera->GetPosition();
-	//pos.z += dt * 10.0f;
+	//VECTOR3 pos = m_ICamera->GetPosition();
 
-	test += 0.001f * 0.4;
-
-	//pos.x = 5 * sinf(test);
-	//pos.z = 5 * cosf(test);
+	//test += _dt * 0.5f;
+	//pos.y = 20;
+	//pos.x = 0 + 100 * sinf(test);
+	//pos.z = 100 * cosf(test);
 
 	//m_ICamera->SetPosition(pos);
 	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
