@@ -46,6 +46,7 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
+	GM->SetSky("space");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();
@@ -82,6 +83,7 @@ void MainMenuScene::OnActive()
 }
 void MainMenuScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->ClearSky();
 	if (m_world)
 	{
 		//GraphicsManager::GetInstance()->Clear();

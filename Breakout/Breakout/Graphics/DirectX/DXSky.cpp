@@ -10,19 +10,22 @@
 #include "DXEffects.h"
 
 
-DXSky::DXSky(ID3D11Device* _device, std::string _cubemapFilename, DXTextureManager* _texMgr)
+DXSky::DXSky(ID3D11Device* _device)
 {
-	m_cubeMapSRV = _texMgr->CreateTexture("CubeMaps/" + _cubemapFilename + ".dds");
-
 	GenerateSphear(_device);
-    
 }
 
 DXSky::~DXSky()
 {
 	ReleaseCOM(m_VB);
 	ReleaseCOM(m_IB);
-	ReleaseCOM(m_cubeMapSRV);
+}
+
+bool DXSky::Load(std::string _cubemapFilename, DXTextureManager* _texMgr)
+{
+	m_cubeMapSRV = _texMgr->CreateTexture("CubeMaps/" + _cubemapFilename + ".dds");
+
+	return m_cubeMapSRV;
 }
 
 ID3D11ShaderResourceView* DXSky::CubeMapSRV()

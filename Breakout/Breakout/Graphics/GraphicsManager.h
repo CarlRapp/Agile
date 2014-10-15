@@ -81,6 +81,9 @@ public:
 
 	void		Clear(void);
 
+	void		SetSky(std::string _name);
+	void		ClearSky();
+
 };
 
 

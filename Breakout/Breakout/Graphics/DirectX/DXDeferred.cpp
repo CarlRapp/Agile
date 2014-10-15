@@ -825,8 +825,12 @@ void DXDeferred::Render(float _dt,
 
 void DXDeferred::RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sky, ICamera* _camera)
 {
-	m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
-	_sky->Draw(m_deviceContext, _camera);
+	if (_sky)
+	{
+		m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
+		_sky->Draw(m_deviceContext, _camera);
+	}
+	
 }
 
 
