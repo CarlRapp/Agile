@@ -144,7 +144,6 @@
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
-    <ClInclude Include="ComponentSystem\Component\BounceComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />

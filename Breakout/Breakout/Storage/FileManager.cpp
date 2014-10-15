@@ -1,5 +1,38 @@
 #include "FileManager.h"
 
+FileManager* FileManager::instance = 0;
+
+FileManager::~FileManager()
+{
+	for (auto it : m_modelMap)
+	{
+		for (int i = 0; i < it.second->Groups.size(); ++i)
+		{
+			SafeDelete(it.second->Groups[i]->material);
+			SafeDelete(it.second->Groups[i]->triangles);
+			SafeDelete(it.second->Groups[i]);
+		}
+		SafeDelete(it.second);
+		it.second = 0;
+	}
+
+	m_modelMap.clear();
+
+	for (auto it : m_mixChunkMap)
+	{
+		Mix_FreeChunk(it.second);
+		it.second = 0;
+	}
+
+	for (auto it : m_mixMusicMap)
+	{
+		Mix_FreeMusic(it.second);
+		it.second = 0;
+	}
+
+	SafeDelete(m_modelLoader);
+
+}
 
 ModelData* FileManager::LoadModel(std::string filePath)
 {

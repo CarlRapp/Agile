@@ -12,13 +12,17 @@
 
 
 MainMenuScene::MainMenuScene()
+	: m_world(0), m_Start(0), m_Options(0), m_Exit(0)
 {
 	printf("Main Menu created!\n");
 }
 
 MainMenuScene::~MainMenuScene()
 {
-
+	SafeDelete(m_world);
+	m_Start		= 0;
+	m_Options	= 0;
+	m_Exit		= 0;
 }
 
 void MainMenuScene::Initialize()
@@ -90,8 +94,8 @@ void MainMenuScene::OnInactive()
 			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}
-
-		delete m_world;
+		GraphicsManager::GetInstance()->Clear();
+		SafeDelete(m_world);
 	}
 }
 
@@ -155,27 +159,54 @@ void MainMenuScene::Update(float _dt)
 		e = m_world->CreateEntity();
 		if (!e)
 			return;
-		int rnd = (rand() % (100 - 0));
 
-		EntityFactory::EntityType type;
-
-		if (rnd >= 0 && rnd < 20)
-			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 20 && rnd < 40)
-			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 40 && rnd < 60)
-			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 60 && rnd < 80)
-			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd >= 80 && rnd < 90)
-			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else if (rnd >= 90 && rnd < 100)
-			type = EntityFactory::TNT_BLOCK;
-
-		EntityFactory::GetInstance()->CreateEntity(e, type);
+		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
+}
+
+// Denna lär plockas bort sen
+EntityFactory::EntityType MainMenuScene::RandomizeType(void)
+{
+	EntityFactory::EntityType type;
+
+	const int smallRed		= 14;	// 14%
+	const int smallGreen	= 28;	// 14%
+	const int smallBlue		= 42;	// 14%
+	const int bigRed		= 56;	// 14%
+	const int bigGreen		= 70;	// 14%
+	const int bigBlue		= 84;	// 14%
+	const int indestruct	= 92;	// 8%
+	const int tnt			= 100;	// 8%
+
+	const int rnd = (rand() % (100 - 0)); // randomize between 0 and 100
+
+	if (rnd >= 0 && rnd < smallRed)
+		type = EntityFactory::STANDARD_BLOCK_RED;
+
+	else if (rnd >= smallRed && rnd < smallGreen)
+		type = EntityFactory::STANDARD_BLOCK_GREEN;
+
+	else if (rnd >= smallGreen && rnd < smallBlue)
+		type = EntityFactory::STANDARD_BLOCK_BLUE;
+
+	else if (rnd >= smallBlue && rnd < bigRed)
+		type = EntityFactory::STANDARD_BIG_RED;
+
+	else if (rnd >= bigRed && rnd < bigGreen)
+		type = EntityFactory::STANDARD_BIG_GREEN;
+
+	else if (rnd >= bigGreen && rnd < bigBlue)
+		type = EntityFactory::STANDARD_BIG_BLUE;
+
+	else if (rnd >= bigBlue && rnd < indestruct)
+		type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+	else if (rnd >= indestruct && rnd < tnt)
+		type = EntityFactory::TNT_BLOCK;
+
+	return type;
 }
 
 void MainMenuScene::Render(float _dt)
@@ -205,7 +236,7 @@ void MainMenuScene::CreatePlayField()
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_HORIZONTAL_RECTANGLE);
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_BIG_RED);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}

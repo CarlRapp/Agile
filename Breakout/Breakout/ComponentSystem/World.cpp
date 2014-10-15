@@ -9,10 +9,38 @@ World::~World()
 {
 	SystemMap::iterator sIT;
 	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
-		delete sIT->second;
+		SafeDelete(sIT->second);
 
 	m_systems.clear();
 	Clear();
+	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
+	{
+		m_entityPool[i]->RemoveAllComponents();
+		SafeDelete(m_entityPool[i]);
+	}
+	SafeDeleteArray(m_entityPool);
+
+	//std::map<TypeID, std::vector<Entity*>*> m_componentEntityPool;
+
+	for (auto cIT = m_componentEntityPool.begin(); cIT != m_componentEntityPool.end();)
+	{
+		//for (int i = 0; i < cIT->second->size(); ++i)
+		//{
+		//	SafeDelete(cIT->second->at(i));
+		//}
+		cIT->second->clear();
+		SafeDelete(cIT->second);
+
+		if (cIT->second)
+		{
+			m_componentEntityPool.erase(cIT++);
+		}
+		else
+			cIT++;
+	}
+
+	m_componentEntityPool.clear();
+
 }
 
 void World::Start()
@@ -186,6 +214,6 @@ void World::Clear()
 
 	m_activeEntities.clear();
 	m_changedEntities.clear();
-	m_componentEntityPool.clear();
+	//m_componentEntityPool.clear();
 	printf("World cleared!\n");
 }

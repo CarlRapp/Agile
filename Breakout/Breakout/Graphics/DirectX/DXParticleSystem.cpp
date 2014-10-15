@@ -15,7 +15,7 @@ DXParticleSystem::~DXParticleSystem(void)
 	ReleaseCOM(DrawVertexBuffer);
 	ReleaseCOM(SteamOutVertexBuffer);
 	//ReleaseCOM(InputLayout);
-	//ReleaseCOM(m_effect);
+	//SafeDelete(m_effect);
 
 }
 
@@ -145,9 +145,13 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 			&pe->InputLayout);
 
 		pEffects[_effect] = pe;
+
+
 	}
 
 	m_effect = pEffects[_effect];
+
+	SafeDelete(partilce);
 }
 
 //startar om partikelsystemet

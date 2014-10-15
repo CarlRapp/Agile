@@ -17,13 +17,15 @@ std::string m_pauseString= "GAME PAUSED";
 std::string m_gameOverString= "GAME OVER";
 
 GameScene::GameScene()
+	: m_world(0), m_pauseBackground(0)
 {
 	printf("Game Scene created!\n");
 }
 
 GameScene::~GameScene()
 {
-
+	SafeDelete(m_world);
+	SafeDelete(m_pauseBackground);
 }
 
 void GameScene::Initialize()
@@ -82,7 +84,7 @@ void GameScene::Update(float _dt)
 		if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 			SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
 
-                m_world->UpdateTextOnly(_dt);
+               // m_world->UpdateTextOnly(_dt);
                 
 		return;
 	}
@@ -110,25 +112,7 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-
-		int rnd = (rand() % (100 - 0));
-
-		EntityFactory::EntityType type;
-
-		if (rnd >= 0 && rnd < 20)
-			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 20 && rnd < 40)
-			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 40 && rnd < 60)
-			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 60 && rnd < 80)
-			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd >= 80 && rnd < 90)
-			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else if (rnd >= 90 && rnd < 100)
-			type = EntityFactory::TNT_BLOCK;
-
-		EntityFactory::GetInstance()->CreateEntity(e, type);
+		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
@@ -148,6 +132,48 @@ void GameScene::Update(float _dt)
 
         
         
+}
+
+EntityFactory::EntityType GameScene::RandomizeType(void)
+{
+	EntityFactory::EntityType type;
+
+	const int smallRed		= 14;	// 14%
+	const int smallGreen	= 28;	// 14%
+	const int smallBlue		= 42;	// 14%
+	const int bigRed		= 56;	// 14%
+	const int bigGreen		= 70;	// 14%
+	const int bigBlue		= 84;	// 14%
+	const int indestruct	= 92;	// 8%
+	const int tnt			= 100;	// 8%
+
+	const int rnd = (rand() % (100 - 0)); // randomize between 0 and 100
+
+	if (rnd >= 0 && rnd < smallRed)
+		type = EntityFactory::STANDARD_BLOCK_RED;
+
+	else if (rnd >= smallRed && rnd < smallGreen)
+		type = EntityFactory::STANDARD_BLOCK_GREEN;
+
+	else if (rnd >= smallGreen && rnd < smallBlue)
+		type = EntityFactory::STANDARD_BLOCK_BLUE;
+
+	else if (rnd >= smallBlue && rnd < bigRed)
+		type = EntityFactory::STANDARD_BIG_RED;
+
+	else if (rnd >= bigRed && rnd < bigGreen)
+		type = EntityFactory::STANDARD_BIG_GREEN;
+
+	else if (rnd >= bigGreen && rnd < bigBlue)
+		type = EntityFactory::STANDARD_BIG_BLUE;
+
+	else if (rnd >= bigBlue && rnd < indestruct)
+		type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+	else if (rnd >= indestruct && rnd < tnt)
+		type = EntityFactory::TNT_BLOCK;
+
+	return type;
 }
 
 void GameScene::UpdateFPS(float _dt)
@@ -189,7 +215,8 @@ void GameScene::OnInactive()
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}	
 
-		delete m_world;
+		GraphicsManager::GetInstance()->Clear();
+		SafeDelete(m_world);
 	}
 }
 

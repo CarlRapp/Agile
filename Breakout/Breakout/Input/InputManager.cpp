@@ -30,7 +30,7 @@ InputManager::InputManager(int _screenWidth, int _screenHeight)
 
 InputManager::~InputManager()
 {
-	delete m_imInstance;
+	SafeDelete(m_inputDevices);
 }
 
 void InputManager::Init(int _screenWidth, int _screenHeight)

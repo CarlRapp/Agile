@@ -12,15 +12,8 @@ DXGraphics::DXGraphics(void)
 }
 
 DXGraphics::~DXGraphics(void)
-{
-	m_modelInstances.clear();
-	
-	map<int, DXParticleSystem*>::iterator	mapIterator;
-	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
-	{
-		delete(mapIterator->second);
-	}
-
+{	
+	Clear();
 
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
@@ -37,6 +30,40 @@ DXGraphics::~DXGraphics(void)
 	ReleaseCOM(m_finalUAV);
 }
 
+void DXGraphics::Clear()
+{
+	map<int, DXParticleSystem*>::iterator	mapIterator;
+	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
+	{
+		delete(mapIterator->second);
+	}
+
+	for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it)
+		SafeDelete(it->second);
+	m_pointLights.clear();
+
+	for (auto it = m_spotLights.begin(); it != m_spotLights.end(); ++it)
+		SafeDelete(it->second);
+	m_spotLights.clear();
+
+	for (auto it = m_dirLights.begin(); it != m_dirLights.end(); ++it)
+		SafeDelete(it->second);
+	m_dirLights.clear();
+
+	for (auto it = m_texts.begin(); it != m_texts.end(); ++it)
+		SafeDelete(it->second);
+	m_texts.clear();
+
+	for (auto it = m_modelInstances.begin(); it != m_modelInstances.end(); ++it)
+	{
+		for (auto i = it->second.begin(); i != it->second.end(); ++i)
+			SafeDelete(i->second);
+
+		it->second.clear();
+	}
+	m_modelInstances.clear();
+}
+
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 	m_width = _width;
@@ -46,18 +73,9 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	if (!m_window->InitWindow(_x, _y, _width, _height, _displayMode))
 		return false;
 	return true;
-	
+
 }
 
-
-
-float xx = 0.2f, yy = 0.5f, scale = 1.0f;
-std::string ttext = "hesjan";
-VECTOR3 ccolor = VECTOR3(1, 0, 0);
-float effect = 0;
-
-//#define asd 1000
-//MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -264,24 +282,8 @@ void DXGraphics::Update(float _dt)
 	}
 }
 
-float asdasdasdasd = 0;
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
-	asdasdasdasd += _dt;
-	//scale = 3.5 + 2.5 * sinf(asdasdasdasd);
-	effect = 2.5 + 2.5 * sinf(asdasdasdasd);
-
-	if (scale > 3)
-	{
-		ttext = "Big red text";
-		ccolor = VECTOR3(1, 0, 0);
-	}
-	else
-	{
-		ttext = "small green text";
-		ccolor = VECTOR3(0, 1, 0);
-	}
-
 
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };

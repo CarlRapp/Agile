@@ -79,6 +79,8 @@ public:
 
 	void		ShowMouseCursor(bool _value);
 
+	void		Clear(void);
+
 };
 
 

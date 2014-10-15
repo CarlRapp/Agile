@@ -32,7 +32,7 @@ private:
 	//map<int, ModelInstance*>m_modelInstances;
 
 
-	map<std::string, map<int, ModelInstance*>>	m_modelInstances;
+	map<std::string, map<int, ModelInstance*> >	m_modelInstances;
 	map<int, DX2DTextureInstance*>	m_textureInstances;
 
 	map<int, DirectionalLight*>			m_dirLights;
@@ -96,6 +96,7 @@ public:
 
 	void ShowMouseCursor(bool _value);
 
+	void Clear(void);
 };
 
 

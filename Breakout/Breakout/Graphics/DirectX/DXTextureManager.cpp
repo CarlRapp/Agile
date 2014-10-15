@@ -280,6 +280,7 @@ void DXTextureManager::CreateSymbolsTexture(ID3D11Device *_device, std::vector<L
 	HRESULT(_device->CreateShaderResourceView(symbolsTex, &viewDesc, &m_SymbolsTex));
 
 	ReleaseCOM(symbolsTex);
+	SafeDelete(data);
 }
 
 ID3D11ShaderResourceView* DXTextureManager::buildLetterTex(ID3D11Device *_device, float* _data)

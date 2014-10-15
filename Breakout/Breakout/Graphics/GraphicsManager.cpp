@@ -24,6 +24,7 @@ void GraphicsManager::Destroy()
 
 GraphicsManager::~GraphicsManager(void)
 {
+	SafeDelete(m_ICamera);
 	SafeDelete(m_IGraphics);
 }
 
@@ -127,4 +128,9 @@ void GraphicsManager::RemoveTextObject(int _id)
 void GraphicsManager::ShowMouseCursor(bool _value)
 {
 	m_IGraphics->ShowMouseCursor(_value);
+}
+
+void GraphicsManager::Clear(void)
+{
+	m_IGraphics->Clear();
 }

@@ -105,6 +105,10 @@ void EffectSystem::UpdateEffects(float _dt)
 						newScale.y += _dt * 20;
 						newScale.z += _dt * 20;
 
+						newScale.x = newScale.x > 3.f ? 3.f : newScale.x;
+						newScale.y = newScale.y > 3.f ? 3.f : newScale.y;
+						newScale.z = newScale.z > 3.f ? 3.f : newScale.z;
+
 						scale->SetScale(newScale);
 					}
 					// scale is larger then 3
@@ -215,6 +219,10 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
     {
         GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_e));
         
+
+		if (_e->GetComponent<HealthComponent>()->m_currentHealth > 10)
+			printf("HEJ\n");
+
         auto model = _e->GetComponent<ModelComponent>();
         std::string tmpString = model->m_modelPath + "_c";
 
