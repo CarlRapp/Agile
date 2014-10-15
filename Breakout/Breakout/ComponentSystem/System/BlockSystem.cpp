@@ -7,7 +7,6 @@
 #include "../Component/EffectComponent.h"
 #include "../World.h"
 
-
 BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
