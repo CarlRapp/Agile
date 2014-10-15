@@ -33,7 +33,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BLOCK_RED:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -54,7 +53,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BLOCK_GREEN:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -75,7 +73,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BLOCK_BLUE:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -98,7 +95,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -117,8 +113,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	}
 	case EntityFactory::TNT_BLOCK:
 	{
-		bodyDef = new b2BodyDef();
-
+	    bodyDef = new b2BodyDef();
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -141,7 +136,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BIG_RED:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -165,7 +159,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BIG_GREEN:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -189,7 +182,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	case EntityFactory::STANDARD_BIG_BLUE:
 	{
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -212,7 +204,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 	}
 	case EntityFactory::PAD:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
@@ -227,7 +218,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		break;
 	case EntityFactory::BALL:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -243,6 +233,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
 		break;
 	case EntityFactory::LASER:
+		bodyDef = new b2BodyDef();
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -254,7 +245,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		break;
 	case EntityFactory::WALL:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -266,7 +256,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		break;
 	case EntityFactory::H_WALL:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -277,7 +266,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		break;
 	case EntityFactory::INVISIBLE_WALL:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -288,7 +276,6 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		break;
 	case EntityFactory::PROJECTILE:
 		bodyDef = new b2BodyDef();
-
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
@@ -316,19 +303,19 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<TextComponent>();
 		break;
 		case EntityFactory::SHATTER:
-			_entity->AddComponent<PositionComponent>();
-			_entity->AddComponent<RotationComponent>();
-			_entity->AddComponent<ScaleComponent>();
-			_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
 
-			_entity->AddComponent<ShatterComponent>().m_explosionState = ShatterComponent::SHATTERING;
+		_entity->AddComponent<ShatterComponent>().m_explosionState = ShatterComponent::SHATTERING;
 		break;
 		case EntityFactory::EXPLOSION:
-			_entity->AddComponent<PositionComponent>();
-			_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<ExplosionComponent>().m_explosionState = ExplosionComponent::EXPLODING;
 		break;
 		case EntityFactory::POWERUP:
-			break;
+		break;
 	default:
 		break;
 	}
