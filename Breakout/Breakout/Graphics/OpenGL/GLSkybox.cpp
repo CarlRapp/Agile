@@ -6,7 +6,15 @@ GLSkybox::GLSkybox()
 { }
 
 GLSkybox::~GLSkybox()
-{ }
+{
+    
+}
+
+void GLSkybox::Free()
+{
+    glDeleteBuffers(1,&vboCubeVertices);
+    glDeleteBuffers(1,&iboCubeIndices);
+}
 
 GLSkybox::GLSkybox(std::string mapName)
 {
@@ -87,7 +95,7 @@ void GLSkybox::CreateBuffers()
 	glGenVertexArrays(1, &mVAOHandle);
 	glBindVertexArray(mVAOHandle);
 
-	GLuint vboCubeVertices;
+	vboCubeVertices;
 	glGenBuffers(1, &vboCubeVertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vboCubeVertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
@@ -95,7 +103,7 @@ void GLSkybox::CreateBuffers()
 	//glEnableVertexAttribArray(0);  // Vertex position.
  
 
-	GLuint iboCubeIndices;
+	iboCubeIndices;
 	glGenBuffers(1, &iboCubeIndices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboCubeIndices);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndices), cubeIndices, GL_STATIC_DRAW);

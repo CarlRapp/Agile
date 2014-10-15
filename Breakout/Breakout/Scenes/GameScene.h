@@ -41,14 +41,20 @@ private:
 	EntityFactory::EntityType RandomizeType(void);
 
         
-        int m_lvlUpHandle0= 0;
-        int m_lvlUpHandle1= 0;
-        int m_lvlUpHandle2= 0;
-        int m_lvlUpHandle3 = 0;
+        int m_lvlUpHandleMAIN= 0;
+        int m_lvlUpHandleSPEED= 0;
+        int m_lvlUpHandleSIZE= 0;
+        int m_lvlUpHandleDAMAGE = 0;
+        int m_lvlUpHandleAUTO = 0;
+        
         
         int m_levelUp = 0;
         int m_playerID = 0;
         bool m_playerIsMaxLevel = false;
+        
+        void SkillSpeed();
+        void SkillSize();
+        void SkillDamage();
 public:
 	GameScene();
 	~GameScene();

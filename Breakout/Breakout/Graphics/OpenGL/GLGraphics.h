@@ -76,22 +76,22 @@ class GLGraphics : public IGraphics
     
     struct TextObject
     {
-        std::string* text;
-        float* scale;
-        glm::vec3* color;
-        float* x;
-        float* y;
-        float* effect;
+        std::string* text = NULL;
+        float* scale = NULL;;
+        glm::vec3* color = NULL;;
+        float* x = NULL;;
+        float* y = NULL;;
+        float* effect = NULL;;
         
-        std::string textCopy;
-        float scaleCopy;
-        glm::vec3 colorCopy;
-        float xCopy;
-        float yCopy;
-        float effectCopy;
+        std::string textCopy ="";
+        float scaleCopy = 0;
+        glm::vec3 colorCopy = glm::vec3(0,0,0);
+        float xCopy= 0;
+        float yCopy= 0;
+        float effectCopy= 0;
         
-        int id;
-        bool kill;
+        int id= 0;
+        bool kill= false;
     };
     
 private:

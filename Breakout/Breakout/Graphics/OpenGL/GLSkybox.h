@@ -9,13 +9,14 @@ class GLSkybox {
 private:
 	GLuint mTextureHandle;
 	GLuint mVAOHandle;
-
+        GLuint vboCubeVertices;
+        GLuint iboCubeIndices;
 
 public:
 	GLSkybox(std::string mapName);
 	GLSkybox();
 	~GLSkybox();
-
+        void Free();
 	void CreateBuffers();
 	void Draw(GLuint *shaderProgHandle, ICamera *_cam);
 };
