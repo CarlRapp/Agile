@@ -15,6 +15,7 @@ struct ScoreComponent : Component<ScoreComponent>
 
 	ScoreComponent()
 	{
+            m_nextLevel = 20;
             m_score = 0;
             wasHit = false;
 	}
@@ -45,7 +46,7 @@ struct ScoreComponent : Component<ScoreComponent>
                 
                 if(levelUp > 0)
                 {
-                    levels=STATPOINTS_PER_LEVEL;
+                    levels+=STATPOINTS_PER_LEVEL;
                     SetNextLevelUpScore();
                 }
             }
