@@ -14,7 +14,12 @@ ModelLoader::ModelLoader()
 
 ModelLoader::~ModelLoader()
 {
-	
+	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
+//		SafeDelete(it->second->material);
+	}
+
+//	m_groups.clear();
 }
 
 
@@ -31,7 +36,7 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 	{
 		file >> str;
                 
-		if (str == "#" || str == "s")           ParseComment(file);
+		if (str == "#" || str == "s")   ParseComment(file);
 		else if (str == "v")			ParsePosition(file);	//position
 		else if (str == "vn")			ParseNormal(file);		//normal
 		else if (str == "vt")			ParseTexCoord(file);	//texturkoordinat
@@ -120,6 +125,8 @@ void ModelLoader::CalculateTangents()
 
 			tangent->w = (DOT(CROSS(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
 		}
+
+		SafeDelete(tan1);
 	}
 }
 

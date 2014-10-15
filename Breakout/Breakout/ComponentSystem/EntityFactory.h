@@ -64,7 +64,9 @@ public:
                 TEXT,
 		EXPLOSION,
 		SHATTER,
-		STANDARD_HORIZONTAL_RECTANGLE
+		STANDARD_BIG_RED,
+		STANDARD_BIG_GREEN,
+		STANDARD_BIG_BLUE,
 	};
 
 	static EntityFactory* GetInstance();

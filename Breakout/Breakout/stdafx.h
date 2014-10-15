@@ -1,6 +1,17 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #include <string>
 
 #ifdef __linux__
@@ -11,6 +22,7 @@
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
 #define TEXTURE_ROOT "/../../Data/Textures/"
+#define HIGHSCORE_ROOT "/../../Data/SaveData/"
 
 typedef signed char         INT8, *PINT8;
 typedef signed short        INT16, *PINT16;
@@ -54,6 +66,7 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define MODEL_ROOT "../../Data/Models/"
 #define AUDIO_ROOT "../../Data/Audio/"
 #define TEXTURE_ROOT "../../Data/Textures/"
+#define HIGHSCORE_ROOT "../../Data/SaveData/"
 
 #include <Windows.h>
 
@@ -65,7 +78,8 @@ static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-#define SafeDelete(x) { delete x; x = 0; }
+#define SafeDelete(x) { if(x) { delete x; x = 0; } }
+#define SafeDeleteArray(x) { if(x) { delete[] x; x= 0; } }
 
 #define MAX_ENTITY_COUNT 500
 

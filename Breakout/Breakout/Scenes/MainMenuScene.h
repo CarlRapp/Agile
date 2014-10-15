@@ -6,6 +6,7 @@
 #include "../Scene/SceneManager.h"
 #include "../ComponentSystem/World.h"
 #include "../ComponentSystem/Component/TextComponent.h"
+#include "../ComponentSystem/EntityFactory.h"
 
 using namespace SceneSystem;
 
@@ -21,6 +22,7 @@ private:
 
 	float m_blockTimer;
 	void CreatePlayField();
+	EntityFactory::EntityType RandomizeType(void); // Denna lär plockas bort
 
 public:
 	MainMenuScene();

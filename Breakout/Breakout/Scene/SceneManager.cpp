@@ -11,6 +11,14 @@ SceneManager::SceneManager()
 }
 SceneManager::~SceneManager()
 {
+	for (auto i : m_scenes)
+	{
+		SafeDelete(i.second);
+	}
+
+	m_scenes.clear();
+
+	m_activeScene = 0;
 }
 
 SceneManager* SceneManager::GetInstance()

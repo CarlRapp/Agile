@@ -10,6 +10,8 @@
 #include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
+#include "../ComponentSystem/System/KillOnTouchSystem.h"
+#include "../ComponentSystem/Component/BallComponent.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -17,13 +19,15 @@ std::string m_pauseString= "GAME PAUSED";
 std::string m_gameOverString= "GAME OVER";
 
 GameScene::GameScene()
+	: m_world(0), m_pauseBackground(0)
 {
 	printf("Game Scene created!\n");
 }
 
 GameScene::~GameScene()
 {
-
+	SafeDelete(m_world);
+	SafeDelete(m_pauseBackground);
 }
 
 void GameScene::Initialize()
@@ -46,6 +50,15 @@ void GameScene::Initialize()
 void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
+
+	std::vector<std::string> files;
+	FileManager::GetInstance().GetFilesInDirectory(files, MODEL_ROOT);
+
+	for (auto file : files)
+	{
+		file = file.substr(0, file.size() - 4);
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
+	}
 }
 
 void GameScene::Update(float _dt)
@@ -117,28 +130,11 @@ void GameScene::Update(float _dt)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
-
-		int rnd = (rand() % (100 - 0));
-
-		EntityFactory::EntityType type;
-
-		if (rnd >= 0 && rnd < 20)
-			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 20 && rnd < 40)
-			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 40 && rnd < 60)
-			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 60 && rnd < 80)
-			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd >= 80 && rnd < 90)
-			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else if (rnd >= 90 && rnd < 100)
-			type = EntityFactory::TNT_BLOCK;
-
-		EntityFactory::GetInstance()->CreateEntity(e, type);
+		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 		counter = 0;
+			
 	}
 
 	m_world->Update(_dt);
@@ -155,6 +151,48 @@ void GameScene::Update(float _dt)
 
         
         
+}
+
+EntityFactory::EntityType GameScene::RandomizeType(void)
+{
+	EntityFactory::EntityType type;
+
+	const int smallRed		= 14;	// 14%
+	const int smallGreen	= 28;	// 14%
+	const int smallBlue		= 42;	// 14%
+	const int bigRed		= 56;	// 14%
+	const int bigGreen		= 70;	// 14%
+	const int bigBlue		= 84;	// 14%
+	const int indestruct	= 92;	// 8%
+	const int tnt			= 100;	// 8%
+
+	const int rnd = (rand() % (100 - 0)); // randomize between 0 and 100
+
+	if (rnd >= 0 && rnd < smallRed)
+		type = EntityFactory::STANDARD_BLOCK_RED;
+
+	else if (rnd >= smallRed && rnd < smallGreen)
+		type = EntityFactory::STANDARD_BLOCK_GREEN;
+
+	else if (rnd >= smallGreen && rnd < smallBlue)
+		type = EntityFactory::STANDARD_BLOCK_BLUE;
+
+	else if (rnd >= smallBlue && rnd < bigRed)
+		type = EntityFactory::STANDARD_BIG_RED;
+
+	else if (rnd >= bigRed && rnd < bigGreen)
+		type = EntityFactory::STANDARD_BIG_GREEN;
+
+	else if (rnd >= bigGreen && rnd < bigBlue)
+		type = EntityFactory::STANDARD_BIG_BLUE;
+
+	else if (rnd >= bigBlue && rnd < indestruct)
+		type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+	else if (rnd >= indestruct && rnd < tnt)
+		type = EntityFactory::TNT_BLOCK;
+
+	return type;
 }
 
 void GameScene::UpdateFPS(float _dt)
@@ -186,6 +224,7 @@ void GameScene::OnInactive()
 	m_isPaused = false;
 	if (m_world)
 	{
+		//GraphicsManager::GetInstance()->Clear();
 		EntityMap::iterator eIT;
 		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
 		{
@@ -193,10 +232,12 @@ void GameScene::OnInactive()
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemovePointLight(GetMemoryID(eIT->second));
 			GraphicsManager::GetInstance()->RemoveParticleEffect(GetMemoryID(eIT->second));
+			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
-		}	
+		}
 
-		delete m_world;
+		
+		SafeDelete(m_world);
 	}
 }
 
@@ -223,6 +264,7 @@ void GameScene::Reset()
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
 	m_world->AddSystem<SpawnPowerUpSystem>();
+	m_world->AddSystem<KillOnTouchSystem>();
 
 	/*	New Implementation	*/
             
@@ -358,6 +400,12 @@ void GameScene::Reset()
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(t2), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 	LC->SetString();
         
+	//	Background
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
+	//m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));

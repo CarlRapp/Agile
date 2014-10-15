@@ -4,12 +4,14 @@
 #include "MainMenuScene.h"
 
 GameOverScene::GameOverScene()
+	: m_background(0)
 {
 	printf("Main Menu created!\n");
 }
 
 GameOverScene::~GameOverScene()
 {
+	SafeDelete(m_background);
 
 }
 

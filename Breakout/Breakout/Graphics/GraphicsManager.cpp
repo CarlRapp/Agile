@@ -24,6 +24,7 @@ void GraphicsManager::Destroy()
 
 GraphicsManager::~GraphicsManager(void)
 {
+	SafeDelete(m_ICamera);
 	SafeDelete(m_IGraphics);
 }
 
@@ -50,15 +51,15 @@ void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
 
-	VECTOR3 pos = m_ICamera->GetPosition();
+	//VECTOR3 pos = m_ICamera->GetPosition();
 
-//        test += _dt * 0.5f;
-//        pos.y = 20;
-//        pos.x = 0 + 100 * sinf(test);
-//        pos.z = 100 * cosf(test);
-//
-//        m_ICamera->SetPosition(pos);
-//        m_ICamera->SetLookAt(VECTOR3(0, -10, 0));
+	//test += _dt * 0.5f;
+	//pos.y = 20;
+	//pos.x = 0 + 100 * sinf(test);
+	//pos.z = 100 * cosf(test);
+
+	//m_ICamera->SetPosition(pos);
+	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 
@@ -126,4 +127,9 @@ void GraphicsManager::RemoveTextObject(int _id)
 void GraphicsManager::ShowMouseCursor(bool _value)
 {
 	m_IGraphics->ShowMouseCursor(_value);
+}
+
+void GraphicsManager::Clear(void)
+{
+	m_IGraphics->Clear();
 }

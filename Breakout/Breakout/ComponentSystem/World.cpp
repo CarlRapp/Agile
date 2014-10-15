@@ -9,10 +9,38 @@ World::~World()
 {
 	SystemMap::iterator sIT;
 	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
-		delete sIT->second;
+		SafeDelete(sIT->second);
 
 	m_systems.clear();
 	Clear();
+	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
+	{
+		m_entityPool[i]->RemoveAllComponents();
+		SafeDelete(m_entityPool[i]);
+	}
+	SafeDeleteArray(m_entityPool);
+
+	//std::map<TypeID, std::vector<Entity*>*> m_componentEntityPool;
+
+	for (auto cIT = m_componentEntityPool.begin(); cIT != m_componentEntityPool.end();)
+	{
+		//for (int i = 0; i < cIT->second->size(); ++i)
+		//{
+		//	SafeDelete(cIT->second->at(i));
+		//}
+		cIT->second->clear();
+		SafeDelete(cIT->second);
+
+		if (cIT->second)
+		{
+			m_componentEntityPool.erase(cIT++);
+		}
+		else
+			cIT++;
+	}
+
+	m_componentEntityPool.clear();
+
 }
 
 void World::Start()
@@ -149,6 +177,19 @@ void World::KillEntity(Entity* _e)
 	for (auto sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Remove(_e);
 
+	std::vector<IComponent*>* componentList = _e->GetComponents();
+	for (int i = 0; i < componentList->size(); ++i)
+	{
+		IComponent* tComponent = componentList->at(i);
+		std::vector<Entity*>* tList = m_componentEntityPool[tComponent->m_ID];
+		for (int i = 0; i < tList->size(); ++i)
+			if (tList->at(i)->GetId() == _e->GetId())
+			{
+				tList->erase(tList->begin() + i);
+				break;
+			}
+	}
+
 	_e->SetState(Entity::DEAD);
 	_e->SetInitialized(false);
 	_e->RemoveAllComponents();
@@ -186,6 +227,6 @@ void World::Clear()
 
 	m_activeEntities.clear();
 	m_changedEntities.clear();
-	m_componentEntityPool.clear();
+	//m_componentEntityPool.clear();
 	printf("World cleared!\n");
 }

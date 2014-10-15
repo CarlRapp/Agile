@@ -19,6 +19,7 @@ AudioManager::AudioManager()
 
 AudioManager::~AudioManager()
 {
+	SafeDelete(m_audio);
 }
 
 

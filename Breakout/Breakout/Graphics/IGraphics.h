@@ -51,6 +51,7 @@ public:
 
 	virtual void ShowMouseCursor(bool _value) = 0;
 
+	virtual void Clear(void) {};
 
 	static IGraphics* GetIGraphics();
 };

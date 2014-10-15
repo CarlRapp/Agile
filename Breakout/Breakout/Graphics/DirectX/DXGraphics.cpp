@@ -12,15 +12,8 @@ DXGraphics::DXGraphics(void)
 }
 
 DXGraphics::~DXGraphics(void)
-{
-	m_modelInstances.clear();
-	
-	map<int, DXParticleSystem*>::iterator	mapIterator;
-	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
-	{
-		delete(mapIterator->second);
-	}
-
+{	
+	Clear();
 
 	DXRenderStates::DestroyAll();
 	DXEffects::DestroyAll();
@@ -35,6 +28,42 @@ DXGraphics::~DXGraphics(void)
 	ReleaseCOM(m_device);
 	ReleaseCOM(m_deviceContext);
 	ReleaseCOM(m_finalUAV);
+
+	delete(sky);
+}
+
+void DXGraphics::Clear()
+{
+	map<int, DXParticleSystem*>::iterator	mapIterator;
+	for (mapIterator = m_particleSystems.begin(); mapIterator != m_particleSystems.end(); ++mapIterator)
+	{
+		delete(mapIterator->second);
+	}
+
+	for (auto it = m_pointLights.begin(); it != m_pointLights.end(); ++it)
+		SafeDelete(it->second);
+	m_pointLights.clear();
+
+	for (auto it = m_spotLights.begin(); it != m_spotLights.end(); ++it)
+		SafeDelete(it->second);
+	m_spotLights.clear();
+
+	for (auto it = m_dirLights.begin(); it != m_dirLights.end(); ++it)
+		SafeDelete(it->second);
+	m_dirLights.clear();
+
+	for (auto it = m_texts.begin(); it != m_texts.end(); ++it)
+		SafeDelete(it->second);
+	m_texts.clear();
+
+	for (auto it = m_modelInstances.begin(); it != m_modelInstances.end(); ++it)
+	{
+		for (auto i = it->second.begin(); i != it->second.end(); ++i)
+			SafeDelete(i->second);
+
+		it->second.clear();
+	}
+	m_modelInstances.clear();
 }
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -46,18 +75,9 @@ bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode
 	if (!m_window->InitWindow(_x, _y, _width, _height, _displayMode))
 		return false;
 	return true;
-	
+
 }
 
-
-
-float xx = 0.2f, yy = 0.5f, scale = 1.0f;
-std::string ttext = "hesjan";
-VECTOR3 ccolor = VECTOR3(1, 0, 0);
-float effect = 0;
-
-//#define asd 1000
-//MATRIX4 world[asd];
 bool DXGraphics::Init3D(DisplayMode _displayMode)
 {
 	if (FAILED(InitDirect3D(_displayMode)))
@@ -80,6 +100,11 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	
 
 	m_textureManager.Init(m_device);
+
+	//sky = new DXSky(m_device, "SKYBOX.dds", &m_textureManager);
+	sky = new DXSky(m_device, "desertcube1024.dds", &m_textureManager);
+	//sky = new DXSky(m_device, "snowcube1024.dds", &m_textureManager);
+	//sky = new DXSky(m_device, "sunsetcube1024.dds", &m_textureManager);
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -264,24 +289,8 @@ void DXGraphics::Update(float _dt)
 	}
 }
 
-float asdasdasdasd = 0;
 void DXGraphics::Render(float _dt, ICamera* _camera)
 {
-	asdasdasdasd += _dt;
-	//scale = 3.5 + 2.5 * sinf(asdasdasdasd);
-	effect = 2.5 + 2.5 * sinf(asdasdasdasd);
-
-	if (scale > 3)
-	{
-		ttext = "Big red text";
-		ccolor = VECTOR3(1, 0, 0);
-	}
-	else
-	{
-		ttext = "small green text";
-		ccolor = VECTOR3(0, 1, 0);
-	}
-
 
 	//float ClearColor[4] = { rand() % 255 / 255.0f, rand() % 255 / 255.0f, rand() % 255 / 255.0f, 0.0f };
 	float ClearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -292,7 +301,8 @@ void DXGraphics::Render(float _dt, ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), sky, _camera);
+
 
 	m_swapChain->Present(0, 0);
 
@@ -346,7 +356,11 @@ void DXGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
 
 void DXGraphics::Remove2DTexture(int _id)
 {
-	m_textureInstances.erase(_id);
+	if (m_textureInstances.find(_id) != m_textureInstances.end())
+	{
+		SafeDelete(m_textureInstances[_id]);
+		m_textureInstances.erase(_id);
+	}
 }
 
 void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity, VECTOR3 *_color, float *_range)
@@ -366,7 +380,12 @@ void DXGraphics::AddPointLight(int _id, VECTOR3 *_worldPos, VECTOR3 *_intensity,
 
 void DXGraphics::RemovePointLight(int _id)
 {
-	m_pointLights.erase(_id);
+	if (m_pointLights.find(_id) != m_pointLights.end())
+	{
+		PointLight* ps = m_pointLights[_id];
+		SafeDelete(ps);
+		m_pointLights.erase(_id);
+	}
 }
 
 void DXGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel)
@@ -388,7 +407,7 @@ void DXGraphics::RemoveParticleEffect(int _id)
 	if (m_particleSystems.find(_id) != m_particleSystems.end())
 	{
 		DXParticleSystem* ps = m_particleSystems[_id];
-		delete(ps);
+		SafeDelete(ps);
 		m_particleSystems.erase(_id);
 	}
 
@@ -422,9 +441,9 @@ void DXGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y
 
 void DXGraphics::RemoveTextObject(int _id)
 {
-	if (m_texts.count(_id) != 0)
+	if (m_texts.find(_id) != m_texts.end())
 	{
-		delete(m_texts[_id]);
+		SafeDelete(m_texts[_id]);
 		m_texts.erase(_id);
 	}
 }
