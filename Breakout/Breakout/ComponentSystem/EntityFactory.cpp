@@ -148,6 +148,16 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<BallComponent>();
 		_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
 		break;
+	case EntityFactory::LASER:
+		_entity->AddComponent<PositionComponent>();
+		_entity->AddComponent<RotationComponent>();
+		_entity->AddComponent<ScaleComponent>();
+		_entity->AddComponent<ModelComponent>().m_modelPath = "laser";
+		_entity->AddComponent<VelocityComponent>();
+		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
+		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<DamageComponent>(10);
+		break;
 	case EntityFactory::WALL:
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();

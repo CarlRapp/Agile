@@ -53,6 +53,7 @@ public:
 		SAUSAGE_PAD_LEFT,
 		SAUSAGE_PAD_RIGHT,
 		BALL,
+		LASER,
 		POWERUP,
 		WALL,
 		H_WALL,

@@ -142,7 +142,6 @@ void World::EntityChanged(Entity* _e)
 
 	}
 }
-#include "Component/TNTComponent.h"
 
 void World::KillEntity(Entity* _e)
 {

@@ -10,7 +10,7 @@
 #include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
-#include "../ComponentSystem/System/KillOnTouchSystem.h"
+#include "../ComponentSystem/System/OnTouchSystem.h"
 #include "../ComponentSystem/Component/BallComponent.h"
 
 float counter;
@@ -124,7 +124,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > 1.f)
+	if (counter > 0.2f)
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
@@ -235,7 +235,7 @@ void GameScene::Reset()
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
 	m_world->AddSystem<SpawnPowerUpSystem>();
-	m_world->AddSystem<KillOnTouchSystem>();
+	m_world->AddSystem<OnTouchSystem>();
 
 	/*	New Implementation	*/
             
