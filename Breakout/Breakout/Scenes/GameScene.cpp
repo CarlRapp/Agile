@@ -140,10 +140,11 @@ void GameScene::Update(float _dt)
             AskPlayerName();
 	}
         
-        if(m_gameOver && !m_scoreSubmitted)
-        {
-            UpdateInputString();
-        }
+    if(m_gameOver && !m_scoreSubmitted)
+    {
+        UpdateInputString();
+    }
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 void GameScene::UpdateFPS(float _dt)

@@ -187,6 +187,7 @@ void MainMenuScene::Update(float _dt)
 
 
 	m_world->Update(_dt);
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 void MainMenuScene::Render(float _dt)
