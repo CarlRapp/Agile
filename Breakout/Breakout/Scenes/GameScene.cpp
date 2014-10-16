@@ -59,13 +59,7 @@ void GameScene::LoadContent()
 {
 	printf("Loading Content (Game Scene)\n");
 
-	std::vector<std::string> files;
-	FileManager::GetInstance().GetFilesInDirectory(files, MODEL_ROOT);
-	for (auto file : files)
-	{
-		file = file.substr(0, file.size() - 4);
-		GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
-	}
+
 }
 
 void GameScene::Update(float _dt)

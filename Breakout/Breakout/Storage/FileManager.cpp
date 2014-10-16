@@ -1,5 +1,11 @@
 #include "FileManager.h"
-
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <dirent.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 FileManager* FileManager::instance = 0;
 
 FileManager::~FileManager()
@@ -58,11 +64,12 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 
 	FindClose(dir);
 #else
-	/*DIR *dir;
+	DIR *dir;
 	class dirent *ent;
 	class stat st;
 
-	dir = opendir(directory);
+	dir = opendir(directory.c_str());
+        //printf("Trying to open: %s\n", directory.c_str());
 	while ((ent = readdir(dir)) != NULL) {
 		const string file_name = ent->d_name;
 		const string full_file_name = directory + "/" + file_name;
@@ -78,9 +85,9 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 		if (is_directory)
 			continue;
 
-		out.push_back(full_file_name);
+		out.push_back(file_name);
 	}
-	closedir(dir);*/
+	closedir(dir);
 #endif
 }
 
