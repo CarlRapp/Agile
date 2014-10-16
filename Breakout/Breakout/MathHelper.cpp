@@ -2,6 +2,29 @@
 #include "stdafx.h"
 
 #ifdef WINDOWS
+
+bool operator==(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r)
+{
+	DirectX::XMVECTOR lvec(DirectX::XMLoadFloat3(&l));
+	DirectX::XMVECTOR rvec(DirectX::XMLoadFloat3(&r));
+
+
+
+	DirectX::XMFLOAT3 res;
+	DirectX::XMStoreFloat3(&res, DirectX::XMVectorEqual(lvec, rvec));
+	return res.x;
+}
+
+bool operator!=(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r)
+{
+	DirectX::XMVECTOR lvec(DirectX::XMLoadFloat3(&l));
+	DirectX::XMVECTOR rvec(DirectX::XMLoadFloat3(&r));
+
+	DirectX::XMFLOAT3 res;
+	DirectX::XMStoreFloat3(&res, DirectX::XMVectorEqual(lvec, rvec));
+	return !res.x;
+}
+
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r)
 {
 	DirectX::XMVECTOR lvec(DirectX::XMLoadFloat3(&l));
@@ -34,12 +57,7 @@ DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r)
 
 DirectX::XMFLOAT3 operator*(DirectX::XMFLOAT3 l, float r)
 {
-	DirectX::XMVECTOR lvec(DirectX::XMLoadFloat3(&l));
-	DirectX::XMVECTOR rvec(DirectX::XMLoadFloat(&r));
-
-	DirectX::XMFLOAT3 res;
-	DirectX::XMStoreFloat3(&res, DirectX::XMVectorMultiply(lvec, rvec));
-	return res;
+	return l * DirectX::XMFLOAT3(r, r, r);
 }
 
 DirectX::XMFLOAT4X4 operator*(DirectX::XMFLOAT4X4 _inM1, DirectX::XMFLOAT4X4 _inM2)

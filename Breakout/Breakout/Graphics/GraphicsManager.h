@@ -83,7 +83,7 @@ public:
 
 	void		SetSky(std::string _name);
 	void		ClearSky();
-
+        
 	void SetBlendTexture(int _objectID, std::string _filename);
 
 };

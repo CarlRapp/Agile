@@ -45,14 +45,21 @@ private:
         int m_lvlUpHandleDAMAGE = 0;
         int m_lvlUpHandleAUTO = 0;
         
+        int m_textHandleEXP = 0;     
+        
+        int m_inputHighScoreHandle = 0;
         
         int m_levelUp = 0;
         int m_playerID = 0;
         bool m_playerIsMaxLevel = false;
+        bool m_scoreSubmitted = false;
         
         void SkillSpeed();
         void SkillSize();
         void SkillDamage();
+        void AskPlayerName();
+        void SubmitHighScore();
+        void UpdateInputString();
 public:
 	GameScene();
 	~GameScene();

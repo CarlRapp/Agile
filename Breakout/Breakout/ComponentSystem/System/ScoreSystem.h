@@ -10,6 +10,7 @@ private:
 	void OnEntityAdded(Entity* _e);
 	void OnEntityRemoved(Entity* _e);
         int m_levelUp = 0;
+        std::string ExpToString(int _nextLevel, int _score,int _level, float _increase);
 
 public:
 
