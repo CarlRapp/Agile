@@ -25,7 +25,7 @@ private:
 	void Start();
 	void EntityChanged(Entity* _e);
 	void KillEntity(Entity* _e);
-
+	
 	void AddNewComponent(TypeID _id);
 	void AddEntityToComponentPool(Entity* _e);
 

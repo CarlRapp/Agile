@@ -88,7 +88,7 @@ void GameScene::Update(float _dt)
                 GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
             }
                     
-}
+		}
         else
         {
             Entity* e = m_world->GetEntity(m_pauseHandle);
@@ -202,7 +202,6 @@ void GameScene::Reset()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<PadCollisionSystem>();
-	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollectPowerUpSystem>();
@@ -236,7 +235,7 @@ void GameScene::Reset()
 	rareBlocks->SetPoolChance(10);
 	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
 	blockSystem->AddBlockPool(rareBlocks);
-	blockSystem->ForceSpawn(50);
+	blockSystem->ForceSpawn(10);
 
 	/*	New Implementation	*/
             

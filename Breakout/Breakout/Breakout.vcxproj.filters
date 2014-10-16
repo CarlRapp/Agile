@@ -479,15 +479,11 @@
     <ClInclude Include="ComponentSystem\System\ShootLaserSystem.h">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\WarpComponent.h" />
-    <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h">
-      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentSystem\Component\BulletTimeComponent.h">
-      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
-    </ClInclude>
     <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\WarpComponent.h">
+      <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
