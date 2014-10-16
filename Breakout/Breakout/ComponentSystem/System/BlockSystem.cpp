@@ -58,7 +58,6 @@ void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topC
 void BlockSystem::Update(float _dt)
 {
 
-
 }
 
 void BlockSystem::OnEntityAdded(Entity* _block)
@@ -269,7 +268,11 @@ void BlockSystem::PushDown(int _x, int _y)
 					m_blockGrid[yPos][xPos + n] = 0;
 				}
 				else
+				{
+					m_blockGrid[yPos][xPos + n] = 0;
 					e->SetState(Entity::SOON_DEAD);
+				}
+					
 			}
 
 			MoveToWorldPosition(e, xPos, yPos + 1);

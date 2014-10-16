@@ -162,6 +162,7 @@ ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
 	}
 	else
 	{
+		printf("Trying to load texture: %s\n", filename);
 		std::wstring widestr = std::wstring(filename.begin(), filename.end());
 		D3DX11CreateShaderResourceViewFromFile(md3dDevice, widestr.c_str(), 0, 0, &srv, 0 );
 

@@ -38,8 +38,6 @@ private:
     int m_gameOverHandle= 0;
     bool m_gameOver = false;
 
-	EntityFactory::EntityType RandomizeType(void);
-
         
         int m_lvlUpHandleMAIN= 0;
         int m_lvlUpHandleSPEED= 0;

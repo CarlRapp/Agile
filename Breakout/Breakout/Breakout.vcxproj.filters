@@ -180,6 +180,9 @@
     <ClCompile Include="ComponentSystem\System\ShootLaserSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\BlockSpawnSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -482,6 +485,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\BulletTimeComponent.h">
       <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
