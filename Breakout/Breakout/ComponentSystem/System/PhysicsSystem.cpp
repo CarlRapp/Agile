@@ -312,7 +312,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->friction = 0.0f;
 		fixDef->restitution = 1.0f;
 		fixDef->filter.categoryBits = CollisionCategory::POWERUP;
-		fixDef->filter.maskBits = CollisionCategory::PAD | CollisionCategory::WALL | CollisionCategory::INVISIBLEWALL;
+		fixDef->filter.maskBits = CollisionCategory::PAD | CollisionCategory::WALL | CollisionCategory::KILLONTOUCH;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
 		_b2BodyDef->fixedRotation = false;

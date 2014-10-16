@@ -24,7 +24,7 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 {
 	int spawnPowerUp = rand() % 100;
 
-	if (spawnPowerUp <= 5)
+	if (spawnPowerUp <= 2)
 	{
 		spawnPowerUp = rand() % 2;
 		Entity* _newPowerUp = 0;

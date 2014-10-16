@@ -133,3 +133,8 @@ void GraphicsManager::ClearSky()
 {
 	m_IGraphics->ClearSky();
 }
+
+void GraphicsManager::SetBlendTexture(int _objectID, std::string _filename)
+{
+	m_IGraphics->SetBlendTexture(_objectID, _filename);
+}

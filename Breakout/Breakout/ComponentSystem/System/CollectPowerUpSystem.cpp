@@ -66,6 +66,8 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 void CollectPowerUpSystem::SpawnMultiBalls()
 {
 	std::vector<Entity*>* allBalls = m_world->GetEntities<BallComponent>();
+	if (!allBalls)
+		return;
 	int tSize = allBalls->size();
 	for (int i = 0; i < tSize; ++i)
 	{

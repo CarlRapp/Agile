@@ -62,6 +62,7 @@
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
 xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures\CubeMaps" "$(OutDir)\Data\Textures\CubeMaps" /Y /I
 xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
 xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
 xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
@@ -86,6 +87,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
 xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures\CubeMaps" "$(OutDir)\Data\Textures\CubeMaps" /Y /I
 xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
 xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
 xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
@@ -100,6 +102,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClCompile Include="ComponentSystem\Entity\Entity.cpp" />
     <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
     <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\BlockSpawnSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
@@ -127,6 +130,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClCompile Include="Graphics\DirectX\DXGraphics.cpp" />
     <ClCompile Include="Graphics\DirectX\DXLightHelper.cpp" />
     <ClCompile Include="Graphics\DirectX\DXMesh.cpp" />
+    <ClCompile Include="Graphics\DirectX\DXMeshManager.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModel.cpp" />
     <ClCompile Include="Graphics\DirectX\DXModelManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -200,6 +204,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
     <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
     <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
+    <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h" />
     <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
@@ -227,6 +232,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClInclude Include="Graphics\DirectX\DXGraphics.h" />
     <ClInclude Include="Graphics\DirectX\DXLightHelper.h" />
     <ClInclude Include="Graphics\DirectX\DXMesh.h" />
+    <ClInclude Include="Graphics\DirectX\DXMeshManager.h" />
     <ClInclude Include="Graphics\DirectX\DXModel.h" />
     <ClInclude Include="Graphics\DirectX\DXModelManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

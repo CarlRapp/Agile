@@ -60,8 +60,9 @@ ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wst
 
 	m_mat = m_FX->GetVariableByName("gMaterial");
 
-	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	m_normalMap = m_FX->GetVariableByName("gNormalMap")->AsShaderResource();
+	m_diffuseTex = m_FX->GetVariableByName("gDiffuseTex")->AsShaderResource();
+	m_blendTex = m_FX->GetVariableByName("gBlendTex")->AsShaderResource();
+	m_normalTex = m_FX->GetVariableByName("gNormalTex")->AsShaderResource();
 }
 
 ObjectDeferredEffect::~ObjectDeferredEffect()
@@ -261,11 +262,20 @@ SkyEffect*				DXEffects::m_skyFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* _device)
 {
-	m_combineFinalFX = new CombineFinalEffect(_device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
-	m_objectDeferredFX = new ObjectDeferredEffect(_device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
-	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
-	m_renderTextFX = new RenderTextEffect(_device, L"Graphics/DirectX/Shaders/RenderText.fxo");
-	m_skyFX = new SkyEffect(_device, L"Graphics/DirectX/Shaders/Sky.fxo");
+	std::string shaderString = GetFile("CombineFinal.fxo", SHADER_ROOT);
+	m_combineFinalFX = new CombineFinalEffect(_device, std::wstring(shaderString.begin(), shaderString.end()));
+
+	shaderString = GetFile("ObjectDeferred.fxo", SHADER_ROOT);
+	m_objectDeferredFX = new ObjectDeferredEffect(_device, std::wstring(shaderString.begin(), shaderString.end()));
+
+	shaderString = GetFile("TiledLightning.fxo", SHADER_ROOT);
+	m_tiledLightningFX = new TiledLightningEffect(_device, std::wstring(shaderString.begin(), shaderString.end()));
+
+	shaderString = GetFile("RenderText.fxo", SHADER_ROOT);
+	m_renderTextFX = new RenderTextEffect(_device, std::wstring(shaderString.begin(), shaderString.end()));
+
+	shaderString = GetFile("Sky.fxo", SHADER_ROOT);
+	m_skyFX = new SkyEffect(_device, std::wstring(shaderString.begin(), shaderString.end()));
 }
 
 void DXEffects::DestroyAll()
