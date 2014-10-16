@@ -177,7 +177,9 @@ void DXCamera::AddShake(int _id, float _minOffset, float _maxOffset, float _freq
 	CameraShake cs;
 	cs.time = 0.0f;
 	cs.loop = _time < 0;
-	_time = 50 * _frequency;
+
+	if (cs.loop)
+		_time = 50 * _frequency;
 	
 
 	ShakeKeyFrame first;

@@ -89,6 +89,7 @@ void DXTextureManager::InitLetters(ID3D11Device* _device)
 	letters.push_back(LetterInfo('-', DXText::_minus));
 	letters.push_back(LetterInfo('.', DXText::_dot));
 	letters.push_back(LetterInfo('/', DXText::_slash));
+	letters.push_back(LetterInfo('[', DXText::_expArrow));
 
 	
 	float* temp;
