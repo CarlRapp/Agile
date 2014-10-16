@@ -223,7 +223,8 @@ static void MacroPrintMatrix(DirectX::XMFLOAT4X4* _m)
 	std::printf("%f  %f  %f  %f\n\n", _m->_41, _m->_42, _m->_43, _m->_44);
 }
 
-
+bool operator!=(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
+bool operator==(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 DirectX::XMFLOAT3 operator-(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
 
 DirectX::XMFLOAT3 operator+(DirectX::XMFLOAT3 l, DirectX::XMFLOAT3 r);
