@@ -174,6 +174,9 @@
     <ClCompile Include="Storage\HighScoreLoader.cpp">
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentSystem\System\BlockSpawnSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -460,6 +463,9 @@
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXSky.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

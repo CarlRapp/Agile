@@ -7,6 +7,7 @@
 #pragma region System includes
 #include "../ComponentSystem/System/BlockSystem.h"
 #include "../ComponentSystem/System/TextSystem.h"
+#include "../ComponentSystem/System/BlockSpawnSystem.h"
 #pragma endregion
 
 
@@ -150,20 +151,6 @@ void MainMenuScene::Update(float _dt)
 
 
 	m_world->Update(_dt);
-
-	m_blockTimer += _dt;
-	if (m_blockTimer > .50f)
-	{
-		m_blockTimer = 0;
-		Entity* e;
-		e = m_world->CreateEntity();
-		if (!e)
-			return;
-
-		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		m_world->AddEntity(e);
-	}
 }
 
 // Denna lär plockas bort sen
@@ -225,21 +212,33 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<CollisionDamageSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<EffectSystem>();
+	m_world->AddSystem<BlockSpawnSystem>();
 	m_world->AddSystem<BlockSystem>();
-        m_world->AddSystem<TextSystem>();
+    m_world->AddSystem<TextSystem>();
+
+	BlockSpawnSystem* blockSystem = m_world->GetSystem<BlockSpawnSystem>();
+	BlockPool*	easyBlocks = new BlockPool();
+	easyBlocks->SetPoolChance(60);
+	easyBlocks->AddBlockToPool(BlockType::BLACK_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::RED_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::GREEN_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::BLUE_SMALL);
+	blockSystem->AddBlockPool(easyBlocks);
+	BlockPool*	mediumBlocks = new BlockPool();
+	mediumBlocks->SetPoolChance(30);
+	mediumBlocks->AddBlockToPool(BlockType::RED_MEDIUM);
+	mediumBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
+	mediumBlocks->AddBlockToPool(BlockType::BLUE_MEDIUM);
+	blockSystem->AddBlockPool(mediumBlocks);
+	BlockPool*	rareBlocks = new BlockPool();
+	rareBlocks->SetPoolChance(10);
+	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
+	blockSystem->AddBlockPool(rareBlocks);
+
 	/*	New Implementation	*/
 
 	//FPS COUNTER
 	Entity* e;
-
-	for (int i = 0; i < 0; ++i)
-	{
-		e = m_world->CreateEntity();
-		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_BIG_RED);
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		m_world->AddEntity(e);
-	}
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);

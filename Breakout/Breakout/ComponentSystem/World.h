@@ -91,7 +91,7 @@ template <typename T>
 T* World::GetSystem()
 {
 	if (m_systems.find(T::GetTypeID()) != m_systems.end())
-		return m_systems[T::GetTypeID()];
+		return (T*)m_systems[T::GetTypeID()];
 
 	return 0;
 }

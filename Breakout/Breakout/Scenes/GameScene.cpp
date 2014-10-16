@@ -12,6 +12,7 @@
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
 #include "../ComponentSystem/System/KillOnTouchSystem.h"
 #include "../ComponentSystem/Component/BallComponent.h"
+#include "../ComponentSystem//System/BlockSpawnSystem.h"
 
 float counter;
 std::string m_fpsString= "FPS: ";
@@ -65,11 +66,11 @@ void GameScene::Update(float _dt)
 {
         UpdateFPS(_dt);
     
-        if(m_levelUp)
-        {
-            LevelUpMenu(_dt);
-            return;
-        }
+    if(m_levelUp)
+    {
+        LevelUpMenu(_dt);
+        return;
+    }
         
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
@@ -77,23 +78,23 @@ void GameScene::Update(float _dt)
 		GraphicsManager* GM = GraphicsManager::GetInstance();
 
 		if (m_isPaused)
-                {
+        {
                    
-                    if(!m_gameOver)
-                    {
-                        Entity* e = m_world->GetEntity(m_pauseHandle);
-                        auto TC = e->GetComponent<TextComponent>();
+            if(!m_gameOver)
+            {
+                Entity* e = m_world->GetEntity(m_pauseHandle);
+                auto TC = e->GetComponent<TextComponent>();
 
-                        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-                    }
+                GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+            }
                     
-		}
-                else
-                {
-                    Entity* e = m_world->GetEntity(m_pauseHandle);
-                    GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-                    //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
-                }
+}
+        else
+        {
+            Entity* e = m_world->GetEntity(m_pauseHandle);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+            //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
+        }
 		return;
 	}
     
@@ -124,18 +125,6 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
-
-	counter += _dt;
-	if (counter > 1.f)
-	{
-		Entity* e;
-		e = m_world->CreateEntity();
-		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		m_world->AddEntity(e);
-		counter = 0;
-			
-	}
 
 	m_world->Update(_dt);
 
@@ -261,10 +250,31 @@ void GameScene::Reset()
 	m_world->AddSystem<RespawnBallSystem>();
 	m_world->AddSystem<LightSystem>();
 	m_world->AddSystem<EffectSystem>();
+	m_world->AddSystem<BlockSpawnSystem>();
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
 	m_world->AddSystem<SpawnPowerUpSystem>();
 	m_world->AddSystem<KillOnTouchSystem>();
+
+	BlockSpawnSystem* blockSystem = m_world->GetSystem<BlockSpawnSystem>();
+	BlockPool*	easyBlocks = new BlockPool();
+	easyBlocks->SetPoolChance(60);
+	easyBlocks->AddBlockToPool(BlockType::BLACK_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::RED_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::GREEN_SMALL);
+	easyBlocks->AddBlockToPool(BlockType::BLUE_SMALL);
+	blockSystem->AddBlockPool(easyBlocks);
+	BlockPool*	mediumBlocks = new BlockPool();
+	mediumBlocks->SetPoolChance(30);
+	mediumBlocks->AddBlockToPool(BlockType::RED_MEDIUM);
+	mediumBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
+	mediumBlocks->AddBlockToPool(BlockType::BLUE_MEDIUM);
+	blockSystem->AddBlockPool(mediumBlocks);
+	BlockPool*	rareBlocks = new BlockPool();
+	rareBlocks->SetPoolChance(10);
+	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
+	blockSystem->AddBlockPool(rareBlocks);
+	blockSystem->ForceSpawn(50);
 
 	/*	New Implementation	*/
             
@@ -300,7 +310,7 @@ void GameScene::Reset()
     m_world->AddEntity(e);
 	GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
         
-	for (int i = 0; i < 50; ++i)
+	for (int i = 0; i < 0; ++i)
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));

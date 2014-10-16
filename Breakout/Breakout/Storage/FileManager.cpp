@@ -44,7 +44,7 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 
 	do {
 		const string file_name = file_data.cFileName;
-		const string full_file_name = directory + "/" + file_name;
+		const string full_file_name = directory + file_name;
 		const bool is_directory = (file_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
 
 		if (file_name[0] == '.')

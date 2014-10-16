@@ -37,7 +37,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Small";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.0f);
@@ -58,7 +58,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_green";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Green_Small";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.0f);
@@ -80,7 +80,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_blue";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Blue_Small";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -102,7 +102,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_black";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Black_Small";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -122,7 +122,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_tnt";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_TNT_Small";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -146,7 +146,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_red";	
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Medium";	
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -170,7 +170,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_green";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Green_Medium";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -194,7 +194,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<ScaleComponent>();
 		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_blue";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Blue_Medium";
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
 		_entity->AddComponent<DeflectionComponent>(30.f);
@@ -217,7 +217,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Small";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);

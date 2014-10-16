@@ -1,6 +1,6 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib Box_1_2x1x1_red_c.mtl
+mtllib Block_Blue_Medium.mtl
 g default
 v -1.000000 -0.450005 0.450005
 v -0.950005 -0.500000 0.450005

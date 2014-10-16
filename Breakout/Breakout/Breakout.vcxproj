@@ -84,6 +84,7 @@
     <ClCompile Include="ComponentSystem\Entity\Entity.cpp" />
     <ClCompile Include="ComponentSystem\Filter\ComponentFilter.cpp" />
     <ClCompile Include="ComponentSystem\System\AudioSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\BlockSpawnSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\BlockSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollectPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\CollisionDamageSystem.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="ComponentSystem\Entity\Entity.h" />
     <ClInclude Include="ComponentSystem\Filter\ComponentFilter.h" />
     <ClInclude Include="ComponentSystem\System\AudioSystem.h" />
+    <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h" />
     <ClInclude Include="ComponentSystem\System\BlockSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollectPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\CollisionDamageSystem.h" />
