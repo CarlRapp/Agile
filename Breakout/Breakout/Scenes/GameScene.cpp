@@ -167,10 +167,12 @@ void GameScene::OnActive()
 {
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	GraphicsManager::GetInstance()->SetSky("space");
+	GraphicsManager::GetInstance()->GetICamera()->AddShake(1, 2, 4, 30, 3);
 	Reset();
 }
 void GameScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->GetICamera()->RemoveShake(1);
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 	if (m_world)
