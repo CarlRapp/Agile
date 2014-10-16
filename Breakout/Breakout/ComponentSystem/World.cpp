@@ -206,6 +206,9 @@ void World::AddEntityToComponentPool(Entity* _e)
 {
 	for(IComponent* c : *_e->GetComponents())
 	{
+		if (m_componentEntityPool.find(c->m_ID) == m_componentEntityPool.end())
+			m_componentEntityPool[c->m_ID] = new std::vector<Entity*>();
+
 		m_componentEntityPool[c->m_ID]->push_back(_e);
 	}
 }
