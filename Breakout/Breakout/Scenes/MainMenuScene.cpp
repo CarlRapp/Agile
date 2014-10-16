@@ -53,17 +53,16 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
 	m_Start = TC;
-	TC->Initialize("--START--", 0.05f, 0.9f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--START--", 0.05f, 0.9f, 2.f, VECTOR3(0, 1, 0), 10);
     m_world->AddEntity(e);
     m_playID = e->GetId();
-   // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Options = TC;
-	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 15);
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
@@ -73,8 +72,7 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Exit = TC;
-	TC->Initialize("--EXIT--", 0.05f, 0.8f, 4.f, VECTOR3(0, 1, 0), 20.0f);
-    //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
+	TC->Initialize("--EXIT--", 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -149,7 +147,7 @@ void MainMenuScene::Update(float _dt)
 		m_Exit->m_color = VECTOR3(0, 1, 0);
 	
 
-
+	m_world->GetSystem<BlockSpawnSystem>()->ForceSpawn(1);
 	m_world->Update(_dt);
 }
 
@@ -171,41 +169,48 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSpawnSystem>();
 	m_world->AddSystem<BlockSystem>();
+	m_world->GetSystem<BlockSystem>()->SetSettings(30, 20, 20, 0);
     m_world->AddSystem<TextSystem>();
 
 	BlockSpawnSystem* blockSystem = m_world->GetSystem<BlockSpawnSystem>();
-	BlockPool*	easyBlocks = new BlockPool();
-	easyBlocks->SetPoolChance(60);
-	easyBlocks->AddBlockToPool(BlockType::BLACK_SMALL);
-	easyBlocks->AddBlockToPool(BlockType::RED_SMALL);
-	easyBlocks->AddBlockToPool(BlockType::GREEN_SMALL);
-	easyBlocks->AddBlockToPool(BlockType::BLUE_SMALL);
-	blockSystem->AddBlockPool(easyBlocks);
-	BlockPool*	mediumBlocks = new BlockPool();
-	mediumBlocks->SetPoolChance(30);
-	mediumBlocks->AddBlockToPool(BlockType::RED_MEDIUM);
-	mediumBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
-	mediumBlocks->AddBlockToPool(BlockType::BLUE_MEDIUM);
-	blockSystem->AddBlockPool(mediumBlocks);
+	//BlockPool*	easyBlocks = new BlockPool();
+	//easyBlocks->SetPoolChance(60);
+	//easyBlocks->AddBlockToPool(BlockType::BLACK_SMALL);
+	//easyBlocks->AddBlockToPool(BlockType::RED_SMALL);
+	//easyBlocks->AddBlockToPool(BlockType::GREEN_SMALL);
+	//easyBlocks->AddBlockToPool(BlockType::BLUE_SMALL);
+	//blockSystem->AddBlockPool(easyBlocks);
+	//BlockPool*	mediumBlocks = new BlockPool();
+	//mediumBlocks->SetPoolChance(30);
+	//mediumBlocks->AddBlockToPool(BlockType::RED_MEDIUM);
+	//mediumBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
+	//mediumBlocks->AddBlockToPool(BlockType::BLUE_MEDIUM);
+	//blockSystem->AddBlockPool(mediumBlocks);
 	BlockPool*	rareBlocks = new BlockPool();
-	rareBlocks->SetPoolChance(10);
-	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
+	rareBlocks->SetPoolChance(100);
+	rareBlocks->AddBlockToPool(BlockType::BLACK_SMALL);
+	rareBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
+	rareBlocks->AddBlockToPool(BlockType::RED_MEDIUM);
+	rareBlocks->AddBlockToPool(BlockType::RED_SMALL);
+	rareBlocks->AddBlockToPool(BlockType::RED_SMALL);
+	rareBlocks->AddBlockToPool(BlockType::GREEN_MEDIUM);
 	blockSystem->AddBlockPool(rareBlocks);
+	//blockSystem->ForceSpawn(40);
 
 	/*	New Implementation	*/
 
 	//FPS COUNTER
 	Entity* e;
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
-	
-	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
-	
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
+	//e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
+	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
+	//
+	//e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
+	//
+	//m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

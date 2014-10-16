@@ -26,7 +26,7 @@ void BlockSpawnSystem::Update(float _dt)
 	{
 		SpawnBlock();
 		m_spawnTimer = exp(-m_elapsedTime / 120);
-		printf("Time: %f\n", m_spawnTimer);
+		//printf("Time: %f\n", m_spawnTimer);
 	}
 }
 
