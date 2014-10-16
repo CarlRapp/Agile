@@ -162,7 +162,7 @@ void GameScene::Render(float _dt)
 void GameScene::OnActive()
 {
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
-	GraphicsManager::GetInstance()->SetSky("space");
+	GraphicsManager::GetInstance()->SetSky("BackGroundCube");
 	Reset();
 }
 void GameScene::OnInactive()
