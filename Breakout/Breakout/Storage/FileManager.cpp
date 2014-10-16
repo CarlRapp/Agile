@@ -2,10 +2,14 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <dirent.h>
-#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#ifdef LINUX
+#include <dirent.h>
+#include <unistd.h>
+#endif
+
 FileManager* FileManager::instance = 0;
 
 FileManager::~FileManager()

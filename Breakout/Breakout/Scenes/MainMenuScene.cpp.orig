@@ -112,6 +112,7 @@ void MainMenuScene::OnActive()
             break;
     }
     
+    GM->GetICamera()->AddShake(133421, 1.0f, 20.0f, 8.0f, 5.0f);
 	
 }
 void MainMenuScene::OnInactive()
@@ -188,6 +189,9 @@ void MainMenuScene::Update(float _dt)
 
 
 	m_world->Update(_dt);
+<<<<<<< HEAD
+
+	
 //        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
 //	test += _dt * 0.5f;
 //	pos.y = 20;
@@ -195,6 +199,8 @@ void MainMenuScene::Update(float _dt)
 //	pos.z = 100 * cosf(test);
 //
 //	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
+=======
+>>>>>>> Windows
 	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
