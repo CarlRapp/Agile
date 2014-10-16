@@ -18,7 +18,7 @@ ShaderHandler::~ShaderHandler()
     /* REMOVE SHADERS */
     for ( int i = 0; i < m_shaders.size( ); i++ )
     {
-            glDeleteShader( m_shaders[i] );
+        glDeleteShader( m_shaders[i] );
     }
 }
 

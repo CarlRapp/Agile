@@ -3,15 +3,19 @@
 
 #include "IComponent.h"
 
+const short STATPOINTS_PER_LEVEL = 5;
+const short POINTS_PER_LEVEL_INC = 40;
+
 struct ScoreComponent : Component<ScoreComponent>
 {
 	int m_score=0;
 	bool wasHit=false; // temp
         std::string m_scoreStr = "SCORE :";
-        int m_nextLevel = 5;
+        int m_nextLevel = 20;
 
 	ScoreComponent()
 	{
+            m_nextLevel = 20;
             m_score = 0;
             wasHit = false;
 	}
@@ -42,7 +46,7 @@ struct ScoreComponent : Component<ScoreComponent>
                 
                 if(levelUp > 0)
                 {
-                    levels++;
+                    levels+=STATPOINTS_PER_LEVEL;
                     SetNextLevelUpScore();
                 }
             }
@@ -52,7 +56,7 @@ struct ScoreComponent : Component<ScoreComponent>
         
         void SetNextLevelUpScore()
         {
-            m_nextLevel += 5;
+            m_nextLevel += POINTS_PER_LEVEL_INC;
         }
 
 };

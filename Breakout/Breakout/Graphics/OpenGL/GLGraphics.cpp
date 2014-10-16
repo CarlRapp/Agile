@@ -11,7 +11,7 @@ GLGraphics::GLGraphics(void)
 
 GLGraphics::~GLGraphics(void)
 {
-    Free();
+    Clear();
 }
 
 bool GLGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -50,6 +50,14 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_standardShaderProgram.AddShader("explode_geometry.glsl",GL_GEOMETRY_SHADER);
 
     m_standardShaderProgram.LinkShaderProgram();
+    
+    m_standardShaderProgram.UseProgram();
+    GLuint t1Location = glGetUniformLocation(m_standardShaderProgram.GetProgramHandle(), "m_standardTex");
+    GLuint t2Location = glGetUniformLocation(m_standardShaderProgram.GetProgramHandle(), "m_blendTex");
+
+    glUniform1i(t1Location, 0);
+    glUniform1i(t2Location, 1);
+    glUseProgram(0);
 
 //------------------------------------------------------------------------------------
     m_shader2Dprogram.CreateShaderProgram();
@@ -114,9 +122,6 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     m_skyboxProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
 
-    m_skybox = new GLSkybox(GetFile("CubeMaps/space2", TEXTURE_ROOT));
-    m_skybox->CreateBuffers();
-    
     glEnable(GL_BLEND);
     glEnable(GL_POINT_SPRITE);
    
@@ -184,6 +189,7 @@ void GLGraphics::LoadModel(std::string _path)
         printf("Vertices: %d [Index: %d]\n", i, index);
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
+        m_models[index]->modelName = _path;
         
         if((*groupIt)->material)
         {
@@ -201,6 +207,8 @@ void GLGraphics::LoadModel(std::string _path)
             m_models[index]->MaterialKs = 0.0f;
             m_models[index]->MaterialNs = 1.0f;
         }
+        m_texManager.Load2DTexture("emptyBlend.png", GL_TEXTURE1);
+        m_models[index]->blendTexHandle = m_texManager.GetTexture("emptyBlend.png");
         
         m_testMatrices.push_back(glm::mat4(1.0f));
         
@@ -299,10 +307,10 @@ void GLGraphics::LoadModel(std::string _path)
     
     int err = glGetError();
     
-    std::cout << "Loadmodel finish: " << _path;
-    if(err)
-    std::cout << "\033[31m with error: " << err;
-    std::cout << "\n\033[30m";
+//    std::cout << "Loadmodel finish: " << _path;
+//    if(err)
+//    std::cout << "\033[31m with error: " << err;
+//    std::cout << "\n\033[30m";
 }
 
 void GLGraphics::LoadTexture(std::string _path)
@@ -434,7 +442,7 @@ void GLGraphics::Resize(int _width, int _height)
     glViewport(0, 0, m_screenWidth, m_screenHeight);
 }
 
-void GLGraphics::Free()
+void GLGraphics::Clear()
 {
     for(int i = m_models.size()-1; i > -1;i--)
     {
@@ -466,18 +474,6 @@ void GLGraphics::Free()
     m_shader2Dprogram.~ShaderHandler();
     m_skyboxProgram.~ShaderHandler();
  
-//    for(int i=0;i < m_letters64.size(); i++)
-//    {
-//        m_letters64.pop_back();
-//    }
-    
-//    for(int i=m_letters256.size() - 1;i >= 0; i--)
-//    {
-//        free(m_letters256[i]);
-//        m_letters256[i] = nullptr;
-//        m_letters256.pop_back();
-//    }
-
     for(int i=0; i < m_textObjects.size();i++)
     {
         m_textObjects.pop_back();
@@ -487,7 +483,11 @@ void GLGraphics::Free()
     {
         delete(it->second);
     }
+    
     m_particleEffects.clear();
+    
+    m_skybox->Free();
+    delete (m_skybox);
     
     printf("Graphics memory cleared\n");
 }
@@ -750,6 +750,8 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
     
     m_standardShaderProgram.SetUniformV("EyePosition", vec4(_camera->GetPosition(), 1.0f));
     
+    //printf("models size: %i \n", m_models.size());
+    
     for(int i=0; i< m_models.size();i++)
     {
         m_standardShaderProgram.SetUniformV("Material.Ks", m_models[i]->MaterialKs);
@@ -759,6 +761,11 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_models[i]->texHandle);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, m_models[i]->blendTexHandle);
+        
         
         //Update matrix buffer//
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[4]);
@@ -907,6 +914,7 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
     mi->world = _world;
     mi->explosion = _explosion;
     mi->worldInverseTranspose = _worldInverseTranspose;
+    
 
     m_models[newModelID]->instances.insert(pair<int, ModelInstance*>(_id, mi));
 }
@@ -927,4 +935,73 @@ void GLGraphics::RemoveObject(int _id)
 void GLGraphics::ShowMouseCursor(bool _value)
 {
      SDL_ShowCursor(_value);
+}
+
+void GLGraphics::SetSky(std::string _name)
+{
+    m_skybox = new GLSkybox(GetFile("CubeMaps/"+_name, TEXTURE_ROOT));
+    if(!m_skybox->CheckOK())
+    {
+        SafeDelete(m_skybox);
+    }
+    else
+        m_skybox->CreateBuffers();
+}
+void GLGraphics::ClearSky()
+{
+    SafeDelete(m_skybox);
+}
+
+void GLGraphics::SetBlendTexture(int _objectID, std::string _filename)
+{
+    if(_filename == "emptyBlend.png")
+        _filename = "";
+    
+    int recvHandle = m_texManager.GetTexture(_filename);
+    if(recvHandle == -1)
+    {
+        //printf("BlendTexture %s is not loaded. Loading texture now. \n", _filename.c_str());
+        m_texManager.Load2DTexture(_filename, GL_TEXTURE1);
+        recvHandle = m_texManager.GetTexture(_filename);
+    }
+    
+    for(int i = 0; i < m_models.size(); i++)
+    {
+        if(m_models[i]->instances.find(_objectID) != m_models[i]->instances.end())
+        {
+            //tmp copy the instance
+            ModelInstance *instanceToCopyAndRemove = m_models[i]->instances[_objectID];
+            
+            //remove instance from the old model
+            m_models[i]->instances.erase(_objectID);
+            
+            
+            for(int j = 0; j < m_models.size(); j++)
+            {
+                if(m_models[i]->modelName + _filename == m_models[j]->name)
+                {
+                    m_models[j]->instances[_objectID]  = instanceToCopyAndRemove;
+                    return;
+                }
+            }
+            
+            ModelRenderInfo *tmpModel = new ModelRenderInfo();
+            //create a model copy (except the instances) and add the instance to this one instead
+            tmpModel->vertices              = m_models[i]->vertices;
+            tmpModel->bufferVAOID           = m_models[i]->bufferVAOID;
+            tmpModel->texHandle             = m_models[i]->texHandle;
+            tmpModel->blendTexHandle        = recvHandle;
+            tmpModel->name                  = m_models[i]->modelName+_filename;
+            tmpModel->modelName             = m_models[i]->modelName;
+            tmpModel->MaterialKs            = m_models[i]->MaterialKs;
+            tmpModel->MaterialNs            = m_models[i]->MaterialNs;
+            //tmpModel->buffers               = m_models[i]->buffers;
+            memcpy(tmpModel->buffers, m_models[i]->buffers, 6*sizeof(GLuint));
+            tmpModel->instances[_objectID]  = instanceToCopyAndRemove;
+
+            m_models.push_back(tmpModel);
+            return;
+        }
+    }
+    
 }

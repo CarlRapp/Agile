@@ -46,7 +46,7 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
-	GM->SetSky("space");
+	GM->SetSky("space2");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();

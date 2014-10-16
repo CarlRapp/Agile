@@ -80,7 +80,7 @@ static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-#define SafeDelete(x) { if(x) { delete x; x = 0; } }
+#define SafeDelete(x) { if(x != NULL) { delete x; x = 0; } }
 #define SafeDeleteArray(x) { if(x) { delete[] x; x= 0; } }
 
 #define MAX_ENTITY_COUNT 500

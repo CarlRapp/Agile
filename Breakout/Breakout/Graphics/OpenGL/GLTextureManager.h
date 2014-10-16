@@ -34,8 +34,10 @@ private:
     
 public:
     
-    GLuint GetTexture(std::string _name)
+    int GetTexture(std::string _name)
     {
+        if(m_TextureMap.find(_name) == m_TextureMap.end())
+            return -1;
         return m_TextureMap[_name];
     }
     
