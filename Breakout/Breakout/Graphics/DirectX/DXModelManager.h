@@ -5,6 +5,8 @@
 #include "DXModel.h"
 #include "../../Storage/FileManager.h"
 #include "DXTextureManager.h"
+#include "DXMeshManager.h"
+
 using namespace std;
 
 class DXModelManager
@@ -12,7 +14,8 @@ class DXModelManager
 private:
 
 	map <string, DXModel*>			m_loadedModels;
-	map <string, DXModel*>::iterator	m_modelIterator;
+
+	DXMeshManager m_meshManager;
 
 public:
 	DXModelManager(void);
@@ -21,6 +24,7 @@ public:
 
 	DXModel*	GetModel(string _path);
 	void	LoadModel(ID3D11Device* _device, string _path, DXTextureManager &_texMgr);
+	void	LoadModel(ID3D11Device* _device, string _path, string _blendTexture, DXTextureManager &_texMgr);
 
 	//ModelInstance*	CreateModelInstance(string ModelName);
 };

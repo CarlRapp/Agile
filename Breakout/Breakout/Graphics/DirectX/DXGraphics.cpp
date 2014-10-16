@@ -322,6 +322,9 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->explodeTime = _explosion;
 
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
+
+	SetBlendTexture(_id, "test.png");
+	SetBlendTexture(_id, "");
 }
 
 
@@ -461,4 +464,38 @@ void DXGraphics::SetSky(std::string _name)
 void DXGraphics::ClearSky()
 {
 	SafeDelete(m_sky);
+}
+
+void DXGraphics::SetBlendTexture(int _objectID, std::string _filename)
+{
+	if (_filename == "emptyBlend.png")
+		_filename = "";
+
+	ModelInstance *mi = NULL;
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = m_modelInstances.begin(); mapIterator != m_modelInstances.end(); ++mapIterator)
+	{
+		if (mapIterator->second.find(_objectID) != mapIterator->second.end())
+		{
+			mi = mapIterator->second[_objectID];
+			break;
+		}
+	}
+
+	if (!mi)
+		return;
+
+	std::string name = mi->model->GetModelName();
+
+	m_modelManager.LoadModel(m_device, name, _filename, m_textureManager);
+
+
+	DXModel *temp = m_modelManager.GetModel(name + _filename);
+
+	if (temp)
+	{
+		m_modelInstances[mi->model->GetName()].erase(_objectID);
+		mi->model = temp;
+		m_modelInstances[name + _filename].insert(pair<int, ModelInstance*>(_objectID, mi));
+	}
 }
