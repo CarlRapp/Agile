@@ -43,10 +43,11 @@ void MainMenuScene::OnActive()
 {
 	m_world = new World();
 
+	GraphicsManager::GetInstance()->GetICamera()->AddShake(0, 20, 40, 0.3f, -1);
+
 	CreatePlayField();
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
-	GraphicsManager::GetInstance()->SetSky("space");
 	GM->SetSky("space2");
 	GM->ShowMouseCursor(true);
 
@@ -114,6 +115,8 @@ void MainMenuScene::OnActive()
 }
 void MainMenuScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->GetICamera()->RemoveShake(0);
+
 	if (m_world)
 	{
 		//GraphicsManager::GetInstance()->Clear();

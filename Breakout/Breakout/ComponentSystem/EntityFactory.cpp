@@ -37,7 +37,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Small";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Pad_Cylinder";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);

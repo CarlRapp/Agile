@@ -5,6 +5,9 @@
 #include "../Component/ScoreComponent.h"
 #include "../Component/TNTComponent.h"
 #include "../Component/EffectComponent.h"
+#include "../Component/BallComponent.h"
+#include "../Component/PlayerComponent.h"
+#include "../Component/LifeComponent.h"
 #include "../World.h"
 #include "../EntityFactory.h"
 #include "../../Graphics/GraphicsManager.h"
@@ -13,7 +16,7 @@ BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
 	m_blockGrid = 0;
-	SetSettings(40, 15, 20, 0);
+	SetSettings(40, 20, 20, 0);
 }
 
 BlockSystem::~BlockSystem()
@@ -26,11 +29,6 @@ BlockSystem::~BlockSystem()
 
 void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topCenterX)
 {
-	m_dimensionX = _sizeX;
-	m_dimensionY = _sizeY;
-	m_topCenterX = _topCenterX;
-	m_topCenterY = _topCenterY;
-
 	printf("#################\n");
 	printf("Blocksystem Settings\n");
 	printf("Dimension: %d x %d\n", m_dimensionX, m_dimensionY);
@@ -41,11 +39,17 @@ void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topC
 	{
 		printf("Deleting BlockGRID!\n");
 
-		for (int i = 0; i < m_dimensionY; ++i)
-			SafeDeleteArray(m_blockGrid[i]);
+		for (int y = 0; y < m_dimensionY; ++y)
+			for (int x = 0; x < m_dimensionX; ++x)
+				m_blockGrid[y][x] = 0;
 
 		SafeDeleteArray(m_blockGrid);
 	}
+
+	m_dimensionX = _sizeX;
+	m_dimensionY = _sizeY;
+	m_topCenterX = _topCenterX;
+	m_topCenterY = _topCenterY;
 
 	m_blockGrid = new Entity**[m_dimensionY];
 	for (int y = 0; y < m_dimensionY; ++y)
@@ -249,6 +253,8 @@ void BlockSystem::PushDown(int _x, int _y)
 	for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
 		sortedPositions.push(gIT->first);
 
+	bool loseLife = false;
+
 	int tSize = sortedPositions.size();
 	for (int i = 0; i < tSize; ++i)
 	{
@@ -271,8 +277,10 @@ void BlockSystem::PushDown(int _x, int _y)
 				}
 				else
 				{
+					loseLife = true;
 					m_blockGrid[yPos][xPos + n] = 0;
 					e->SetState(Entity::SOON_DEAD);
+					break;
 				}
 					
 			}
@@ -281,6 +289,21 @@ void BlockSystem::PushDown(int _x, int _y)
 		}
 			
 		sortedPositions.pop();
+	}
+
+	std::vector<Entity*>* activeBalls = m_world->GetEntities<BallComponent>();
+	if (loseLife && activeBalls)
+	{
+		for (auto ball : *activeBalls)
+			ball->SetState(Entity::SOON_DEAD);
+		Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+		player->GetComponent<LifeComponent>()->m_noLifes = 0;
+
+
+
+		for (int y = 0; y < m_dimensionY; ++y)
+			for (int x = 0; x < m_dimensionX; ++x)
+				m_blockGrid[y][x] = 0;
 	}
 }
 
