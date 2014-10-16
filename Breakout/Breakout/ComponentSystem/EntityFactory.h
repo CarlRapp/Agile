@@ -43,11 +43,6 @@ public:
 
 	enum EntityType
 	{
-		STANDARD_BLOCK_RED = 0,
-		STANDARD_BLOCK_BLUE,
-		STANDARD_BLOCK_GREEN,
-		INDESTRUCTIBLE_BLOCK,
-		TNT_BLOCK,
 		PAD,
 		SAUSAGE_PAD_MID,
 		SAUSAGE_PAD_LEFT,
@@ -65,10 +60,7 @@ public:
         TEXT,
 		EXPLOSION,
 		SHATTER,
-		SCALE,
-		STANDARD_BIG_RED,
-		STANDARD_BIG_GREEN,
-		STANDARD_BIG_BLUE,
+		SCALE
 	};
 
 	static EntityFactory* GetInstance();

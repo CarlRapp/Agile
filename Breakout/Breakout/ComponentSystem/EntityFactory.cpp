@@ -31,188 +31,13 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 	switch (_entityType)
 	{
-	case EntityFactory::STANDARD_BLOCK_RED:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.0f);
-		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 1;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
-		break;
-	}
-	case EntityFactory::STANDARD_BLOCK_GREEN:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_green";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.0f);
-		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 1;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
-		break;
-	}
-	case EntityFactory::STANDARD_BLOCK_BLUE:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_blue";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 1;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(1, 1));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
-		break;
-	}
-	case EntityFactory::INDESTRUCTIBLE_BLOCK:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_black";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 1;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		break;
-	}
-	case EntityFactory::TNT_BLOCK:
-	{
-	    bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_tnt";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<HealthComponent>(10);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Explosion.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 1;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->AddComponent<TNTComponent>();
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::EXPLODE;
-		break;
-	}
-	case EntityFactory::STANDARD_BIG_RED:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_red";	
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<HealthComponent>(20);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-                _entity->AddComponent<ScoreComponent>().m_score = 2;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
-		break;
-	}
-	case EntityFactory::STANDARD_BIG_GREEN:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_green";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<HealthComponent>(20);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 2;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
-		break;
-	}
-	case EntityFactory::STANDARD_BIG_BLUE:
-	{
-		bodyDef = new b2BodyDef();
-		_entity->AddComponent<PositionComponent>();
-		_entity->AddComponent<RotationComponent>();
-		_entity->AddComponent<ScaleComponent>();
-		_entity->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_2x1x1_blue";
-		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
-		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DeflectionComponent>(30.f);
-		_entity->AddComponent<HealthComponent>(20);
-		_entity->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
-		_entity->AddComponent<ScoreComponent>().m_score = 2;
-		_entity->AddComponent<BlockComponent>();
-		_entity->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
-		_entity->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
-
-		auto effect = &_entity->AddComponent<EffectComponent>();
-		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
-		break;
-	}
 	case EntityFactory::PAD:
 		bodyDef = new b2BodyDef();
 		_entity->AddComponent<PositionComponent>();
 		_entity->AddComponent<RotationComponent>();
 		_entity->AddComponent<VelocityComponent>();
 		_entity->AddComponent<ScaleComponent>();
-		_entity->AddComponent<ModelComponent>().m_modelPath = "Box_1_1x1x1_red";
+		_entity->AddComponent<ModelComponent>().m_modelPath = "Pad_Cylinder";
 		_entity->AddComponent<MouseInputComponent>();
 		_entity->AddComponent<SpawnEntityComponent>(EntityType::BALL, VECTOR3(0, 2, 0));
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
@@ -245,7 +70,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<VelocityComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<DamageComponent>(10);
+		_entity->AddComponent<DamageComponent>(2);
 		break;
 	case EntityFactory::WALL:
 		bodyDef = new b2BodyDef();
@@ -287,6 +112,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<VelocityComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+		_entity->AddComponent<CollisionStatsComponent>(15.0f, 100.0f, 100.0f, 0.0f);
 		break;
 	case EntityFactory::PLAYER:
 		_entity->AddComponent<PlayerComponent>();

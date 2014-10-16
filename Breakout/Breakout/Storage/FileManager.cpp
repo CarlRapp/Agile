@@ -59,7 +59,7 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 		if (is_directory)
 			continue;
 
-		out.push_back(full_file_name);
+		out.push_back(file_name);
 	} while (FindNextFile(dir, &file_data));
 
 	FindClose(dir);

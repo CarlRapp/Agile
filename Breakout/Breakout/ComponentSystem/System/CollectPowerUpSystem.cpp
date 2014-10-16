@@ -2,6 +2,7 @@
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
 #include "ShootLaserSystem.h"
+#include "BlockSystem.h"
 #include "../World.h"
 
 #include "../EntityFactory.h"
@@ -10,6 +11,7 @@
 #include "../Component/BallComponent.h"
 #include "../Component/MultiBallComponent.h"
 #include "../Component/LaserComponent.h"
+#include "../Component/BulletTimeComponent.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
@@ -45,12 +47,13 @@ void CollectPowerUpSystem::Update(float _dt)
 }
 void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 {
-	auto isMultiBall = _powerUp->GetComponent<MultiBallComponent>();
-	auto isLaser = _powerUp->GetComponent<LaserComponent>();
+	auto isMultiBall	= _powerUp->GetComponent<MultiBallComponent>();
+	auto isLaser		= _powerUp->GetComponent<LaserComponent>();
+	auto isBulletTime	= _powerUp->GetComponent<BulletTimeComponent>();
 
 	if (isMultiBall)
 		SpawnMultiBalls();
-	if (isLaser)
+	else if (isLaser)
 	{
 		ShootLaserSystem* shootLaserSystem = m_world->GetSystem<ShootLaserSystem>();
 		if (shootLaserSystem)
@@ -58,7 +61,10 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 		else
 			m_world->AddSystem<ShootLaserSystem>();
 	}
-
+	else if (isBulletTime)
+	{
+		m_world->SetBulletTime(true);
+	}
 
 	_powerUp->SetState(Entity::SOON_DEAD);
 }
@@ -66,6 +72,8 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 void CollectPowerUpSystem::SpawnMultiBalls()
 {
 	std::vector<Entity*>* allBalls = m_world->GetEntities<BallComponent>();
+	if (!allBalls)
+		return;
 	int tSize = allBalls->size();
 	for (int i = 0; i < tSize; ++i)
 	{

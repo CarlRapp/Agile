@@ -54,6 +54,35 @@ int main(int argc, char** argv)
             GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
 	}
 
+	/*	LOAD ALL MODELS	*/
+	std::vector<std::string> files;
+	FileManager::GetInstance().GetFilesInDirectory(files, MODEL_ROOT);
+
+	//try
+	//{
+	//	for (auto file : files)
+	//		if (file != "")
+	//			printf("Path: \"%s\"\n", file);
+	//}
+	//catch (std::exception e)
+	//{
+	//	printf("Exception: %s\n", e);
+	//}
+
+	for (auto file : files)
+	{
+		file = file.substr(0, file.size() - 4);
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
+	}
+
+	files.clear();
+	FileManager::GetInstance().GetFilesInDirectory(files, TEXTURE_ROOT);
+
+	for (auto file : files)
+	{
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadTexture(file);
+	}
+
 	/*	AUDIO RELATED SHIT GOES HERE	*/
 	m_AudioManager = AudioManager::GetInstance();
 
