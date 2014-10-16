@@ -24,15 +24,20 @@ void RespawnBallSystem::Update(float _dt)
 			auto spawnEntity = e->GetComponent<SpawnEntityComponent>();
 			auto mouse = e->GetComponent<MouseInputComponent>();
 			auto position = e->GetComponent<PositionComponent>();
+                        if(spawnEntity)
 			if (spawnEntity->m_entityType == EntityFactory::BALL && mouse && position)
 			{
 				if (mouse->m_controls.LeftButton == InputState::Pressed)
 				{
+                                    Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
 					Entity* e = m_world->CreateEntity();
 					EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)spawnEntity->m_entityType);
 					e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
 					e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
 					e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position->GetPosition().x + spawnEntity->m_posFromEntity.x, position->GetPosition().y + spawnEntity->m_posFromEntity.y, position->GetPosition().z + spawnEntity->m_posFromEntity.z));
+                                        e->GetComponent<DamageComponent>()->m_damage = player->GetComponent<PlayerComponent>()->m_damage;
+                                        e->GetComponent<CollisionStatsComponent>()->SetMinSpeed(player->GetComponent<PlayerComponent>()->m_minSpeedBall);
+                                        e->GetComponent<CollisionStatsComponent>()->SetMaxSpeed(player->GetComponent<PlayerComponent>()->m_maxSpeedBall);
 					e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
 					m_world->AddEntity(e);
 				}

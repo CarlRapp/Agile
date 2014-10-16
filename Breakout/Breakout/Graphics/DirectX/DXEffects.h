@@ -19,7 +19,12 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#ifdef _DEBUG
 #pragma comment(lib, "Effects11D.lib")
+#else
+#pragma comment(lib, "Effects11.lib")
+#endif
+
 
 #pragma region DXEffect
 class DXEffect
@@ -308,6 +313,25 @@ public:
 };
 #pragma endregion
 
+
+#pragma region SkyEffect
+class SkyEffect : public DXEffect
+{
+public:
+	SkyEffect(ID3D11Device* _device, const std::wstring& _filename);
+	~SkyEffect();
+
+	void SetWorldViewProj(DirectX::CXMMATRIX _M)					{ m_WVP->SetMatrix(reinterpret_cast<const float*>(&_M)); }
+	void SetCubeMap(ID3D11ShaderResourceView* _tex)		{ m_cubemap->SetResource(_tex); }
+
+
+	ID3DX11EffectTechnique* m_skyTech;
+
+	ID3DX11EffectMatrixVariable*				m_WVP;
+	ID3DX11EffectShaderResourceVariable*		m_cubemap;
+};
+#pragma endregion
+
 #pragma region Effects
 class DXEffects
 {
@@ -315,14 +339,11 @@ public:
 	static void InitAll(ID3D11Device* _device);
 	static void DestroyAll();
 
-	static BuildShadowMapEffect* m_buildShadowMapFX;
-
-	static ClearGBufferEffect* m_clearGBufferFX;
 	static CombineFinalEffect* m_combineFinalFX;
 	static ObjectDeferredEffect* m_objectDeferredFX;
 	static TiledLightningEffect* m_tiledLightningFX;
-	//static ShadowMapEffect*	m_shadowMapFX;
 	static RenderTextEffect*	m_renderTextFX;
+	static SkyEffect*			m_skyFX;
 };
 #pragma endregion
 

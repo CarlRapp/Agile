@@ -19,11 +19,20 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#ifdef _DEBUG
 #pragma comment(lib, "Effects11D.lib")
+#else
+#pragma comment(lib, "Effects11.lib")
+#endif
 
 namespace DXVertex
 {
 	const int NUMBER_OF_BONES_PER_VERTEX = 4;
+
+	struct Pos
+	{
+		DirectX::XMFLOAT3 pos;
+	};
 
 	struct Quad
 	{
@@ -77,6 +86,7 @@ class DXInputLayoutDesc
 {
 public:
 	// Init like const int A::a[4] = {0, 1, 2, 3}; in .cpp file.
+	static const D3D11_INPUT_ELEMENT_DESC m_pos[1];
 	static const D3D11_INPUT_ELEMENT_DESC m_quad[2];
 	static const D3D11_INPUT_ELEMENT_DESC m_posTex[2];
 	//static const D3D11_INPUT_ELEMENT_DESC m_basic32[3];

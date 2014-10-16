@@ -128,7 +128,14 @@ public:
 	DirectX::XMFLOAT3 *Position;
 	float *Range;
 
-	PointLight(void) { gpuLight = new GPUPointLight(); }
+	PointLight(void) 
+	{
+		gpuLight = new GPUPointLight();
+	}
+	~PointLight(void) 
+	{
+		SafeDelete(gpuLight); 
+	};
 
 	std::vector<DirectX::XMFLOAT4X4> GetViewMatrixes();
 	DirectX::XMMATRIX GetProjectionMatrix(/*float nearZ, float farZ*/);

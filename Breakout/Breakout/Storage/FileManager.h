@@ -25,8 +25,9 @@ class FileManager
 {
 private:
 	static FileManager* instance;
-	FileManager() {};
-	~FileManager() {};
+	FileManager() { m_modelLoader = new ModelLoader(); };
+	
+	ModelLoader* m_modelLoader;
 
 	std::unordered_map<std::string, ModelData*> m_modelMap;
 	std::unordered_map<std::string, Mix_Chunk*> m_mixChunkMap;
@@ -40,8 +41,8 @@ public:
 		return *instance;
 	}
 
+	~FileManager();
 	void GetFilesInDirectory(std::vector<std::string>& out, const std::string directory);
-
 	// Don't include an extension at the end of the file, eg. .obj
 	ModelData* LoadModel(std::string filePath);
 

@@ -10,6 +10,7 @@
 #include "DX2DTextureInstance.h"
 #include "DXParticleSystem.h"
 #include "DXText.h"
+#include "DXSky.h"
 
 #include "../IGraphics.h"
 #include "DXWindow.h"
@@ -32,7 +33,7 @@ private:
 	//map<int, ModelInstance*>m_modelInstances;
 
 
-	map<std::string, map<int, ModelInstance*>>	m_modelInstances;
+	map<std::string, map<int, ModelInstance*> >	m_modelInstances;
 	map<int, DX2DTextureInstance*>	m_textureInstances;
 
 	map<int, DirectionalLight*>			m_dirLights;
@@ -41,7 +42,7 @@ private:
 	map<int, DXParticleSystem*>			m_particleSystems;
 	map<int, DXText::String*>			m_texts;
 
-
+	DXSky* m_sky = NULL;
 
 	DXModelManager			m_modelManager;
 	DXModel					*m_testmodel;
@@ -95,6 +96,11 @@ public:
 	void RemoveTextObject(int _id);
 
 	void ShowMouseCursor(bool _value);
+
+	void Clear(void);
+
+	void SetSky(std::string _name);
+	void ClearSky();
 
 };
 

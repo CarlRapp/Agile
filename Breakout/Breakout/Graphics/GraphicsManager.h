@@ -79,6 +79,11 @@ public:
 
 	void		ShowMouseCursor(bool _value);
 
+	void		Clear(void);
+
+	void		SetSky(std::string _name);
+	void		ClearSky();
+
 };
 
 

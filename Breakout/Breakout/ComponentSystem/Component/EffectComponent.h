@@ -6,14 +6,15 @@
 
 enum EffectFlags
 {
-	SHATTER		= 1 << 0,
-	EXPLODE		= 1 << 1,
-	INVISIBLE	= 1 << 2,
-	TRAIL		= 1 << 3,
-        
-        CHANGE_MODEL    = 1 << 5,
+	SHATTER				= 1 << 0,
+	EXPLODE				= 1 << 1,
+	INVISIBLE			= 1 << 2,
+	TRAIL				= 1 << 3,
+	SCALE_MIN_TO_MAX	= 1 << 4,
+	SCALE_MAX_TO_MIN	= 1 << 5,
+	CHANGE_MODEL		= 1 << 6,
 
-	NO_EFFECT = 1 << 10,
+	NO_EFFECT = 1 << 20,
 };
 
 struct EffectEvents

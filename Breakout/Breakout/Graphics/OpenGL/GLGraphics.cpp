@@ -104,7 +104,18 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
 
     m_trailParticlesProgram.LinkShaderProgram();
     m_texManager.Load2DTexture("circle_blue.png", GL_TEXTURE0);
+    
+//-----SKYBOX-------------------------------------------------------------------------
+    m_skyboxProgram.CreateShaderProgram();
+    
+    m_skyboxProgram.AddShader("skyboxShader_vertex.glsl",GL_VERTEX_SHADER);
+    m_skyboxProgram.AddShader("skyboxShader_fragment.glsl",GL_FRAGMENT_SHADER);
+    
+    m_skyboxProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
+
+    m_skybox = new GLSkybox(GetFile("CubeMaps/space", TEXTURE_ROOT));
+    m_skybox->CreateBuffers();
     
     glEnable(GL_BLEND);
     glEnable(GL_POINT_SPRITE);
@@ -381,7 +392,7 @@ void GLGraphics::AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, 
 {
     if(_effect == "fire")
     {
-        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 85.f, 
+        m_particleEffects.insert(pair<int, GLParticleSystem*>(_id, new GLParticleSystem("fire", _pos, 40, 500, 140.f, 
                                                                                     m_texManager.GetTexturePointer("fire3.png"), m_fireParticlesProgram.GetProgramHandlePointer())));
     }
     else if(_effect == "trail")
@@ -453,6 +464,7 @@ void GLGraphics::Free()
     
     m_standardShaderProgram.~ShaderHandler();
     m_shader2Dprogram.~ShaderHandler();
+    m_skyboxProgram.~ShaderHandler();
  
 //    for(int i=0;i < m_letters64.size(); i++)
 //    {
@@ -488,9 +500,12 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
 
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
+    glViewport(0, 0, m_screenWidth, m_screenHeight);
+    RenderSkybox(_camera);
+    
     m_standardShaderProgram.UseProgram();
     
-    glViewport(0, 0, m_screenWidth, m_screenHeight);
+    //((GLCamera*)_camera)->Update(_dt);
     
     UpdateLights();
     
@@ -517,13 +532,21 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     SDL_GL_SwapBuffers( );
 }
 
+void GLGraphics::RenderSkybox(ICamera* _camera)
+{
+    glClear(GL_DEPTH_BUFFER_BIT);
+    m_skyboxProgram.UseProgram();
+    m_skybox->Draw(m_skyboxProgram.GetProgramHandlePointer(), _camera);
+    //glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 {
 	
 	glEnable(GL_BLEND);
         glEnable(GL_POINT_SPRITE);
 	glDepthMask(GL_FALSE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
         
 	for(std::map<int,GLParticleSystem*>::iterator it = m_particleEffects.begin(); it != m_particleEffects.end(); ++it)
@@ -553,6 +576,7 @@ void GLGraphics::RenderParticles(float dt, ICamera* _camera)
 
             it->second->Render(tmp, dt);
 	}
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	glUseProgram(0);
@@ -650,21 +674,27 @@ void GLGraphics::RemoveTextObject(int _id)
         if(m_textObjects[i].id == _id)
         {
             //When textobject is removed from world, copy data to graphics to play out-effect
-            m_textObjects[i].textCopy   = *m_textObjects[i].text;
-            m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
-            m_textObjects[i].colorCopy  = *m_textObjects[i].color;
-            m_textObjects[i].xCopy      = *m_textObjects[i].x;
-            m_textObjects[i].yCopy      = *m_textObjects[i].y;
-            m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+            if(m_textObjects[i].text != NULL)
+            {
+                m_textObjects[i].textCopy   = *m_textObjects[i].text;
+                m_textObjects[i].scaleCopy  = *m_textObjects[i].scale;
+                m_textObjects[i].colorCopy  = *m_textObjects[i].color;
+                m_textObjects[i].xCopy      = *m_textObjects[i].x;
+                m_textObjects[i].yCopy      = *m_textObjects[i].y;
+                m_textObjects[i].effectCopy = *m_textObjects[i].effect;
+
+                m_textObjects[i].text   =NULL;
+                m_textObjects[i].scale  =NULL;
+                m_textObjects[i].color  =NULL;
+                m_textObjects[i].x      =NULL;
+                m_textObjects[i].y      =NULL;
+                m_textObjects[i].effect =NULL;
+
+                m_textObjects[i].kill = true;
+            }
+            else
+                m_textObjects.erase(m_textObjects.begin() +(i));
             
-            m_textObjects[i].text   =NULL;
-            m_textObjects[i].scale  =NULL;
-            m_textObjects[i].color  =NULL;
-            m_textObjects[i].x      =NULL;
-            m_textObjects[i].y      =NULL;
-            m_textObjects[i].effect =NULL;
-            
-            m_textObjects[i].kill = true;
             break;
         }
     }

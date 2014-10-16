@@ -25,7 +25,9 @@ using namespace SceneSystem;
 GraphicsManager *m_GraphicsManager;
 AudioManager* m_AudioManager;
 InputManager* m_InputManager; 
+FileManager* m_fileManager;
 SceneManager* m_SceneManager;
+EntityFactory* m_EntityFactory;
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -41,16 +43,18 @@ int main(int argc, char** argv)
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
-	m_GraphicsManager->InitWindow(100, 350, SCREENWIDTH, SCREENHEIGHT, displayMode);
+	m_GraphicsManager->InitWindow(0, 0, SCREENWIDTH, SCREENHEIGHT, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
-	AudioManager::GetInstance();
+	m_AudioManager = AudioManager::GetInstance();
 
 	/*	INPUT RELATED SHIT GOES HERE	*/
 	InputManager::Init(SCREENWIDTH, SCREENHEIGHT);
-	InputManager::GetInstance();
+	m_InputManager = InputManager::GetInstance();
 
+	m_EntityFactory = EntityFactory::GetInstance();
+	m_fileManager   = &FileManager::GetInstance();
 	/*	CREATE SCENE MANAGER HERE	*/
 	m_SceneManager = SceneManager::GetInstance();
 	m_SceneManager->AddScene<MainMenuScene>(false);
@@ -68,5 +72,15 @@ int main(int argc, char** argv)
 	/*	START HERE	*/
 	m_SceneManager->Start();
 
+	m_SceneManager->Quit();
+
+	SafeDelete(m_SceneManager);
+	SafeDelete(m_GraphicsManager);
+	SafeDelete(m_AudioManager);
+	SafeDelete(m_InputManager);
+	SafeDelete(m_fileManager);
+	SafeDelete(m_EntityFactory);
+
+	_CrtDumpMemoryLeaks();
 	return 0;
 }

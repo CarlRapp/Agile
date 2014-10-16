@@ -12,13 +12,17 @@
 
 
 MainMenuScene::MainMenuScene()
+	: m_world(0), m_Start(0), m_Options(0), m_Exit(0)
 {
 	printf("Main Menu created!\n");
 }
 
 MainMenuScene::~MainMenuScene()
 {
-
+	SafeDelete(m_world);
+	m_Start		= 0;
+	m_Options	= 0;
+	m_Exit		= 0;
 }
 
 void MainMenuScene::Initialize()
@@ -42,24 +46,25 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
     
+	GM->SetSky("space");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
 	m_Start = TC;
-	TC->Initialize("--START--", 0.05f, 0.9f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--START--", 0.05f, 0.9f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
-   // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
+
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Options = TC;
-	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 4.f, VECTOR3(0, 1, 0), 20.0f);
-    //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
+	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
+
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -68,8 +73,8 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Exit = TC;
-	TC->Initialize("--EXIT--", 0.05f, 0.8f, 4.f, VECTOR3(0, 1, 0), 20.0f);
-    //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
+	TC->Initialize("--EXIT--", 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20.0f);
+
     m_world->AddEntity(e);
     m_exitID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -78,8 +83,10 @@ void MainMenuScene::OnActive()
 }
 void MainMenuScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->ClearSky();
 	if (m_world)
 	{
+		//GraphicsManager::GetInstance()->Clear();
 		EntityMap::iterator eIT;
 		for (eIT = m_world->GetAllEntities()->begin(); eIT != m_world->GetAllEntities()->end(); ++eIT)
 		{
@@ -90,8 +97,7 @@ void MainMenuScene::OnInactive()
 			
 			GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(eIT->second));
 		}
-
-		delete m_world;
+		SafeDelete(m_world);
 	}
 }
 
@@ -100,11 +106,7 @@ void MainMenuScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
 
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
-	{
-		SceneManager::GetInstance()->ChangeScene<GameScene>();
-		return;
-	}
+	
 	
 	float x = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetX();
 	float y = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetY();
@@ -155,27 +157,62 @@ void MainMenuScene::Update(float _dt)
 		e = m_world->CreateEntity();
 		if (!e)
 			return;
-		int rnd = (rand() % (100 - 0));
 
-		EntityFactory::EntityType type;
-
-		if (rnd >= 0 && rnd < 20)
-			type = EntityFactory::STANDARD_BLOCK_RED;
-		else if (rnd >= 20 && rnd < 40)
-			type = EntityFactory::STANDARD_BLOCK_GREEN;
-		else if (rnd >= 40 && rnd < 60)
-			type = EntityFactory::STANDARD_BLOCK_BLUE;
-		else if (rnd >= 60 && rnd < 80)
-			type = EntityFactory::STANDARD_HORIZONTAL_RECTANGLE;
-		else if (rnd >= 80 && rnd < 90)
-			type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-		else if (rnd >= 90 && rnd < 100)
-			type = EntityFactory::TNT_BLOCK;
-
-		EntityFactory::GetInstance()->CreateEntity(e, type);
+		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
+                
+
+                
 	}
+        
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+        {
+            SceneManager::GetInstance()->ChangeScene<GameScene>();
+        }
+}
+
+// Denna lär plockas bort sen
+EntityFactory::EntityType MainMenuScene::RandomizeType(void)
+{
+	EntityFactory::EntityType type;
+
+	const int smallRed		= 14;	// 14%
+	const int smallGreen	= 28;	// 14%
+	const int smallBlue		= 42;	// 14%
+	const int bigRed		= 56;	// 14%
+	const int bigGreen		= 70;	// 14%
+	const int bigBlue		= 84;	// 14%
+	const int indestruct	= 92;	// 8%
+	const int tnt			= 100;	// 8%
+
+	const int rnd = (rand() % (100 - 0)); // randomize between 0 and 100
+
+	if (rnd >= 0 && rnd < smallRed)
+		type = EntityFactory::STANDARD_BLOCK_RED;
+
+	else if (rnd >= smallRed && rnd < smallGreen)
+		type = EntityFactory::STANDARD_BLOCK_GREEN;
+
+	else if (rnd >= smallGreen && rnd < smallBlue)
+		type = EntityFactory::STANDARD_BLOCK_BLUE;
+
+	else if (rnd >= smallBlue && rnd < bigRed)
+		type = EntityFactory::STANDARD_BIG_RED;
+
+	else if (rnd >= bigRed && rnd < bigGreen)
+		type = EntityFactory::STANDARD_BIG_GREEN;
+
+	else if (rnd >= bigGreen && rnd < bigBlue)
+		type = EntityFactory::STANDARD_BIG_BLUE;
+
+	else if (rnd >= bigBlue && rnd < indestruct)
+		type = EntityFactory::INDESTRUCTIBLE_BLOCK;
+
+	else if (rnd >= indestruct && rnd < tnt)
+		type = EntityFactory::TNT_BLOCK;
+
+	return type;
 }
 
 void MainMenuScene::Render(float _dt)
@@ -205,7 +242,7 @@ void MainMenuScene::CreatePlayField()
 	{
 		e = m_world->CreateEntity();
 		int rnd = (rand() % (3 - 0));
-		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_HORIZONTAL_RECTANGLE);
+		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::STANDARD_BIG_RED);
 		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
 		m_world->AddEntity(e);
 	}
@@ -247,6 +284,7 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
+	e->RemoveComponent<AudioComponent>();
 	e->RemoveComponent<DamageComponent>();
 	m_world->AddEntity(e);
 
@@ -271,11 +309,11 @@ void MainMenuScene::CreatePlayField()
 	//PLAYER SCORE <<
 
 	//	Background
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
-	m_world->AddEntity(e);
+	//e = m_world->CreateEntity();
+	//EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PLANE);
+	//e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-53, -29, -5));
+	//e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(110, 60, 1));
+	//m_world->AddEntity(e);
 
 	GraphicsManager::GetInstance()->GetICamera()->SetPosition(VECTOR3(0, 1, 67));
 	GraphicsManager::GetInstance()->GetICamera()->SetForward(VECTOR3(0, 0, -1));

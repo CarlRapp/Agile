@@ -51,6 +51,11 @@ public:
 
 	virtual void ShowMouseCursor(bool _value) = 0;
 
+	virtual void Clear(void) = 0;
+
+	virtual void SetSky(std::string _name) = 0;
+	virtual void ClearSky() = 0;
+
 
 	static IGraphics* GetIGraphics();
 };

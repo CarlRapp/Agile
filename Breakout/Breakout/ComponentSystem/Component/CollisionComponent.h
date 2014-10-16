@@ -24,7 +24,12 @@ public:
 
 	CollisionContact(b2Contact* _contact, b2Fixture* _fixture, b2Fixture* _otherFixture, int _otherId) : m_contact(_contact), m_fixture(_fixture), m_otherFixture(_otherFixture), m_otherId(_otherId) { }
 	CollisionContact();
-	~CollisionContact() { }
+	~CollisionContact() 
+	{
+		m_fixture = 0;
+		m_otherFixture = 0;
+		m_contact = 0;
+	}
 };
 
 struct CollisionComponent : Component<CollisionComponent>
@@ -42,9 +47,19 @@ public:
 
 	~CollisionComponent()
 	{
-		delete m_bodyDef;
-		if (m_body != 0)
+		SafeDelete(m_bodyDef);
+		if (m_body)
+		{
 			m_body->GetWorld()->DestroyBody(m_body);
+			m_body = 0;
+		}
+		for (int i = 0; i < m_fixDefs.size(); ++i)
+		{
+			SafeDelete(m_fixDefs[i]->shape);
+			SafeDelete(m_fixDefs[i]);
+		}
+		m_fixDefs.clear();
+
 	}
 
 	void CreateBody(b2World* _b2World)

@@ -61,10 +61,13 @@ public:
 		PLAYER,
 		POINTLIGHT,
 		PLANE,
-                TEXT,
+        TEXT,
 		EXPLOSION,
 		SHATTER,
-		STANDARD_HORIZONTAL_RECTANGLE
+		SCALE,
+		STANDARD_BIG_RED,
+		STANDARD_BIG_GREEN,
+		STANDARD_BIG_BLUE,
 	};
 
 	static EntityFactory* GetInstance();

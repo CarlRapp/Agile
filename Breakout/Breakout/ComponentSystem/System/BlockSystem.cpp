@@ -7,7 +7,6 @@
 #include "../Component/EffectComponent.h"
 #include "../World.h"
 
-
 BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
 {
@@ -17,6 +16,10 @@ BlockSystem::BlockSystem(World* _world)
 
 BlockSystem::~BlockSystem()
 {
+	for (int i = 0; i < m_dimensionY; ++i)
+		SafeDeleteArray(m_blockGrid[i]);
+
+	SafeDeleteArray(m_blockGrid);
 }
 
 void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topCenterX)
@@ -35,8 +38,11 @@ void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topC
 	if (m_blockGrid)
 	{
 		printf("Deleting BlockGRID!\n");
-		delete[] m_blockGrid;
-		m_blockGrid = 0;
+
+		for (int i = 0; i < m_dimensionY; ++i)
+			SafeDeleteArray(m_blockGrid[i]);
+
+		SafeDeleteArray(m_blockGrid);
 	}
 
 	m_blockGrid = new Entity**[m_dimensionY];

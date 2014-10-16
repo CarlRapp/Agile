@@ -4,12 +4,14 @@
 #include "MainMenuScene.h"
 
 GameOverScene::GameOverScene()
+	: m_background(0)
 {
 	printf("Main Menu created!\n");
 }
 
 GameOverScene::~GameOverScene()
 {
+	SafeDelete(m_background);
 
 }
 
@@ -33,6 +35,7 @@ void GameOverScene::LoadContent()
 void GameOverScene::OnActive()
 {
 	GraphicsManager* GM = GraphicsManager::GetInstance();
+	GM->SetSky("grasscube1024");
 	GM->ShowMouseCursor(true);
 	GM->Add2DTexture(
 		GetMemoryID(m_background), m_background->m_textureName,
@@ -43,6 +46,7 @@ void GameOverScene::OnActive()
 void GameOverScene::OnInactive()
 {
 	GraphicsManager* GM = GraphicsManager::GetInstance();
+	GM->ClearSky();
 	GM->Remove2DTexture(GetMemoryID(m_background));
 }
 

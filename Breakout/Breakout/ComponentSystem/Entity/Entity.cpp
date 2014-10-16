@@ -85,6 +85,7 @@ bool Entity::RemoveAllComponents()
 		auto component = m_components[i];
 		m_components.erase(m_components.begin() + i);
 		delete component;
+		component = 0;
 	}
 
 	return true;

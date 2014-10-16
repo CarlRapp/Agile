@@ -13,12 +13,13 @@ static const int INSTANCEDBUFFERSIZE = 200;
 
 
 DXDeferred::DXDeferred(void)
+	: m_depthStencilView(0), m_shadowMapDSV(0), m_albedoRTV(0), m_normalSpecRTV(0), m_albedoSRV(0), m_normalSpecSRV(0), m_depthSRV(0), 
+	m_finalSRV(0), m_fullSceenQuad(0), m_instanceBuffer(0),	m_dirLightBuffer(0), m_pointLightBuffer(0), m_spotLightBuffer(0), m_pointLights(0), m_spotLights(0)
 {
-	m_dirLightBuffer = NULL;
-	m_pointLightBuffer = NULL;
-	m_spotLightBuffer = NULL;
-
-	m_dirLights = NULL;
+	
+	/*SafeDelete(m_dirLights);
+	SafeDelete(m_pointLights);
+	SafeDelete(m_spotLights);*/
 
 	//DirectionalLight* sun = new DirectionalLight();
 	//sun->GetGPULight()->Color = DirectX::XMFLOAT3(0.5, 0.5, 0.5);
@@ -26,9 +27,6 @@ DXDeferred::DXDeferred(void)
 	//sun->GetGPULight()->HasShadow = false;
 
 	//m_dirLights->push_back(sun);
-
-	
-	m_pointLights = NULL;
 
 	//PointLight* pl = new PointLight();
 	//pl->Color = &color;
@@ -46,8 +44,6 @@ DXDeferred::DXDeferred(void)
 
 	//m_pointLights->push_back(pl);
 
-
-	m_spotLights = NULL;
 
 	//SpotLight* sl = new SpotLight();
 	//sl->GetGPULight()->Color = DirectX::XMFLOAT3(0, 1, 0);
@@ -81,6 +77,20 @@ DXDeferred::~DXDeferred(void)
 	SafeDelete(m_dirLightBuffer);
 	SafeDelete(m_pointLightBuffer);
 	SafeDelete(m_spotLightBuffer);
+	for(auto it = m_pointLights->begin(); it != m_pointLights->end(); ++it)
+		SafeDelete(it->second);
+
+	for (auto it = m_spotLights->begin(); it != m_spotLights->end(); ++it)
+		SafeDelete(it->second);
+	
+	m_pointLights->clear();
+	m_pointLights = 0;
+	
+	m_spotLights->clear();
+	m_spotLights = 0;
+
+	//SafeDelete(m_spotLights);
+	//SafeDelete(m_spotLights);
 }
 
 void DXDeferred::Init(ID3D11Device *_device, ID3D11DeviceContext *_deviceContext, int _width, int _height)
@@ -379,7 +389,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 {
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
-	//m_DeviceContext->RSSetState(RenderStates::m_wireframeRS);
+	//m_deviceContext->RSSetState(DXRenderStates::m_wireframeRS);
 	m_deviceContext->IASetInputLayout(DXInputLayouts::m_posNormalTexTan);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -848,6 +858,7 @@ void DXDeferred::Render(float _dt,
 	map<int, DXText::String*>		&_texts,
 	ID3D11ShaderResourceView* _symbolsTex,
 	int _numSymbols,
+	DXSky* _sky,
 	ICamera* _camera)
 {
 
@@ -860,8 +871,12 @@ void DXDeferred::Render(float _dt,
 
 
 	UpdateLights();
+
+
 	FillGBuffer(_modelInstances, _camera);
 	ComputeLight(_finalUAV, _camera);
+
+	RenderSky(_renderTargetView, _sky, _camera);
 
 	RenderParticleSystems(_dt, _renderTargetView, _particleSystems, _camera);
 
@@ -875,6 +890,18 @@ void DXDeferred::Render(float _dt,
 	//shadowmap->Render();
 	//CombineFinal(_renderTargetView);
 }
+
+void DXDeferred::RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sky, ICamera* _camera)
+{
+	if (_sky)
+	{
+		m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
+		_sky->Draw(m_deviceContext, _camera);
+	}
+	
+}
+
+
 void DXDeferred::RenderTexts(ID3D11RenderTargetView *_renderTargetView, map<int, DXText::String*> &_texts, ID3D11ShaderResourceView* _symbolsTex, int _numSymbols)
 {
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);

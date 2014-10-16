@@ -18,7 +18,8 @@ private:
         int m_width;
         int m_height;
 
-	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ;
+	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ, 
+                                        m_pitch, m_yaw, m_sens;
 	glm::vec3			m_position, m_forward, m_right, m_up;
         glm::mat4                       m_projection,m_view;
         void*                           m_vpProjection;
@@ -34,6 +35,7 @@ public:
 	GLCamera(float fovy, int width,int height, float nearZ, float farZ);
 	~GLCamera(void);
 
+        void Update(float _dt);
 
 
 	//void Rotate(float pitch, float rotY) = 0;

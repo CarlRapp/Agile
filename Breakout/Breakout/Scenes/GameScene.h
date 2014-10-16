@@ -32,19 +32,23 @@ private:
 
 	// Pause Screen settings
 	Texture2DData*	m_pauseBackground;
-	bool m_isPaused;
-        int m_fpsCounterID;
-        int m_pauseHandle;
-        int m_gameOverHandle;
-        bool m_gameOver;
+	bool m_isPaused= false;
+        int m_fpsCounterID= 0;
+        int m_pauseHandle= 0;
+        int m_gameOverHandle= 0;
+        bool m_gameOver = false;
+
+	EntityFactory::EntityType RandomizeType(void);
+
         
-        int m_lvlUpHandle0;
-        int m_lvlUpHandle1;
-        int m_lvlUpHandle2;
-        int m_lvlUpHandle3;
+        int m_lvlUpHandle0= 0;
+        int m_lvlUpHandle1= 0;
+        int m_lvlUpHandle2= 0;
+        int m_lvlUpHandle3 = 0;
         
-        int m_levelUp;
-        int m_playerID;
+        int m_levelUp = 0;
+        int m_playerID = 0;
+        bool m_playerIsMaxLevel = false;
 public:
 	GameScene();
 	~GameScene();
@@ -57,7 +61,7 @@ public:
 	void OnActive();
 	void OnInactive();
         void UpdateFPS(float _dt);
-        void LevelUp(int _lvlUp);
+        void LevelUp(int _lvlUp, bool _addStrings);
         void LevelUpMenu(float _dt);
 };
 
