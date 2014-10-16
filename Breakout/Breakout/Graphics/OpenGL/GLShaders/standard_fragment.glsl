@@ -5,6 +5,8 @@
 varying mat4 modelView;
 
 uniform sampler2D m_standardTex;
+uniform sampler2D m_blendTex;
+
 uniform vec4 EyePosition;
 
 layout( location = 0 ) out vec4 FragColor;
@@ -100,9 +102,13 @@ void main(void)
         
     }
 
+    // color = A*(1-B.a)+B*B.a
+
     vec4 texColor = texture( m_standardTex, vertex.texCoord );
+    vec4 blendColor = texture( m_blendTex, vertex.texCoord );
     
-    FragColor = vec4(ambient + diffuse, 1.0) * texColor + vec4(spec, 0.0f);
+    FragColor = vec4(ambient + diffuse, 1.0) * (texColor*(1.0 - blendColor.a) + blendColor*blendColor.a )+ vec4(spec, 0.0f);
+    //FragColor = vec4(ambient + diffuse, 1.0) * blendColor + vec4(spec, 0.0f);
 
     //FragColor = vec4((vertex.normal + vec3(1.0))*0.5, 1.0);
 }

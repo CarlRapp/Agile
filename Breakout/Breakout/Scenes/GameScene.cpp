@@ -214,7 +214,7 @@ void GameScene::UpdateFPS(float _dt)
 
 void GameScene::Render(float _dt)
 {
-	if (m_isPaused)
+	if (m_isPaused || m_levelUp)
 		GraphicsManager::GetInstance()->Render(0);
 	else
 		GraphicsManager::GetInstance()->Render(_dt);
