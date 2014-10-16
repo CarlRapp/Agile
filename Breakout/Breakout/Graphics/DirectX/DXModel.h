@@ -10,36 +10,52 @@
 #include <DirectXCollision.h>
 #include "DXLightHelper.h"
 
-//#include "ModelLoader.h"
+#include "DXMeshManager.h"
 
 using namespace std;
 
 class DXModel
 {
-	vector<ID3D11ShaderResourceView*> DiffuseMapSRV;
-	vector<ID3D11ShaderResourceView*> NormalMapSRV;
+	vector<ID3D11ShaderResourceView*> DiffuseTexSRV;
+	ID3D11ShaderResourceView* BlendTexSRV;
+	vector<ID3D11ShaderResourceView*> NormalTexSRV;
+
+	std::string m_modelName;
+	std::string m_name;
+
 public:
-	DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data);
+	DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data, std::string _name, DXMeshManager& meshMgr);
+	DXModel(DXModel* _parent, std::string suffix);
 	~DXModel(void);
 
 	UINT SubsetCount;
 
 	vector<DXMaterial> Mat;
 	
-	bool HasDiffuseMaps() { return !DiffuseMapSRV.empty(); }
-	bool HasNormalMaps() { return !NormalMapSRV.empty(); }
+	bool HasDiffuseTextures() { return !DiffuseTexSRV.empty(); }
+	bool HasNormalTextures() { return !NormalTexSRV.empty(); }
 
 
-	ID3D11ShaderResourceView* GetDiffuseMap(int Subset)
+	ID3D11ShaderResourceView* GetDiffuseTexture(int Subset)
 	{
-		return DiffuseMapSRV[Subset];
+		return DiffuseTexSRV[Subset];
 	}
 
-	ID3D11ShaderResourceView* GetNormalMap(int Subset)
+	ID3D11ShaderResourceView* GetBlendTexture()
 	{
-		return NormalMapSRV[Subset];
+		return BlendTexSRV;
 	}
+
+	ID3D11ShaderResourceView* GetNormalTexture(int Subset)
+	{
+		return NormalTexSRV[Subset];
+	}
+
+	std::string GetModelName() { return m_modelName; }
+	std::string GetName() { return m_name; }
 	
+	void SetBlendTexture(std::string _filename, DXTextureManager& texMgr);
+
 	// Keep CPU copies of the mesh data to read from.  
 	vector<DXVertex::PosNormalTexTan> Vertices;
 	vector<UINT> Indices;
@@ -51,7 +67,7 @@ public:
 	std::vector<USHORT>* Indices;
 	std::vector<Mesh::Subset>* Subsets;
 	*/
-	DXMesh ModelMesh;
+	DXMesh* m_modelMesh;
 
 	DirectX::BoundingSphere					m_BoundingSphere;
 	DirectX::BoundingOrientedBox			m_BoundingOrientedBox;

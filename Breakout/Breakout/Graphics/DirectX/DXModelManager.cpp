@@ -3,27 +3,33 @@
 DXModelManager::DXModelManager(void)
 {
 	m_loadedModels	=	map<string, DXModel*>();
+	m_meshManager;
 }
 
 DXModelManager::~DXModelManager()
 {
-	for (m_modelIterator = m_loadedModels.begin(); m_modelIterator != m_loadedModels.end(); ++m_modelIterator)
-		delete	m_modelIterator->second;
+	map <string, DXModel*>::iterator	modelIterator;
+	for (modelIterator = m_loadedModels.begin(); modelIterator != m_loadedModels.end(); ++modelIterator)
+		delete	modelIterator->second;
 
 	m_loadedModels.clear();
+
+	m_meshManager;
 }
+
+
 
 
 void DXModelManager::LoadModel(ID3D11Device* _device, string _path, DXTextureManager &_texMgr)
 {
-	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
-
 	if (m_loadedModels.count(_path) != 0)
 		return;
 
-	DXModel*	tModel = new DXModel(_device, _texMgr, data);
+	ModelData* data = FileManager::GetInstance().LoadModel(GetFile(_path, MODEL_ROOT));
 
-	if ( tModel == 0 )
+	DXModel*	tModel = new DXModel(_device, _texMgr, data, _path, m_meshManager);
+
+	if (tModel == 0)
 	{
 		return;
 	}
@@ -31,6 +37,28 @@ void DXModelManager::LoadModel(ID3D11Device* _device, string _path, DXTextureMan
 	m_loadedModels.insert(pair<string, DXModel*>(_path, tModel));
 }
 
+void DXModelManager::LoadModel(ID3D11Device* _device, string _path, string _blendTexture, DXTextureManager &_texMgr)
+{
+	std::string path = _path + _blendTexture;
+	
+
+	if (m_loadedModels.count(path) != 0)
+		return;
+
+	if (m_loadedModels.count(_path) == 0)
+		LoadModel(_device, _path, _texMgr);
+
+	DXModel* parent = GetModel(_path);
+
+	if (!parent)
+		return;
+
+	DXModel* child = new DXModel(parent, _blendTexture);
+
+	child->SetBlendTexture(_blendTexture, _texMgr);
+
+	m_loadedModels.insert(pair<string, DXModel*>(path, child));
+}
 
 DXModel* DXModelManager::GetModel(string _name)
 {
@@ -39,19 +67,3 @@ DXModel* DXModelManager::GetModel(string _name)
 
 	return 0;
 }
-
-/*
-ModelInstance* DXModelManager::CreateModelInstance(string ModelName)
-{
-	DXModel*	tModel = GetModel(ModelName);
-
-	if ( tModel == 0 )
-		return 0;
-
-	ModelInstance*	tInstance	=	new ModelInstance();
-	tInstance->SetModel(tModel);
-	//tInstance->m_Model	=	tModel;
-
-	return	tInstance;
-}
-*/

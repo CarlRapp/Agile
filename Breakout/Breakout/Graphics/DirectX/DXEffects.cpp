@@ -60,8 +60,9 @@ ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wst
 
 	m_mat = m_FX->GetVariableByName("gMaterial");
 
-	m_diffuseMap = m_FX->GetVariableByName("gDiffuseMap")->AsShaderResource();
-	m_normalMap = m_FX->GetVariableByName("gNormalMap")->AsShaderResource();
+	m_diffuseTex = m_FX->GetVariableByName("gDiffuseTex")->AsShaderResource();
+	m_blendTex = m_FX->GetVariableByName("gBlendTex")->AsShaderResource();
+	m_normalTex = m_FX->GetVariableByName("gNormalTex")->AsShaderResource();
 }
 
 ObjectDeferredEffect::~ObjectDeferredEffect()
