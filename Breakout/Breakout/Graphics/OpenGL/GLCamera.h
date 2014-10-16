@@ -7,12 +7,27 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../ICamera.h"
-
+#include <vector>
+#include <map>
 
 
 class GLCamera : public ICamera
 {
 private:
+        struct ShakeKeyFrame
+	{
+		glm::vec3 offset;
+		float startTime;
+	};
+
+	struct CameraShake
+	{
+		float time;
+		bool loop;
+		std::vector<ShakeKeyFrame> shakeKeyFrames;
+	};
+
+	std::map<int, CameraShake> m_cameraShakes;
 
 	int m_viewPort;
         int m_width;
@@ -20,7 +35,7 @@ private:
 
 	float				m_FOVy, m_aspectRatio, m_nearZ, m_farZ, 
                                         m_pitch, m_yaw, m_sens;
-	glm::vec3			m_position, m_forward, m_right, m_up;
+	glm::vec3			m_position, m_forward, m_right, m_up, m_offset;
         glm::mat4                       m_projection,m_view;
         void*                           m_vpProjection;
         void*                           m_vpView;
@@ -36,7 +51,9 @@ public:
 	~GLCamera(void);
 
         void Update(float _dt);
-
+        void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time);
+        void RemoveShake(int _id);
+        
 
 	//void Rotate(float pitch, float rotY) = 0;
 
@@ -47,7 +64,7 @@ public:
 	MATRIX4* GetView();
 	MATRIX4* GetProjection();
 
-	glm::vec3 GetPosition()		{ return m_position; }
+	glm::vec3 GetPosition()		{ return m_position + m_offset; }
 	glm::vec3 GetForward()		{ return m_forward; }
 	glm::vec3 GetRight()		{ return m_right; }
 	glm::vec3 GetUp()		{ return m_up; }

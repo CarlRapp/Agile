@@ -109,6 +109,8 @@ void MainMenuScene::OnActive()
         if(i > 10)
             break;
     }
+    
+    GM->GetICamera()->AddShake(133421, 1.0f, 20.0f, 8.0f, 5.0f);
 	
 }
 void MainMenuScene::OnInactive()
@@ -179,30 +181,14 @@ void MainMenuScene::Update(float _dt)
 
 	m_world->Update(_dt);
 
-	m_blockTimer += _dt;
-	if (m_blockTimer > .50f)
-	{
-		m_blockTimer = 0;
-		Entity* e;
-		e = m_world->CreateEntity();
-		if (!e)
-			return;
-
-		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
-		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-		m_world->AddEntity(e);
-                
-
-                
-	}
-        
-        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
-	test += _dt * 0.5f;
-	pos.y = 20;
-	pos.x = 0 + 100 * sinf(test);
-	pos.z = 100 * cosf(test);
-
-	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
+	
+//        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
+//	test += _dt * 0.5f;
+//	pos.y = 20;
+//	pos.x = 0 + 100 * sinf(test);
+//	pos.z = 100 * cosf(test);
+//
+//	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
 	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
         
         if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
