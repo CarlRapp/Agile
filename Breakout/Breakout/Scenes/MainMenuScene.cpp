@@ -137,6 +137,8 @@ void MainMenuScene::Update(float _dt)
 		SceneManager::GetInstance()->Quit();
 
 	GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
+
+	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 	{
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
 		return;
