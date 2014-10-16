@@ -26,7 +26,7 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 
 	if (spawnPowerUp <= 5)
 	{
-		spawnPowerUp = rand() % 2;
+		spawnPowerUp = rand() % 3;
 		Entity* _newPowerUp = 0;
 		switch (spawnPowerUp)
 		{
@@ -36,6 +36,9 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 		case 1:
 			_newPowerUp = CreatePowerUp(MULTIBALL);
 			break;
+		//case 2:
+		//	_newPowerUp = CreatePowerUp(SWAPBLOCK);
+		//	break;
 		}
 
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());

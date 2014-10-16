@@ -469,7 +469,12 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\System\ShootLaserSystem.h">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\WarpComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{29f1f3b8-01fb-4096-a44f-c7076fd87a94}</UniqueIdentifier>

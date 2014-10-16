@@ -229,7 +229,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		_entity->AddComponent<VelocityComponent>();
 		PhysicsSystem::GenerateBody(_entityType, bodyDef, fixDefs);
 		_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-		_entity->AddComponent<CollisionStatsComponent>(50.0f, 100.0f, 40.0f, 20.0f);
+		_entity->AddComponent<CollisionStatsComponent>(50.0f, 50.0f, 50.0f, 20.0f);
 		_entity->AddComponent<DamageComponent>(10);
 		//_entity->AddComponent<HealthComponent>(10);
 		//_entity->AddComponent<LoseLifeComponent>();
