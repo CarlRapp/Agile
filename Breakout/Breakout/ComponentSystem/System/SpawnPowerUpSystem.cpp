@@ -23,7 +23,8 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 {
 	int spawnPowerUp = rand() % 100;
 
-	if (spawnPowerUp < 10)
+        //1%
+	if (spawnPowerUp == 2)
 	{
 		Entity* _newPowerUp = CreatePowerUp(MULTIBALL);
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());

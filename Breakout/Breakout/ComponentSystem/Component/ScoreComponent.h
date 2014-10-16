@@ -5,20 +5,23 @@
 
 const short STATPOINTS_PER_LEVEL = 5;
 const short POINTS_PER_LEVEL_INC = 40;
+const float POINTS_PER_LEVEL_MUL = 0.2f;
 
 struct ScoreComponent : Component<ScoreComponent>
 {
-	int m_score=0;
-	bool wasHit=false; // temp
-        std::string m_scoreStr = "SCORE :";
-        int m_nextLevel = 20;
+	int m_score;
+	bool wasHit; // temp
+        std::string m_scoreStr;
+        int m_nextLevel;
+        float m_increase;
 
-	ScoreComponent()
-	{
-            m_nextLevel = 20;
-            m_score = 0;
-            wasHit = false;
-	}
+	ScoreComponent():
+        m_score(0),
+        wasHit(false),
+        m_scoreStr("SCORE :"),
+        m_nextLevel(POINTS_PER_LEVEL_INC),
+        m_increase(POINTS_PER_LEVEL_INC + POINTS_PER_LEVEL_INC*POINTS_PER_LEVEL_MUL)
+	{}
         
         void SetString()
         { 
@@ -56,9 +59,10 @@ struct ScoreComponent : Component<ScoreComponent>
         
         void SetNextLevelUpScore()
         {
-            m_nextLevel += POINTS_PER_LEVEL_INC;
+            m_increase = POINTS_PER_LEVEL_INC + m_nextLevel*POINTS_PER_LEVEL_MUL;
+            m_nextLevel += m_increase;
         }
-
+       
 };
 
 #endif

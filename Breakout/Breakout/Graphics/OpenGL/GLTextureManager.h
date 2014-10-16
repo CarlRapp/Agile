@@ -236,6 +236,7 @@ void LoadLetters()
     m_letters64.push_back(&X);
     m_letters64.push_back(&Y);
     m_letters64.push_back(&Z);
+    m_letters64.push_back(&_expArrow);
     
 //    m_letters256.resize(m_letters64.size());
 //    
