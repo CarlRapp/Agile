@@ -126,7 +126,8 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > 0.5f)
+
+	if (counter > 1.0f/(m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_level+1))
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
@@ -201,8 +202,6 @@ void GameScene::UpdateFPS(float _dt)
         float fps = 1.0f / _dt;
         m_fpsString= "FPS: ";
         m_fpsString.append(std::to_string((int)fps));
-        m_fpsString += " DT: ";
-        m_fpsString.append(std::to_string(_dt));
 }
 
 void GameScene::Render(float _dt)
@@ -438,6 +437,16 @@ void GameScene::Reset()
         m_world->AddEntity(e);
 
         Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize(&player->GetComponent<PlayerComponent>()->m_expString, 0.5f-(16*8.0f)/1280.0f*1.0f, 0.0f, 2.f, VECTOR3(1.0f,1.0f,1.0f), 10.0f);
+        m_textHandleEXP = e->GetId();
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+        
+        
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));

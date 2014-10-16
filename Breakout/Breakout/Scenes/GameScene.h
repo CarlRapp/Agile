@@ -47,6 +47,7 @@ private:
         int m_lvlUpHandleDAMAGE = 0;
         int m_lvlUpHandleAUTO = 0;
         
+        int m_textHandleEXP = 0;     
         
         int m_levelUp = 0;
         int m_playerID = 0;

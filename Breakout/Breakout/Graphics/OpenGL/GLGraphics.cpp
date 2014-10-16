@@ -649,8 +649,6 @@ void GLGraphics::AddTextObject(int _id, std::string *_text, float *_x, float *_y
         if(m_textObjects[i].id == _id)
         {
             m_textObjects.erase(m_textObjects.begin() + i);
-            printf("\033[31mWARNING, ADDED TEXTOBJECT WITH EXISTING ID: %d \033[30m\n",_id);
-
         }
     }
     
