@@ -9,7 +9,8 @@ private:
 	enum PowerUpType
 	{
 		MULTIBALL,
-		SHOOTLASER
+		SHOOTLASER,
+		SWAPBLOCKS
 	};
 	void OnEntityRemoved(Entity* _block);
 

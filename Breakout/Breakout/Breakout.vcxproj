@@ -167,6 +167,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
