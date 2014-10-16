@@ -185,8 +185,13 @@ void MainMenuScene::Update(float _dt)
 	else
 		m_Exit->m_color = VECTOR3(0, 1, 0);
 	
-
-
+	m_blockTimer += _dt;
+	if (m_blockTimer > 0.05f)
+	{
+		m_blockTimer = 0.0f;
+		m_world->GetSystem<BlockSpawnSystem>()->ForceSpawn(1);
+	}
+	
 	m_world->Update(_dt);
 //        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
 //	test += _dt * 0.5f;
@@ -216,6 +221,7 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSpawnSystem>();
 	m_world->AddSystem<BlockSystem>();
+	//m_world->GetSystem<BlockSystem>()->SetSettings(5, 5);
     m_world->AddSystem<TextSystem>();
 
 	BlockSpawnSystem* blockSystem = m_world->GetSystem<BlockSpawnSystem>();

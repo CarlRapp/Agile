@@ -32,10 +32,7 @@ struct WarpComponent : Component<WarpComponent>
 
 	void Warping(float _dt)
 	{
-		if (m_type == MIN_TO_MAX)
-			WarpMinToMax(_dt);
-		else
-			WarpMaxToMin(_dt);
+		WarpMinToMax(_dt);
 	}
 private:
 	void WarpMinToMax(float _dt)

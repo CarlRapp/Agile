@@ -277,9 +277,23 @@ void BlockSystem::PushDown(int _x, int _y)
 				}
 				else
 				{
+					for (gIT = blockGroup.begin(); gIT != blockGroup.end(); ++gIT)
+					{
+						GridPosition GP = gIT->first;
+						Entity* block = m_blockGrid[GP.second][GP.first];
+						if (block)
+						{
+							m_blockGrid[GP.second][GP.first] = 0;
+							block->SetState(Entity::SOON_DEAD);
+						}
+							
+					}
+
+
 					loseLife = true;
-					m_blockGrid[yPos][xPos + n] = 0;
 					e->SetState(Entity::SOON_DEAD);
+					//OnEntityRemoved(e);
+					m_blockGrid[yPos][xPos + n] = 0; 
 					break;
 				}
 					
