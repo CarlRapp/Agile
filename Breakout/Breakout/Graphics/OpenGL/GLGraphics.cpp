@@ -1,7 +1,7 @@
 #include "GLGraphics.h"
 #include <iostream>
 #include "../../Storage/FileManager.h"
-
+#include <ctype.h>
 #define SHADE_TEXT 1
 
 GLGraphics::GLGraphics(void)
@@ -589,7 +589,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
 {
     if(_text == NULL)
         return;
-    
+
     GLvoid* v;
     
     std::string text = (*_text);
@@ -628,12 +628,18 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
     
     GLint letterLocation = glGetUniformLocation(m_textProgram.GetProgramHandle(), "m_letter" );
 
+    
+    
     for(int i= 0; i < text.size();i++)
     {
+        int reduce = 32;
         x = ((*_x) + width*i) * (effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
+        char c = text.at(i);
+        if(c > 90)
+            reduce += (32);
         
-        glUniform1i(letterLocation, text.at(i)-32);
+        glUniform1i(letterLocation, c-reduce);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
     }
