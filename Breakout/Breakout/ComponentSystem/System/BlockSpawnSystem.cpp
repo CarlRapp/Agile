@@ -4,7 +4,7 @@
 #include "../World.h"
 
 BlockSpawnSystem::BlockSpawnSystem(World* _world)
-: Base(ComponentFilter(), _world)
+: Base(ComponentFilter(), _world), m_elapsedTime(0), m_spawnTimer(0)
 {
 }
 
@@ -25,7 +25,8 @@ void BlockSpawnSystem::Update(float _dt)
 	if (m_spawnTimer <= 0)
 	{
 		SpawnBlock();
-		m_spawnTimer = 2.0f;
+		m_spawnTimer = exp(-m_elapsedTime / 120);
+		printf("Time: %f\n", m_spawnTimer);
 	}
 }
 
@@ -135,6 +136,8 @@ void BlockSpawnSystem::SpawnBlock()
 			Entity* newBlock = GetBlock(m_blockPools[i]->GetRandomBlock());
 			if (newBlock)
 				m_world->AddEntity(newBlock);
+
+			break;
 		}
 }
 

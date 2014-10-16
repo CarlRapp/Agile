@@ -46,7 +46,7 @@ void MainMenuScene::OnActive()
 	CreatePlayField();
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
-    
+	GraphicsManager::GetInstance()->SetSky("space");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();
@@ -153,49 +153,6 @@ void MainMenuScene::Update(float _dt)
 	m_world->Update(_dt);
 }
 
-// Denna lär plockas bort sen
-EntityFactory::EntityType MainMenuScene::RandomizeType(void)
-{
-	EntityFactory::EntityType type;
-
-	const int smallRed		= 14;	// 14%
-	const int smallGreen	= 28;	// 14%
-	const int smallBlue		= 42;	// 14%
-	const int bigRed		= 56;	// 14%
-	const int bigGreen		= 70;	// 14%
-	const int bigBlue		= 84;	// 14%
-	const int indestruct	= 92;	// 8%
-	const int tnt			= 100;	// 8%
-
-	const int rnd = (rand() % (100 - 0)); // randomize between 0 and 100
-
-	if (rnd >= 0 && rnd < smallRed)
-		type = EntityFactory::STANDARD_BLOCK_RED;
-
-	else if (rnd >= smallRed && rnd < smallGreen)
-		type = EntityFactory::STANDARD_BLOCK_GREEN;
-
-	else if (rnd >= smallGreen && rnd < smallBlue)
-		type = EntityFactory::STANDARD_BLOCK_BLUE;
-
-	else if (rnd >= smallBlue && rnd < bigRed)
-		type = EntityFactory::STANDARD_BIG_RED;
-
-	else if (rnd >= bigRed && rnd < bigGreen)
-		type = EntityFactory::STANDARD_BIG_GREEN;
-
-	else if (rnd >= bigGreen && rnd < bigBlue)
-		type = EntityFactory::STANDARD_BIG_BLUE;
-
-	else if (rnd >= bigBlue && rnd < indestruct)
-		type = EntityFactory::INDESTRUCTIBLE_BLOCK;
-
-	else if (rnd >= indestruct && rnd < tnt)
-		type = EntityFactory::TNT_BLOCK;
-
-	return type;
-}
-
 void MainMenuScene::Render(float _dt)
 {
 	GraphicsManager::GetInstance()->Render(_dt);
@@ -277,6 +234,7 @@ void MainMenuScene::CreatePlayField()
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::INVISIBLE_WALL);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -25, 0));
+	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 1, 1));
 	e->RemoveComponent<AudioComponent>();
 	e->RemoveComponent<DamageComponent>();
 	m_world->AddEntity(e);

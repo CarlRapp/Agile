@@ -15,6 +15,7 @@
 #define AUDIO_ROOT "/../../Data/Audio/"
 #define TEXTURE_ROOT "/../../Data/Textures/"
 #define HIGHSCORE_ROOT "/../../Data/SaveData/"
+#define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
 
 typedef signed char         INT8, *PINT8;
 typedef signed short        INT16, *PINT16;
@@ -55,17 +56,13 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define WINDOWS
 #define DIRECTX
 
-#ifdef _DEBUG
-#define MODEL_ROOT "../../Data/Models/"
-#define AUDIO_ROOT "../../Data/Audio/"
-#define TEXTURE_ROOT "../../Data/Textures/"
-#define HIGHSCORE_ROOT "../../Data/SaveData/"
-#else
-#define MODEL_ROOT "/Data/Models/"
-#define AUDIO_ROOT "/Data/Audio/"
-#define TEXTURE_ROOT "/Data/Textures/"
-#define HIGHSCORE_ROOT "/Data/SaveData/"
-#endif
+
+#define MODEL_ROOT "Data/Models/"
+#define AUDIO_ROOT "Data/Audio/"
+#define TEXTURE_ROOT "Data/Textures/"
+#define HIGHSCORE_ROOT "Data/SaveData/"
+#define SHADER_ROOT "Shaders/"
+
 
 #include <direct.h>
 #define GetCurrentDir _getcwd
@@ -85,7 +82,7 @@ struct _ENUM_FLAG_SIZED_INTEGER
 
 #endif
 #include "MathHelper.h"
-#define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
+
 static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
