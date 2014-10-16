@@ -242,15 +242,6 @@ void MainMenuScene::CreatePlayField()
 	//FPS COUNTER
 	Entity* e;
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
-	
-	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
-	
-	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
