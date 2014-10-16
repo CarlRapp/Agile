@@ -15,7 +15,10 @@ public:
 
 	static ICamera* GetICamera(float _fov, int _width,int _height, float _nearZ, float _farZ);
 
+	virtual void Update(float _dt) = 0;
 
+	virtual void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time) = 0;
+	virtual void RemoveShake(int _id) = 0;
 	//virtual void Rotate(float pitch, float rotY) = 0;
 
 	//virtual void Pitch(float angle) = 0;
