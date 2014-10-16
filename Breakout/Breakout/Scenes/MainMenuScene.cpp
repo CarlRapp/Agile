@@ -47,6 +47,7 @@ void MainMenuScene::OnActive()
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
 	GraphicsManager::GetInstance()->SetSky("space");
+	GM->SetSky("space2");
 	GM->ShowMouseCursor(true);
 
     Entity* e = m_world->CreateEntity();
@@ -74,11 +75,41 @@ void MainMenuScene::OnActive()
     TC = e->GetComponent<TextComponent>();
 	m_Exit = TC;
 	TC->Initialize("--EXIT--", 0.05f, 0.8f, 4.f, VECTOR3(0, 1, 0), 20.0f);
-    //TC->Initialize(&m_stringExit,2.f,0x1904 ,100,140);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
 
+    float highscoreY = 0.9f;
+        
+    e = m_world->CreateEntity();
+    EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+    TC = e->GetComponent<TextComponent>();
+    TC->Initialize("-HIGHSCORES-", 0.5f-(12*8.0f)/1280.0f*1.5f, highscoreY, 3.f, VECTOR3(1, 1, 1), 20.0f);
+
+    m_world->AddEntity(e);
+    GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+
+        
+    vector<HighScore> v = FileManager::GetInstance().LoadHighScores(GetFile("highscores.txt",HIGHSCORE_ROOT));
+    
+    
+    for(int i =0;i < v.size();i++)
+    {
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        std::string score = v.at(i).m_name;
+        score += " ";
+        score += std::to_string(v.at(i).m_score);
+        TC->Initialize(score, 0.5f-(score.size()*8.0f)/1280.0f, highscoreY-(i+1)*0.05f, 2.f, VECTOR3(1, 1, 1), 20.0f);
+
+        m_world->AddEntity(e);
+
+        GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+        
+        if(i > 10)
+            break;
+    }
 	
 }
 void MainMenuScene::OnInactive()
@@ -105,7 +136,7 @@ void MainMenuScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
 
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+	GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
 	{
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
 		return;
