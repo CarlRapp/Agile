@@ -153,7 +153,7 @@ void MainMenuScene::Update(float _dt)
 	m_world->Update(_dt);
 }
 
-// Denna l‰r plockas bort sen
+// Denna l√§r plockas bort sen
 EntityFactory::EntityType MainMenuScene::RandomizeType(void)
 {
 	EntityFactory::EntityType type;

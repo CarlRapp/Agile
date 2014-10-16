@@ -1,16 +1,7 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
 
-#ifdef _DEBUG
-#ifndef DBG_NEW
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#define new DBG_NEW
-#endif
-#endif  // _DEBUG
 
 #include <string>
 
@@ -18,6 +9,7 @@
 #define LINUX
 #define OPENGL
 #include <unistd.h>
+#include <stdlib.h>
 
 #define MODEL_ROOT "/../../Data/Models/"
 #define AUDIO_ROOT "/../../Data/Audio/"
@@ -63,12 +55,32 @@ struct _ENUM_FLAG_SIZED_INTEGER
 #define WINDOWS
 #define DIRECTX
 
+#ifdef _DEBUG
 #define MODEL_ROOT "../../Data/Models/"
 #define AUDIO_ROOT "../../Data/Audio/"
 #define TEXTURE_ROOT "../../Data/Textures/"
 #define HIGHSCORE_ROOT "../../Data/SaveData/"
+#else
+#define MODEL_ROOT "/Data/Models/"
+#define AUDIO_ROOT "/Data/Audio/"
+#define TEXTURE_ROOT "/Data/Textures/"
+#define HIGHSCORE_ROOT "/Data/SaveData/"
+#endif
+
+#include <direct.h>
+#define GetCurrentDir _getcwd
 
 #include <Windows.h>
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
 
 
 #endif
@@ -78,7 +90,7 @@ static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
-#define SafeDelete(x) { if(x) { delete x; x = 0; } }
+#define SafeDelete(x) { if(x != NULL) { delete x; x = 0; } }
 #define SafeDeleteArray(x) { if(x) { delete[] x; x= 0; } }
 
 #define MAX_ENTITY_COUNT 500

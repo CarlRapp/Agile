@@ -74,13 +74,14 @@ int main(int argc, char** argv)
 
 	m_SceneManager->Quit();
 
-	SafeDelete(m_SceneManager);
-	SafeDelete(m_GraphicsManager);
+	
+	//SafeDelete(m_GraphicsManager);
 	SafeDelete(m_AudioManager);
 	SafeDelete(m_InputManager);
 	SafeDelete(m_fileManager);
 	SafeDelete(m_EntityFactory);
-
-	_CrtDumpMemoryLeaks();
+        SafeDelete(m_SceneManager);
+        
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

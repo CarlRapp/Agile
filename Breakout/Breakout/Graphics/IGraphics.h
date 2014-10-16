@@ -51,7 +51,12 @@ public:
 
 	virtual void ShowMouseCursor(bool _value) = 0;
 
-	virtual void Clear(void) {};
+	virtual void Clear(void) = 0;
+
+	virtual void SetSky(std::string _name) = 0;
+	virtual void ClearSky() = 0;
+
+	virtual void SetBlendTexture(int _objectID, std::string _filename) = 0;
 
 	static IGraphics* GetIGraphics();
 };

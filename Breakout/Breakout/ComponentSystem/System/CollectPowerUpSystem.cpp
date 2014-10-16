@@ -1,6 +1,7 @@
 #include "CollectPowerUpSystem.h"
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
+#include "ShootLaserSystem.h"
 #include "../World.h"
 
 #include "../EntityFactory.h"
@@ -8,9 +9,10 @@
 #include "../Component/VelocityComponent.h"
 #include "../Component/BallComponent.h"
 #include "../Component/MultiBallComponent.h"
+#include "../Component/LaserComponent.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
-: Base(ComponentFilter().Requires<CollisionComponent>().RequiresOneOf<MultiBallComponent>(), _world)
+: Base(ComponentFilter().Requires<CollisionComponent>(), _world)
 {
 }
 
@@ -28,38 +30,35 @@ void CollectPowerUpSystem::Update(float _dt)
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();
+		if (!(collision->GetBody()->GetFixtureList()[0].GetFilterData().categoryBits & CollisionCategory::POWERUP))
+			continue;
 		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
 			CollisionContact contact = collisions.at(i);
-			int bitA = contact.m_fixture->GetFilterData().categoryBits;
 			int bitB = contact.m_otherFixture->GetFilterData().categoryBits;
 			
-			if ((bitA == CollisionCategory::POWERUP && bitB == CollisionCategory::PAD) || (bitA == CollisionCategory::PAD && bitB == CollisionCategory::POWERUP))
-			{
-				Entity* powerUp = (bitA == CollisionCategory::POWERUP) ? e : m_world->GetEntity(collisions[i].m_otherId);
-				if (powerUp->GetState() == Entity::ALIVE)
-					TriggerPowerUp(powerUp);
-			}
-
+			if (bitB & CollisionCategory::PAD)
+					TriggerPowerUp(e);
 		}
-	}
-
-	for (auto entityPair : m_entityMap)
-	{
-		Entity* e = entityPair.second;
-		if ((e->GetState() != Entity::ALIVE))
-			continue;
-
-		e->GetComponent<VelocityComponent>()->m_velocity.y -= 5*_dt;
 	}
 }
 void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 {
-	MultiBallComponent* isMultiBall = _powerUp->GetComponent<MultiBallComponent>();
+	auto isMultiBall = _powerUp->GetComponent<MultiBallComponent>();
+	auto isLaser = _powerUp->GetComponent<LaserComponent>();
 
 	if (isMultiBall)
 		SpawnMultiBalls();
+	if (isLaser)
+	{
+		ShootLaserSystem* shootLaserSystem = m_world->GetSystem<ShootLaserSystem>();
+		if (shootLaserSystem)
+			shootLaserSystem->ResetDuration();
+		else
+			m_world->AddSystem<ShootLaserSystem>();
+	}
+
 
 	_powerUp->SetState(Entity::SOON_DEAD);
 }
@@ -89,12 +88,12 @@ void CollectPowerUpSystem::SpawnMultiBalls()
 		VECTOR2 aVelocity = VECTOR2
 			(
 			cos(velAngle + PI*0.25f)*velLength,
-			sin(velAngle + PI*0.25f)*velLength
+			1*velLength
 			);
 		VECTOR2 bVelocity = VECTOR2
 			(
 			cos(velAngle - PI*0.25f)*velLength,
-			sin(velAngle - PI*0.25f)*velLength
+			1*velLength
 			);
 
 		newBall->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(bVelocity.x, bVelocity.y, 0);

@@ -29,7 +29,7 @@ DXGraphics::~DXGraphics(void)
 	ReleaseCOM(m_deviceContext);
 	ReleaseCOM(m_finalUAV);
 
-	delete(sky);
+	SafeDelete(m_sky);
 }
 
 void DXGraphics::Clear()
@@ -64,6 +64,8 @@ void DXGraphics::Clear()
 		it->second.clear();
 	}
 	m_modelInstances.clear();
+
+	ClearSky();
 }
 
 bool DXGraphics::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
@@ -100,11 +102,6 @@ bool DXGraphics::Init3D(DisplayMode _displayMode)
 	
 
 	m_textureManager.Init(m_device);
-
-	sky = new DXSky(m_device, "SKYBOX.dds", &m_textureManager);
-	//sky = new DXSky(m_device, "desertcube1024.dds", &m_textureManager);
-	//sky = new DXSky(m_device, "snowcube1024.dds", &m_textureManager);
-	//sky = new DXSky(m_device, "sunsetcube1024.dds", &m_textureManager);
 
 	float ClearColor[4] = { 1.0f, 0.0f, 0.0f, 0.0f };
 	m_deviceContext->ClearRenderTargetView(m_renderTargetView, ClearColor);
@@ -301,7 +298,7 @@ void DXGraphics::Render(float _dt, ICamera* _camera)
 	m_deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
 
 
-	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), sky, _camera);
+	m_DXDeferred->Render(_dt, m_renderTargetView, m_finalUAV, m_modelInstances, m_textureInstances, m_particleSystems, m_texts, m_textureManager.GetSymbolsTexture(), m_textureManager.GetNumSymbols(), m_sky, _camera);
 
 
 	m_swapChain->Present(0, 0);
@@ -451,4 +448,51 @@ void DXGraphics::RemoveTextObject(int _id)
 void DXGraphics::ShowMouseCursor(bool _value)
 {
 	ShowCursor(_value);
+}
+
+void DXGraphics::SetSky(std::string _name)
+{
+	SafeDelete(m_sky);
+	m_sky = new DXSky(m_device);
+	if (!m_sky->Load(_name, &m_textureManager))
+		SafeDelete(m_sky);
+}
+
+void DXGraphics::ClearSky()
+{
+	SafeDelete(m_sky);
+}
+
+void DXGraphics::SetBlendTexture(int _objectID, std::string _filename)
+{
+	if (_filename == "emptyBlend.png")
+		_filename = "";
+
+	ModelInstance *mi = NULL;
+	map<std::string, map<int, ModelInstance*>>::iterator	mapIterator;
+	for (mapIterator = m_modelInstances.begin(); mapIterator != m_modelInstances.end(); ++mapIterator)
+	{
+		if (mapIterator->second.find(_objectID) != mapIterator->second.end())
+		{
+			mi = mapIterator->second[_objectID];
+			break;
+		}
+	}
+
+	if (!mi)
+		return;
+
+	std::string name = mi->model->GetModelName();
+
+	m_modelManager.LoadModel(m_device, name, _filename, m_textureManager);
+
+
+	DXModel *temp = m_modelManager.GetModel(name + _filename);
+
+	if (temp)
+	{
+		m_modelInstances[mi->model->GetName()].erase(_objectID);
+		mi->model = temp;
+		m_modelInstances[name + _filename].insert(pair<int, ModelInstance*>(_objectID, mi));
+	}
 }

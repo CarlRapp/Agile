@@ -15,7 +15,7 @@ struct ShatterComponent : Component<ShatterComponent>
 	};
 
 	float m_explosion = 0.0f;
-	float m_maxExplosionTime = 0.2f;
+	float m_maxExplosionTime = 0.3f;
 	float m_expansionRate = 20.0f;
 	ShatterState m_explosionState = NONE;
 

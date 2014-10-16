@@ -45,7 +45,7 @@ void ScoreSystem::Update(float _dt)
                 if(m_levelUp)
                 {
                     GameScene* gScene = SceneManager::GetInstance()->GetScene<GameScene>();
-                    gScene->LevelUp(m_levelUp);
+                    gScene->LevelUp(m_levelUp,true);
                     printf("DO LEVEL UP %d\n",m_levelUp);
                     m_levelUp = 0;
                 }

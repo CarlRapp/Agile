@@ -7,6 +7,7 @@
 #include "GLTextureManager.h"
 #include "GLText.h"
 #include "GLParticleSystem.h"
+#include "GLSkybox.h"
 
 #include <GL/glew.h> 
 #include <GL/gl.h> 
@@ -47,6 +48,7 @@ class GLGraphics : public IGraphics
         int vertices;
         GLuint bufferVAOID;
         GLuint texHandle;
+        GLuint blendTexHandle;
         std::string name;
         std::map<int, ModelInstance*> instances;
         
@@ -75,22 +77,22 @@ class GLGraphics : public IGraphics
     
     struct TextObject
     {
-        std::string* text;
-        float* scale;
-        glm::vec3* color;
-        float* x;
-        float* y;
-        float* effect;
+        std::string* text = NULL;
+        float* scale = NULL;;
+        glm::vec3* color = NULL;;
+        float* x = NULL;;
+        float* y = NULL;;
+        float* effect = NULL;;
         
-        std::string textCopy;
-        float scaleCopy;
-        glm::vec3 colorCopy;
-        float xCopy;
-        float yCopy;
-        float effectCopy;
+        std::string textCopy ="";
+        float scaleCopy = 0;
+        glm::vec3 colorCopy = glm::vec3(0,0,0);
+        float xCopy= 0;
+        float yCopy= 0;
+        float effectCopy= 0;
         
-        int id;
-        bool kill;
+        int id= 0;
+        bool kill= false;
     };
     
 private:
@@ -99,12 +101,14 @@ private:
         int m_screenHeight;
         
         GLTextureManager m_texManager;
+        GLSkybox*        m_skybox;
 
         ShaderHandler m_standardShaderProgram, 
                       m_shader2Dprogram, 
                       m_fireParticlesProgram, 
                       m_trailParticlesProgram, 
-                      m_textProgram;
+                      m_textProgram,
+                      m_skyboxProgram;
 
         GLuint m_2DVAO;
         
@@ -134,6 +138,7 @@ private:
         int RenderStandard();
         void Render2D();
         void RenderParticles(float dt, ICamera* _camera);
+        void RenderSkybox(ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
         //void LoadLetters();
@@ -147,7 +152,7 @@ public:
         void Render(float _dt, ICamera* _camera);
         bool Init3D(DisplayMode _displayMode);
         void Resize(int width, int height);
-        void Free();
+        void Clear();
         void Update(float _dt);
         void LoadModel(std::string _path);
         void LoadTexture(std::string _path);
@@ -170,6 +175,9 @@ public:
         void RemoveTextObject(int _id);
         
         void ShowMouseCursor(bool _value);
+        
+        void SetSky(std::string _name);
+	void ClearSky();
 };
 
 

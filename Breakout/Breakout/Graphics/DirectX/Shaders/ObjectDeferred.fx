@@ -23,8 +23,9 @@ cbuffer cbPerObjectInstanced
 
 
 // Nonnumeric values cannot be added to a cbuffer.
-Texture2D gDiffuseMap;
-Texture2D gNormalMap;
+Texture2D gDiffuseTex;
+Texture2D gBlendTex;
+Texture2D gNormalTex;
 
 SamplerState samLinear
 {
@@ -294,7 +295,7 @@ void GS(triangle VertexOut gin[3],
 
 PsOut PS(PixelIn pin,
 		  uniform bool gUseTexure, 
-		  uniform bool gUseNormalMap,
+		  uniform bool gUseNormalTex,
 		  uniform bool gAlphaClip) : SV_Target
 {
 	PsOut pout;
@@ -309,11 +310,14 @@ PsOut PS(PixelIn pin,
     if(gUseTexure)
 	{
 		// Sample texture.
-		pout.Albedo = gDiffuseMap.Sample( samLinear, pin.Tex );
+
+		float4 albedo = gDiffuseTex.Sample(samLinear, pin.Tex);
+		float4 blend = gBlendTex.Sample(samLinear, pin.Tex);
+		pout.Albedo = albedo * (1.0f - blend.a) + blend * blend.a;
 		//return texColor;
 		if(gAlphaClip)
 		{
-			float alpha = gDiffuseMap.SampleLevel( samPoint, pin.Tex, 0 ).a;
+			float alpha = gDiffuseTex.SampleLevel( samPoint, pin.Tex, 0 ).a;
 			clip(alpha - 0.1f);
 		}
 	}
@@ -322,9 +326,9 @@ PsOut PS(PixelIn pin,
 	// Normal mapping
 	//
 	float3 NormalW = pin.NormalW;
-	if (gUseNormalMap)
+	if (gUseNormalTex)
 	{
-		float3 normalMapSample = gNormalMap.Sample(samLinear, pin.Tex).rgb;
+		float3 normalMapSample = gNormalTex.Sample(samLinear, pin.Tex).rgb;
 		NormalW = NormalSampleToWorldSpace(normalMapSample, pin.NormalW, pin.TangentW);
 	}
 

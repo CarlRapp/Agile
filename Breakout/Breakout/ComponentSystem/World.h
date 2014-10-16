@@ -48,6 +48,9 @@ public:
 	T* AddSystem();
 
 	template <typename T>
+	void RemoveSystem();
+
+	template <typename T>
 	T* GetSystem();
 
 	void Kill(){ m_running = false; }
@@ -84,7 +87,23 @@ T* World::AddSystem()
 	T* t = new T(this);
 	m_systems[T::GetTypeID()] = t;
 
+	for (auto it = m_activeEntities.begin(); it != m_activeEntities.end(); ++it)
+	{
+		m_systems[T::GetTypeID()]->Add(it->second);
+	}
+
 	return t;
+}
+template <typename T>
+void World::RemoveSystem()
+{
+	if (m_systems.find(T::GetTypeID()) != m_systems.end())
+		return;
+
+	T* t = new T(this);
+	m_systems[T::GetTypeID()] = t;
+	m_systems.erase(T::GetTypeID());
+	SafeDelete(t);
 }
 
 template <typename T>
