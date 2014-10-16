@@ -1,6 +1,7 @@
 #pragma once
 #ifndef GLWINDOW_H
 #define GLWINDOW_H
+#include <SDL/SDL_video.h>
 
 class GLWindow
 {
@@ -16,7 +17,6 @@ private:
 	int				Update(float deltaTime);
 	char*				FeatureLevelToString();
 
-
 	int m_width, m_height;
 
 public:
@@ -24,7 +24,7 @@ public:
 	GLWindow(void);
 	~GLWindow(void);
 
-	bool InitWindow(int x, int y, int width, int height);
+	bool InitWindow(int width, int height);
         bool InitGL();
 	
 };

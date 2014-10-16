@@ -7,15 +7,15 @@
 
 cbuffer perFrame
 {
-	float4x4    gLightViewProjTex[MAX_SHADOWMAPS];
+	/*float4x4    gLightViewProjTex[MAX_SHADOWMAPS];
 	float4x4    gLightViewProj[MAX_SHADOWMAPS];
-	float4x4    gLightTex[MAX_SHADOWMAPS];
-	float4x4	gInvViewProjs[4];
-	float4		gCamPositions[4];
-	float3		gShadowMapSwitches;
-	float3		gGlobalLight;
+	float4x4    gLightTex[MAX_SHADOWMAPS];*/
+	float4x4	gInvViewProj;
+	float4		gCamPosition;
+	//float3		gShadowMapSwitches;
+	//float3		gGlobalLight;
 	float2		gResolution;
-	float2		gShadowMapResolution;
+	//float2		gShadowMapResolution;
 };
 
 //Lights
@@ -29,10 +29,10 @@ Texture2D gNormalSpecMap;
 Texture2D gDepthMap;
 
 //Shadowmap
-Texture2D gShadowMap0;
-Texture2D gShadowMap1;
-Texture2D gShadowMap2;
-Texture2D gShadowMap3;
+//Texture2D gShadowMap0;
+//Texture2D gShadowMap1;
+//Texture2D gShadowMap2;
+//Texture2D gShadowMap3;
 
 //Output
 RWTexture2D<float4> gOutput;
@@ -90,247 +90,151 @@ bool AABBvsSphere(float3 min, float3 max, float3 c, float r)
 	return false;
 }
 
-float SimpleShadow(int2 texCoord, float depth, uint shadowIndex)
-{
-	if (shadowIndex < gShadowMapSwitches.x)
-	{
-		if (depth > gShadowMap0[texCoord].x)
-			return 0;
-	}
-	
-	else if (shadowIndex < gShadowMapSwitches.y)
-	{
-		if (depth > gShadowMap1[texCoord].x)
-			return 0;
-	}
-	else if (shadowIndex < gShadowMapSwitches.z)
-	{
-		if (depth > gShadowMap2[texCoord].x)
-			return 0;
-	}
-	else
-	{
-		if (depth > gShadowMap3[texCoord].x)
-			return 0;
-	}
-	
-	//inte skugga
-	return 1;
-}
+//float SimpleShadow(int2 texCoord, float depth, uint shadowIndex)
+//{
+//	if (shadowIndex < gShadowMapSwitches.x)
+//	{
+//		if (depth > gShadowMap0[texCoord].x)
+//			return 0;
+//	}
+//	
+//	else if (shadowIndex < gShadowMapSwitches.y)
+//	{
+//		if (depth > gShadowMap1[texCoord].x)
+//			return 0;
+//	}
+//	else if (shadowIndex < gShadowMapSwitches.z)
+//	{
+//		if (depth > gShadowMap2[texCoord].x)
+//			return 0;
+//	}
+//	else
+//	{
+//		if (depth > gShadowMap3[texCoord].x)
+//			return 0;
+//	}
+//	
+//	return 1;
+//}
 
-float PCF(int2 texCoord, float depth, uint shadowIndex)
-{
-	const float2 offsets[9] =
-	{
-		float2(-1,  -1),	float2(0, -1),	float2(1,  -1),
-		float2(-1,   0),	float2(0,  0),	float2(1,   0), 
-		float2(-1,   1),	float2(0,  1),	float2(1,   1) 		
-	};
-	
-	
-	float percentLit = 0.0f;
-	for (int i = 0; i < 9; ++i)
-	{
-		percentLit += SimpleShadow(texCoord + offsets[i], depth, shadowIndex);
-	}
-	return percentLit /= 9.0f;
-}
-
+//float PCF(int2 texCoord, float depth, uint shadowIndex)
+//{
+//	const float2 offsets[9] =
+//	{
+//		float2(-1,  -1),	float2(0, -1),	float2(1,  -1),
+//		float2(-1,   0),	float2(0,  0),	float2(1,   0), 
+//		float2(-1,   1),	float2(0,  1),	float2(1,   1) 		
+//	};
+//	
+//	
+//	float percentLit = 0.0f;
+//	for (int i = 0; i < 9; ++i)
+//	{
+//		percentLit += SimpleShadow(texCoord + offsets[i], depth, shadowIndex);
+//	}
+//	return percentLit /= 9.0f;
+//}
 
 
-float CalcualteShadowFactor(DirectionalLight light, float4 posW, uint viewportIndex)
-{
-	uint ShadowIndex = light.ShadowIndex[viewportIndex];
-	if (light.HasShadow && ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[ShadowIndex];
-			float4x4 VP = gLightViewProj[ShadowIndex];
-			float4x4 T = gLightTex[ShadowIndex];
 
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//float CalcualteShadowFactor(DirectionalLight light, float4 posW, uint viewportIndex)
+//{
+//	uint ShadowIndex = light.ShadowIndex[viewportIndex];
+//	if (light.HasShadow && ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[ShadowIndex];
+//			float4x4 VP = gLightViewProj[ShadowIndex];
+//			float4x4 T = gLightTex[ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
+//		}
+//	else
+//		return 1;
+//}
 
-			float4 posT = mul(posH, T);
-/*
-			float shadowDepth = gShadowMap[int2(posT.xy * gShadowMapResolution)].x;
-			
-			if (posT.z > shadowDepth)
-				return 0;
+//float CalcualteShadowFactor(PointLight light, float4 posW)
+//{
+//	uint lightShadowIndex = 0;
+//
+//	float3 dist = posW.xyz - light.Position;
+//
+//	if (abs(dist.x) > abs(dist.y) && abs(dist.x) > abs(dist.z))
+//	{
+//		if (dist.x < 0)
+//			lightShadowIndex = 3; //vänster
+//		else
+//			lightShadowIndex = 0; //höger
+//	}
+//	else if (abs(dist.y) > abs(dist.z))
+//	{
+//		if (dist.y < 0)
+//			lightShadowIndex = 4; //ner
+//		else
+//			lightShadowIndex = 1; //upp
+//	}
+//	else
+//	{
+//		if (dist.z < 0)
+//			lightShadowIndex = 5; //bak
+//		else
+//			lightShadowIndex = 2; //fram
+//	}
+//
+//	uint ShadowIndex = light.ShadowIndex[lightShadowIndex];
+//	if (light.HasShadow && ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[ShadowIndex];
+//			float4x4 VP = gLightViewProj[ShadowIndex];
+//			float4x4 T = gLightTex[ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
+//		}
+//	else
+//		return 1;
+//}
 
-			return 1;
-			*/
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
-		}
-	else
-		return 1;
-}
-
-float CalcualteShadowFactor(PointLight light, float4 posW)
-{
-	uint lightShadowIndex = 0;
-
-	float3 dist = posW.xyz - light.Position;
-
-	if (abs(dist.x) > abs(dist.y) && abs(dist.x) > abs(dist.z))
-	{
-		if (dist.x < 0)
-			lightShadowIndex = 3; //vänster
-		else
-			lightShadowIndex = 0; //höger
-	}
-	else if (abs(dist.y) > abs(dist.z))
-	{
-		if (dist.y < 0)
-			lightShadowIndex = 4; //ner
-		else
-			lightShadowIndex = 1; //upp
-	}
-	else
-	{
-		if (dist.z < 0)
-			lightShadowIndex = 5; //bak
-		else
-			lightShadowIndex = 2; //fram
-	}
-
-	uint ShadowIndex = light.ShadowIndex[lightShadowIndex];
-	if (light.HasShadow && ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[ShadowIndex];
-			float4x4 VP = gLightViewProj[ShadowIndex];
-			float4x4 T = gLightTex[ShadowIndex];
-
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-
-			float4 posT = mul(posH, T);
-
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, ShadowIndex);
-		}
-	else
-		return 1;
-}
-
-float CalcualteShadowFactor(SpotLight light, float4 posW)
-{
-	if (light.HasShadow && light.ShadowIndex != 9999)
-		{
-			float4x4 VPT = gLightViewProjTex[light.ShadowIndex];
-			float4x4 VP = gLightViewProj[light.ShadowIndex];
-			float4x4 T = gLightTex[light.ShadowIndex];
-
-			float4 posH = mul(posW, VP);
-			posH = posH / posH.w;
-			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-
-			float4 posT = mul(posH, T);
-
-			/*
-			float4 posT = mul(posW, VPT);
-			posT = posT / posT.w;
-			posT.xy = (posT.xy + float2(1,-1)) * float2(0.5f, -0.5f);
-			*/
-			/*
-			float shadowDepth = gShadowMap[int2(posT.xy * gShadowMapResolution)].x;
-
-			//return posT.y;
-			//return pow(posT.z * 0.99f, 100);
-			//return shadowDepth;
-			if (posT.z > shadowDepth)
-				return 0;
-
-			return 1;
-			*/
-
-			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, light.ShadowIndex);
-
-		}
-	else
-		return 1;
-}
+//float CalcualteShadowFactor(SpotLight light, float4 posW)
+//{
+//	if (light.HasShadow && light.ShadowIndex != 9999)
+//		{
+//			float4x4 VPT = gLightViewProjTex[light.ShadowIndex];
+//			float4x4 VP = gLightViewProj[light.ShadowIndex];
+//			float4x4 T = gLightTex[light.ShadowIndex];
+//
+//			float4 posH = mul(posW, VP);
+//			posH = posH / posH.w;
+//			posH.xy = (posH.xy + float2(1,-1)) * float2(0.5f, -0.5f);
+//
+//			float4 posT = mul(posH, T);
+//
+//
+//			return PCF(int2(posT.xy * gShadowMapResolution), posT.z, light.ShadowIndex);
+//
+//		}
+//	else
+//		return 1;
+//}
 
 
 [numthreads(COMPUTE_SHADER_TILE_GROUP_DIM, COMPUTE_SHADER_TILE_GROUP_DIM, 1)]	//Antal trådar per grupp x,y,z
-void TiledLightningCS(	uniform int gViewportCount,
-						uint3 dispatchThreadID : SV_DispatchThreadID,
+void TiledLightningCS(	uint3 dispatchThreadID : SV_DispatchThreadID,
 						uint3 groupThreadID    : SV_GroupThreadID
                          )
 {
 	uint groupIndex = groupThreadID.y * COMPUTE_SHADER_TILE_GROUP_DIM + groupThreadID.x;	//Lokalt trådindex
 
-	//Bästämmer vilken viewport vi är i.
-	uint viewportIndex = 0; //player 1
-	uint viewportX = 0;
-	uint viewportY = 0;
-	uint viewportWidth = gResolution.x;
-	uint viewportHeight = gResolution.y;
-	switch (gViewportCount)
-	{
-	case 2:
-		viewportWidth = gResolution.x / 2;
-		if (dispatchThreadID.x >= gResolution.x / 2)	//Högra halvan
-		{
-			viewportX = gResolution.x / 2;
-			viewportIndex = 1;	//player 2
-		}
-		break;
-
-	case 3:
-		viewportHeight	= gResolution.y / 2;
-		if (dispatchThreadID.y >= gResolution.y / 2)	//Undre halvan
-		{
-			viewportY = gResolution.y / 2;
-			viewportWidth	= gResolution.x / 2;
-			if (dispatchThreadID.x < gResolution.x / 2)	//Vänstra halvan
-				viewportIndex = 1; //player 2
-			else                                        //Högra halvan
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 2; //player 3
-			}
-		}
-		break;
-
-	case 4:
-		viewportWidth	= gResolution.x / 2;
-		viewportHeight	= gResolution.y / 2;
-		if (dispatchThreadID.y < gResolution.y / 2)		//Övre halvan
-		{
-			if (dispatchThreadID.x >= gResolution.x / 2)//Högra halvan
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 1; //player 2
-			}
-		}
-		else											//Undre halvan
-		{
-			viewportY = gResolution.y / 2;
-			if (dispatchThreadID.x < gResolution.x / 2)	//Vänstra halvan
-				viewportIndex = 2; //player 3
-			else                                        //Högra halvan.
-			{
-				viewportX = gResolution.x / 2;
-				viewportIndex = 3; //player 4
-			}
-		}
-		break;
-	}
-
-	float2 viewportStart = float2(viewportX, viewportY);
-	float2 viewportDim   = float2(viewportWidth, viewportHeight);
-
-	float4 viewportColor;
-
-	if (viewportIndex == 0)
-		viewportColor = float4(1,0,0,0);
-	else if (viewportIndex == 1)
-		viewportColor = float4(0,1,0,0);
-	else if (viewportIndex == 2)
-		viewportColor = float4(0,0,1,0);
-	else if (viewportIndex == 3)
-		viewportColor = float4(1,1,1,0);
 
 	//Extracting albedo, normal(world), pos(proj), material(specpower+specintesity)
 	float4 albedo		= gAlbedoMap[dispatchThreadID.xy];
@@ -346,22 +250,22 @@ void TiledLightningCS(	uniform int gViewportCount,
 	float depth			= gDepthMap[dispatchThreadID.xy].x;
 
 	float4 posW;
-	posW.xy = (dispatchThreadID.xy - viewportStart) / viewportDim;
+	posW.xy = dispatchThreadID.xy / gResolution;
 	posW.x  = posW.x * 2.0f		- 1.0f;
 	posW.y	= posW.y * -2.0f	+ 1.0f;
 	//posW.y	= posW.y * -1.0f	+ 1.0f;
 	posW.z = depth;
 	//posW.z = 0;
 	posW.w = 1.0f;
-	posW = mul(posW, gInvViewProjs[viewportIndex]);
+	posW = mul(posW, gInvViewProj);
 	posW /= posW.w;
 
 	Material mat;
-	mat.SpecIntensity	= albedo.w;
+	mat.SpecIntensity	= albedo.w * 10.0f;
 	mat.SpecPower		= normalspec.w * 1000.0f;
 
 
-	float3 toEye = normalize(gCamPositions[viewportIndex].xyz - posW.xyz);
+	float3 toEye = normalize(gCamPosition.xyz - posW.xyz);
 
 	
 	// Initialize shared memory light list and Z bounds
@@ -442,23 +346,26 @@ void TiledLightningCS(	uniform int gViewportCount,
 
 	GroupMemoryBarrierWithGroupSync(); //Väntar på alla trådarna i gruppen
 
-	float4 ambient	= float4(gGlobalLight, 0.0f);
+	float4 ambient	= float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 diffuse	= float4(0.0f, 0.0f, 0.0f, 0.0f);
 	float4 spec		= float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Calculate DirectionLights
 	if (depth != 1.0f)
 	{
+		
 		for(int i = 0; i < totalDirLights; ++i)
 		{
 			DirectionalLight light = gDirLightBuffer[i];			
-			float shadowFactor = CalcualteShadowFactor(light, posW, viewportIndex);
+			//float shadowFactor = CalcualteShadowFactor(light, posW, 0);
 
-			float4 D, S;
-			ComputeDirectionalLight(mat, light, normalW, toEye, D, S);
-  
-			diffuse += D * shadowFactor;
-			spec    += S * shadowFactor;
+			float4 A, D, S;
+			ComputeDirectionalLight(mat, light, normalW, toEye, A, D, S);
+
+			ambient += A;
+			diffuse += D;// *shadowFactor;
+			spec += S;// *shadowFactor;
+
 		}
 	}
 	
@@ -468,14 +375,14 @@ void TiledLightningCS(	uniform int gViewportCount,
 	{
 		PointLight light = gPointLightBuffer[sTilePointLightIndices[tileLightIndex]]; //hämtar pointlight
 
-		float shadowFactor = CalcualteShadowFactor(light, posW);
+		//float shadowFactor = CalcualteShadowFactor(light, posW);
 
 		float4 A, D, S;
 		ComputePointLight(mat, light, posW, normalW, toEye, A, D, S);
 
 		ambient += A;    
-		diffuse += D * shadowFactor;
-		spec    += S * shadowFactor;
+		diffuse += D;// * shadowFactor;
+		spec += S;// * shadowFactor;
 	}
 
 	/*
@@ -500,88 +407,38 @@ void TiledLightningCS(	uniform int gViewportCount,
 		SpotLight light = gSpotLightBuffer[sTileSpotLightIndices[tileLightIndex]]; //hämtar pointlight
 		
 		
-		float shadowFactor = CalcualteShadowFactor(light, posW);
+		//float shadowFactor = CalcualteShadowFactor(light, posW);
 
 		float4 A, D, S;
 		ComputeSpotLight(mat, light, posW, normalW, toEye, A, D, S);
 		
 		ambient += A;    
-		diffuse += shadowFactor * D;
-		spec    += shadowFactor * S;
-		
-		/*
-		ambient += A;    
-		diffuse += D;
-		spec    += S;
-		*/
-		/*
-		if (D.x != 0)
-		{
-			ambient = 0;    
-			diffuse = shadowFactor;
-			spec    = 0;
-		}
-		*/
+		diffuse += D;// * shadowFactor;
+		spec    += S;// * shadowFactor;
 	}
-	
-	/*
-	for(int i = 0; i < totalSpotLights; ++i)
-	{
-		float4 A, D, S;
-		ComputeSpotLight(mat, gSpotLightBuffer[i], posW, normalW, toEye, A, D, S);
 
-		ambient += A;    
-		diffuse += D;
-		spec    += S;
-	}
-	*/
+
 
 	//Final result.
 	//gOutput[dispatchThreadID.xy] = sTileNumSpotLights / 100.0f;
 	//gOutput[dispatchThreadID.xy] = sTileNumPointLights / 100.0f;
 	//gOutput[dispatchThreadID.xy] = posW.x / 4000;
 	//gOutput[dispatchThreadID.xy] = (ambient + diffuse) + spec;
+	//gOutput[dispatchThreadID.xy] = albedo;
+	//gOutput[dispatchThreadID.xy] = normalW;
+	//gOutput[dispatchThreadID.xy] = normalspec;
 	gOutput[dispatchThreadID.xy] = albedo * (ambient + diffuse) + spec;
+	//gOutput[dispatchThreadID.xy] = albedo * diffuse;
 	//gOutput[dispatchThreadID.xy] = viewportColor * (albedo * (ambient + diffuse) + spec);
 }
 
 
-technique11 Viewport1
+technique11 Basic
 {
     pass P0
     {
 		SetVertexShader( NULL );
         SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(1) ) );
-    }
-}
-
-technique11 Viewport2
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(2) ) );
-    }
-}
-
-technique11 Viewport3
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(3) ) );
-    }
-}
-
-technique11 Viewport4
-{
-    pass P0
-    {
-		SetVertexShader( NULL );
-        SetPixelShader( NULL );
-		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS(4) ) );
+		SetComputeShader( CompileShader( cs_5_0, TiledLightningCS() ) );
     }
 }

@@ -14,12 +14,12 @@ enum MouseButton
 {
 	LeftMB,
 	RightMB,
-	MiddleMB
+	MiddleMB = 3
 };
 #pragma endregion
 
 #pragma region Mouse and Keyboard struct
-#define MOUSEBUTTONS 4
+#define MOUSEBUTTONS 5
 struct Mouse
 {
 private:
@@ -27,16 +27,21 @@ private:
 	bool*	m_thisFrameButtons = new bool[MOUSEBUTTONS];
 
 	int m_positionX, m_positionY;
+	int m_oldPositionX, m_oldPositionY;
 	int m_dX, m_dY;
+
+	float m_screenWidth, m_screenHeight;
+
 public:
-	Mouse();
+	Mouse(int _screenWidth, int _screenHeight);
 	void Update();
 
 	InputState GetButtonState(char _button);
-	int getX();
-	int getY();
-	int getdX();
-	int getdY();
+	float GetX();
+	float GetY();
+	float GetdX();
+	float GetdY();
+	void SetMousePosition(float _x, float _y);
 
 };
 

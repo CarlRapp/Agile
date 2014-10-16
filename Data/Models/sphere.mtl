@@ -1,0 +1,5 @@
+newmtl Default_Smoothing
+map_Kd Ball.png
+
+Ks 1.00 1.00 1.00
+Ns 100

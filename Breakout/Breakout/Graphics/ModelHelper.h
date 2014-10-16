@@ -50,12 +50,13 @@ struct Material
 struct Vertex
 {
 public:
-	Vertex() : Position(Vector3(0,0,0)), Texture(Vector2(0,0)), Normal(Vector3(0,0,0)) {}
-	Vertex(Vector3 position, Vector2 texture, Vector3 normal) : Position(position), Texture(texture), Normal(normal) {}
+	Vertex() : Position(VECTOR3(0, 0, 0)), Texture(VECTOR2(0, 0)), Normal(VECTOR3(0, 0, 0)) {}
+	Vertex(VECTOR3 position, VECTOR2 texture, VECTOR3 normal) : Position(position), Texture(texture), Normal(normal) {}
 
-	Vector3			Position;
-	Vector2			Texture;
-	Vector3			Normal;
+	VECTOR3			Position;
+	VECTOR2			Texture;
+	VECTOR3			Normal;
+	VECTOR4			Tangent;
 };
 
 struct Triangle
@@ -68,10 +69,12 @@ struct Triangle
 
 struct Group
 {
-	string			Name;
-	Material*		Material;
+	string			name;
+	Material*		material;
 
-	vector<Triangle>	Triangles;
+	vector<Triangle>*	triangles;
+
+	Group() { triangles = new vector<Triangle>(); }
 };
 
 

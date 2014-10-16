@@ -13,8 +13,8 @@ private:
 	D3D11_VIEWPORT m_viewPort;
 
 	float				m_fovy, m_aspectRatio, m_nearZ, m_farZ;
-	Vector3				m_position, m_forward, m_right, m_up;
-	Float4x4			m_view, m_projection;
+	DirectX::XMFLOAT3				m_position, m_forward, m_right, m_up;
+	DirectX::XMFLOAT4X4			m_view, m_projection;
 
 	void UpdateView();
 	void UpdateProjection();
@@ -23,7 +23,7 @@ private:
 public:
 
 	DXCamera(void);
-	DXCamera(float _fovy, float _aspectRatio, float _nearZ, float _farZ);
+	DXCamera(float _fov, float _width, float _height, float _nearZ, float _farZ);
 	~DXCamera(void);
 
 
@@ -34,13 +34,13 @@ public:
 	//void RotateY(float angle) = 0;
 
 #pragma region Get Functions
-	Float4x4 GetView()		{ return m_view; }
-	Float4x4 GetProjection()	{ return m_projection; }
+	MATRIX4* GetView()		{ return &m_view; }
+	MATRIX4* GetProjection()	{ return &m_projection; }
 
-	Vector3 GetPosition()		{ return m_position; }
-	Vector3 GetForward()		{ return m_forward; }
-	Vector3 GetRight()			{ return m_right; }
-	Vector3 GetUp()				{ return m_up; }
+	DirectX::XMFLOAT3 GetPosition()		{ return m_position; }
+	DirectX::XMFLOAT3 GetForward()		{ return m_forward; }
+	DirectX::XMFLOAT3 GetRight()			{ return m_right; }
+	DirectX::XMFLOAT3 GetUp()				{ return m_up; }
 
 	//BoundingFrustum GetFrustum() = 0;
 
@@ -53,12 +53,16 @@ public:
 	//void SetNearZ(float nearZ) = 0;
 	//void SetFarZ(float farZ) = 0;
 
-	void SetPosition(Vector3 position)			{ m_position = position; UpdateView(); }
+	void SetPosition(DirectX::XMFLOAT3 _position)			{ m_position = _position; m_position.z *= -1;  UpdateView(); }
 	//void SetPosition(float x, float y, float z) = 0;
-	void SetForward(Vector3 forward);
+
+	void Move(DirectX::XMFLOAT3 _move);
+	void Move(float _move);
+
+	void SetForward(DirectX::XMFLOAT3 forward);
 	//void SetForward(float x, float y, float z) = 0;
 
-	void SetLookAt(Vector3 _target);
+	void SetLookAt(DirectX::XMFLOAT3 _target);
 
 	//void SetLookAt(float x, float y, float z) = 0;
 
@@ -68,6 +72,8 @@ public:
 		m_viewPort.TopLeftY = (float)_y;
 		m_viewPort.Width = (float)_width;
 		m_viewPort.Height = (float)_height;
+		m_aspectRatio = (float)_width / (float)_height;
+		UpdateProjection();
 	}
 
 #pragma endregion

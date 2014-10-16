@@ -44,11 +44,19 @@ ObjectDeferredEffect::ObjectDeferredEffect(ID3D11Device* _device, const std::wst
 	m_texNormalAlphaClipSkinnedTech = m_FX->GetTechniqueByName("TexNormalAlphaClipSkinnedTech");
 	m_normalSkinnedTech = m_FX->GetTechniqueByName("NormalSkinnedTech");
 
+	m_basicInstancedTech = m_FX->GetTechniqueByName("BasicInstancedTech");
+	m_texInstancedTech = m_FX->GetTechniqueByName("TexInstancedTech");
+	m_texNormalInstancedTech = m_FX->GetTechniqueByName("TexNormalInstancedTech");
+	m_normalInstancedTech = m_FX->GetTechniqueByName("NormalInstancedTech");
+
 	m_worldViewProj = m_FX->GetVariableByName("gWorldViewProj")->AsMatrix();
 	m_world = m_FX->GetVariableByName("gWorld")->AsMatrix();
+	m_viewProj = m_FX->GetVariableByName("gViewProj")->AsMatrix();
 	m_worldInvTranspose = m_FX->GetVariableByName("gWorldInvTranspose")->AsMatrix();
 	m_texTransform = m_FX->GetVariableByName("gTexTransform")->AsMatrix();
 	m_boneTransforms = m_FX->GetVariableByName("gBoneTransforms")->AsMatrix();
+
+	m_ExplodeTime = m_FX->GetVariableByName("gExplodeTime")->AsScalar();
 
 	m_mat = m_FX->GetVariableByName("gMaterial");
 
@@ -67,28 +75,25 @@ ObjectDeferredEffect::~ObjectDeferredEffect()
 TiledLightningEffect::TiledLightningEffect(ID3D11Device* _device, const std::wstring& _filename)
 	: DXEffect(_device, _filename)
 {
-	m_viewport1 = m_FX->GetTechniqueByName("Viewport1");
-	m_viewport2 = m_FX->GetTechniqueByName("Viewport2");
-	m_viewport3 = m_FX->GetTechniqueByName("Viewport3");
-	m_viewport4 = m_FX->GetTechniqueByName("Viewport4");
+	m_basicTech = m_FX->GetTechniqueByName("Basic");
 
-	m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
-	m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
-	m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
-	m_invViewProjs = m_FX->GetVariableByName("gInvViewProjs")->AsMatrix();
-	m_camPositions = m_FX->GetVariableByName("gCamPositions")->AsVector();
+	//m_viewProjTexs = m_FX->GetVariableByName("gLightViewProjTex")->AsMatrix();
+	//m_viewProj = m_FX->GetVariableByName("gLightViewProj")->AsMatrix();
+	//m_texs = m_FX->GetVariableByName("gLightTex")->AsMatrix();
+	m_invViewProj = m_FX->GetVariableByName("gInvViewProj")->AsMatrix();
+	m_camPosition = m_FX->GetVariableByName("gCamPosition")->AsVector();
 	m_resolution = m_FX->GetVariableByName("gResolution")->AsVector();
-	m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
-	m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
-	m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
+	//m_shadowMapSwitches = m_FX->GetVariableByName("gShadowMapSwitches")->AsVector();
+	//m_shadowMapResolution = m_FX->GetVariableByName("gShadowMapResolution")->AsVector();
+	//m_globalLight = m_FX->GetVariableByName("gGlobalLight")->AsVector();
 
 	m_albedoMap = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
 	m_normalSpecMap = m_FX->GetVariableByName("gNormalSpecMap")->AsShaderResource();
 	m_depthMap = m_FX->GetVariableByName("gDepthMap")->AsShaderResource();
-	m_shadowMap0 = m_FX->GetVariableByName("gShadowMap0")->AsShaderResource();
-	m_shadowMap1 = m_FX->GetVariableByName("gShadowMap1")->AsShaderResource();
-	m_shadowMap2 = m_FX->GetVariableByName("gShadowMap2")->AsShaderResource();
-	m_shadowMap3 = m_FX->GetVariableByName("gShadowMap3")->AsShaderResource();
+	//m_shadowMap0 = m_FX->GetVariableByName("gShadowMap0")->AsShaderResource();
+	//m_shadowMap1 = m_FX->GetVariableByName("gShadowMap1")->AsShaderResource();
+	//m_shadowMap2 = m_FX->GetVariableByName("gShadowMap2")->AsShaderResource();
+	//m_shadowMap3 = m_FX->GetVariableByName("gShadowMap3")->AsShaderResource();
 	m_outputMap = m_FX->GetVariableByName("gOutput")->AsUnorderedAccessView();
 
 	m_dirLightMap = m_FX->GetVariableByName("gDirLightBuffer")->AsShaderResource();
@@ -197,13 +202,36 @@ CombineFinalEffect::CombineFinalEffect(ID3D11Device* _device, const std::wstring
 	m_transparencyColorTech = m_FX->GetTechniqueByName("TransparencyColor");
 	m_alphaTransparencyColorTech = m_FX->GetTechniqueByName("AlphaTransparencyColor");
 	m_alphaClipColorTech = m_FX->GetTechniqueByName("AlphaClipColor");
+	m_textTech = m_FX->GetTechniqueByName("Text");
 
 	m_opacity = m_FX->GetVariableByName("g_Opacity")->AsScalar();
+	m_color = m_FX->GetVariableByName("g_Color")->AsVector();
+
+	m_index = m_FX->GetVariableByName("g_Index")->AsScalar();
+	m_numSymbols = m_FX->GetVariableByName("g_NumSymbols")->AsScalar();
 
 	m_texture = m_FX->GetVariableByName("g_Texture")->AsShaderResource();
 }
 
 CombineFinalEffect::~CombineFinalEffect()
+{
+}
+#pragma endregion
+
+#pragma region RenderTextEffect
+RenderTextEffect::RenderTextEffect(ID3D11Device* _device, const std::wstring& _filename)
+: DXEffect(_device, _filename)
+{
+	m_basicTech = m_FX->GetTechniqueByName("BasicTech");
+
+	m_color = m_FX->GetVariableByName("gColor")->AsVector();
+	m_position = m_FX->GetVariableByName("gPosition")->AsVector();
+
+	m_texture = m_FX->GetVariableByName("gAlbedoMap")->AsShaderResource();
+	m_outputMap = m_FX->GetVariableByName("gOutput")->AsUnorderedAccessView();
+}
+
+RenderTextEffect::~RenderTextEffect()
 {
 }
 #pragma endregion
@@ -215,7 +243,8 @@ ClearGBufferEffect*    DXEffects::m_clearGBufferFX = 0;
 CombineFinalEffect*	   DXEffects::m_combineFinalFX = 0;
 ObjectDeferredEffect*  DXEffects::m_objectDeferredFX = 0;
 TiledLightningEffect*  DXEffects::m_tiledLightningFX = 0;
-ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
+//ShadowMapEffect*	   DXEffects::m_shadowMapFX = 0;
+RenderTextEffect*	   DXEffects::m_renderTextFX = 0;
 
 void DXEffects::InitAll(ID3D11Device* _device)
 {
@@ -224,7 +253,8 @@ void DXEffects::InitAll(ID3D11Device* _device)
 	m_combineFinalFX = new CombineFinalEffect(_device, L"Graphics/DirectX/Shaders/CombineFinal.fxo");
 	m_objectDeferredFX = new ObjectDeferredEffect(_device, L"Graphics/DirectX/Shaders/ObjectDeferred.fxo");
 	m_tiledLightningFX = new TiledLightningEffect(_device, L"Graphics/DirectX/Shaders/TiledLightning.fxo");
-	m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
+	//m_shadowMapFX = new ShadowMapEffect(_device, L"Graphics/DirectX/Shaders/ShadowMap.fxo");
+	m_renderTextFX = new RenderTextEffect(_device, L"Graphics/DirectX/Shaders/RenderText.fxo");
 }
 
 void DXEffects::DestroyAll()
@@ -234,7 +264,8 @@ void DXEffects::DestroyAll()
 	SafeDelete(m_combineFinalFX);
 	SafeDelete(m_objectDeferredFX);
 	SafeDelete(m_tiledLightningFX);
-	SafeDelete(m_shadowMapFX);
+	//SafeDelete(m_shadowMapFX);
+	SafeDelete(m_renderTextFX);
 }
 
 #pragma endregion

@@ -4,40 +4,40 @@
 #else
 #include "LinAudio.h"
 #endif
+#include "../stdafx.h"
 
 AudioManager::AudioManager()
-:m_initialized(false)
 {
+#ifdef WINDOWS
+	m_audio = new WinAudio();
+#else
+	m_audio = new LinAudio();
+#endif
+
+	m_audio->Initialize();
 }
 
 AudioManager::~AudioManager()
 {
 }
 
-bool AudioManager::Initialize()
+
+
+AudioManager* AudioManager::m_imInstance = 0;
+AudioManager* AudioManager::GetInstance()
 {
-	if (m_initialized)
-		return true;
+	if (m_imInstance)
+		return m_imInstance;
 
+	m_imInstance = new AudioManager();
 
-#ifdef WINDOWS
-	m_audio = new WinAudio();
-#else
-	m_audio = new LinAudio();
-#endif
-	
-	if (!m_audio->Initialize())
-		return false;
-
-	m_initialized = true;
-
-	return true;
+	return m_imInstance;
 }
 
 bool AudioManager::PlayMusic(const char* _fileName, int _loop)
 {
 
-	if (!m_audio->PlayMusic(_fileName,_loop))
+	if (!m_audio->PlayMusic(GetFile(_fileName,AUDIO_ROOT).c_str(),_loop))
 		return false;
 
 	return true;
@@ -46,7 +46,7 @@ bool AudioManager::PlayMusic(const char* _fileName, int _loop)
 bool AudioManager::PlaySoundEffect(const char* _fileName, int _loop)
 {
 
-	if (!m_audio->PlaySoundEffect(_fileName, _loop))
+	if (!m_audio->PlaySoundEffect(GetFile(_fileName,AUDIO_ROOT).c_str(), _loop))
 		return false;
 
 	return true;

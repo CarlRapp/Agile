@@ -2,13 +2,14 @@
 
 ModelLoader::ModelLoader()
 {
-	m_positions = vector<Vector3>();
-	m_normals = vector<Vector3>();
-	m_texCoords = vector<Vector2>();
+	m_positions = vector<VECTOR3>();
+	m_normals = vector<VECTOR3>();
+	m_texCoords = vector<VECTOR2>();
 	m_vertices = vector<Vertex>();
 
 	m_newGroupNameCounter = 0;
 	m_materialAfterGroup = true;
+	m_numVertices = 0;
 }
 
 ModelLoader::~ModelLoader()
@@ -19,20 +20,18 @@ ModelLoader::~ModelLoader()
 
 ModelData* ModelLoader::LoadModelFile(std::string filePath)
 {
-
 	ifstream file;
 	file.open(filePath + ".obj");
 
 	if (!file)
 		return 0;
-
 	string str;
 
 	while (!file.eof())
 	{
 		file >> str;
-
-		if (str == "#" || str == "s")	ParseComment(file);
+                
+		if (str == "#" || str == "s")           ParseComment(file);
 		else if (str == "v")			ParsePosition(file);	//position
 		else if (str == "vn")			ParseNormal(file);		//normal
 		else if (str == "vt")			ParseTexCoord(file);	//texturkoordinat
@@ -42,23 +41,87 @@ ModelData* ModelLoader::LoadModelFile(std::string filePath)
 
 		else if (str == "mtllib")								//materialfile
 		{
-			ParseMaterialFile(file, filePath);
+                    
+			ParseMaterialFile(file, MODEL_ROOT);
 		}
-		str = "";
+                str = "";
 	}
-
+	CalculateTangents();
 	//ParseFace2(file);
-
-	Material* m = m_materials["lambert2SG"];
-
+	
 	ModelData* model = new ModelData();
 	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
 		model->Groups.push_back(it->second);
-	
-
+	}
 	return model;
 }
 
+void ModelLoader::CalculateTangents()
+{
+	for (auto it = m_groups.begin(); it != m_groups.end(); ++it)
+	{
+		int vertexCount = it->second->triangles->size() * 3;
+		VECTOR3 *tan1 = new VECTOR3[vertexCount * 2];
+		VECTOR3 *tan2 = tan1 + vertexCount;
+                memset(tan1,0 ,vertexCount * sizeof(VECTOR3) * 2);
+                
+		for (int i = 0; i < it->second->triangles->size(); ++i)
+		{
+			const VECTOR3& v1 = it->second->triangles->at(i).Vertices[0].Position;
+			const VECTOR3& v2 = it->second->triangles->at(i).Vertices[1].Position;
+			const VECTOR3& v3 = it->second->triangles->at(i).Vertices[2].Position;
+
+			const VECTOR2& w1 = it->second->triangles->at(i).Vertices[0].Texture;
+			const VECTOR2& w2 = it->second->triangles->at(i).Vertices[1].Texture;
+			const VECTOR2& w3 = it->second->triangles->at(i).Vertices[2].Texture;
+
+			float x1 = v2.x - v1.x;
+			float x2 = v3.x - v1.x;
+			float y1 = v2.y - v1.y;
+			float y2 = v3.y - v1.y;
+			float z1 = v2.z - v1.z;
+			float z2 = v3.z - v1.z;
+
+			float s1 = w2.x - w1.x;
+			float s2 = w3.x - w1.x;
+			float t1 = w2.y - w1.y;
+			float t2 = w3.y - w1.y;
+
+			float r = 1.0F / (s1 * t2 - s2 * t1);
+			VECTOR3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
+				(t2 * z1 - t1 * z2) * r);
+			VECTOR3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
+				(s1 * z2 - s2 * z1) * r);
+
+			tan1[i * 3 + 0].x += sdir.x; tan1[i * 3 + 0].y += sdir.y; tan1[i * 3 + 0].z += sdir.z;
+			tan1[i * 3 + 1].x += sdir.x; tan1[i * 3 + 1].y += sdir.y; tan1[i * 3 + 1].z += sdir.z;
+			tan1[i * 3 + 2].x += sdir.x; tan1[i * 3 + 2].y += sdir.y; tan1[i * 3 + 2].z += sdir.z;
+
+			tan2[i * 3 + 0].x += tdir.x; tan2[i * 3 + 0].y += tdir.y; tan2[i * 3 + 0].z += tdir.z;
+			tan2[i * 3 + 1].x += tdir.x; tan2[i * 3 + 1].y += tdir.y; tan2[i * 3 + 1].z += tdir.z;
+			tan2[i * 3 + 2].x += tdir.x; tan2[i * 3 + 2].y += tdir.y; tan2[i * 3 + 2].z += tdir.z;
+			
+		}
+		
+		for (long a = 0; a < vertexCount; a++)
+		{
+			const VECTOR3& n = it->second->triangles->at(a / 3).Vertices[a % 3].Normal;
+			const VECTOR3& t = tan1[a];
+
+			// Gram-Schmidt orthogonalize
+			VECTOR3 tan3 = NORMALIZE((t - n * DOT(n, t)));
+			VECTOR4 *tangent = &it->second->triangles->at(a / 3).Vertices[a % 3].Tangent;
+			tangent->x = tan3.x;
+			tangent->y = tan3.y;
+			tangent->z = tan3.z;
+
+			// Calculate handedness
+
+			tangent->w = (DOT(CROSS(n, t), tan2[a]) < 0.0F) ? -1.0F : 1.0F;
+		}
+	}
+}
 
 
 void ModelLoader::ParseGroup(std::ifstream& file)
@@ -74,7 +137,8 @@ void ModelLoader::ParseGroup(std::ifstream& file)
 	if (mIter == m_groups.end())
 	{
 		m_currentGroup = new Group;
-		m_currentGroup->Name = str;
+		m_currentGroup->name = str;
+		m_currentGroup->material = NULL;
 		m_groups[str] = m_currentGroup;
 	}
 	else
@@ -94,7 +158,11 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 		do
 		{
 			char tmpGName[20];
+#ifdef WINDOWS
 			sprintf_s(tmpGName, sizeof(tmpGName), "%d", m_newGroupNameCounter++);
+#else
+                        snprintf(tmpGName, sizeof(tmpGName), "%d", m_newGroupNameCounter++);
+#endif
 			std::string groupName = tmpGName;
 			mIter = m_groups.find(groupName);
 
@@ -102,7 +170,7 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 			if (mIter == m_groups.end())
 			{
 				m_currentGroup = new Group;
-				m_currentGroup->Name = groupName;
+				m_currentGroup->name = groupName;
 				m_groups[groupName] = m_currentGroup;
 			}
 		} while (mIter != m_groups.end());
@@ -115,7 +183,7 @@ void ModelLoader::ParseMaterial(std::ifstream& file)
 	std::getline(file, str);
 	Btrim(str);
 
-	m_currentGroup->Material = m_materials[str];
+	m_currentGroup->material = m_materials[str];
 }
 
 void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
@@ -127,10 +195,13 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 	std::getline(file, str);
 	Btrim(str);
 
+	str = GetFile(str, dir); //dir + str;
+
 	//append directory in front of filename
 	//str = dir + str;
 	ifstream mfile;
 	mfile.open(str.c_str());
+        //printf("MTL-fil: %s \n", str.c_str());
 
 	if (!mfile)
 	{
@@ -155,6 +226,10 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 			{
 				material = new Material;
 				material->Name = str;
+				material->Ns = 1.0;
+				material->Ks[0] = 0.0f;
+				material->Ks[1] = 0.0f;
+				material->Ks[2] = 0.0f;
 				m_materials[str] = material;
 			}
 			else
@@ -198,37 +273,37 @@ void ModelLoader::ParseMaterialFile(std::ifstream& file, string dir)
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ka = dir + str;
+			material->Map_Ka = str;
 		}
 		else if (str == "map_Kd")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Kd = dir + str;
+			material->Map_Kd = str;
 		}
 		else if (str == "map_Ks")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ks = dir + str;
+			material->Map_Ks = str;
 		}
 		else if (str == "map_Ns")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Ns = dir + str;
+			material->Map_Ns = str;
 		}
 		else if (str == "map_Tf")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_Tf = dir + str;
+			material->Map_Tf = str;
 		}
 		else if (str == "map_bump")
 		{
 			getline(mfile, str);
 			Btrim(str);
-			material->Map_bump = dir + str;
+			material->Map_bump = str;
 		}
 	}
 }
@@ -246,7 +321,7 @@ void ModelLoader::ParsePosition(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	Vector3 pos(x, y, -z);
+	VECTOR3 pos(x, y, z);
 
 	m_positions.push_back(pos);
 }
@@ -257,7 +332,7 @@ void ModelLoader::ParseNormal(std::ifstream& file)
 	file >> y;
 	file >> z;
 
-	Vector3 normal(x, y, -z);
+	VECTOR3 normal(x, y, z);
 
 	m_normals.push_back(normal);
 }
@@ -267,7 +342,7 @@ void ModelLoader::ParseTexCoord(std::ifstream& file)
 	file >> x;
 	file >> y;
 
-	Vector2 texCoord(x, 1 - y);
+	VECTOR2 texCoord(x, y);
 
 	m_texCoords.push_back(texCoord);
 }
@@ -319,7 +394,8 @@ void ModelLoader::ParseFace(std::ifstream& file)
 
 		triangle.Vertices[t] = vertex;
 	}
-	m_currentGroup->Triangles.push_back(triangle);
+	m_currentGroup->triangles->push_back(triangle);
+	m_numVertices += 3;
 }
 
 void ModelLoader::ParseFace2(std::ifstream& file)

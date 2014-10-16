@@ -7,28 +7,71 @@
 #define LINUX
 #define OPENGL
 #include <unistd.h>
+
+#define MODEL_ROOT "/../../Data/Models/"
+#define AUDIO_ROOT "/../../Data/Audio/"
+#define TEXTURE_ROOT "/../../Data/Textures/"
+#define HIGHSCORE_ROOT "/../../Data/SaveData/"
+
+typedef signed char         INT8, *PINT8;
+typedef signed short        INT16, *PINT16;
+typedef signed int          INT32, *PINT32;
+//typedef signed __int64      INT64, *PINT64;
+
+template <size_t S>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE;
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<1>
+{
+	typedef INT8 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<2>
+{
+	typedef INT16 type;
+};
+
+template <>
+struct _ENUM_FLAG_INTEGER_FOR_SIZE<4>
+{
+	typedef INT32 type;
+};
+
+// used as an approximation of std::underlying_type<T>
+template <class T>
+struct _ENUM_FLAG_SIZED_INTEGER
+{
+	typedef typename _ENUM_FLAG_INTEGER_FOR_SIZE<sizeof(T)>::type type;
+};
+
+
+
 #else
 #define WINDOWS
 #define DIRECTX
 
+#define MODEL_ROOT "../../Data/Models/"
+#define AUDIO_ROOT "../../Data/Audio/"
+#define TEXTURE_ROOT "../../Data/Textures/"
+#define HIGHSCORE_ROOT "../../Data/SaveData/"
+
 #include <Windows.h>
 
-#endif
 
+#endif
+#include "MathHelper.h"
 #define SHADER_ROOT "/Graphics/OpenGL/GLShaders/"
-#define MODEL_ROOT "/../../Data/Models/"
 static char    m_cwd[FILENAME_MAX];
 
 #define PI (3.14159265358979323846f)
 #define ReleaseCOM(x) { if(x){ x->Release(); x = 0; } }
 #define SafeDelete(x) { delete x; x = 0; }
 
+#define MAX_ENTITY_COUNT 500
 
 typedef unsigned int        UINT;
-
-struct Vector2;
-struct Vector3;
-
 
 static std::string GetFile(std::string _path, std::string _root)
 {
@@ -37,76 +80,30 @@ static std::string GetFile(std::string _path, std::string _root)
 	return _root + _path;
 
 #else
+	std::string temp = _root;
 
+	if (!getcwd(m_cwd, sizeof(m_cwd)))
+	{
+		printf("Unable to find current working directory!\n");
+		return "";
+	}
 
+	//	Open the file
 
-    std::string temp = _root;
-    
-    if (!getcwd(m_cwd, sizeof(m_cwd)))
-        {
-            printf ("Unable to find current working directory!\n");
-            return "";
-        }
+	std::string	workingDir = m_cwd;
 
-     //	Open the file
-
-    std::string	workingDir = m_cwd;
-
-    workingDir = workingDir.append(temp);
-    _path = workingDir.append(_path);
-    return _path;
+	workingDir = workingDir.append(temp);
+	_path = workingDir.append(_path);
+	return _path;
 
 #endif
 }
 
-struct Vector2
+
+//Returns the memory adress as INT
+//of the given pointer
+static int GetMemoryID(void* _pointer)
 {
-public:
-	float x, y;
-
-	Vector2(float _x, float _y) : x(_x), y(_y) {}
-};
-
-struct Vector3
-{
-public:
-	float x, y, z;
-
-	Vector3() : x(0), y(0), z(0) {};
-	Vector3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
-	Vector3(Vector2 _vector, float _z) : x(_vector.x), y(_vector.y), z(_z) {}
-
-	Vector2 ToVector2() { return Vector2(x, y); }
-};
-
-
-struct Float4x4
-{
-public:
-	union
-	{
-		struct
-		{
-			float _11, _12, _13, _14;
-			float _21, _22, _23, _24;
-			float _31, _32, _33, _34;
-			float _41, _42, _43, _44;
-		};
-		float m[4][4];
-	};
-
-	Float4x4() {}
-	Float4x4(float m00, float m01, float m02, float m03,
-		float m10, float m11, float m12, float m13,
-		float m20, float m21, float m22, float m23,
-		float m30, float m31, float m32, float m33);
-	//explicit Float4x4(_In_reads_(16) const float *pArray);
-
-	float       operator() (size_t Row, size_t Column) const { return m[Row][Column]; }
-	float&      operator() (size_t Row, size_t Column) { return m[Row][Column]; }
-
-	Float4x4& operator= (const Float4x4& Float4x4);
-
-};
-
+	return (int)_pointer;
+}
 #endif

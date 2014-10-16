@@ -4,6 +4,13 @@ cbuffer Object
 	float g_Opacity;
 };
 
+cbuffer ObjectText
+{
+	float3 g_Color;
+	float	g_Index;
+	float	g_NumSymbols;
+};
+
 Texture2D g_Texture;
 
 SamplerState g_Sampler 
@@ -12,6 +19,14 @@ SamplerState g_Sampler
     AddressU = CLAMP;
     AddressV = CLAMP;
 };
+
+SamplerState g_TextSampler
+{
+	Filter = MIN_MAG_MIP_POINT;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
+};
+
 
 SamplerState samLinearClamp
 {
@@ -52,6 +67,21 @@ PSSceneIn VSScene(VSIn input)
 	return output;
 }
 
+
+PSSceneIn VSText(VSIn input)
+{
+	PSSceneIn output = (PSSceneIn)0;
+	output.Pos = float4(input.Pos, 0, 1);
+
+	if (input.Tex.x == 0)
+		output.Tex.x = g_Index / g_NumSymbols;
+	else
+		output.Tex.x = (g_Index + 1) / g_NumSymbols;
+
+	output.Tex.y = 1 - input.Tex.y;
+	return output;
+}
+
 //-----------------------------------------------------------------------------------------
 // PixelShader: PSSceneMain
 //-----------------------------------------------------------------------------------------
@@ -67,11 +97,27 @@ float4 PSScene(PSSceneIn input, uniform bool gColor, uniform bool gAlphaClip, un
 			clip(g_Texture.SampleLevel(samLinearClamp, input.Tex, 0).a - 0.1f);
 	}
 	else
-		result = pow(g_Texture.Sample(g_Sampler, input.Tex).x, 500);
+		result = pow(abs(g_Texture.Sample(g_Sampler, input.Tex).x), 500);
 
 	if (gFixedAlpha)
 		result.a = g_Opacity;
 
+	return result;
+}
+
+//-----------------------------------------------------------------------------------------
+// PixelShader: PSSceneMain
+//-----------------------------------------------------------------------------------------
+float4 PSText(PSSceneIn input) : SV_Target
+{
+	float4 result;
+
+	float2 tex = input.Tex;
+	//tex.y = 1 - tex.y;
+
+	result.xyz = g_Color;
+	result.a = g_Texture.SampleLevel(g_TextSampler, tex, 0).x;
+	//result.a = 1;
 	return result;
 }
 
@@ -180,5 +226,17 @@ technique11 TransparencyColor
     }  
 }
 
+technique11 Text
+{
+	pass p0
+	{
+		// Set VS, GS, and PS
+		SetVertexShader(CompileShader(vs_4_0, VSText()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, PSText()));
+		SetBlendState(Transparency, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+		//SetRasterizerState( NoCulling );
+	}
+}
 
 

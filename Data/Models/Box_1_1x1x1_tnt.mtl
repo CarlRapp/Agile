@@ -1,0 +1,9 @@
+newmtl initialShadingGroup
+illum 4
+map_Kd block_tnt.png
+Kd 0.50 0.50 0.50
+Ka 0.00 0.00 0.00
+Ks 1.00 1.00 1.00
+Ns 200
+Tf 1.00 1.00 1.00
+Ni 1.00

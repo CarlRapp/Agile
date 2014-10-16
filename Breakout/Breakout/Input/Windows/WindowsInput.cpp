@@ -5,9 +5,9 @@
 #include <stdio.h>
 
 
-WindowsInput::WindowsInput()
+WindowsInput::WindowsInput(int _screenWidth, int _screenHeight)
 {
-	m_mousePointer = new Mouse();
+	m_mousePointer = new Mouse(_screenWidth, _screenHeight);
 	m_keyboardPointer = new Keyboard();
 }
 
@@ -19,7 +19,7 @@ WindowsInput::~WindowsInput()
 
 void WindowsInput::Update()
 {
-	if (m_mousePointer != 0 && m_keyboardPointer != 0)
+	if (m_mousePointer != 0 && m_keyboardPointer != 0 && GetActiveWindow() == ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle())
 	{
 		m_mousePointer->Update();
 		m_keyboardPointer->Update();
@@ -63,6 +63,7 @@ void Keyboard::Update()
 
 InputState Keyboard::GetKeyState(char _key)
 {
+	_key = toupper(_key);
 	if (_key < KEYBOARDKEYS)
 	{
 		bool	tLastFrame = m_lastFrameKeys[_key];
@@ -83,7 +84,7 @@ InputState Keyboard::GetKeyState(char _key)
 #pragma endregion
 
 #pragma region Mouse implementation
-Mouse::Mouse()
+Mouse::Mouse(int _screenWidth, int _screenHeight)
 {
 	for (int n = 0; n < MOUSEBUTTONS; ++n)
 	{
@@ -93,8 +94,13 @@ Mouse::Mouse()
 
 	m_positionX = 0;
 	m_positionY = 0;
+	m_oldPositionX = 0;
+	m_oldPositionY = 0;
 	m_dX = 0;
 	m_dY = 0;
+
+	m_screenWidth = _screenWidth;
+	m_screenHeight = _screenHeight;
 }
 void Mouse::Update()
 {
@@ -109,23 +115,77 @@ void Mouse::Update()
 	//	Calculate the position of the mouse
 	//	relative to the window of the game
 	GetCursorPos(&A);
-	ScreenToClient(
-		((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle(),
-		&A
-		);
+	//ScreenToClient(
+	//	((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle(),
+	//	&A
+	//	);
 
-	m_dX = A.x - m_positionX;
-	m_dY = A.y - m_positionY;
 	m_positionX = A.x;
 	m_positionY = A.y;
+	m_dX = m_positionX - m_oldPositionX;
+	m_dY = m_oldPositionY - m_positionY;
+	m_oldPositionX = m_positionX;// = A.x;
+	m_oldPositionY = m_positionY;// = A.y;
+		
 }
-int Mouse::getdX() { return m_dX; }
-int Mouse::getdY() { return m_dY; }
-int Mouse::getX() { return m_positionX; }
-int Mouse::getY() { return m_positionY; }
+
+float GetLeft()
+{
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.left;
+	}
+	return offset;
+}
+
+float GetBottom()
+{
+	float offset = 0.0f;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		offset = rect.bottom;
+	}
+	return offset;
+}
+
+float Mouse::GetdX() { return m_dX / m_screenWidth; }
+float Mouse::GetdY() { return  m_dY / m_screenHeight; }
+float Mouse::GetX() { return  (m_positionX - GetLeft()) / m_screenWidth; }
+float Mouse::GetY() { return  (GetBottom() - m_positionY) / m_screenHeight; }
+
+void Mouse::SetMousePosition(float _x, float _y)
+{
+	_x *= m_screenWidth;
+	_y *= m_screenHeight;
+
+	HWND wnd = ((DXGraphics*)(GraphicsManager::GetInstance()->GetIGraphics()))->GetWindow()->GetHandle();
+	RECT rect;
+
+	if (GetWindowRect(wnd, &rect))
+	{
+		_x += rect.left;
+		_y = rect.bottom - _y;
+	}
+
+	SetCursorPos(_x, _y);
+	m_positionX = _x;
+	m_positionY = _y;
+	m_oldPositionX = _x;
+	m_oldPositionY = _y;
+}
 
 InputState Mouse::GetButtonState(char _button)
 {
+	_button++;
 	if (_button < MOUSEBUTTONS)
 	{
 		bool	tLastFrame = m_lastFrameButtons[_button];

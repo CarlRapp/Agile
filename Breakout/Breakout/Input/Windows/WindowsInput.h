@@ -5,8 +5,9 @@
 
 class WindowsInput : public IInput
 {
+
 public:
-	WindowsInput();
+	WindowsInput(int _screenWidth, int _screenHeight);
 	~WindowsInput();
 
 	void Update();
