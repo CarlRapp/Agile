@@ -474,18 +474,6 @@ void GLGraphics::Clear()
     m_shader2Dprogram.~ShaderHandler();
     m_skyboxProgram.~ShaderHandler();
  
-//    for(int i=0;i < m_letters64.size(); i++)
-//    {
-//        m_letters64.pop_back();
-//    }
-    
-//    for(int i=m_letters256.size() - 1;i >= 0; i--)
-//    {
-//        free(m_letters256[i]);
-//        m_letters256[i] = nullptr;
-//        m_letters256.pop_back();
-//    }
-
     for(int i=0; i < m_textObjects.size();i++)
     {
         m_textObjects.pop_back();
@@ -495,7 +483,11 @@ void GLGraphics::Clear()
     {
         delete(it->second);
     }
+    
     m_particleEffects.clear();
+    
+    m_skybox->Free();
+    delete (m_skybox);
     
     printf("Graphics memory cleared\n");
 }
