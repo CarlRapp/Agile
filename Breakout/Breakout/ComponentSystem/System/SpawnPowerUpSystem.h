@@ -10,7 +10,8 @@ private:
 	{
 		MULTIBALL,
 		SHOOTLASER,
-		SWAPBLOCKS
+		SWAPBLOCKS,
+		BULLETTIME
 	};
 	void OnEntityRemoved(Entity* _block);
 

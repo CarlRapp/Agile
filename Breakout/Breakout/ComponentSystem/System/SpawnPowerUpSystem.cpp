@@ -5,6 +5,7 @@
 #include "../Component/BlockComponent.h"
 #include "../Component/MultiBallComponent.h"
 #include "../Component/LaserComponent.h"
+#include "../Component/BulletTimeComponent.h"
 #include "../../Audio/AudioManager.h"
 SpawnPowerUpSystem::SpawnPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent>(), _world)
@@ -36,6 +37,8 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 		case 1:
 			_newPowerUp = CreatePowerUp(MULTIBALL);
 			break;
+		case 2:
+			_newPowerUp = CreatePowerUp(BULLETTIME);
 		//case 2:
 		//	_newPowerUp = CreatePowerUp(SWAPBLOCK);
 		//	break;
@@ -70,6 +73,8 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 	case SpawnPowerUpSystem::SHOOTLASER:
 		_entity->AddComponent<LaserComponent>();
 		break;
+	case SpawnPowerUpSystem::BULLETTIME:
+		_entity->AddComponent<BulletTimeComponent>();
 	default:
 		break;
 	}

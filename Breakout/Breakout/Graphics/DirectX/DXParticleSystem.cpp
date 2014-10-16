@@ -80,7 +80,8 @@ void DXParticleSystem::Init(ID3D11Device* _device, ID3D11DeviceContext* _deviceC
 
 		ParticleEffect *pe = new ParticleEffect();
 
-		std::string path = "Graphics/DirectX/Shaders/ParticleSystems/" + _effect + ".fxo";
+		std::string path = SHADER_ROOT;
+		path += "/ParticleSystems/" + _effect + ".fxo";
 		std::ifstream fin(path.c_str(), std::ios::binary);
 
 		fin.seekg(0, std::ios_base::end);
