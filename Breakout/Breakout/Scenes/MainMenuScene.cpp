@@ -106,7 +106,7 @@ void MainMenuScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 		SceneManager::GetInstance()->Quit();
 
-	
+	GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
 	
 	float x = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetX();
 	float y = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetY();

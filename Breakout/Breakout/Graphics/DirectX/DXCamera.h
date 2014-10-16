@@ -5,15 +5,33 @@
 #include <DirectXMath.h>
 #include <d3d11.h>
 #include "../ICamera.h"
-
+#include <vector>
+#include <map>
 class DXCamera : public ICamera
 {
 private:
 
+	struct ShakeKeyFrame
+	{
+		DirectX::XMFLOAT3 offset;
+		float startTime;
+
+		
+	};
+
+	struct CameraShake
+	{
+		float time;
+		bool loop;
+		std::vector<ShakeKeyFrame> shakeKeyFrames;
+	};
+
+	std::map<int, CameraShake> m_cameraShakes;
+
 	D3D11_VIEWPORT m_viewPort;
 
 	float				m_fovy, m_aspectRatio, m_nearZ, m_farZ;
-	DirectX::XMFLOAT3				m_position, m_forward, m_right, m_up;
+	DirectX::XMFLOAT3				m_position, m_forward, m_right, m_up, m_offset;
 	DirectX::XMFLOAT4X4			m_view, m_projection;
 
 	void UpdateView();
@@ -26,8 +44,10 @@ public:
 	DXCamera(float _fov, float _width, float _height, float _nearZ, float _farZ);
 	~DXCamera(void);
 
+	void Update(float _dt);
 
-
+	void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time);
+	void RemoveShake(int _id);
 	//void Rotate(float pitch, float rotY) = 0;
 
 	//void Pitch(float angle) = 0;
@@ -37,7 +57,7 @@ public:
 	MATRIX4* GetView()		{ return &m_view; }
 	MATRIX4* GetProjection()	{ return &m_projection; }
 
-	DirectX::XMFLOAT3 GetPosition()		{ return m_position; }
+	DirectX::XMFLOAT3 GetPosition()		{ return m_position + m_offset; }
 	DirectX::XMFLOAT3 GetForward()		{ return m_forward; }
 	DirectX::XMFLOAT3 GetRight()			{ return m_right; }
 	DirectX::XMFLOAT3 GetUp()				{ return m_up; }

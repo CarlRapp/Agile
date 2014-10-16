@@ -78,6 +78,7 @@ void GameScene::Update(float _dt)
         return;
     }
         
+	GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
 		m_isPaused = !m_isPaused;
