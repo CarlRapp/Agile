@@ -10,7 +10,7 @@
 #include "../ComponentSystem/System/PadCollisionSystem.h"
 #include "../ComponentSystem/System/SpawnPowerUpSystem.h"
 #include "../ComponentSystem/System/CollectPowerUpSystem.h"
-#include "../ComponentSystem/System/KillOnTouchSystem.h"
+#include "../ComponentSystem/System/OnTouchSystem.h"
 #include "../ComponentSystem/Component/BallComponent.h"
 
 const int STATS_INC_SPEED     =5;
@@ -61,7 +61,6 @@ void GameScene::LoadContent()
 
 	std::vector<std::string> files;
 	FileManager::GetInstance().GetFilesInDirectory(files, MODEL_ROOT);
-
 	for (auto file : files)
 	{
 		file = file.substr(0, file.size() - 4);
@@ -71,13 +70,13 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
-        UpdateFPS(_dt);
+    UpdateFPS(_dt);
     
-        if(m_levelUp)
-        {
-            LevelUpMenu(_dt);
-            return;
-        }
+    if(m_levelUp)
+    {
+        LevelUpMenu(_dt);
+        return;
+    }
         
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
 	{
@@ -114,14 +113,13 @@ void GameScene::Update(float _dt)
 
             return;
 	}
-        
-        
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
+	else 
+        InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
-
+	
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('c') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
@@ -214,7 +212,7 @@ void GameScene::UpdateFPS(float _dt)
 
 void GameScene::Render(float _dt)
 {
-	if (m_isPaused)
+	if (m_isPaused || m_levelUp)
 		GraphicsManager::GetInstance()->Render(0);
 	else
 		GraphicsManager::GetInstance()->Render(_dt);
@@ -222,7 +220,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
-	GraphicsManager::GetInstance()->SetSky("space2");
+	GraphicsManager::GetInstance()->SetSky("space");
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	Reset();
 }
@@ -273,7 +271,7 @@ void GameScene::Reset()
 	m_world->AddSystem<BlockSystem>();
     m_world->AddSystem<TextSystem>();
 	m_world->AddSystem<SpawnPowerUpSystem>();
-	m_world->AddSystem<KillOnTouchSystem>();
+	m_world->AddSystem<OnTouchSystem>();
 
 	/*	New Implementation	*/
             

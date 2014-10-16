@@ -49,6 +49,7 @@ void GraphicsManager::Render(float _dt)
 void GraphicsManager::Update(float _dt)
 {
 	m_IGraphics->Update(_dt);
+	m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 
@@ -131,4 +132,9 @@ void GraphicsManager::SetSky(std::string _name)
 void GraphicsManager::ClearSky()
 {
 	m_IGraphics->ClearSky();
+}
+
+void GraphicsManager::SetBlendTexture(int _objectID, std::string _filename)
+{
+	m_IGraphics->SetBlendTexture(_objectID, _filename);
 }

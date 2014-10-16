@@ -1,14 +1,16 @@
 #include "DXModel.h"
 
-DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data)
+DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data, std::string _name, DXMeshManager& meshMgr)
 {
+	m_name = _name;
+	m_modelName = _name;
 	//std::vector<MaterialLoader> mats;
 
 	//ModelLoader loader;
 	//loader.Load(modelFilename, Vertices, Indices, Subsets, mats, SkinnedData);
 
 	//DirectX::XMMATRIX rot = DirectX::XMMatrixRotationRollPitchYaw(0, PI, 0);
-
+	
 	int index = 0;
 	int id = 0;
 	for (Group* group : data->Groups)
@@ -60,9 +62,12 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 		id++;
 	}
 
-	ModelMesh.SetVertices(device, &Vertices[0], Vertices.size());
-	ModelMesh.SetIndices(device, &Indices[0], Indices.size());
-	ModelMesh.SetSubsetTable(Subsets);
+	m_modelMesh = new DXMesh();
+	m_modelMesh->SetVertices(device, &Vertices[0], Vertices.size());
+	m_modelMesh->SetIndices(device, &Indices[0], Indices.size());
+	m_modelMesh->SetSubsetTable(Subsets);
+
+	meshMgr.AddMesh(_name, m_modelMesh);
 
 	SubsetCount = Subsets.size();
 
@@ -74,19 +79,20 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	{
 		DXMaterial m;
 
+		BlendTexSRV = texMgr.CreateTexture("emptyBlend.png");
+
 		if (data->Groups[i]->material)
 		{
 			if (data->Groups[i]->material->Map_Kd != "none")
 			{
-				ID3D11ShaderResourceView* diffuseMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_Kd);
-				DiffuseMapSRV.push_back(diffuseMapSRV);
+				ID3D11ShaderResourceView* diffuseTexSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_Kd);
+				DiffuseTexSRV.push_back(diffuseTexSRV);
 			}
-
 
 			if (data->Groups[i]->material->Map_bump != "none")
 			{
-				ID3D11ShaderResourceView* normalMapSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
-				NormalMapSRV.push_back(normalMapSRV);
+				ID3D11ShaderResourceView* normalTexSRV = texMgr.CreateTexture(data->Groups[i]->material->Map_bump);
+				NormalTexSRV.push_back(normalTexSRV);
 			}
 
 			m.SpecPower = data->Groups[i]->material->Ns;
@@ -137,40 +143,32 @@ DXModel::DXModel(ID3D11Device* device, DXTextureManager& texMgr, ModelData* data
 	//BoundingOrientedBox::CreateFromPoints(m_BoundingOrientedBox, Vertices.size(), &Vertices[0].Pos, sizeof(Vertex::PosNormalTexTanSkinned));
 }
 
+DXModel::DXModel(DXModel* _parent, std::string suffix)
+{
+	BlendTexSRV = _parent->BlendTexSRV;
+	DiffuseTexSRV = _parent->DiffuseTexSRV;
+	Indices = _parent->Indices;
+	Mat = _parent->Mat;
+	m_modelMesh = _parent->m_modelMesh;
+	m_BoundingOrientedBox = _parent->m_BoundingOrientedBox;
+	m_BoundingSphere = _parent->m_BoundingSphere;
+	SubsetCount = _parent->SubsetCount;
+	Subsets = _parent->Subsets;
+	Vertices = _parent->Vertices;
+	m_modelName = _parent->m_modelName;
+	m_name = m_modelName + suffix;
+}
+
 DXModel::~DXModel(void)
 {
-/*
-	KOMMENTERADE BORT DETTA DÅ DESSA
-	TEXTURER REDAN FANNS I TEXTURE MANAGER
-	OCH DET BLEV PROBLEM NÄR TEXTURE MANAGERNS
-	DESTRUKTOR KÖRS OCH SEDAN DENNAS. (EFTERSOM
-	TEXTUREN DÅ REDAN ÄR BORTTAGEN!)
 
-	if ( DiffuseMapSRV.size() > 0 )
-	{
-		for ( int i = 0; i < DiffuseMapSRV.size(); ++i )
-		{
-			if ( DiffuseMapSRV.at(i) )
-			{
-				DiffuseMapSRV.at(i)->Release();
-				DiffuseMapSRV.at(i)	=	0;
-			}
-		}
-		DiffuseMapSRV.clear();
-	}
+}
 
-	if ( NormalMapSRV.size() > 0 )
-	{
-		for ( int i = 0; i < NormalMapSRV.size(); ++i )
-		{
-			if ( NormalMapSRV.at(i) )
-			{
-				NormalMapSRV.at(i)->Release();
-				NormalMapSRV.at(i)	=	0;
-			}
-		}
-		NormalMapSRV.clear();
-	}
-	*/
+void DXModel::SetBlendTexture(std::string _filename, DXTextureManager& texMgr)
+{
+	ID3D11ShaderResourceView* blendTex = texMgr.CreateTexture(_filename);
+
+	if (blendTex)
+		BlendTexSRV = blendTex;
 }
 

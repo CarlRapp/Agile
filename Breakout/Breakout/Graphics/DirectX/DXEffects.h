@@ -63,8 +63,9 @@ public:
 
 	void SetMaterial(const DXMaterial& mat)               { m_mat->SetRawValue(&mat, 0, sizeof(DXMaterial)); }
 
-	void SetDiffuseMap(ID3D11ShaderResourceView* _tex)   { m_diffuseMap->SetResource(_tex); }
-	void SetNormalMap(ID3D11ShaderResourceView* _tex)    { m_normalMap->SetResource(_tex); }
+	void SetDiffuseTexture(ID3D11ShaderResourceView* _tex)   { m_diffuseTex->SetResource(_tex); }
+	void SetBlendTexture(ID3D11ShaderResourceView* _tex)    { m_blendTex->SetResource(_tex); }
+	void SetNormalTexture(ID3D11ShaderResourceView* _tex)    { m_normalTex->SetResource(_tex); }
 
 	ID3DX11EffectTechnique* m_basicTech;
 	ID3DX11EffectTechnique* m_texTech;
@@ -96,8 +97,9 @@ public:
 
 	ID3DX11EffectVariable* m_mat;
 
-	ID3DX11EffectShaderResourceVariable* m_diffuseMap;
-	ID3DX11EffectShaderResourceVariable* m_normalMap;
+	ID3DX11EffectShaderResourceVariable* m_diffuseTex;
+	ID3DX11EffectShaderResourceVariable* m_blendTex;
+	ID3DX11EffectShaderResourceVariable* m_normalTex;
 };
 #pragma endregion
 

@@ -33,10 +33,10 @@ private:
 	// Pause Screen settings
 	Texture2DData*	m_pauseBackground;
 	bool m_isPaused= false;
-        int m_fpsCounterID= 0;
-        int m_pauseHandle= 0;
-        int m_gameOverHandle= 0;
-        bool m_gameOver = false;
+    int m_fpsCounterID= 0;
+    int m_pauseHandle= 0;
+    int m_gameOverHandle= 0;
+    bool m_gameOver = false;
 
 	EntityFactory::EntityType RandomizeType(void);
 

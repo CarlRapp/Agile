@@ -8,7 +8,9 @@ class SpawnPowerUpSystem : public System<SpawnPowerUpSystem>
 private:
 	enum PowerUpType
 	{
-		MULTIBALL
+		MULTIBALL,
+		SHOOTLASER,
+		SWAPBLOCKS
 	};
 	void OnEntityRemoved(Entity* _block);
 

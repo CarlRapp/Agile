@@ -165,14 +165,20 @@
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp">
       <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\DirectX\DXSky.cpp">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClCompile>
     <ClCompile Include="Storage\HighScoreLoader.cpp">
       <Filter>Source Files\Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\OnTouchSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXMeshManager.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentSystem\System\ShootLaserSystem.cpp">
+      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -452,14 +458,27 @@
     <ClInclude Include="ComponentSystem\Component\BallComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
-    <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h">
-      <Filter>Source Files\ComponentSystem\System</Filter>
-    </ClInclude>
     <ClInclude Include="Storage\HighScoreLoader.h">
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\System\OnTouchSystem.h">
+      <Filter>Source Files\ComponentSystem\System</Filter>
+    </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXSky.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXMeshManager.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\LaserComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\System\ShootLaserSystem.h">
+      <Filter>Source Files\ComponentSystem\System\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\WarpComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

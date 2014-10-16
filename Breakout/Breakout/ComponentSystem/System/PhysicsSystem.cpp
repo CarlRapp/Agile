@@ -256,18 +256,20 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->filter.categoryBits = CollisionCategory::BALL;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
-		_b2BodyDef->fixedRotation = false;
+		_b2BodyDef->fixedRotation = true;
 		break;
-	case EntityFactory::PROJECTILE:
+	case EntityFactory::LASER:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.1f, 1.0f);
+		polygonShape->SetAsBox(0.5f, 0.5f);
 		fixDef->shape = polygonShape;
-		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::BALL;
+		fixDef->filter.categoryBits = CollisionCategory::DIEONTOUCH;
+		fixDef->filter.maskBits = CollisionCategory::WALL | CollisionCategory::INVISIBLEWALL | CollisionCategory::BLOCK;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_dynamicBody;
+		_b2BodyDef->fixedRotation = true;
+		break;
 	case EntityFactory::WALL:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();
@@ -297,7 +299,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::KILLONTOUCH;
+		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL | CollisionCategory::KILLONTOUCH;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 		break;
