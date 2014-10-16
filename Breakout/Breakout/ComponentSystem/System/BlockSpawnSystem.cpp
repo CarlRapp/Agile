@@ -65,7 +65,7 @@ Entity* BlockSpawnSystem::GetBlock(BlockType _block)
 	block->AddComponent<BlockComponent>();
 	block->AddComponent<EffectComponent>();
 	block->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-	
+	block->GetComponent<EffectComponent>()->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
 
 	switch (_block)
 	{
@@ -99,28 +99,40 @@ Entity* BlockSpawnSystem::GetBlock(BlockType _block)
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		block->AddComponent<TNTComponent>();
 		block->AddComponent<AudioComponent>().m_audioPath = "Explosion.wav";
-		block->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::EXPLODE;
+		block->GetComponent<EffectComponent>()->m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
 
 	case BlockType::RED_MEDIUM:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Medium";
 		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		block->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
+		block->GetComponent<HealthComponent>()->SetHealth(20);
+		block->GetComponent<ScoreComponent>()->m_score = 2;
+		block->GetComponent<EffectComponent>()->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
 		break;
 
 	case BlockType::BLUE_MEDIUM:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_Blue_Medium";
 		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		block->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
+		block->GetComponent<HealthComponent>()->SetHealth(20);
+		block->GetComponent<ScoreComponent>()->m_score = 2;
+		block->GetComponent<EffectComponent>()->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
 		break;
 
 	case BlockType::GREEN_MEDIUM:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_Green_Medium";
 		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		block->GetComponent<BlockComponent>()->SetDimension(VECTOR2(2, 1));
+		block->GetComponent<HealthComponent>()->SetHealth(20);
+		block->GetComponent<ScoreComponent>()->m_score = 2;
+		block->GetComponent<EffectComponent>()->m_effects.OnCollide = EffectFlags::CHANGE_MODEL;
 		break;
 	}
 

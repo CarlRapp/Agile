@@ -1,4 +1,5 @@
 #include "PhysicsSystem.h"
+#include "BlockSpawnSystem.h"
 #include "../World.h"
 #include <glm/gtx/quaternion.hpp>
 
@@ -208,34 +209,6 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 
 	switch (_entityType)
 	{
-	case EntityFactory::STANDARD_BLOCK_RED:
-	case EntityFactory::STANDARD_BLOCK_GREEN:
-	case EntityFactory::STANDARD_BLOCK_BLUE:
-	case EntityFactory::INDESTRUCTIBLE_BLOCK:
-	case EntityFactory::TNT_BLOCK:
-		fixDef = new b2FixtureDef();
-		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(0.5f, 0.5f);
-		fixDef->shape = polygonShape;
-		fixDef->density = 1.0f;
-		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
-		_b2FixtureDefs.push_back(fixDef);
-		_b2BodyDef->type = b2_staticBody;
-		break;
-	case EntityFactory::STANDARD_BIG_RED:
-	case EntityFactory::STANDARD_BIG_GREEN:
-	case EntityFactory::STANDARD_BIG_BLUE:
-		fixDef = new b2FixtureDef();
-		polygonShape = new b2PolygonShape();
-		polygonShape->SetAsBox(1.0f, 0.5f);
-		fixDef->shape = polygonShape;
-		fixDef->density = 1.0f;
-		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::BLOCK;
-		_b2FixtureDefs.push_back(fixDef);
-		_b2BodyDef->type = b2_staticBody;
-		break;
 	case EntityFactory::PAD:
 		fixDef = new b2FixtureDef();
 		polygonShape = new b2PolygonShape();

@@ -11,9 +11,9 @@ void main(void)
     texCoord = in_texCoord;
 
     if(in_texCoord.x == 0.0)
-        texCoord.x = m_letter/59.0;
+        texCoord.x = m_letter/60.0;
     else
-        texCoord.x = (m_letter+1)/59.0;
+        texCoord.x = (m_letter+1)/60.0;
 
     
     texCoord.y = 1-in_texCoord.y;

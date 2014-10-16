@@ -483,6 +483,9 @@
     <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h">
       <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BulletTimeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
     <ClInclude Include="ComponentSystem\System\BlockSpawnSystem.h">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClInclude>

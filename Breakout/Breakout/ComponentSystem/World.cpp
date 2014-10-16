@@ -56,6 +56,9 @@ void World::Start()
 	m_systems = SystemMap();
 
 	m_running = true;
+	m_bulletTime = false;
+	m_bulletTimer = 0.f;
+	m_maxBulletTimer = 5.f;
 }
 
 bool World::AddEntity(Entity* _e)
@@ -92,6 +95,20 @@ Entity* World::CreateEntity()
 
 void World::Update(float _dt)
 {
+	if (m_bulletTime)
+	{
+		if (m_bulletTimer < m_maxBulletTimer)
+		{
+			m_bulletTimer += _dt;
+			_dt *= 0.25f;
+		}
+		else
+		{
+			m_bulletTimer = 0.f;
+			m_bulletTime = false;
+		}
+	}
+
 	SystemMap::iterator sIT;
 	for (sIT = m_systems.begin(); sIT != m_systems.end(); ++sIT)
 		sIT->second->Update(_dt);
@@ -231,4 +248,11 @@ void World::Clear()
 	m_changedEntities.clear();
 	//m_componentEntityPool.clear();
 	printf("World cleared!\n");
+}
+
+void World::SetBulletTime(bool _value)
+{
+	if (_value)
+		m_bulletTimer = 0.f;
+	m_bulletTime = _value;
 }

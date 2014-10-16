@@ -49,7 +49,6 @@ int main(int argc, char** argv)
 	/*	LOAD ALL MODELS	*/
 	std::vector<std::string> files;
 	FileManager::GetInstance().GetFilesInDirectory(files, MODEL_ROOT);
-	printf("DEFAULT PATH: %s", _getcwd(NULL, 0));
 
 	//try
 	//{
@@ -64,16 +63,16 @@ int main(int argc, char** argv)
 
 	for (auto file : files)
 	{
-		//printf("Path: \"%s\"\n", file);
-		if (file.length() <= 4)
-			printf("OMGOMGOMGOMGOMGOGMOMG -> %s", file);
-		else
-		{
-			file = file.substr(0, file.size() - 4);
-			//printf("Path: \"%s\"\n", file);
-			GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
-		}
+		file = file.substr(0, file.size() - 4);
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
+	}
 
+	files.clear();
+	FileManager::GetInstance().GetFilesInDirectory(files, TEXTURE_ROOT);
+
+	for (auto file : files)
+	{
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadTexture(file);
 	}
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
