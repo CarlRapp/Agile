@@ -960,7 +960,7 @@ void GLGraphics::SetBlendTexture(int _objectID, std::string _filename)
     int recvHandle = m_texManager.GetTexture(_filename);
     if(recvHandle == -1)
     {
-        printf("BlendTexture %s is not loaded. Loading texture now. \n", _filename.c_str());
+        //printf("BlendTexture %s is not loaded. Loading texture now. \n", _filename.c_str());
         m_texManager.Load2DTexture(_filename, GL_TEXTURE1);
         recvHandle = m_texManager.GetTexture(_filename);
     }
