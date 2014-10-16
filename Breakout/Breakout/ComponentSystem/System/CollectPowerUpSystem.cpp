@@ -2,6 +2,7 @@
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
 #include "ShootLaserSystem.h"
+#include "BlockSystem.h"
 #include "../World.h"
 
 #include "../EntityFactory.h"
@@ -58,7 +59,6 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 		else
 			m_world->AddSystem<ShootLaserSystem>();
 	}
-
 
 	_powerUp->SetState(Entity::SOON_DEAD);
 }

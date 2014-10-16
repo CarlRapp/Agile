@@ -51,6 +51,8 @@ public:
 
 	void Update(float _dt);
 	void SetSettings(int _sizeX, int _sizeY, int _topCenterY = 20, int _topCenterX = 0);
+
+	void SwapBlocksPowerUp();
 };
 
 #endif

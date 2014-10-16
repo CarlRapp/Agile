@@ -6,6 +6,8 @@
 #include "../Component/TNTComponent.h"
 #include "../Component/EffectComponent.h"
 #include "../World.h"
+#include "../EntityFactory.h"
+#include "../../Graphics/GraphicsManager.h"
 
 BlockSystem::BlockSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent, CollisionComponent>(), _world)
