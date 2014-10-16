@@ -133,7 +133,8 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
 
 	counter += _dt;
-	if (counter > 0.5f)
+
+	if (counter > 1.0f/(m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_level+1))
 	{
 		Entity* e;
 		e = m_world->CreateEntity();
@@ -153,11 +154,15 @@ void GameScene::Update(float _dt)
 
             GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
             m_gameOver = true;
-            //SceneManager::GetInstance()->ChangeScene<GameOverScene>();
+            
+
+            AskPlayerName();
 	}
-
-
         
+        if(m_gameOver && !m_scoreSubmitted)
+        {
+            UpdateInputString();
+        }
 }
 
 EntityFactory::EntityType GameScene::RandomizeType(void)
@@ -208,8 +213,6 @@ void GameScene::UpdateFPS(float _dt)
         float fps = 1.0f / _dt;
         m_fpsString= "FPS: ";
         m_fpsString.append(std::to_string((int)fps));
-        m_fpsString += " DT: ";
-        m_fpsString.append(std::to_string(_dt));
 }
 
 void GameScene::Render(float _dt)
@@ -445,6 +448,16 @@ void GameScene::Reset()
         m_world->AddEntity(e);
 
         Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
+        
+        e = m_world->CreateEntity();
+        EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+        TC = e->GetComponent<TextComponent>();
+        TC->Initialize(&player->GetComponent<PlayerComponent>()->m_expString, 0.5f-(16*8.0f)/1280.0f*1.0f, 0.0f, 2.f, VECTOR3(1.0f,1.0f,1.0f), 10.0f);
+        m_textHandleEXP = e->GetId();
+        m_world->AddEntity(e);
+        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+        
+        
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::PAD);
 	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -20, 0));
@@ -735,4 +748,82 @@ void GameScene::SkillDamage()
             }
         
         m_levelUp--;
+}
+
+void GameScene::AskPlayerName()
+{
+    
+    Entity* e = m_world->CreateEntity();
+    EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+    auto TC = e->GetComponent<TextComponent>();
+    TC->Initialize("INPUT NAME", 0.5f-(10*8.0f)/1280.0f*1.5f, 0.8f, 3.f, VECTOR3(1.0f,1.0f,1.0f), 10.0f);
+    m_world->AddEntity(e);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    std::string* s = &m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_name;
+    
+    e = m_world->CreateEntity();
+    EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
+    TC = e->GetComponent<TextComponent>();
+    TC->Initialize(s, 0.5f-(s->size()*8.0f)/1280.0f, 0.7f, 2.f, VECTOR3(0.3f,1.0f,0.3f), 10.0f);
+    m_inputHighScoreHandle = e->GetId();
+    m_world->AddEntity(e);
+    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+    
+    
+    
+
+}
+
+void GameScene::SubmitHighScore()
+{
+    std::string name = m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_name;
+    int score = m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<ScoreComponent>()->m_score;
+    FileManager::GetInstance().TryAddHighScore(GetFile("highscores.txt",HIGHSCORE_ROOT),name,score);
+
+}
+
+void GameScene::UpdateInputString()
+{
+    char c = 0;
+
+    
+    for(int i=32; i < 122;i++)
+    {
+        if(InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(i)== InputState::Pressed)
+        {
+            c = i;
+            break;
+        }
+        if(InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13)== InputState::Pressed)
+        {
+            SubmitHighScore();
+            SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+            break;
+        }
+        if(InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(8)== InputState::Pressed)
+        {
+            std::string* s = &m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_name;
+            
+            if(s->size()>0)
+                s->erase(s->end()-1);
+            
+            Entity* e = m_world->GetEntity(m_inputHighScoreHandle);
+            auto TC = e->GetComponent<TextComponent>();
+            TC->m_x = 0.5f-(s->size()*8.0f)/1280.0f*TC->m_scale*0.5f;
+            
+            break;
+        }
+    }
+    
+    if(c)
+    {
+        m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_name +=c;
+        
+        Entity* e = m_world->GetEntity(m_inputHighScoreHandle);
+        auto TC = e->GetComponent<TextComponent>();
+        TC->m_x = 0.5f-(TC->m_text->size()*8.0f)/1280.0f*TC->m_scale*0.5f;
+    }
+    
+    
 }
