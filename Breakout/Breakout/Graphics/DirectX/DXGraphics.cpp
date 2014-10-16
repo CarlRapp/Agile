@@ -322,9 +322,6 @@ void DXGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 	mi->explodeTime = _explosion;
 
 	m_modelInstances[_model].insert(pair<int, ModelInstance*>(_id, mi));
-
-	SetBlendTexture(_id, "test.png");
-	SetBlendTexture(_id, "");
 }
 
 
