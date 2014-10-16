@@ -59,6 +59,14 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11D.lib;Box2Dd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
+xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\Shaders\ParticleSystems" /Y /I</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -75,6 +83,14 @@
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_mixer.lib;Effects11.lib;Box2D.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\..\Data\Models" "$(OutDir)\Data\Models" /Y /I
+xcopy "$(SolutionDir)\..\Data\Textures" "$(OutDir)\Data\Textures" /Y /I
+xcopy "$(SolutionDir)\..\Data\Audio" "$(OutDir)\Data\Audio" /Y /I
+xcopy "$(SolutionDir)\..\Data\SaveData" "$(OutDir)\Data\SaveData" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\*.fxo" "$(OutDir)\Shaders" /Y /I
+xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\Shaders\ParticleSystems" /Y /I</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Audio\AudioManager.cpp" />
@@ -91,7 +107,7 @@
     <ClCompile Include="ComponentSystem\System\EffectSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\InputSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ISystem.cpp" />
-    <ClCompile Include="ComponentSystem\System\KillOnTouchSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\OnTouchSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\LightSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\LoseLifeSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ModelSystem.cpp" />
@@ -101,6 +117,7 @@
     <ClCompile Include="ComponentSystem\System\ProjectileSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\RespawnBallSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\ScoreSystem.cpp" />
+    <ClCompile Include="ComponentSystem\System\ShootLaserSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\SpawnPowerUpSystem.cpp" />
     <ClCompile Include="ComponentSystem\System\TextSystem.cpp" />
     <ClCompile Include="ComponentSystem\World.cpp" />
@@ -150,6 +167,7 @@
     <ClInclude Include="ComponentSystem\Component\AudioComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BallComponent.h" />
     <ClInclude Include="ComponentSystem\Component\BlockComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\CollisionStatsComponent.h" />
     <ClInclude Include="ComponentSystem\Component\DamageComponent.h" />
@@ -160,6 +178,7 @@
     <ClInclude Include="ComponentSystem\Component\IComponent.h" />
     <ClInclude Include="ComponentSystem\Component\InputComponent.h" />
     <ClInclude Include="ComponentSystem\Component\KeyboardInputComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\LaserComponent.h" />
     <ClInclude Include="ComponentSystem\Component\LifeComponent.h" />
     <ClInclude Include="ComponentSystem\Component\LightComponent.h" />
     <ClInclude Include="ComponentSystem\Component\LoseLifeComponent.h" />
@@ -172,6 +191,7 @@
     <ClInclude Include="ComponentSystem\Component\PositionComponent.h" />
     <ClInclude Include="ComponentSystem\Component\RotationComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScaleComponent.h" />
+    <ClInclude Include="ComponentSystem\Component\WarpComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ScoreComponent.h" />
     <ClInclude Include="ComponentSystem\Component\ShatterComponent.h" />
     <ClInclude Include="ComponentSystem\Component\SpawnEntityComponent.h" />
@@ -189,7 +209,7 @@
     <ClInclude Include="ComponentSystem\System\EffectSystem.h" />
     <ClInclude Include="ComponentSystem\System\InputSystem.h" />
     <ClInclude Include="ComponentSystem\System\ISystem.h" />
-    <ClInclude Include="ComponentSystem\System\KillOnTouchSystem.h" />
+    <ClInclude Include="ComponentSystem\System\OnTouchSystem.h" />
     <ClInclude Include="ComponentSystem\System\LightSystem.h" />
     <ClInclude Include="ComponentSystem\System\LoseLifeSystem.h" />
     <ClInclude Include="ComponentSystem\System\ModelSystem.h" />
@@ -199,6 +219,7 @@
     <ClInclude Include="ComponentSystem\System\ProjectileSystem.h" />
     <ClInclude Include="ComponentSystem\System\RespawnBallSystem.h" />
     <ClInclude Include="ComponentSystem\System\ScoreSystem.h" />
+    <ClInclude Include="ComponentSystem\System\ShootLaserSystem.h" />
     <ClInclude Include="ComponentSystem\System\SpawnPowerUpSystem.h" />
     <ClInclude Include="ComponentSystem\System\TextSystem.h" />
     <ClInclude Include="ComponentSystem\World.h" />

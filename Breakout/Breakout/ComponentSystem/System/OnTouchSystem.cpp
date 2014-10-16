@@ -1,20 +1,20 @@
-#include "KillOnTouchSystem.h"
+#include "OnTouchSystem.h"
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
 #include "../World.h"
 
-KillOnTouchSystem::KillOnTouchSystem(World* _world)
+OnTouchSystem::OnTouchSystem(World* _world)
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
 {
 }
 
-KillOnTouchSystem::~KillOnTouchSystem()
+OnTouchSystem::~OnTouchSystem()
 {
 
 }
 
 
-void KillOnTouchSystem::Update(float _dt)
+void OnTouchSystem::Update(float _dt)
 {
 	std::vector<Entity*> toBeRemoved;
 	for (auto entityPair : m_entityMap)
@@ -33,18 +33,15 @@ void KillOnTouchSystem::Update(float _dt)
 			int bitA = contact.m_fixture->GetFilterData().categoryBits;
 			int bitB = contact.m_otherFixture->GetFilterData().categoryBits;
 
-			if (bitA == CollisionCategory::KILLONTOUCH)
+			if (bitA & CollisionCategory::KILLONTOUCH)
 			{
 				toBeRemoved.push_back(collidingEntity);
 				break;
 			}
-			else if (bitB == CollisionCategory::KILLONTOUCH)
+			if (bitA & CollisionCategory::DIEONTOUCH)
 			{
 				toBeRemoved.push_back(e);
-				break;
 			}
-			
-
 		}
 	}
 	for (auto entity : toBeRemoved)
