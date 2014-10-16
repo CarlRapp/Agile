@@ -2,6 +2,7 @@
 #include "PhysicsSystem.h"
 #include "../Component/MouseInputComponent.h"
 #include "../Component/BallComponent.h"
+#include "../../Audio/AudioManager.h"
 
 ShootLaserSystem::ShootLaserSystem(World* _world)
 : Base(ComponentFilter().Requires<MouseInputComponent, PositionComponent, ScaleComponent>(), _world)
@@ -42,6 +43,8 @@ void ShootLaserSystem::Update(float _dt)
 				laser->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.2f, 3, 0.2f));
 				laser->GetComponent<PositionComponent>()->SetPosition(VECTOR3(position.x - (scale.x * 0.5f) + (laser->GetComponent<ScaleComponent>()->GetScale().x * 0.5f), position.y + (scale.y * 0.5f) + (laser->GetComponent<ScaleComponent>()->GetScale().y * 0.5f) + 1, 0));
 				m_world->AddEntity(laser);
+				AudioManager::GetInstance()->PlaySoundEffect("Laser.wav", 0);
+				
 			}
 		}
 	else

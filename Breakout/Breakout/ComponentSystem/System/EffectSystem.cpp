@@ -136,6 +136,7 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 		Entity* e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SHATTER);
 		e->GetComponent<ModelComponent>()->m_modelPath = _e->GetComponent<ModelComponent>()->m_modelPath;
+		e->GetComponent<ScaleComponent>()->SetScale(_e->GetComponent<ScaleComponent>()->GetScale());
 		e->GetComponent<PositionComponent>()->SetPosition(_e->GetComponent<PositionComponent>()->GetPosition());
 		m_effects[e->GetId()] = e;
 
@@ -187,7 +188,44 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
     
     if((m_flags.OnCollide & EffectFlags::CHANGE_MODEL) == EffectFlags::CHANGE_MODEL && _e->GetComponent<HealthComponent>()->m_currentHealth > 0)
     {
-        
+		auto healthC = _e->GetComponent<HealthComponent>();
+		int currentHealth	= healthC->m_currentHealth;
+		int maxHealth		= healthC->m_maxHealth;
+		if (currentHealth > 0)
+		{
+			auto blockC = _e->GetComponent<BlockComponent>();
+			VECTOR2 dim = blockC->GetDimension();
+
+			int hest75 = maxHealth * 0.75;
+			int hest50 = maxHealth * 0.50;
+			int hest25 = maxHealth * 0.25;
+
+			if (currentHealth < maxHealth && currentHealth >= hest75)
+			{
+				if (dim.x == 2)
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_big_1.png");
+				else
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_small_1.png");
+			}
+			else if (currentHealth < hest75 && currentHealth >= hest50)
+			{
+				if (dim.x == 2)
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_big_2.png");
+				else
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_small_2.png");
+			}
+			else if (currentHealth < hest50 && currentHealth >= hest25)
+			{
+				if (dim.x == 2)
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_big_3.png");
+				else
+					GraphicsManager::GetInstance()->SetBlendTexture(GetMemoryID(_e), "crack_small_3.png");
+			}
+		}
+
+		
+
+       /* 
         auto model = _e->GetComponent<ModelComponent>();
         std::string tmpString = model->m_modelPath + "_c";
 		if (FileManager::GetInstance().LoadModel(GetFile(tmpString.c_str(), MODEL_ROOT)) != 0)
@@ -195,7 +233,8 @@ void EffectSystem::OnCollision(Entity* _e, float _dt)
 			GraphicsManager::GetInstance()->RemoveObject(GetMemoryID(_e));
 			model->m_modelPath = tmpString;
 			GraphicsManager::GetInstance()->AddObject(GetMemoryID(_e), model->m_modelPath, &model->m_worldMatrix, &model->m_worldMatrix, 0);
-		}
+			
+		}*/
 
 		//printf("Health: %i (Entity #%d) \n", _e->GetComponent<HealthComponent>()->m_currentHealth, _e->GetId());
         //e->RemoveComponent<ModelComponent>();

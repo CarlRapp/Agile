@@ -11,6 +11,10 @@ class World
 {
 private:
 	bool m_running;
+	bool m_bulletTime;
+	float m_bulletTimer;
+	float m_maxBulletTimer;
+
 	Entity** m_entityPool;
 	EntityMap m_activeEntities;
 	std::vector<Entity*> m_changedEntities;
@@ -59,6 +63,8 @@ public:
 
 	//Resets all entites to empty/DEAD
 	void Clear();
+
+	void SetBulletTime(bool _value);
 };
 
 template <typename T>

@@ -480,6 +480,9 @@
     <ClInclude Include="ComponentSystem\Component\SwapBlockComponent.h">
       <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BulletTimeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

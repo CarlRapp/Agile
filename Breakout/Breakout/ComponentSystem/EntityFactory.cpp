@@ -49,7 +49,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 		
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
+		effect->m_effects.OnRemoved = EffectFlags::SHATTER;
 		break;
 	}
 	case EntityFactory::STANDARD_BLOCK_GREEN:
@@ -70,7 +70,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
+		effect->m_effects.OnRemoved = EffectFlags::SHATTER;
 		break;
 	}
 	case EntityFactory::STANDARD_BLOCK_BLUE:
@@ -93,7 +93,7 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 		auto effect = &_entity->AddComponent<EffectComponent>();
 		effect->m_effects.OnAdded = EffectFlags::SCALE_MIN_TO_MAX;
-		effect->m_effects.OnRemoved = EffectFlags::SCALE_MAX_TO_MIN;
+		effect->m_effects.OnRemoved = EffectFlags::SHATTER;
 		break;
 	}
 	case EntityFactory::INDESTRUCTIBLE_BLOCK:
