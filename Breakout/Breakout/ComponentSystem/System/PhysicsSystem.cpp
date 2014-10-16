@@ -299,7 +299,7 @@ void PhysicsSystem::GenerateBody(unsigned int _entityType, b2BodyDef* _b2BodyDef
 		fixDef->shape = polygonShape;
 		fixDef->density = 1.0f;
 		fixDef->friction = 0.0f;
-		fixDef->filter.categoryBits = CollisionCategory::KILLONTOUCH;
+		fixDef->filter.categoryBits = CollisionCategory::INVISIBLEWALL | CollisionCategory::KILLONTOUCH;
 		_b2FixtureDefs.push_back(fixDef);
 		_b2BodyDef->type = b2_staticBody;
 		break;

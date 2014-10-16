@@ -12,7 +12,7 @@
 #include "../Component/LaserComponent.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
-: Base(ComponentFilter().Requires<CollisionComponent>().RequiresOneOf<MultiBallComponent>(), _world)
+: Base(ComponentFilter().Requires<CollisionComponent>(), _world)
 {
 }
 
@@ -30,30 +30,17 @@ void CollectPowerUpSystem::Update(float _dt)
 			continue;
 
 		auto collision = e->GetComponent<CollisionComponent>();
+		if (!(collision->GetBody()->GetFixtureList()[0].GetFilterData().categoryBits & CollisionCategory::POWERUP))
+			continue;
 		std::vector<CollisionContact> collisions = collision->GetCollisions();
 		for (unsigned int i = 0; i < collisions.size(); ++i)
 		{
 			CollisionContact contact = collisions.at(i);
-			int bitA = contact.m_fixture->GetFilterData().categoryBits;
 			int bitB = contact.m_otherFixture->GetFilterData().categoryBits;
 			
-			if ((bitA == CollisionCategory::POWERUP && bitB == CollisionCategory::PAD) || (bitA == CollisionCategory::PAD && bitB == CollisionCategory::POWERUP))
-			{
-				Entity* powerUp = (bitA == CollisionCategory::POWERUP) ? e : m_world->GetEntity(collisions[i].m_otherId);
-				if (powerUp->GetState() == Entity::ALIVE)
-					TriggerPowerUp(powerUp);
-			}
-
+			if (bitB & CollisionCategory::PAD)
+					TriggerPowerUp(e);
 		}
-	}
-
-	for (auto entityPair : m_entityMap)
-	{
-		Entity* e = entityPair.second;
-		if ((e->GetState() != Entity::ALIVE))
-			continue;
-
-		e->GetComponent<VelocityComponent>()->m_velocity.y -= 5*_dt;
 	}
 }
 void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)

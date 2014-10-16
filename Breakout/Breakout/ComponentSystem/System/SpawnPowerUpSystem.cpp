@@ -1,3 +1,4 @@
+#include <time.h>
 #include "SpawnPowerUpSystem.h"
 #include "PhysicsSystem.h"
 #include "../World.h"
@@ -25,9 +26,20 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 
 	if (spawnPowerUp <= 5)
 	{
-		Entity* _newPowerUp = CreatePowerUp(SHOOTLASER);
+		spawnPowerUp = rand() % 2;
+		Entity* _newPowerUp = 0;
+		switch (spawnPowerUp)
+		{
+		case 0:
+			_newPowerUp = CreatePowerUp(SHOOTLASER);
+			break;
+		case 1:
+			_newPowerUp = CreatePowerUp(MULTIBALL);
+			break;
+		}
+
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
-		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 5, 0);
+		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 60 - 30, 15, 0);
 		m_world->AddEntity(_newPowerUp);
 		AudioManager::GetInstance()->PlaySoundEffect("PowerUp_Spawn.wav");
 	}
@@ -46,10 +58,6 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 	_entity->AddComponent<VelocityComponent>();
 	PhysicsSystem::GenerateBody(EntityFactory::POWERUP, bodyDef, fixDefs);
 	_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-	_entity->AddComponent<CollisionStatsComponent>(40.0f, 60.0f, 40.0f, 20.0f);
-	_entity->AddComponent<HealthComponent>(10);
-	_entity->AddComponent<EffectComponent>().m_effects.OnAdded = TRAIL;
-	
 
 	switch (_powerUp)
 	{
