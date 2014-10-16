@@ -174,6 +174,9 @@
     <ClCompile Include="Storage\HighScoreLoader.cpp">
       <Filter>Source Files\Storage</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\DirectX\DXMeshManager.cpp">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -459,6 +462,9 @@
       <Filter>Source Files\Storage</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\DirectX\DXSky.h">
+      <Filter>Source Files\Graphics\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\DirectX\DXMeshManager.h">
       <Filter>Source Files\Graphics\DirectX</Filter>
     </ClInclude>
   </ItemGroup>
