@@ -13,10 +13,10 @@ static const int INSTANCEDBUFFERSIZE = 200;
 
 
 DXDeferred::DXDeferred(void)
-	: m_depthStencilView(0), m_shadowMapDSV(0), m_albedoRTV(0), m_normalSpecRTV(0), m_albedoSRV(0), m_normalSpecSRV(0), m_depthSRV(0), 
-	m_finalSRV(0), m_fullSceenQuad(0), m_instanceBuffer(0),	m_dirLightBuffer(0), m_pointLightBuffer(0), m_spotLightBuffer(0), m_pointLights(0), m_spotLights(0)
+: m_depthStencilView(0), m_shadowMapDSV(0), m_albedoRTV(0), m_normalSpecRTV(0), m_albedoSRV(0), m_normalSpecSRV(0), m_depthSRV(0),
+m_finalSRV(0), m_fullSceenQuad(0), m_instanceBuffer(0), m_dirLightBuffer(0), m_pointLightBuffer(0), m_spotLightBuffer(0), m_pointLights(0), m_spotLights(0)
 {
-	
+
 	/*SafeDelete(m_dirLights);
 	SafeDelete(m_pointLights);
 	SafeDelete(m_spotLights);*/
@@ -77,15 +77,15 @@ DXDeferred::~DXDeferred(void)
 	SafeDelete(m_dirLightBuffer);
 	SafeDelete(m_pointLightBuffer);
 	SafeDelete(m_spotLightBuffer);
-	for(auto it = m_pointLights->begin(); it != m_pointLights->end(); ++it)
+	for (auto it = m_pointLights->begin(); it != m_pointLights->end(); ++it)
 		SafeDelete(it->second);
 
 	for (auto it = m_spotLights->begin(); it != m_spotLights->end(); ++it)
 		SafeDelete(it->second);
-	
+
 	m_pointLights->clear();
 	m_pointLights = 0;
-	
+
 	m_spotLights->clear();
 	m_spotLights = 0;
 
@@ -414,7 +414,7 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 	DXEffects::m_objectDeferredFX->SetWorldInvTranspose(worldInvTranspose);
 	DXEffects::m_objectDeferredFX->SetTexTransform(tex);
 	DXEffects::m_objectDeferredFX->SetWorldViewProj(worldViewProj);
-	if(_mi->explodeTime)
+	if (_mi->explodeTime)
 		DXEffects::m_objectDeferredFX->SetExplodeTime(*_mi->explodeTime);
 	else
 		DXEffects::m_objectDeferredFX->SetExplodeTime(0.f);
@@ -426,28 +426,6 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 		DXEffects::m_objectDeferredFX->SetMaterial(_mi->model->Mat[subset]);
 		//DXEffects::m_objectDeferredFX->SetMaterial(instance.GetModel()->Mat[subset]);
 
-<<<<<<< HEAD
-	//a
-	a.pos = DirectX::XMFLOAT3(-5.0f, -5.0f, -0.0f);
-	a.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	a.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	a.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	a.color = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-	//b
-	b.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
-	b.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	b.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	b.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	b.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	//c
-	c.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
-	c.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	c.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	c.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	c.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-=======
 		if (_mi->model->HasDiffuseMaps())
 			DXEffects::m_objectDeferredFX->SetDiffuseMap(_mi->model->GetDiffuseMap(subset));
 
@@ -457,54 +435,9 @@ void DXDeferred::RenderModel(ModelInstance* _mi, DirectX::CXMMATRIX _view, Direc
 		_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
 		_mi->model->ModelMesh.Draw(m_deviceContext, subset);
 	}
->>>>>>> 955f3bc71f5ae653bd9ea2ff4da99c5d6711e4e4
 
 }
 
-<<<<<<< HEAD
-	//d
-	d.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
-	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	d.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-	//e
-	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
-	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	e.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	//f
-	f.pos = DirectX::XMFLOAT3(5.0f, 5.0f, -0.0f);
-	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	f.color = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-
-	//g
-	d.pos = DirectX::XMFLOAT3(-5.0f, 5.0f, -0.0f);
-	d.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	d.tex = DirectX::XMFLOAT2(0.0f, 1.0f);
-	d.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	d.color = DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f);
-
-	//h
-	e.pos = DirectX::XMFLOAT3(5.0f, -5.0f, -0.0f);
-	e.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	e.tex = DirectX::XMFLOAT2(1.0f, 1.0f);
-	e.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	e.color = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
-
-	//i
-	f.pos = DirectX::XMFLOAT3(5.0f, 5.0f, -0.0f);
-	f.normal = DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f);
-	f.tex = DirectX::XMFLOAT2(0.5f, 0.0f);
-	f.tangentU = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	f.color = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
-
-=======
 void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CXMMATRIX _view, DirectX::CXMMATRIX _proj, ID3DX11EffectTechnique* _tech, UINT _pass)
 {
 	if (_mi->empty())
@@ -515,10 +448,9 @@ void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CX
 	m_deviceContext->IASetInputLayout(DXInputLayouts::m_instancedPosNormalTexTan);
 	m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	
->>>>>>> 955f3bc71f5ae653bd9ea2ff4da99c5d6711e4e4
 
-	
+
+
 
 	DirectX::XMMATRIX viewProj;
 	DirectX::XMMATRIX tex = DirectX::XMMatrixTranslation(0, 0, 0);
@@ -581,8 +513,8 @@ void DXDeferred::RenderModelInstanced(map<int, ModelInstance*> *_mi, DirectX::CX
 			_tech->GetPassByIndex(_pass)->Apply(0, m_deviceContext);
 			_mi->begin()->second->model->ModelMesh.DrawInstanced(m_deviceContext, subset, m_instanceBuffer, i);
 		}
-	}	
-	
+	}
+
 
 
 }
@@ -852,7 +784,7 @@ float ddda = 0.0f;
 void DXDeferred::Render(float _dt,
 	ID3D11RenderTargetView *_renderTargetView,
 	ID3D11UnorderedAccessView *_finalUAV,
-	map<std::string, map<int, ModelInstance*>> &_modelInstances, 
+	map<std::string, map<int, ModelInstance*>> &_modelInstances,
 	map<int, DX2DTextureInstance*> &_textureInstances,
 	map<int, DXParticleSystem*>		&_particleSystems,
 	map<int, DXText::String*>		&_texts,
@@ -866,7 +798,7 @@ void DXDeferred::Render(float _dt,
 	//pos.x = 15 + 10 * sinf(ddda);
 	//pos.z = 10 * cosf(ddda);
 
-	
+
 	ClearBuffers();
 
 
@@ -898,7 +830,7 @@ void DXDeferred::RenderSky(ID3D11RenderTargetView *_renderTargetView, DXSky* _sk
 		m_deviceContext->OMSetRenderTargets(1, &_renderTargetView, m_depthStencilView);
 		_sky->Draw(m_deviceContext, _camera);
 	}
-	
+
 }
 
 
@@ -943,7 +875,7 @@ void DXDeferred::RenderText(ID3D11RenderTargetView *_renderTargetView, DXText::S
 	if (_text->Color)
 		DXEffects::m_combineFinalFX->SetColor(*_text->Color);
 	else
-		DXEffects::m_combineFinalFX->SetColor(VECTOR3(1,1,1));
+		DXEffects::m_combineFinalFX->SetColor(VECTOR3(1, 1, 1));
 
 
 	for (int i = 0; i < _text->Indices.size(); ++i)
@@ -1001,7 +933,7 @@ void DXDeferred::RenderParticleSystems(float _dt, ID3D11RenderTargetView *_rende
 
 void DXDeferred::CombineFinal(ID3D11RenderTargetView *_renderTargetView)
 {
-	
+
 
 	m_deviceContext->RSSetState(DXRenderStates::m_noCullRS);
 	m_deviceContext->RSSetViewports(1, &m_viewPort);
