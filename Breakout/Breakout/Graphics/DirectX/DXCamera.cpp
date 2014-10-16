@@ -45,8 +45,8 @@ DXCamera::DXCamera(float _fov, float _width, float _height, float _nearZ, float 
 	//AddShake(0,40, 50, 1, 60);
 	//AddShake(1,1, 2, 25, 60);
 	
-	AddShake(2,0, 0.5f, 60, -5);
-	AddShake(0, 40, 50, 1, 60);
+	//AddShake(2,0, 0.5f, 60, -5);
+	//AddShake(0, 40, 50, 1, 60);
 }
 
 DXCamera::~DXCamera(void)
