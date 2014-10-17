@@ -120,6 +120,8 @@ void GameScene::Update(float _dt)
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
 	
+    if(!m_gameOver)
+    {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('c') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
@@ -130,7 +132,7 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
-
+    }
 	counter += _dt;
 
 	if (counter > 1.0f/(m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_level+1))
@@ -295,7 +297,7 @@ void GameScene::Reset()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-    TC->Initialize(&m_gameOverString, 0.5f-(m_gameOverString.size()*8.0f)/1280.0f*2.0f, 0.5f, 4.f, VECTOR3(1,0.7f,0.3f), 30.0f);
+    TC->Initialize(&m_gameOverString, 0.5f-(m_gameOverString.size()*8.0f)/1280.0f*2.0f, 0.5f, 4.f, VECTOR3(1,0.0f,0.0f), 30.0f);
     m_gameOverHandle = e->GetId();
     m_world->AddEntity(e);
 
@@ -786,7 +788,6 @@ void GameScene::UpdateInputString()
 {
     char c = 0;
 
-    
     for(int i=32; i < 122;i++)
     {
         if(InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(i)== InputState::Pressed)
