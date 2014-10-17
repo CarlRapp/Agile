@@ -835,6 +835,10 @@ void GLGraphics::CameraToRender(ICamera* _camera)
     temp1 = _camera->GetView();
     GLint view = glGetUniformLocation(m_computeProgram, "m_matView");
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
+    
+    GLint campos = glGetUniformLocation(m_computeProgram, "camPos");
+    glm::vec3 k = _camera->GetPosition();
+    glUniform3f(campos,k.x,k.y,k.z);
 }
 
 void GLGraphics::AddRenderObject(std::string _path, MATRIX4 _world) {

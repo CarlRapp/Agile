@@ -187,15 +187,17 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(20, 20, 0));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.2f, 0.2f, 0.7f));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 6, 0));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.2f, 0.7f, 0.2f));
+        e->GetComponent<LightComponent>()->SetRange(400);
 	m_world->AddEntity(e);
 
-//	e = m_world->CreateEntity();
-//	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-//	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
-//	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
-//	m_world->AddEntity(e);
+	e = m_world->CreateEntity();
+	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, -6, 0));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.2f, 0.2f));
+        e->GetComponent<LightComponent>()->SetRange(400);
+	m_world->AddEntity(e);
 //
 //	e = m_world->CreateEntity();
 //	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

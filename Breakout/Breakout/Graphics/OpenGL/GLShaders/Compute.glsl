@@ -8,7 +8,7 @@ varying mat4 modelView;
 
 uniform sampler2D m_standardTex;
 
-const int nrOfLights = 1;
+const int nrOfLights = 2;
 
 struct LightInfo
 {
@@ -33,9 +33,6 @@ struct Model
     //vec4[132]    color;
     vec3[132]    normal;
     vec2[132]    texCoord;
-
-    //mat4 modelMatrix;
-
 };
 
 uniform Model Models[5];
@@ -65,8 +62,6 @@ struct Ray
     vec3    dir;
     uint    bounce;
     vec4    color;
-    SplitRay split;
-    bool    isSplit;
 };
 
 struct Vertex
@@ -93,13 +88,18 @@ struct BounceData
 };
 
 //VARIABLES
-float scale = 2;
-mat3 scaleMatrix = mat3(scale,0,0,0,scale,0,0,0,scale);
+float scale = 10;
+mat4 modelMatrix[2] =   {
+                                mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1),
+                                mat4(scale,0,0,0,0,scale,0,0,0,0,scale,0,0,0,0,1)
+                        };
 
-float widthHalf = 256.0;
-float heightHalf = 256.0;
-vec3 camPos;
-vec3 ambient = vec3(0.0,0.0,0.0);
+
+const float widthHalf = 256.0;
+const float heightHalf = 256.0;
+uniform vec3 camPos;
+const vec3 ambient = vec3(0.0,0.0,0.0);
+const int BOUNCE_LIMIT = 2;
 
 //METHODS
 vec4 traceColor(Vertex vertex);
@@ -113,28 +113,43 @@ void main()
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 
-    //send ray from camera eye (camPos) with directions x,y,1 normalized
-    vec2 rayPos;
+    //send ray from camera eye (camPos) with directions x,y,1
+    vec4 rayPos;
+
+    //
+    //
+    //vs_out.ray_direction = (viewmat * vec4(pos.xyz * direction_scale * vec3(1.0, aspect, 2.0) + direction_bias, 0.0)).xyz;
+    //camPos = vec3(m_matView[3][0],m_matView[3][1],m_matView[3][2]);
+
     rayPos.x    = x/widthHalf -1.0;
     rayPos.y    = y/heightHalf -1.0;
+    rayPos.z    = 1;
+    rayPos.w    = 1;
+    
+    rayPos *= m_matProj;//*inverse(m_matProj)*rayPos;
+    //rayPos /= rayPos.w;
+    rayPos *= m_matView;
+    //rayPos = vec4(camPos - rayPos.xyz,1);
 
-    camPos = vec3(m_matView[3][0],m_matView[3][1],m_matView[3][2]);
-    vec3 rayDir = vec3(rayPos.x,rayPos.y,1);
-    SplitRay sr = {vec3(0,0,0),vec3(0,0,0),0,vec4(0,0,0,0)};
-    Ray ray = {camPos, rayDir,0,vec4(0,0,0,0),sr,false};   
+    vec3 rayDir = normalize(vec3(rayPos));
+
+
+    Ray ray = {camPos, rayDir,0,vec4(0,0,0,0)};   
 
     Ray rayOut = trace(ray);
     
-    vec4 color = vec4(0,0,0,0);
+    vec4 color = vec4(0,0,0,1);
     
     color += rayOut.color;
 
-    if(rayOut.isSplit)
+    //color = vec4(camPos,1);
+
+    /*if(rayOut.isSplit)
     {
         Ray splitRay = {rayOut.split.origin,rayOut.split.dir,0,rayOut.split.color,sr,true};
 
         color += trace(splitRay).color;
-    }
+    }*/
 
 
 
@@ -145,66 +160,58 @@ void main()
 Ray trace(Ray ray)
 {
     uint i=0;
+    uint j=0;
+    float t = 10000;
 
-    for(i=0; i < 132;i +=3)
+    Vertex hit;
+
+    for(int k=0; ray.bounce < BOUNCE_LIMIT;ray.bounce++)
     {
-        Triangle tri;
-        Vertex vx1;
-        //vx1.worldPos = m_matProj*m_matView*vec4(0,1,-1,1);
-        //vx1.normal = vec3(0,1,1);
-        vx1.worldPos = m_matProj*m_matView*vec4(Models[0].pos[i],1);
-
-        vx1.normal = Models[0].normal[i];
-        vx1.texCoord = Models[0].texCoord[i];
-
-        Vertex vx2;
-        //vx2.worldPos = m_matProj*m_matView*vec4(1,-1,-1,1);
-        //vx2.normal = vec3(1,-1,1);
-        vx2.worldPos = m_matProj*m_matView*vec4(Models[0].pos[i+1],1);
-
-        vx2.normal = Models[0].normal[i+1];
-        vx2.texCoord = Models[0].texCoord[i+1];
-
-        Vertex vx3;
-        //vx3.worldPos = m_matProj*m_matView*vec4(-1,-1,-1,1);
-        //vx3.normal = vec3(-1,-1,1);
-        vx3.worldPos = m_matProj*m_matView*vec4(Models[0].pos[i+2],1);
-
-        vx3.normal = Models[0].normal[i+2];
-        vx3.texCoord = Models[0].texCoord[i+2];
-
-        tri.vx1 = vx1;
-        tri.vx2 = vx2;
-        tri.vx3 = vx3;
-
-        float t = intersect(ray,tri);
-
-        if(t > 0)
+        for(j=0; j < 2;j++)
         {
-            ray.bounce++;
-
-            Vertex hit;
-            hit.worldPos = vec4(vec2(ray.dir),t+ray.origin.z,1);
-            hit.normal = vx1.normal;
-
-            ray.color += traceColor(hit);
-
-            if(ray.bounce > 4)
-                break;
-
-            i=0;
-            ray.origin = vec3(hit.worldPos);
-            ray.dir = ray.dir;
-
-            if(!ray.isSplit)
+            for(i=0; i < 132;i +=3)
             {
-                ray.split.origin = vec3(hit.worldPos);
-                ray.split.dir = ray.dir- hit.normal;
-                ray.split.color = ray.color;
-                ray.split.bounce = 0;
-                ray.isSplit = true;
+                Triangle tri;
+                Vertex vx1;
+                vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
+                vx1.normal = Models[0].normal[i];
+                vx1.texCoord = Models[0].texCoord[i];
+
+                Vertex vx2;
+                vx2.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+1],1);
+                vx2.normal = Models[0].normal[i+1];
+                vx2.texCoord = Models[0].texCoord[i+1];
+
+                Vertex vx3;
+                vx3.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+2],1);
+                vx3.normal = Models[0].normal[i+2];
+                vx3.texCoord = Models[0].texCoord[i+2];
+
+                tri.vx1 = vx1;
+                tri.vx2 = vx2;
+                tri.vx3 = vx3;
+
+                float r = intersect(ray,tri);
+
+                if(r > 0 && r < t)
+                {
+                    t = r;
+                    hit.worldPos = vec4(vec3(ray.dir*t+ray.origin),1);
+                    hit.normal = vx1.normal;
+                    
+                }
             }
         }
+
+        if(t > 0 && t != 10000)
+        {
+            ray.color += traceColor(hit);
+
+            ray.origin = hit.worldPos.xyz;
+            ray.dir = reflect(ray.dir,hit.normal);
+        }
+        else
+            break;
     }
 
     return ray; 
@@ -215,17 +222,16 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vert
 
     //tmp material
     Material.Ka = vec3(0.5);
-    Material.Kd = vec3(0.5);
-    Material.Ks = vec3(0.5);
-    Material.Shininess = 30.0;
+    Material.Kd = vec3(0.6);
+    Material.Ks = vec3(0.9);
+    Material.Shininess = 50.0;
 
     vec3 s = normalize(vec3(lightPos - vertex.worldPos.xyz));
     vec3 v = normalize(-vertex.worldPos.xyz);	
     //vec3 h = normalize(v + s);
     vec3 h = reflect( s, vertex.normal);
 
-    //genomskinlighet höger 0.3
-    float sDotN = max( dot(s, vertex.normal), 0.3 );
+    float sDotN = max( dot(s, vertex.normal), 0.0 );
 
     //Diffuse light
     vec3 diffuse = vec3(Lights[index].Intensity.y) * Lights[index].Color * Material.Kd * sDotN * strength;
@@ -238,28 +244,26 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vert
     if( sDotN > 0.0 )
             specular = vec3(Lights[index].Intensity.z) * Lights[index].Color * Ks * pow( max( dot(h,v), 0.0 ), Material.Shininess ) * strength;
 
-    return vec3(diffuse + specular + ambient);
+    return vec3(diffuse +specular+ ambient);
 }
 
 vec4 traceColor(Vertex vertex)
 {
-    vec3 ambient = vec3(0.0f); // = vec3(0.2f,0.2f,0.2f);
     vec3 diffAndSpec = vec3(0.0);
 
     for(int index = 0; index < nrOfLights; index++)
     {
         float lightDist = abs(length(vertex.worldPos.xyz - vec3(Lights[index].Position)));
         float lightStrength = 0;
-        if( lightDist < Lights[index].Range )
-			lightStrength = 1.0-(lightDist / Lights[index].Range);
-        //för varje ljus
+        //if( lightDist < Lights[index].Range )
+			lightStrength = 1.0;//-(lightDist / Lights[index].Range);
+
 	diffAndSpec += phongModelDiffAndSpec(index, vec3(Lights[index].Position), lightStrength,vertex);
     }
 
     //vec4 texColor = texture( m_standardTex, vertex.texCoord );
     
     return vec4(diffAndSpec + ambient, 1.0);// * texColor;
-    //return vec4(0.5,0.5,0.5, 1.0);
 }
 
 float intersect(Ray ray, Triangle tri)
