@@ -22,7 +22,9 @@ namespace DXText
 	};
 
 	const static float x = 1.0f;
-
+	const static float e = 33.0f / 126.0f;
+	const static float AA = 65.0f / 126.0f;
+	const static float a = 97.0f / 126.0f;
 
 	static float E[64] = { 0, 0, 0, 0, 0, 0, 0, 0,
 							0, x, x, x, x, x, x, 0,
@@ -554,6 +556,15 @@ namespace DXText
 	0, 0, 0, 0, 0, x, 0, 0,
 	0, 0, 0, 0, 0, 0, x, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, };
+
+	static float _expArrow[64] = { e, AA, a, x, x, 0, 0, 0,
+		0, e, AA, a, x, x, 0, 0,
+		0, 0, e, AA, a, x, x, 0,
+		0, 0, 0, e, AA, a, x, x,
+		0, 0, 0, e, AA, a, x, x,
+		0, 0, e, AA, a, x, x, 0,
+		0, e, AA, a, x, x, 0, 0,
+		e, AA, a, x, x, 0, 0, 0, };
 
 }
 #endif

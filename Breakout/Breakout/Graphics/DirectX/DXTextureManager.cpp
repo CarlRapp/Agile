@@ -89,6 +89,7 @@ void DXTextureManager::InitLetters(ID3D11Device* _device)
 	letters.push_back(LetterInfo('-', DXText::_minus));
 	letters.push_back(LetterInfo('.', DXText::_dot));
 	letters.push_back(LetterInfo('/', DXText::_slash));
+	letters.push_back(LetterInfo('[', DXText::_expArrow));
 
 	
 	float* temp;
@@ -162,6 +163,7 @@ ID3D11ShaderResourceView* DXTextureManager::CreateTexture(std::string filename)
 	}
 	else
 	{
+		printf("Trying to load texture: %s\n", filename);
 		std::wstring widestr = std::wstring(filename.begin(), filename.end());
 		D3DX11CreateShaderResourceViewFromFile(md3dDevice, widestr.c_str(), 0, 0, &srv, 0 );
 

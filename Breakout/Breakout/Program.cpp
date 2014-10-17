@@ -45,6 +45,23 @@ int main(int argc, char** argv)
 	m_GraphicsManager = GraphicsManager::GetInstance();
 	m_GraphicsManager->InitWindow(0, 0, SCREENWIDTH, SCREENHEIGHT, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
+        
+        std::vector<std::string> files;
+	FileManager::GetInstance().GetFilesInDirectory(files, GetFile("", MODEL_ROOT));
+	for (auto file : files)
+	{
+            file = file.substr(0, file.size() - 4);
+            GraphicsManager::GetInstance()->GetIGraphics()->LoadModel(file);
+	}
+
+
+	files.clear();
+	FileManager::GetInstance().GetFilesInDirectory(files, GetFile("", TEXTURE_ROOT));
+
+	for (auto file : files)
+	{
+		GraphicsManager::GetInstance()->GetIGraphics()->LoadTexture(file);
+	}
 
 	/*	AUDIO RELATED SHIT GOES HERE	*/
 	m_AudioManager = AudioManager::GetInstance();
