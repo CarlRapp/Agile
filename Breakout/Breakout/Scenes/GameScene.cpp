@@ -184,6 +184,7 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+        GraphicsManager::GetInstance()->GetICamera()->EnableShake(true);
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	GraphicsManager::GetInstance()->SetSky("BackGroundCube");
 	Reset();

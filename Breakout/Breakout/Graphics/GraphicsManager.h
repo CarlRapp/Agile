@@ -45,7 +45,7 @@ private:
 
 	IGraphics *m_IGraphics;
 	ICamera	*m_ICamera;
-
+        
 public:
 
 	~GraphicsManager(void);
@@ -63,8 +63,6 @@ public:
 	void        AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4 *_worldInverseTranspose, float* _explosion);
 	void        RemoveObject(int _id);
 
-
-
 	void Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height);
 	void Remove2DTexture(int _id);
         void RemovePointLight(int _id);
@@ -75,7 +73,7 @@ public:
 	void		AddParticleEffect(int _id, std::string _effect, VECTOR3 *_pos, VECTOR3 *_vel);
 	void		RemoveParticleEffect(int _id);
 
-	bool        Init3D(DisplayMode _displayMode);
+	bool            Init3D(DisplayMode _displayMode);
 
 	void		ShowMouseCursor(bool _value);
 

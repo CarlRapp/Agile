@@ -51,7 +51,7 @@ public:
 	~GLCamera(void);
 
         void Update(float _dt);
-        void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time);
+        void AddShakeEffect(int _id, float _minOffset, float _maxOffset, float _frequency, float _time);
         void RemoveShake(int _id);
         
 
