@@ -157,7 +157,7 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 
 		auto position = e->GetComponent<PositionComponent>();
 		GraphicsManager::GetInstance()->AddParticleEffect(GetMemoryID(e), "fire", &position->GetPosition(), 0);
-                GraphicsManager::GetInstance()->GetICamera()->AddShake(GetMemoryID(e), 1.0, 2.5, 50.0, 0.6);
+                GraphicsManager::GetInstance()->GetICamera()->AddShake(GetMemoryID(e), 1.0, 2.0, 50.0, 0.6);
 	}
 
 	if ((flags.OnRemoved & EffectFlags::SCALE_MAX_TO_MIN) == EffectFlags::SCALE_MAX_TO_MIN)
