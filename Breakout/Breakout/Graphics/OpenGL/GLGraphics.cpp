@@ -207,7 +207,7 @@ void GLGraphics::LoadModel(std::string _path)
 
             i += 3;
         }
-        printf("Vertices: %d [Index: %d]\n", i, index);
+        //printf("Vertices: %d [Index: %d]\n", i, index);
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
         m_models[index]->modelName = _path;
