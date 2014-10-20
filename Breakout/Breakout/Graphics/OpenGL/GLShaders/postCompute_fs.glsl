@@ -9,6 +9,5 @@ in vec2 texCoord;
 void main() 
 {
     vec4 c = texture(srcTex, texCoord);
-    //color = c;
     gl_FragColor = c;
 }

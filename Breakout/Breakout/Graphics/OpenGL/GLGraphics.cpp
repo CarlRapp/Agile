@@ -31,6 +31,8 @@ PFNGLDISPATCHCOMPUTEINDIRECTPROC __glewDispatchComputeIndirect = NULL;
 
 PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC __glewDispatchComputeGroupSizeARB = NULL;
 
+//unsigned char m_pixels[512*512] = {0};
+
 static GLboolean _glewInit_GL_ARB_compute_shader(GLEW_CONTEXT_ARG_DEF_INIT) {
     GLboolean r = GL_FALSE;
 
@@ -135,9 +137,6 @@ bool GLGraphics::Init3D(DisplayMode _displayMode) {
     Shader* a = new Shader("postCompute_vs.glsl", GL_VERTEX_SHADER);
     Shader* b = new Shader("postCompute_fs.glsl", GL_FRAGMENT_SHADER);
 
-    //Shader* a = new Shader("standard_vertex.glsl",GL_VERTEX_SHADER);
-    //Shader* b = new Shader("standard_fragment.glsl",GL_FRAGMENT_SHADER);
-    //Shader* c = new Shader("explode_geometry.glsl",GL_GEOMETRY_SHADER);
     Shader* c = new Shader("Compute.glsl", GL_COMPUTE_SHADER);
 
     glAttachShader(m_program, a->GetShaderID());
@@ -214,9 +213,9 @@ bool GLGraphics::Init3D(DisplayMode _displayMode) {
     //glUniform1i(m_computeTexture, 0);
     glUseProgram(m_computeProgram);
 
-    int loc = glGetUniformLocation(m_computeProgram, "destTex[0]");
-
-    glUniform1i(loc, 0);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "destTex[0]"), 0);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "m_objectTex"), 1);
+    
     glUseProgram(0);
 
     //-----------------------------------------------------------------------------------------
@@ -242,9 +241,10 @@ bool GLGraphics::Init3D(DisplayMode _displayMode) {
     return true;
 }
 
-void GLGraphics::GenTexture() {
+void GLGraphics::GenTexture() 
+{
     m_computeTexture = 0;
-
+    
     glGenTextures(1, &m_computeTexture);
 
     glActiveTexture(GL_TEXTURE0);
@@ -252,7 +252,7 @@ void GLGraphics::GenTexture() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_screenWidth, m_screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
-
+    
     check_gl_error();
 }
 
@@ -277,7 +277,18 @@ void GLGraphics::LoadModel(std::string _path) {
         float* normalArray = new float[floatCount];
         float* texCoordArray = new float[(int) (*groupIt)->triangles->size() * 3 * 2];
 
-check_gl_error();
+        float* minimum = new float[3];
+        float* maximum = new float[3];
+        
+        for(int i = 0; i < 3;i++)
+        {
+            minimum[i] = 0;
+            maximum[i] = 0;
+        }
+        
+        
+        
+        
         int i = 0;
         for (std::vector<Triangle>::iterator triangleIt = (*groupIt)->triangles->begin(); triangleIt != (*groupIt)->triangles->end(); ++triangleIt) {
             //Dest,Source,Size
@@ -299,23 +310,35 @@ check_gl_error();
 
             texCoordArray[2 * (i + 2) + 1] = -texCoordArray[2 * (i + 2) + 1];
 
-            //memcpy(&normalArray[3*(i+2)], &(*triangleIt).Vertices[2].Texture, sizeof(glm::vec3));
+
+            if(vertexArray[3 * i] < minimum[0])
+                minimum[0] = vertexArray[3 * i];
+            if(vertexArray[3 * (i + 1)] < minimum[1])
+                minimum[1] = vertexArray[3 * (i + 1)];
+            if(vertexArray[3 * (i + 2)] < minimum[2])
+                minimum[2] = vertexArray[3 * (i + 2)];
+            
+            if(vertexArray[3 * i] > maximum[0])
+                maximum[0] = vertexArray[3 * i];
+            if(vertexArray[3 * (i + 1)] > maximum[1])
+                maximum[1] = vertexArray[3 * (i + 1)];
+            if(vertexArray[3 * (i + 2)] > maximum[2])
+                maximum[2] = vertexArray[3 * (i + 2)];
+            
 
             i += 3;
         }
         printf("Vertices: %d [Index: %d]\n", i, index);
+        printf("Bounding box | MAX: %f,%f,%f | MIN: %f,%f,%f \n",maximum[0],maximum[1],maximum[2],minimum[0],minimum[1],minimum[2]);
         m_models[index]->vertices = i;
         m_models[index]->name = _path;
-check_gl_error();
-        if ((*groupIt)->material) {
-            m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE2);
+
+        if ((*groupIt)->material) 
+        {
+            m_texManager.Load2DTexture((*groupIt)->material->Map_Kd, GL_TEXTURE1);
             m_models[index]->texHandle = m_texManager.GetTexture((*groupIt)->material->Map_Kd);
             //  printf("MATERIAL exists, texture: %s \n", (*groupIt)->material->Map_Kd.c_str());
-        } else {
-            m_texManager.Load2DTexture("whitePixel.png", GL_TEXTURE2);
-            m_models[index]->texHandle = m_texManager.GetTexture("whitePixel.png");
-            // printf("NO MATERIAL FILE: using %s \n", "whitePixel.png");
-        }
+        } 
 
         m_models[index]->vertexArray = vertexArray;
         m_models[index]->normalArray = normalArray;
@@ -338,124 +361,18 @@ check_gl_error();
         if (location >= 0)
             glUniform2fv(location, 132, m_models[index]->texCoordArray);
         check_gl_error();
-        //SetUniformV(m_computeProgram, positionStr, m_models[index]->vertexArray);
-
-        //        int i = 0;
-
-        //        m_computeModels.insert(pair<int, LightInfo*>(_id, new LightInfo(_worldPos, _intensity, _color, _range)));
-        //        
-        //        for(std::map<int,ComputeModelInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it)
-        //	{
-        //            //Light properties
-        //            vec4 LightPosition = vec4(*it->second->Position, 1.0f);	// Light position
-        //            
-        //            //-----Send all the lights values------
-        //            const char* indexStr = std::to_string(i).c_str();   //itoa(i, indexStr, 10);
-        //            char positionStr[25], intensityStr[25], colorStr[25], rangeStr[25];
-        //            strcpy(positionStr, "Lights[");	strcat(positionStr, indexStr);		strcat(positionStr, "].Position");
-        //            strcpy(intensityStr, "Lights[");	strcat(intensityStr, indexStr);		strcat(intensityStr, "].Intensity");
-        //            strcpy(colorStr, "Lights[");	strcat(colorStr, indexStr);		strcat(colorStr, "].Color");
-        //            strcpy(rangeStr, "Lights[");	strcat(rangeStr, indexStr);		strcat(rangeStr, "].Range");
-        //
-        //            SetUniformV(m_program, positionStr, LightPosition);
-        //            SetUniformV(m_program, intensityStr, *it->second->Intensity);
-        //            SetUniformV(m_program, colorStr, *it->second->Color);
-        //            SetUniformV(m_program, rangeStr, *it->second->Range);
-        //            
-        //            i++;
-        //	}
-        //        m_testMatrices.push_back(glm::mat4(1.0f));
-        //        
-        //        int pos             = glGetAttribLocation(m_computeProgram, "m_position");
-        //        int pad1            = glGetAttribLocation(m_computeProgram, "pad1");
-        //        int normal          = glGetAttribLocation(m_computeProgram, "m_normal");
-        //        int explosion       = glGetAttribLocation(m_computeProgram, "m_explosion");
-        //        int color           = glGetAttribLocation(m_computeProgram, "m_color");
-        //        int matrix          = glGetAttribLocation(m_computeProgram, "m_matModel");
-        //        int texCoord        = glGetAttribLocation(m_computeProgram, "m_texCoord");
-        //        
-        //	glGenBuffers(6, m_models[index]->buffers);
-        // 
-        //	// "Bind" (switch focus to) first buffer
-        //	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
-        //	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_READ);
-        //        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]); 
-        //        //glBufferData(GL_ARRAY_BUFFER, sizeof(float), &padData, GL_DYNAMIC_DRAW);
-        //        
-        //	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
-        //	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_READ);
-        //        
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]); 
-        //        glBufferData(GL_ARRAY_BUFFER, sizeof(float), NULL, GL_DYNAMIC_DRAW);
-        //
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        //        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
-        //
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
-        //        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
-        //        
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]); 
-        //        glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
-        //        
-        //	// create 1 VAO
-        //	glGenVertexArrays(1, &m_models[index]->bufferVAOID);
-        //	glBindVertexArray(m_models[index]->bufferVAOID);
-        //        
-        //	// enable "vertex attribute arrays"     
-        //	glEnableVertexAttribArray(pos);         // position     0
-        //        glEnableVertexAttribArray(pos+1);       // pad          1
-        //	glEnableVertexAttribArray(normal);      // normal       2
-        //        glEnableVertexAttribArray(explosion);    // explosion   3
-        //        glEnableVertexAttribArray(color);       // color        4
-        //
-        //        glEnableVertexAttribArray(matrix);      //matrix        5
-        //        glEnableVertexAttribArray(matrix+1);    //matrix        6
-        //        glEnableVertexAttribArray(matrix+2);    //matrix        7
-        //        glEnableVertexAttribArray(matrix+3);    //matrix        8
-        //        
-        //        glEnableVertexAttribArray(texCoord);    //matrix        9
-        //
-        //	// vertex
-        //	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
-        //	glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        //
-        //        //pad
-        //        //glBindBuffer(GL_ARRAY_BUFFER, VBOHandles[1]);
-        //        glVertexAttribPointer(pos+1, 1, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec3)));
-        //
-        //        //normal
-        //	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
-        //	glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-        //        
-        //        //explosion
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]);
-        //        glVertexAttribPointer(explosion, 1, GL_FLOAT, GL_FALSE, 0, NULL);
-        //        glVertexAttribDivisor(explosion, 1);
-        //
-        //        //color
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        //        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-        //        glVertexAttribDivisor(color, 1);
-        //        
-        //
-        //        //model matrix
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
-        //        glVertexAttribPointer(matrix, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 0));
-        //        glVertexAttribDivisor(matrix, 1);
-        //        glVertexAttribPointer(matrix+1, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 1));
-        //        glVertexAttribDivisor(matrix+1, 1);
-        //        glVertexAttribPointer(matrix+2, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 2));
-        //        glVertexAttribDivisor(matrix+2, 1);
-        //        glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
-        //        glVertexAttribDivisor(matrix+3, 1);
-        //        
-        //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]);
-        //	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        //
-        //
-        //        glBindVertexArray(0); // disable VAO
-
+        
+        location = glGetUniformLocation(m_computeProgram, "Models[0].maximum");
+        if (location >= 0)
+            glUniform3fv(location, 1, maximum);
+        check_gl_error();
+        
+        location = glGetUniformLocation(m_computeProgram, "Models[0].minimum");
+        if (location >= 0)
+            glUniform3fv(location, 1, minimum);
+        check_gl_error();
     }
+    
     glUseProgram(0);
 
     check_gl_error();
@@ -469,18 +386,19 @@ check_gl_error();
 }
 
 void GLGraphics::LoadTexture(std::string _path) {
-    m_texManager.Load2DTexture(_path, GL_TEXTURE2);
+    m_texManager.Load2DTexture(_path, GL_TEXTURE1);
 }
 
-void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height) {
+void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height) 
+{
     if (m_TextureInstances.find(_id) != m_TextureInstances.end()) {
         return;
     }
     glUseProgram(m_shader2Dprogram);
     m_texManager.Load2DTexture(_path, GL_TEXTURE2);
-    m_TextureInstances.insert(pair<int, TextureInfo*>(_id, new TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
+    //m_TextureInstances.insert(pair<int, TextureInfo*>(_id, new TextureInfo(m_texManager.GetTexture(_path), _x, _y, _width, _height)));
 
-    if (m_TextureInstances.size() <= 1) {
+    /*if (m_TextureInstances.size() <= 1) {
         //buffra datan till 2D shader
         float positionData[] = {
             -1.0, -1.0,
@@ -539,7 +457,7 @@ void GLGraphics::Add2DTexture(int _id, std::string _path, float *_x, float *_y, 
         if (err)
             std::cout << "\033[31m with error: " << err;
         std::cout << "\n\033[30m";
-    }
+    }*/
 }
 
 void GLGraphics::Remove2DTexture(int _id) {
@@ -585,6 +503,7 @@ void GLGraphics::Free() {
     glDeleteVertexArrays(1, &m_2DVAO);
 
     glDeleteProgram(m_program);
+    glDeleteProgram(m_computeProgram);
 
     for (int i = 0; i < m_letters.size(); i++) {
         m_letters.pop_back();
@@ -657,32 +576,24 @@ void GLGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* 
 }
 
 void GLGraphics::RenderCompute() {
-    t += 5.0f;
+    t += 0.01f;
     
     glUseProgram(m_computeProgram);
 
-//    for(int i=0; i< m_models.size();i++)
-//    {
-//        for(int j=0; j < m_models[i]->instances.size();j++)
-//        {
-//            glm::mat4* temp1;
-//            
-////            if(m_models[i]->instances[j]->world != NULL)
-////            temp1 = m_models[i]->instances[j]->world;
-////            else
-//                temp1 = &m_testMatrices[0];
-//
-//            std::string matrixStr = "Models[0].worldMatrix";
-//
-//            GLint projection = glGetUniformLocation(m_computeProgram, matrixStr.c_str());
-//            glUniformMatrix4fv(projection, 1, GL_FALSE, glm::value_ptr(*temp1));
-//        }
-//    }
-    
     glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
-
+ 
+    if(m_models.size() > 0)
+    if(m_models[0]->texHandle)
+    {
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, m_models[0]->texHandle);
+    }
+    
     glDispatchCompute(32, 32, 1);
     glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+    
+    glActiveTexture(0);
+    glBindTexture(GL_TEXTURE_2D,0);
 
     glUseProgram(m_program);
     glBindVertexArray(m_computeQuad);
@@ -796,9 +707,13 @@ void GLGraphics::RemovePointLight(int _id) {
 
 void GLGraphics::UpdateLights() {
     int i = 0;
-    for (std::map<int, LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it) {
+    
+    vec4 rotation = vec4(-sin(t),1,cos(t),1);
+    
+    for (std::map<int, LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it) 
+    {
         //Light properties
-        vec4 LightPosition = vec4(*it->second->Position, 1.0f); // Light position
+        vec4 LightPosition = rotation*vec4((*it->second->Position), 1.0f); // Light position
 
         //-----Send all the lights values------
         const char* indexStr = std::to_string(i).c_str(); //itoa(i, indexStr, 10);

@@ -2,13 +2,12 @@
 
 writeonly uniform image2D destTex;
 
-uniform vec3 m_testLight;
+uniform sampler2D   m_objectTex;
+uniform mat4        m_matView;
+uniform mat4        m_matProj;
+uniform vec3        camPos;
 
-varying mat4 modelView;
-
-uniform sampler2D m_standardTex;
-
-const int nrOfLights = 2;
+layout (local_size_x = 16, local_size_y = 16) in;
 
 struct LightInfo
 {
@@ -17,7 +16,8 @@ struct LightInfo
 	vec3 Color;
 	float Range;
 };
-uniform LightInfo Lights[nrOfLights];
+const int nrOfLights = 10;
+uniform LightInfo   Lights[nrOfLights];
 
 struct MaterialInfo{
 	vec3 Ka;			// Ambient reflectivity
@@ -30,30 +30,18 @@ MaterialInfo Material;
 struct Model
 {
     vec3[132]    pos;
-    //vec4[132]    color;
     vec3[132]    normal;
     vec2[132]    texCoord;
+    vec3         minimum;
+    vec3         maximum;
 };
+uniform Model       Models[1];
 
-uniform Model Models[5];
-
-uniform mat4 m_matView;
-uniform mat4 m_matProj;
-
-layout (local_size_x = 16, local_size_y = 16) in;
 
 struct Sphere
 {
     vec4    position;
     float   radius;
-};
-
-struct SplitRay
-{
-    vec3    origin;
-    vec3    dir;
-    uint    bounce;
-    vec4    color;
 };
 
 struct Ray
@@ -67,11 +55,8 @@ struct Ray
 struct Vertex
 {
     vec4    worldPos;
-    vec4    color;
     vec3    normal;
-    float   pad;
     vec2    texCoord;
-
 };
 
 struct Triangle
@@ -81,140 +66,200 @@ struct Triangle
     Vertex vx3;
 };
 
-struct BounceData
-{
-    float t;
-    vec4 color;
-};
-
 //VARIABLES
-float scale = 10;
-mat4 modelMatrix[2] =   {
-                                mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1),
-                                mat4(scale,0,0,0,0,scale,0,0,0,0,scale,0,0,0,0,1)
+const mat4 modelMatrix[2] = {
+                                    mat4(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1),
+                                    mat4(10,0,0,0,0,10,0,0,0,0,10,0,0,0,0,1)
+                            };
+Sphere spheres[10]  =   {
+                            {vec4(0,0,0,0),0.3},
+                            //LIGHTS
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
+                            {vec4(0,0,0,0),0.1},
                         };
+
+                            
 
 
 const float widthHalf = 256.0;
 const float heightHalf = 256.0;
-uniform vec3 camPos;
-const vec3 ambient = vec3(0.0,0.0,0.0);
+
 const int BOUNCE_LIMIT = 2;
 
 //METHODS
 vec4 traceColor(Vertex vertex);
 float intersect(Ray r, Triangle t);
 vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vertex);
-vec4 traceColor(Vertex vertex);
-Ray trace(Ray ray);
+vec4 trace(Ray ray);
+vec4 hitSphere(Sphere s, Ray r);
+bool hitBox(Ray r, vec3 _max, vec3 _min, mat4 _scale);
+float shadowTrace(Vertex hit);
 
 void main() 
 {
     uint x = gl_GlobalInvocationID.x;
     uint y = gl_GlobalInvocationID.y;
 
-    //send ray from camera eye (camPos) with directions x,y,1
+    //send ray from camera eye (camPos) with directions in worldspace
     vec4 rayPos;
-
-    //
-    //
-    //vs_out.ray_direction = (viewmat * vec4(pos.xyz * direction_scale * vec3(1.0, aspect, 2.0) + direction_bias, 0.0)).xyz;
-    //camPos = vec3(m_matView[3][0],m_matView[3][1],m_matView[3][2]);
 
     rayPos.x    = x/widthHalf -1.0;
     rayPos.y    = y/heightHalf -1.0;
     rayPos.z    = 1;
     rayPos.w    = 1;
     
-    rayPos *= m_matProj;//*inverse(m_matProj)*rayPos;
-    //rayPos /= rayPos.w;
+    rayPos *= m_matProj;
     rayPos *= m_matView;
-    //rayPos = vec4(camPos - rayPos.xyz,1);
 
     vec3 rayDir = normalize(vec3(rayPos));
 
-
     Ray ray = {camPos, rayDir,0,vec4(0,0,0,0)};   
 
-    Ray rayOut = trace(ray);
-    
-    vec4 color = vec4(0,0,0,1);
-    
-    color += rayOut.color;
+    spheres[0].position.xyz = camPos;
 
-    //color = vec4(camPos,1);
-
-    /*if(rayOut.isSplit)
+    for(int i =2; i < 9;i++)
     {
-        Ray splitRay = {rayOut.split.origin,rayOut.split.dir,0,rayOut.split.color,sr,true};
+        spheres[i].position = Lights[i].Position;
+    }
 
-        color += trace(splitRay).color;
-    }*/
+    vec4 color = trace(ray);
 
-
-
-   // imageStore(destTex, m_matProj*m_matView*vec4(x,y,1,1)ivec2(x,y), color);
+    //barrier();
     imageStore(destTex, ivec2(x,y), color);
 }
 
-Ray trace(Ray ray)
+vec4 trace(Ray ray)
 {
-    uint i=0;
-    uint j=0;
-    float t = 10000;
+    bool invert = false;
 
-    Vertex hit;
-
-    for(int k=0; ray.bounce < BOUNCE_LIMIT;ray.bounce++)
+    for(uint k=0; ray.bounce < BOUNCE_LIMIT;ray.bounce++)
     {
-        for(j=0; j < 2;j++)
+        Vertex hit;
+        Triangle saveTri;
+        float   saveT=10000;
+
+        //MODELS
+        for(uint j=0; j < 2;j++)
         {
-            for(i=0; i < 132;i +=3)
+            //testa mot minmax AABB
+            if(hitBox(ray,Models[0].maximum,Models[0].minimum,modelMatrix[j]))
             {
-                Triangle tri;
-                Vertex vx1;
-                vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
-                vx1.normal = Models[0].normal[i];
-                vx1.texCoord = Models[0].texCoord[i];
-
-                Vertex vx2;
-                vx2.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+1],1);
-                vx2.normal = Models[0].normal[i+1];
-                vx2.texCoord = Models[0].texCoord[i+1];
-
-                Vertex vx3;
-                vx3.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+2],1);
-                vx3.normal = Models[0].normal[i+2];
-                vx3.texCoord = Models[0].texCoord[i+2];
-
-                tri.vx1 = vx1;
-                tri.vx2 = vx2;
-                tri.vx3 = vx3;
-
-                float r = intersect(ray,tri);
-
-                if(r > 0 && r < t)
+                for(uint i=0; i < 132;i +=3)
                 {
-                    t = r;
-                    hit.worldPos = vec4(vec3(ray.dir*t+ray.origin),1);
-                    hit.normal = vx1.normal;
-                    
+                    Triangle tri;
+                    Vertex vx1;
+                    vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
+                    vx1.normal = Models[0].normal[i];
+                    vx1.texCoord = Models[0].texCoord[i];
+
+                    Vertex vx2;
+                    vx2.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+1],1);
+                    vx2.normal = Models[0].normal[i+1];
+                    vx2.texCoord = Models[0].texCoord[i+1];
+
+                    Vertex vx3;
+                    vx3.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+2],1);
+                    vx3.normal = Models[0].normal[i+2];
+                    vx3.texCoord = Models[0].texCoord[i+2];
+
+                    if(invert)
+                    {
+                        vx1.normal = -vx1.normal;
+                        vx2.normal = -vx2.normal;
+                        vx3.normal = -vx3.normal;
+                    }
+
+                    tri.vx1 = vx1;
+                    tri.vx2 = vx2;
+                    tri.vx3 = vx3;
+
+                    float r = intersect(ray,tri);
+
+                    if(r > 0.01 && r < saveT)
+                    {
+                        saveT = r;
+                        saveTri = tri;
+
+                        hit.worldPos = vec4(ray.dir*saveT+ray.origin,1);
+                        hit.normal = saveTri.vx1.normal;
+
+                        //Kör cross på alla för att få ut totala arean, därefter ta fram 3 subtrianglar och jämför deras areor med totala.
+                        //Då får man en ratio och vet hur mycket av varje texcoord som ska användas.
+                        //http://answers.unity3d.com/questions/383804/calculate-uv-coordinates-of-3d-point-on-plane-of-m.html
+                        float a = 1 / length(cross(saveTri.vx1.worldPos.xyz-saveTri.vx2.worldPos.xyz, saveTri.vx1.worldPos.xyz-saveTri.vx3.worldPos.xyz)); 
+                        float a1 = length(cross(saveTri.vx2.worldPos.xyz-hit.worldPos.xyz, saveTri.vx3.worldPos.xyz-hit.worldPos.xyz)) * a; 
+                        float a2 = length(cross(saveTri.vx3.worldPos.xyz-hit.worldPos.xyz, saveTri.vx1.worldPos.xyz-hit.worldPos.xyz)) * a; 
+                        float a3 = length(cross(saveTri.vx1.worldPos.xyz-hit.worldPos.xyz, saveTri.vx2.worldPos.xyz-hit.worldPos.xyz)) * a; 
+
+                        hit.texCoord = saveTri.vx1.texCoord * a1 + saveTri.vx2.texCoord * a2 + saveTri.vx3.texCoord * a3;
+
+                    }
                 }
+            }
+            //fulhax för att man befinner sig i model[1], stor kub
+            invert = true; 
+        }
+
+        //SPHERES
+        for(int j=0;j < 10;j++)
+        {
+            vec4 sData = hitSphere(spheres[j],ray);
+
+            if(sData.w > 0.01 && sData.w < saveT)
+            {
+                saveT = sData.w;
+                hit.worldPos = vec4(vec3(ray.dir*sData.w+ray.origin),1);
+                hit.normal = sData.xyz;
             }
         }
 
-        if(t > 0 && t != 10000)
+        if(saveT > 0 && saveT != 10000)
         {
             ray.color += traceColor(hit);
+            ray.color *= shadowTrace(hit);
 
             ray.origin = hit.worldPos.xyz;
             ray.dir = reflect(ray.dir,hit.normal);
         }
-        else
-            break;
     }
 
-    return ray; 
+    return ray.color; 
+}
+
+//http://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
+vec4 hitSphere(Sphere s,Ray r)
+{
+    vec3    C = s.position.xyz;
+    vec3    D = r.dir.xyz;
+    vec3    O = r.origin.xyz;
+    float   R = s.radius;
+
+    float root = dot(D,(O-C))*dot(D,(O-C)) - pow(length(O - C),2)+pow(R,2);
+
+    //no solution exists
+    if(root < 0)
+        return vec4(0,0,0,0);
+
+    float x = (sqrt(root));
+
+    float a = -dot(D,(O-C));
+
+    float d1 = a + x;
+    float d2 = a - x;
+
+    //pick closest intersection
+    float t = min(d1,d2);
+
+    vec3 normal= ((O+D*t)-(C))/R;
+
+    return vec4(normal,t);
 }
 
 vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vertex) 
@@ -244,7 +289,7 @@ vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vert
     if( sDotN > 0.0 )
             specular = vec3(Lights[index].Intensity.z) * Lights[index].Color * Ks * pow( max( dot(h,v), 0.0 ), Material.Shininess ) * strength;
 
-    return vec3(diffuse +specular+ ambient);
+    return vec3(diffuse +specular);
 }
 
 vec4 traceColor(Vertex vertex)
@@ -255,15 +300,16 @@ vec4 traceColor(Vertex vertex)
     {
         float lightDist = abs(length(vertex.worldPos.xyz - vec3(Lights[index].Position)));
         float lightStrength = 0;
-        //if( lightDist < Lights[index].Range )
-			lightStrength = 1.0;//-(lightDist / Lights[index].Range);
+        if( lightDist < Lights[index].Range )
+			lightStrength = 1.0-(lightDist / Lights[index].Range);
 
 	diffAndSpec += phongModelDiffAndSpec(index, vec3(Lights[index].Position), lightStrength,vertex);
     }
+    vec4 texColor = vec4(1,1,1,1);
 
-    //vec4 texColor = texture( m_standardTex, vertex.texCoord );
+    texColor = texture( m_objectTex, vertex.texCoord );
     
-    return vec4(diffAndSpec + ambient, 1.0);// * texColor;
+    return vec4(diffAndSpec, 1.0) * texColor;
 }
 
 float intersect(Ray ray, Triangle tri)
@@ -277,35 +323,148 @@ float intersect(Ray ray, Triangle tri)
     vec3 q = cross(ray.dir.xyz, e2);
     float a = dot(e1, q);
 
-    if(a > -0.000001 && a < 0.000001)
+    //parallel
+    //if(a > -0.1 && a < 0.1)
+    if(a ==0)
     {
         return 0;
     }
 
+    //instead of 3 divide with a, save f to use multiplication
     float f = 1.0 / a;
+
     vec3 s = ray.origin.xyz - vertex1.worldPos.xyz;
     float u = f*(dot(s, q));
 
-    if(u < 0 || u > 1.0f)
+    //side
+    if(u < 0 || u > 1.0)
     {
         return 0;
     }
     vec3 r = cross(s, e1);
     float v = f*(dot(ray.dir.xyz, r));
 
+    //side
     if(v < 0 || (u + v) > 1) 
     {
         return 0;
     }
     float t = f*(dot(e2, r));
 
+    //behind
     if(t < 0)
     {
         return 0;
     }
 
     return t;
-    //return vec4(vertex1.normal,1);
 } 
 
+//http://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
+bool hitBox(Ray r, vec3 _max, vec3 _min, mat4 scale)
+{
+    _min *= scale[0][0];//pow(scale[0][0],3); //(scale*scale*vec4(_min,1)).xyz;
+    _max *= scale[0][0];//pow(scale[0][0],3); //(scale*scale*vec4(_max,1)).xyz;
 
+    // r.dir is unit direction vector of ray
+    vec3 dirfrac;
+    dirfrac.x = 1.0f / r.dir.x;
+    dirfrac.y = 1.0f / r.dir.y;
+    dirfrac.z = 1.0f / r.dir.z;
+    // lb is the corner of AABB with minimal coordinates - left bottom, rt is maximal corner
+    // r.org is origin of ray
+    float t1 = (_min.x - r.origin.x)*dirfrac.x;
+    float t2 = (_max.x - r.origin.x)*dirfrac.x;
+    float t3 = (_min.y - r.origin.y)*dirfrac.y;
+    float t4 = (_max.y - r.origin.y)*dirfrac.y;
+    float t5 = (_min.z - r.origin.z)*dirfrac.z;
+    float t6 = (_max.z - r.origin.z)*dirfrac.z;
+
+    float tmin = max(max(min(t1, t2), min(t3, t4)), min(t5, t6));
+    float tmax = min(min(max(t1, t2), max(t3, t4)), max(t5, t6));
+
+    // if tmax < 0, ray (line) is intersecting AABB, but whole AABB is behing us
+    float t = 0;
+    if (tmax < 0)
+    {
+        t = tmax;
+        return false;
+    }
+
+    // if tmin > tmax, ray doesn't intersect AABB
+    if (tmin > tmax)
+    {
+        t = tmax;
+        return false;
+    }
+
+    t = tmin;
+    return true;
+}
+
+float shadowTrace(Vertex hit)
+{
+    Ray ray;
+
+    ray.origin = hit.worldPos.xyz;
+    ray.color = vec4(0,0,0,0);
+    ray.dir = normalize(Lights[0].Position.xyz-ray.origin);
+
+    //MODELS
+    for(uint j=0; j < 2;j++)
+    {
+        //testa mot minmax AABB
+        if(hitBox(ray,Models[0].maximum,Models[0].minimum,modelMatrix[j]))
+        {
+            for(uint i=0; i < 132;i +=3)
+            {
+                Triangle tri;
+                Vertex vx1;
+                vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
+
+                Vertex vx2;
+                vx2.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+1],1);
+
+                Vertex vx3;
+                vx3.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+2],1);
+
+                tri.vx1 = vx1;
+                tri.vx2 = vx2;
+                tri.vx3 = vx3;
+
+                float r = intersect(ray,tri);
+
+                if(r > 0.1)
+                {
+                    if(distance(ray.dir*r+ray.origin,ray.origin) < distance(ray.origin,Lights[0].Position.xyz))
+                    {
+                        return 0.7;
+                    }
+                }
+            }
+        }
+    }
+
+    //SPHERES
+    for(int j=0;j < 10;j++)
+    {
+        vec4 sData = hitSphere(spheres[j],ray);
+
+        if(sData.w > 0.01)
+        {
+            if(distance(ray.dir*sData.w+ray.origin,ray.origin) < distance(ray.origin,Lights[0].Position.xyz))
+            {
+                /*float lightDist = abs(length(ray.origin - vec3(Lights[0].Position)));
+                float lightStrength = 0;
+                if( lightDist < Lights[0].Range )
+                    lightStrength = 1.0-(lightDist / Lights[0].Range);
+
+                ray.color.xyz -= vec3(0.1,0.1,0.1);//;phongModelDiffAndSpec(0, vec3(Lights[0].Position), lightStrength,hit);
+*/
+                return 0.7;
+            }
+        }
+    }
+
+    return 1.0; 
+}
