@@ -114,7 +114,9 @@ void GameScene::Update(float _dt)
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
 	//	this->Reset();
-
+	
+    if(!m_gameOver)
+    {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('c') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
@@ -125,7 +127,24 @@ void GameScene::Update(float _dt)
 		GraphicsManager::GetInstance()->GetICamera()->Move(50 * _dt);
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
-
+    }
+//<<<<<<< HEAD
+//    }
+//	counter += _dt;
+//
+//	if (counter > 1.0f/(m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_level+1))
+//	{
+//		Entity* e;
+//		e = m_world->CreateEntity();
+//		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
+//		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
+//		m_world->AddEntity(e);
+//		counter = 0;
+//			
+//	}
+//=======
+//
+//>>>>>>> 39feac0627b0005c7f7695fcb9ac773eebe16341
 
 	m_world->Update(_dt);
 
@@ -738,7 +757,6 @@ void GameScene::UpdateInputString()
 {
     char c = 0;
 
-    
     for(int i=32; i < 122;i++)
     {
         if(InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(i)== InputState::Pressed)
