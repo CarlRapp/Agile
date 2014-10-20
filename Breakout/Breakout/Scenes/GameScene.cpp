@@ -140,10 +140,11 @@ void GameScene::Update(float _dt)
             AskPlayerName();
 	}
         
-        if(m_gameOver && !m_scoreSubmitted)
-        {
-            UpdateInputString();
-        }
+    if(m_gameOver && !m_scoreSubmitted)
+    {
+        UpdateInputString();
+    }
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 void GameScene::UpdateFPS(float _dt)
@@ -166,10 +167,12 @@ void GameScene::OnActive()
 {
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	GraphicsManager::GetInstance()->SetSky("space");
+	GraphicsManager::GetInstance()->GetICamera()->AddShake(1, 2, 4, 30, 3);
 	Reset();
 }
 void GameScene::OnInactive()
 {
+	GraphicsManager::GetInstance()->GetICamera()->RemoveShake(1);
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 	if (m_world)
@@ -201,7 +204,6 @@ void GameScene::Reset()
 	m_world->AddSystem<PhysicsSystem>();
 	m_world->AddSystem<ModelSystem>();
 	m_world->AddSystem<PadCollisionSystem>();
-	//m_world->AddSystem<ProjectileSystem>();
 	m_world->AddSystem<ScoreSystem>();
 	m_world->AddSystem<AudioSystem>();
 	m_world->AddSystem<CollectPowerUpSystem>();
@@ -235,7 +237,7 @@ void GameScene::Reset()
 	rareBlocks->SetPoolChance(10);
 	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
 	blockSystem->AddBlockPool(rareBlocks);
-	blockSystem->ForceSpawn(50);
+	blockSystem->ForceSpawn(10);
 
 	/*	New Implementation	*/
             

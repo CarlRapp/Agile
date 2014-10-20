@@ -111,6 +111,7 @@ void MainMenuScene::OnActive()
         if(i > 10)
             break;
     }
+    
 	
 }
 void MainMenuScene::OnInactive()
@@ -184,9 +185,22 @@ void MainMenuScene::Update(float _dt)
 	else
 		m_Exit->m_color = VECTOR3(0, 1, 0);
 	
-
-
+	m_blockTimer += _dt;
+	if (m_blockTimer > 0.05f)
+	{
+		m_blockTimer = 0.0f;
+		m_world->GetSystem<BlockSpawnSystem>()->ForceSpawn(1);
+	}
+	
 	m_world->Update(_dt);
+//        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
+//	test += _dt * 0.5f;
+//	pos.y = 20;
+//	pos.x = 0 + 100 * sinf(test);
+//	pos.z = 100 * cosf(test);
+//
+//	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 void MainMenuScene::Render(float _dt)
@@ -207,6 +221,7 @@ void MainMenuScene::CreatePlayField()
 	m_world->AddSystem<EffectSystem>();
 	m_world->AddSystem<BlockSpawnSystem>();
 	m_world->AddSystem<BlockSystem>();
+	//m_world->GetSystem<BlockSystem>()->SetSettings(5, 5);
     m_world->AddSystem<TextSystem>();
 
 	BlockSpawnSystem* blockSystem = m_world->GetSystem<BlockSpawnSystem>();
@@ -233,15 +248,6 @@ void MainMenuScene::CreatePlayField()
 	//FPS COUNTER
 	Entity* e;
 
-	e = m_world->CreateEntity();
-	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::BALL);
-	e->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 20 - 10, 40, 0);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 0));
-	e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.8f, 0.8f, 0.8f));
-	
-	e->GetComponent<EffectComponent>()->m_effects.OnAdded = EffectFlags::TRAIL;
-	
-	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);

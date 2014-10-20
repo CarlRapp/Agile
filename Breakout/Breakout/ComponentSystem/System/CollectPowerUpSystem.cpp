@@ -2,6 +2,7 @@
 #include "../Component/CollisionComponent.h"
 #include "PhysicsSystem.h"
 #include "ShootLaserSystem.h"
+#include "BlockSystem.h"
 #include "../World.h"
 
 #include "../EntityFactory.h"
@@ -64,7 +65,6 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 	{
 		m_world->SetBulletTime(true);
 	}
-
 
 	_powerUp->SetState(Entity::SOON_DEAD);
 }
