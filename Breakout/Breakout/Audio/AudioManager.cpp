@@ -46,6 +46,8 @@ bool AudioManager::PlayMusic(const char* _fileName, int _loop)
 
 bool AudioManager::PlaySoundEffect(const char* _fileName, int _loop)
 {
+	if (_fileName == "slowdownDown.wav")
+		int hest = 0;
 
 	if (!m_audio->PlaySoundEffect(GetFile(_fileName,AUDIO_ROOT).c_str(), _loop))
 		return false;

@@ -7,6 +7,7 @@
 #include "../Component/LaserComponent.h"
 #include "../Component/BallComponent.h"
 #include "../Component/BulletTimeComponent.h"
+#include "../Component/ExtraLifeComponent.h"
 #include "../../Audio/AudioManager.h"
 SpawnPowerUpSystem::SpawnPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<BlockComponent>(), _world)
@@ -28,7 +29,7 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 
 	if (spawnPowerUp <= 2)
 	{
-		spawnPowerUp = rand() % 2;
+		spawnPowerUp = rand() % 4;
 		Entity* _newPowerUp = 0;
 		switch (spawnPowerUp)
 		{
@@ -38,6 +39,10 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 		case 1:
 			_newPowerUp = CreatePowerUp(MULTIBALL);
 			break;
+		case 2:
+			_newPowerUp = CreatePowerUp(BULLETTIME);
+		case 3:
+			_newPowerUp = CreatePowerUp(EXTRALIFE);
 		}
 
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
@@ -70,6 +75,11 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 		break;
 	case SpawnPowerUpSystem::SHOOTLASER:
 		_entity->AddComponent<LaserComponent>();
+		break;
+	case SpawnPowerUpSystem::BULLETTIME:
+		_entity->AddComponent<BulletTimeComponent>();
+	case SpawnPowerUpSystem::EXTRALIFE:
+		_entity->AddComponent<ExtraLifeComponent>();
 		break;
 	default:
 		break;
