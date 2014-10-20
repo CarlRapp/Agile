@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
 
 	files.clear();
-	FileManager::GetInstance().GetFilesInDirectory(files, TEXTURE_ROOT);
+	FileManager::GetInstance().GetFilesInDirectory(files, GetFile("", TEXTURE_ROOT));
 
 	for (auto file : files)
 	{

@@ -12,6 +12,8 @@
 #include "../Component/MultiBallComponent.h"
 #include "../Component/LaserComponent.h"
 #include "../Component/BulletTimeComponent.h"
+#include "../Component/ExtraLifeComponent.h"
+#include "../../Audio/AudioManager.h"
 
 CollectPowerUpSystem::CollectPowerUpSystem(World* _world)
 : Base(ComponentFilter().Requires<CollisionComponent>(), _world)
@@ -50,6 +52,7 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 	auto isMultiBall	= _powerUp->GetComponent<MultiBallComponent>();
 	auto isLaser		= _powerUp->GetComponent<LaserComponent>();
 	auto isBulletTime	= _powerUp->GetComponent<BulletTimeComponent>();
+	auto isExtraLife = _powerUp->GetComponent<ExtraLifeComponent>();
 
 	if (isMultiBall)
 		SpawnMultiBalls();
@@ -63,7 +66,14 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 	}
 	else if (isBulletTime)
 	{
+		AudioManager::GetInstance()->PlaySoundEffect("slowdownDown.wav");
 		m_world->SetBulletTime(true);
+	}
+	else if (isExtraLife)
+	{
+		auto players = m_world->GetEntities<PlayerComponent>();
+		if (players)
+			players->at(0)->GetComponent<LifeComponent>()->m_noLifes++;
 	}
 
 	_powerUp->SetState(Entity::SOON_DEAD);
@@ -75,6 +85,10 @@ void CollectPowerUpSystem::SpawnMultiBalls()
 	if (!allBalls)
 		return;
 	int tSize = allBalls->size();
+
+	if (tSize > 4)
+		return;
+
 	for (int i = 0; i < tSize; ++i)
 	{
 		Entity* tBall = allBalls->at(i);

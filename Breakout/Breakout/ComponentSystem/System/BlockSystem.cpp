@@ -311,8 +311,9 @@ void BlockSystem::PushDown(int _x, int _y)
 	{
 		for (auto ball : *activeBalls)
 			ball->SetState(Entity::SOON_DEAD);
-
-		player->at(0)->GetComponent<LifeComponent>()->m_noLifes = 0;
+		auto players = m_world->GetEntities<PlayerComponent>();
+		if (players)
+			players->at(0)->GetComponent<LifeComponent>()->m_noLifes = 0;
 
 
 
