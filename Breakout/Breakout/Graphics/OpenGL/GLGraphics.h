@@ -55,7 +55,7 @@ class GLGraphics : public IGraphics
         
         float MaterialKs, MaterialNs;
         
-        GLuint buffers[6];
+        GLuint buffers[5];
         
         ModelRenderInfo(){}
       
@@ -133,7 +133,11 @@ private:
         std::vector<TextObject> m_textObjects;
         
         float m_textFontSize = 3;
-        
+
+        TextObject m_debugText[1];
+        int m_totalBufferSize = 0;
+        std::string m_debugString = "";
+        int m_maxTotalBufferSize = 0;
         
         int RenderInstanced(ICamera* _camera);
         int RenderStandard();
@@ -142,7 +146,7 @@ private:
         void RenderSkybox(ICamera* _camera);
         void UpdateLights();
         void CameraToRender(ICamera* _camera);
-        //void LoadLetters();
+        void DeleteTextObject(int _i);
         void RenderText(std::string* _text,float* _scale, glm::vec3* _color,float* _x, float* _y,float* effect,bool kill);
 public:
 

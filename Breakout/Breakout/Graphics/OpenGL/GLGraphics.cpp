@@ -121,18 +121,39 @@ bool GLGraphics::Init3D(DisplayMode _displayMode)
     
     m_skyboxProgram.LinkShaderProgram();
 //------------------------------------------------------------------------------------
+//
+//    for(int i=0; i < 1;i++)
+//    {
+//        m_debugText[i].id = 0;
+//        m_debugText[i].kill = false;
+//        m_debugText[i].textCopy = "";
+//        m_debugText[i].effectCopy = 1;
+//        m_debugText[i].xCopy = 0;
+//        m_debugText[i].yCopy = 0.05*(i+1);
+//        m_debugText[i].scaleCopy = 2;
+//        m_debugText[i].colorCopy = VECTOR3(1,1,1);
+//
+//        m_debugText[i].text = &m_debugString;
+//        m_debugText[i].effect = &m_debugText[i].effectCopy;
+//        m_debugText[i].x = &m_debugText[i].xCopy;
+//        m_debugText[i].y = &m_debugText[i].yCopy;
+//        m_debugText[i].scale = &m_debugText[i].scaleCopy;
+//        m_debugText[i].color = &m_debugText[i].colorCopy;
+//
+//        m_textObjects.push_back(m_debugText[i]);
+//    }
 
+    
     glEnable(GL_BLEND);
     glEnable(GL_POINT_SPRITE);
-   
+    glEnable(GL_DEPTH_TEST);
+    
     int err = glGetError();
     
     std::cout << "Initialize 3D Finish";
         if(err)
     std::cout << "\033[31m with error: " << err;
     std::cout << "\n\033[30m";
-
-    glEnable(GL_DEPTH_TEST);
     return true; 
 } 
 
@@ -216,12 +237,12 @@ void GLGraphics::LoadModel(std::string _path)
         int pad1            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad1");
         int normal          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_normal");
         int explosion       = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_explosion");
-        int color           = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_color");
+//        int color           = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_color");
         int matrix          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_matModel");
         int texCoord        = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_texCoord");
         int pad2            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad2");
         
-	glGenBuffers(6, m_models[index]->buffers);
+	glGenBuffers(5, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
@@ -233,13 +254,13 @@ void GLGraphics::LoadModel(std::string _path)
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]); 
         glBufferData(GL_ARRAY_BUFFER, sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
+//        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_STATIC_READ);
         
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]); 
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]); 
         glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
         
 	// create 1 VAO
@@ -251,7 +272,7 @@ void GLGraphics::LoadModel(std::string _path)
         glEnableVertexAttribArray(pos+1);       // pad          1
 	glEnableVertexAttribArray(normal);      // normal       2
         glEnableVertexAttribArray(explosion);   // explosion   3
-        glEnableVertexAttribArray(color);       // color        4
+        //glEnableVertexAttribArray(color);       // color        4
 
         glEnableVertexAttribArray(matrix);      //matrix        5
         glEnableVertexAttribArray(matrix+1);    //matrix        6
@@ -279,13 +300,13 @@ void GLGraphics::LoadModel(std::string _path)
         glVertexAttribDivisor(explosion, 1);
 
         //color
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
-        glVertexAttribDivisor(color, 1);
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
+//        glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
+//        glVertexAttribDivisor(color, 1);
         
 
         //model matrix
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
         glVertexAttribPointer(matrix, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 0));
         glVertexAttribDivisor(matrix, 1);
         glVertexAttribPointer(matrix+1, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 1));
@@ -295,7 +316,7 @@ void GLGraphics::LoadModel(std::string _path)
         glVertexAttribPointer(matrix+3, 4, GL_FLOAT,GL_FALSE,sizeof(glm::mat4),(void *)(sizeof(glm::vec4) * 3));
         glVertexAttribDivisor(matrix+3, 1);
         
-        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[5]);
+        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]);
 	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 
@@ -416,23 +437,68 @@ void GLGraphics::RemoveParticleEffect(int _id)
     m_particleEffects.erase(_id);
 }
 
+void GLGraphics::DeleteTextObject(int _i)
+{
+    SafeDelete(m_textObjects[_i].text);
+    SafeDelete(m_textObjects[_i].scale);
+    SafeDelete(m_textObjects[_i].color);
+    SafeDelete(m_textObjects[_i].x);
+    SafeDelete(m_textObjects[_i].y);
+
+    m_textObjects.erase(m_textObjects.begin() +(_i));
+}
+
 void GLGraphics::Update(float _dt) 
 {
     for(int i = m_textObjects.size()-1; i >= 0; --i)
     {
-        if(m_textObjects[i].text == NULL)
-        {
+        if(m_textObjects[i].kill)
+            m_textObjects[i].effectCopy -= _dt*3;
 
-            if(m_textObjects[i].kill)
-                m_textObjects[i].effectCopy -= _dt*3;
-                //m_textObjects.erase(m_textObjects.begin() +(i));
+        if(m_textObjects[i].effectCopy < -5)
+        {  
+            DeleteTextObject(i);
 
-            if(m_textObjects[i].effectCopy < -10)
-            {  
-                m_textObjects.erase(m_textObjects.begin() +(i));
-            }
         }
     }
+    
+//    m_totalBufferSize = 0;
+//    int vx = 0;
+//    int nm = 0;
+//    int ex = 0;
+//    int ma = 0;
+//    int tc = 0;
+//    for(int i=0; i < m_models.size();i++)
+//    {
+//        int size =0;
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[0]);
+//        glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//        vx+=size;
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[1]);
+//        glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//        nm+=size;
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]);
+//        glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//        ex+=size;
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+//        glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//        ma+=size;
+//        glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[4]);
+//        glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//        tc+=size;
+//    }
+//    glBindBuffer(GL_ARRAY_BUFFER,0);
+//    
+//    m_debugString = "VERTEX: ";
+//    m_debugString += std::to_string(vx/8);
+//    m_debugString += " NORMAL: ";
+//    m_debugString += std::to_string(nm/8);
+//    m_debugString += " EXPLOSION: ";
+//    m_debugString += std::to_string(ex/8);
+//    m_debugString += " MATRIX: ";
+//    m_debugString += std::to_string(ma/8);
+//    m_debugString += " TEXCOORD: ";
+//    m_debugString += std::to_string(tc/8);
 }
 
 void GLGraphics::Resize(int _width, int _height) 
@@ -445,9 +511,9 @@ void GLGraphics::Resize(int _width, int _height)
 void GLGraphics::Clear()
 {
     for(int i = m_models.size()-1; i > -1;i--)
-    {
+    {  
+        glDeleteBuffers(5,&m_models[i]->bufferVAOID);
         m_models[i]->instances.clear();
-        glDeleteBuffers(6,&m_models[i]->bufferVAOID);
         m_models.pop_back();
     }
     
@@ -524,8 +590,6 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
         else
             RenderText(&m_textObjects[i].textCopy,&m_textObjects[i].scaleCopy,&m_textObjects[i].colorCopy,&m_textObjects[i].xCopy,&m_textObjects[i].yCopy,&m_textObjects[i].effectCopy,&m_textObjects[i].kill);
     }
-    
-    
     
     glUseProgram(0);
     
@@ -636,7 +700,7 @@ void GLGraphics::RenderText(std::string* _text,float* _scale, glm::vec3* _color,
         x = ((*_x) + width*i) * (effect);
         glViewport((GLint)(x * m_screenWidth), (GLint)(y * m_screenHeight), (GLsizei)(m_screenWidth * width), (GLsizei)(m_screenHeight * height));
         char c = text.at(i);
-        if(c > 90)
+        if(c > 91)
             reduce += (32);
         
         glUniform1i(letterLocation, c-reduce);
@@ -697,7 +761,7 @@ void GLGraphics::RemoveTextObject(int _id)
                 m_textObjects[i].kill = true;
             }
             else
-                m_textObjects.erase(m_textObjects.begin() +(i));
+                DeleteTextObject(i);
             
             break;
         }
@@ -772,14 +836,13 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
         
         
         //Update matrix buffer//
-        glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[4]);
+        glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[3]);
         glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
         int j = 0;
 
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
         {
             matrices[j] = *insIt->second->world;
-            //PRINTMATRIX(&matrices[j]);
             j++;
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
@@ -893,13 +956,29 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
             glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
             glBufferData(GL_ARRAY_BUFFER, size + sizeof(float), NULL, GL_DYNAMIC_DRAW);
 
+//            printf("%d\n",i);
+//            m_debugText[i].textCopy = m_models[i]->name;
+//            m_debugText[i].textCopy += ": ";
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//            m_debugText[i].textCopy += " - ";
+//            
+
+//            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            glBufferData(GL_ARRAY_BUFFER, size + 4 * sizeof(float), NULL, GL_STATIC_READ);
+            
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//            m_debugText[i].textCopy += " - " ;          
+
             glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
             glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
-            glBufferData(GL_ARRAY_BUFFER, size + 4 * sizeof(float), NULL, GL_STATIC_READ);
-
-            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[4]);
-            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
             glBufferData(GL_ARRAY_BUFFER, size + 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+            
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//                    
 
             glBindBuffer(GL_ARRAY_BUFFER,0);
             break;
@@ -929,6 +1008,40 @@ void GLGraphics::RemoveObject(int _id)
     {
         if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
         {
+            int size = 0;
+            
+            //Resize instance buffers only
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]); 
+            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+            glBufferData(GL_ARRAY_BUFFER, size - sizeof(float), NULL, GL_DYNAMIC_DRAW);
+            
+//            m_debugText[i].textCopy = m_models[i]->name;
+//            m_debugText[i].textCopy += ": ";
+            
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//            m_debugText[i].textCopy += " - ";
+
+//            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            glBufferData(GL_ARRAY_BUFFER, size - 4 * sizeof(float), NULL, GL_STATIC_READ);
+//            
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//            m_debugText[i].textCopy += " - ";
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+            glBufferData(GL_ARRAY_BUFFER, size - 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+//            glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
+//            m_debugText[i].textCopy += std::to_string(size);
+//                    
+            glBindBuffer(GL_ARRAY_BUFFER,0);
+            
+            //SafeDelete(m_models[i]->instances.find(_id)->second->explosion);
+            //SafeDelete(m_models[i]->instances.find(_id)->second->world);
+            //SafeDelete(m_models[i]->instances.find(_id)->second->worldInverseTranspose);
+            
             m_models[i]->instances.erase(m_models[i]->instances.find(_id));
 
              break;
@@ -1000,7 +1113,7 @@ void GLGraphics::SetBlendTexture(int _objectID, std::string _filename)
             tmpModel->MaterialKs            = m_models[i]->MaterialKs;
             tmpModel->MaterialNs            = m_models[i]->MaterialNs;
             //tmpModel->buffers               = m_models[i]->buffers;
-            memcpy(tmpModel->buffers, m_models[i]->buffers, 6*sizeof(GLuint));
+            memcpy(tmpModel->buffers, m_models[i]->buffers, 5*sizeof(GLuint));
             tmpModel->instances[_objectID]  = instanceToCopyAndRemove;
 
             m_models.push_back(tmpModel);

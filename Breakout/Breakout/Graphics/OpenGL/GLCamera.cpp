@@ -293,7 +293,6 @@ void GLCamera::Update(float _dt)
 {
 	glm::vec3 newOffset(0, 0, 0);
 
-
 	for (auto it = m_cameraShakes.begin(); it != m_cameraShakes.end();)
 	{
 		CameraShake* cs = &it->second;

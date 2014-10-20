@@ -189,7 +189,8 @@ void EffectSystem::OnEverySecond(Entity* _e, float _dt)
 }
 void EffectSystem::OnCollision(Entity* _e, float _dt)
 {
-	GraphicsManager::GetInstance()->GetICamera()->AddShake(GetMemoryID(_e), 0.2f, 0.4f, 60, 0.1f);
+    GraphicsManager::GetInstance()->GetICamera()->AddShake(GetMemoryID(_e), 0.2f, 0.4f, 60, 0.1f);
+
     if((m_flags.OnCollide & EffectFlags::CHANGE_MODEL) == EffectFlags::CHANGE_MODEL && _e->GetComponent<HealthComponent>()->m_currentHealth > 0)
     {
 		auto healthC = _e->GetComponent<HealthComponent>();

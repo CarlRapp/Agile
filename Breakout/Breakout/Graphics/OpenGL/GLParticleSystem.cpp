@@ -29,7 +29,8 @@ GLParticleSystem::GLParticleSystem(std::string _type, vec3 *_pos, int _nParticle
 
 GLParticleSystem::~GLParticleSystem()
 {
-    
+    glDeleteBuffers(8, vboHandles);
+    glDeleteVertexArrays(2, m_particleArray);
 }
 
 void GLParticleSystem::CreateFire()
@@ -92,7 +93,7 @@ void GLParticleSystem::CreateFire()
 	initVelData = velData;
 	initPosData = posData;
 
-	GLuint vboHandles[8];
+	//GLuint vboHandles[8];
 	glGenBuffers(8, vboHandles);
 	m_posBuf[0] = vboHandles[0];
 	m_posBuf[1] = vboHandles[1];
