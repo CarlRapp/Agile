@@ -15,14 +15,13 @@ class MainMenuScene : public Scene<MainMenuScene>
 private:
     World* m_world;
     int m_playID;
-    int m_optionsID;
     int m_exitID;
 
 	TextComponent *m_Start, *m_Options, *m_Exit;
 
 	float m_blockTimer;
 	void CreatePlayField();
-	EntityFactory::EntityType RandomizeType(void); // Denna lär plockas bort
+	EntityFactory::EntityType RandomizeType(void); // Denna lï¿½r plockas bort
 
 public:
 	MainMenuScene();

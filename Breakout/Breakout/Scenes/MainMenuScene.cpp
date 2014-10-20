@@ -13,7 +13,7 @@
 
 
 MainMenuScene::MainMenuScene()
-	: m_world(0), m_Start(0), m_Options(0), m_Exit(0)
+	: m_world(0), m_Start(0), m_Exit(0)
 {
 	printf("Main Menu created!\n");
 }
@@ -22,7 +22,6 @@ MainMenuScene::~MainMenuScene()
 {
 	SafeDelete(m_world);
 	m_Start		= 0;
-	m_Options	= 0;
 	m_Exit		= 0;
 }
 
@@ -65,18 +64,8 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-	m_Options = TC;
-	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
-    //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
-    m_world->AddEntity(e);
-    m_optionsID = e->GetId();
-	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-
-    e = m_world->CreateEntity();
-    EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
-    TC = e->GetComponent<TextComponent>();
 	m_Exit = TC;
-	TC->Initialize("--EXIT--", 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--EXIT--", 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -171,13 +160,6 @@ void MainMenuScene::Update(float _dt)
 	}
 	else
 		m_Start->m_color = VECTOR3(0, 1, 0);
-	//OPTIONS
-	if (m_Options->GetBoundingBox2D().Intersects(VECTOR2(x, y)))
-	{
-		m_Options->m_color = VECTOR3(1, 0, 0);
-	}
-	else
-		m_Options->m_color = VECTOR3(0, 1, 0);
 	//EXIT
 	if (m_Exit->GetBoundingBox2D().Intersects(VECTOR2(x, y)))
 	{
