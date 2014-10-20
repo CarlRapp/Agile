@@ -66,7 +66,7 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 	}
 	else if (isBulletTime)
 	{
-		AudioManager::GetInstance()->PlaySoundEffect("slowdownDown.wav");
+		AudioManager::GetInstance()->PlaySoundEffect("SlowdownDown.wav");
 		m_world->SetBulletTime(true);
 	}
 	else if (isExtraLife)
