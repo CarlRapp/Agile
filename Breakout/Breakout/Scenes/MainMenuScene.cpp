@@ -55,7 +55,7 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     auto TC = e->GetComponent<TextComponent>();
 	m_Start = TC;
-	TC->Initialize("--START--", 0.05f, 0.9f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--START--", 0.05f, 0.9f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     m_world->AddEntity(e);
     m_playID = e->GetId();
    // GM->GetInstance()->AddTextObject(TC->m_text,&TC->m_scale,&TC->m_color,&TC->m_x,&TC->m_y,m_playID);
@@ -65,7 +65,7 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Options = TC;
-	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--OPTIONS--", 0.05f, 0.85f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     //TC->Initialize(&m_stringOptions,2.f,0x1904 ,100,120);
     m_world->AddEntity(e);
     m_optionsID = e->GetId();
@@ -75,7 +75,7 @@ void MainMenuScene::OnActive()
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
 	m_Exit = TC;
-	TC->Initialize("--EXIT--", 0.05f, 0.8f, 4.f, VECTOR3(0, 1, 0), 20.0f);
+	TC->Initialize("--EXIT--", 0.05f, 0.8f, 2.f, VECTOR3(0, 1, 0), 20.0f);
     m_world->AddEntity(e);
     m_exitID = e->GetId();
 	GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -85,7 +85,7 @@ void MainMenuScene::OnActive()
     e = m_world->CreateEntity();
     EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
     TC = e->GetComponent<TextComponent>();
-    TC->Initialize("-HIGHSCORES-", 0.5f-(12*8.0f)/1280.0f*1.5f, highscoreY, 3.f, VECTOR3(1, 1, 1), 20.0f);
+    TC->Initialize("-HIGHSCORES-", 0.95f-(12*16.0f)/1280.0f, highscoreY, 2.f, VECTOR3(1, 1, 1), 20.0f);
 
     m_world->AddEntity(e);
     GM->GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
@@ -94,15 +94,18 @@ void MainMenuScene::OnActive()
     vector<HighScore> v = FileManager::GetInstance().LoadHighScores(GetFile("highscores.txt",HIGHSCORE_ROOT));
     
     
-    for(int i =0;i < v.size();i++)
+    for(int i =0; i < v.size();i++)
     {
+		if (v.at(i).m_name == "")
+			continue;
+
         e = m_world->CreateEntity();
         EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::TEXT);
         TC = e->GetComponent<TextComponent>();
         std::string score = v.at(i).m_name;
         score += " ";
         score += std::to_string(v.at(i).m_score);
-        TC->Initialize(score, 0.5f-(score.size()*8.0f)/1280.0f, highscoreY-(i+1)*0.05f, 2.f, VECTOR3(1, 1, 1), 20.0f);
+		TC->Initialize(score, 0.95f - (score.size()*16.0f) / 1280.0f, highscoreY - (i + 1)*0.05f, 2.f, VECTOR3(0.8f, 0.8f, 0.8f), 20.0f);
 
         m_world->AddEntity(e);
 

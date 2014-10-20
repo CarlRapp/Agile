@@ -31,8 +31,8 @@ void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topC
 {
 	printf("#################\n");
 	printf("Blocksystem Settings\n");
-	printf("Dimension: %d x %d\n", m_dimensionX, m_dimensionY);
-	printf("TopCenter(%d, %d)\n", m_topCenterX, m_topCenterY);
+	printf("Dimension: %d x %d\n", _sizeX, _sizeY);
+	printf("TopCenter(%d, %d)\n", _topCenterX, _topCenterY);
 	printf("#################\n");
 
 	if (m_blockGrid)
