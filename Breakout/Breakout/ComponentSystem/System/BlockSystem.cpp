@@ -31,8 +31,8 @@ void BlockSystem::SetSettings(int _sizeX, int _sizeY, int _topCenterY, int _topC
 {
 	printf("#################\n");
 	printf("Blocksystem Settings\n");
-	printf("Dimension: %d x %d\n", m_dimensionX, m_dimensionY);
-	printf("TopCenter(%d, %d)\n", m_topCenterX, m_topCenterY);
+	printf("Dimension: %d x %d\n", _sizeX, _sizeY);
+	printf("TopCenter(%d, %d)\n", _topCenterX, _topCenterY);
 	printf("#################\n");
 
 	if (m_blockGrid)
@@ -306,12 +306,13 @@ void BlockSystem::PushDown(int _x, int _y)
 	}
 
 	std::vector<Entity*>* activeBalls = m_world->GetEntities<BallComponent>();
-	if (loseLife && activeBalls)
+	std::vector<Entity*>* player = m_world->GetEntities<PlayerComponent>();
+	if (loseLife && activeBalls && player)
 	{
 		for (auto ball : *activeBalls)
 			ball->SetState(Entity::SOON_DEAD);
-		Entity* player = m_world->GetEntities<PlayerComponent>()->at(0);
-		player->GetComponent<LifeComponent>()->m_noLifes = 0;
+
+		player->at(0)->GetComponent<LifeComponent>()->m_noLifes = 0;
 
 
 

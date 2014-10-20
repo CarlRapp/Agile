@@ -156,11 +156,11 @@ void FileManager::TryAddHighScore(std::string filePath, std::string name, int sc
 	{
 		m_highScores = LoadHighScores(filePath);
 		/// Make sure that the list is full, even if its with shitty data that won't be saved
-		while (m_highScores.size() != 5)
+		while (m_highScores.size() < 5)
 		{
 			HighScore highScore;
 			highScore.m_name = "";
-			highScore.m_score = FLT_MIN;
+			highScore.m_score = 0;
 			m_highScores.push_back(highScore);
 		}
 	}
