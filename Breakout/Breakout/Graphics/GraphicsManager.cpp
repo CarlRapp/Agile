@@ -77,7 +77,6 @@ void GraphicsManager::RemoveObject(int _id)
 	m_IGraphics->RemoveObject(_id);
 }
 
-
 void GraphicsManager::Add2DTexture(int _id, std::string _path, float *_x, float *_y, float *_width, float *_height)
 {
 	m_IGraphics->Add2DTexture(_id, _path, _x, _y, _width, _height);

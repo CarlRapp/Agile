@@ -7,7 +7,10 @@
 class ICamera
 {
 private:
-
+        bool m_enableShake;
+        
+protected:
+    virtual void AddShakeEffect(int _id, float _minOffset, float _maxOffset, float _frequency, float _time) = 0;
 
 public:
 
@@ -17,8 +20,10 @@ public:
 
 	virtual void Update(float _dt) = 0;
 
-	virtual void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time) = 0;
+	void AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time);
 	virtual void RemoveShake(int _id) = 0;
+        
+        void        EnableShake(bool _useShake);
 	//virtual void Rotate(float pitch, float rotY) = 0;
 
 	//virtual void Pitch(float angle) = 0;
