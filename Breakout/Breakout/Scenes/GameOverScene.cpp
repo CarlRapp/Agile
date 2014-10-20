@@ -54,6 +54,8 @@ void GameOverScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 		SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+
+	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
 void GameOverScene::Render(float _dt)

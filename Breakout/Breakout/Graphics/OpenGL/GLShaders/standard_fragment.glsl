@@ -1,7 +1,5 @@
 #version 430
 
-//uniform vec3 m_testLight;
-
 varying mat4 modelView;
 
 uniform sampler2D m_standardTex;

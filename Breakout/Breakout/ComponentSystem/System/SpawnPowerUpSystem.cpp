@@ -41,13 +41,15 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 			break;
 		case 2:
 			_newPowerUp = CreatePowerUp(BULLETTIME);
+			break;
 		case 3:
 			_newPowerUp = CreatePowerUp(EXTRALIFE);
+			break;
 		}
 
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
 		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 60 - 30, 15, 0);
-		_newPowerUp->GetComponent<ScaleComponent>()->SetScale(VECTOR3(5, 5, 5));
+		_newPowerUp->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.2f, 2.5f, 2.5f));
 		_newPowerUp->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(-PI*0.5f, PI*0.5f, 0)));
 		m_world->AddEntity(_newPowerUp);
 		AudioManager::GetInstance()->PlaySoundEffect("PowerUp_Spawn.wav");
@@ -60,29 +62,34 @@ Entity* SpawnPowerUpSystem::CreatePowerUp(PowerUpType _powerUp)
 	b2BodyDef* bodyDef = new b2BodyDef();
 	std::vector<b2FixtureDef*> fixDefs = std::vector<b2FixtureDef*>();
 
-	_entity->AddComponent<PositionComponent>();
-	_entity->AddComponent<RotationComponent>();
-	_entity->AddComponent<ScaleComponent>();
-	_entity->AddComponent<ModelComponent>().m_modelPath = "PowerUp";
-	_entity->AddComponent<VelocityComponent>();
-	PhysicsSystem::GenerateBody(EntityFactory::POWERUP, bodyDef, fixDefs);
-	_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
-
 	switch (_powerUp)
 	{
 	case SpawnPowerUpSystem::MULTIBALL:
+		_entity->AddComponent<ModelComponent>().m_modelPath = "PowerUpMultiBall";
 		_entity->AddComponent<MultiBallComponent>();
 		break;
 	case SpawnPowerUpSystem::SHOOTLASER:
+		_entity->AddComponent<ModelComponent>().m_modelPath = "PowerUpLaser";
 		_entity->AddComponent<LaserComponent>();
 		break;
 	case SpawnPowerUpSystem::BULLETTIME:
+		_entity->AddComponent<ModelComponent>().m_modelPath = "PowerUpSlowMode";
 		_entity->AddComponent<BulletTimeComponent>();
 	case SpawnPowerUpSystem::EXTRALIFE:
+		_entity->AddComponent<ModelComponent>().m_modelPath = "PowerUpExtraLife";
 		_entity->AddComponent<ExtraLifeComponent>();
 		break;
 	default:
 		break;
 	}
+
+
+	_entity->AddComponent<PositionComponent>();
+	_entity->AddComponent<RotationComponent>();
+	_entity->AddComponent<ScaleComponent>();
+	_entity->AddComponent<VelocityComponent>();
+	PhysicsSystem::GenerateBody(EntityFactory::POWERUP, bodyDef, fixDefs);
+	_entity->AddComponent<CollisionComponent>(bodyDef, fixDefs);
+
 	return _entity;
 }

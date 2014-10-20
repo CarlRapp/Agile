@@ -27,10 +27,12 @@ GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _far
     m_forward   = glm::vec3(0, 0, -1);
     m_right     = glm::vec3(1, 0, 0);
     m_up        = glm::vec3(0, 1, 0);
+    m_offset    = glm::vec3(0, 0, 0);
 
     UpdateView();
     UpdateProjection();
     SetForward(glm::vec3(0,0,-1));
+    
 }
 
 GLCamera::~GLCamera(void)
@@ -41,7 +43,8 @@ GLCamera::~GLCamera(void)
 
 void GLCamera::UpdateView()
 {
-	glm::vec3 up, right, forward, position;
+	glm::vec3 up, right, forward; 
+        glm::vec3 position = GetPosition();
 	
 //	memcpy(&up, &m_up, sizeof(glm::vec3));
 //	memcpy(&right, &m_right, sizeof(glm::vec3));
@@ -56,7 +59,7 @@ void GLCamera::UpdateView()
         glm::vec3 R = glm::vec3(m_right.x,      m_right.y,      m_right.z);
 	glm::vec3 U = glm::vec3(m_up.x,         m_up.y,         m_up.z);
 	glm::vec3 L = glm::vec3(m_forward.x,    m_forward.y,    m_forward.z);
-	glm::vec3 P = glm::vec3(m_position.x,   m_position.y,   m_position.z);
+	glm::vec3 P = glm::vec3(position.x,     position.y,     position.z);
 
 	// Keep camera's axes orthogonal to each other and of unit length.
 //	L = DirectX::XMVector3Normalize(L);
@@ -126,27 +129,6 @@ void GLCamera::UpdateProjection()
 //    }
 //    printf("PROJECTION END\n");
 }
-#include "../../Input/InputManager.h"
-void GLCamera::Update(float _dt)
-{
-//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('j') == InputState::Down)
-//    {
-//        printf("J Pressed \n\n");
-//	m_yaw += m_sens*_dt;
-//    }
-//    
-//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('i') == InputState::Down)
-//        m_pitch += m_sens*_dt;
-//    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('k') == InputState::Down)
-//        m_pitch -= m_sens*_dt;
-//
-//    float pitch = m_pitch * (M_PI / 180.f);
-//    float yaw = m_yaw * (M_PI / 180.f);
-//
-//    m_forward = glm::vec3(cos(pitch) * sin(yaw), sin(pitch), cos(pitch)*cos(yaw));
-//    m_right = glm::vec3(sin(yaw - M_PI / 2.0f), 0, cos(yaw - M_PI / 2.0f));
-//    m_up = glm::cross(m_right, m_forward);
-}
 
 MATRIX4 *GLCamera::GetProjection()
 {
@@ -169,9 +151,9 @@ MATRIX4* GLCamera::GetView()
 void GLCamera::SetLookAt(glm::vec3 _target)
 {
     glm::vec3 forward;
-    forward.x = _target.x - m_position.x;
-    forward.y = _target.y - m_position.y;
-    forward.z = _target.z - m_position.z;
+    forward.x = _target.x - GetPosition().x;
+    forward.y = _target.y - GetPosition().y;
+    forward.z = _target.z - GetPosition().z;
 
     SetForward(forward);
 }
@@ -185,7 +167,7 @@ void GLCamera::SetForward(glm::vec3 forward)
 	//memcpy(&forward2, &forward, sizeof(Vector3));
 	//memcpy(&position, &m_position, sizeof(glm::vec3));
 
-        glm::vec3 pos = glm::vec3(m_position.x,m_position.y,m_position.z);
+        glm::vec3 pos = GetPosition();
 	glm::vec3 direction = glm::vec3(forward.x,forward.y,forward.z);
 	direction = glm::normalize(direction);
 	glm::vec3 up2 = glm::vec3(0, 1, 0);
@@ -255,6 +237,101 @@ void GLCamera::Move(float _move)
     
     UpdateView();
     
+}
+
+float randf(float _min, float _max)
+{
+	return _min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (_max - _min)));
+}
+
+void GLCamera::AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time)
+{
+
+	CameraShake cs;
+	cs.time = 0.0f;
+	cs.loop = _time < 0;
+        
+        if (cs.loop)
+            _time = 50 * _frequency;
+        
+	
+
+	ShakeKeyFrame first;
+	first.offset = glm::vec3(0, 0, 0);
+	first.startTime = 0;
+	
+	cs.shakeKeyFrames.push_back(first);
+
+	int numPoints = _frequency * _time;
+	float timePerPoint = 1.0f / _frequency;
+	for (int i = 1; i < numPoints; ++i)
+	{
+		ShakeKeyFrame keyFrame;
+
+		keyFrame.offset = NORMALIZE(glm::vec3(randf(-1.0f, 1.0f), randf(-1.0f, 1.0f), randf(-1.0f, 1.0f)))
+			* randf(_minOffset, _maxOffset);
+		keyFrame.startTime = i * _time / (float)numPoints;
+		cs.shakeKeyFrames.push_back(keyFrame);
+	}
+
+	ShakeKeyFrame last;
+	last.offset = glm::vec3(0, 0, 0);
+	last.startTime = _time;
+
+
+	cs.shakeKeyFrames.push_back(last);
+
+	m_cameraShakes[_id] = cs;
+}
+
+void GLCamera::RemoveShake(int _id)
+{
+	m_cameraShakes.erase(_id);
+}
+
+void GLCamera::Update(float _dt)
+{
+	glm::vec3 newOffset(0, 0, 0);
+
+
+	for (auto it = m_cameraShakes.begin(); it != m_cameraShakes.end();)
+	{
+		CameraShake* cs = &it->second;
+
+		cs->time += _dt;
+
+		if (cs->loop && cs->time > cs->shakeKeyFrames[cs->shakeKeyFrames.size() - 1].startTime)
+			cs->time = 0;
+
+		for (int j = 1; j < cs->shakeKeyFrames.size(); ++j)
+		{
+			if (cs->shakeKeyFrames[j].startTime > cs->time)
+			{
+				float timediff = cs->shakeKeyFrames[j].startTime - cs->shakeKeyFrames[j - 1].startTime;
+				float t = cs->time - cs->shakeKeyFrames[j - 1].startTime;
+
+				float lerpFactor = t / timediff;
+				glm::vec3 offset = cs->shakeKeyFrames[j].offset * lerpFactor + cs->shakeKeyFrames[j - 1].offset * (1 - lerpFactor);
+
+				newOffset = newOffset + offset;
+				break;
+			}
+		}
+
+		if (cs->shakeKeyFrames[cs->shakeKeyFrames.size() - 1].startTime < cs->time)
+		{
+			m_cameraShakes.erase(it++);
+		}
+		else
+			++it;
+	}
+
+	if (m_offset != newOffset)
+	{
+		m_offset = newOffset;
+		UpdateView();
+	}
+
 }
 
 //void GLCamera::Strafe(float delta) 

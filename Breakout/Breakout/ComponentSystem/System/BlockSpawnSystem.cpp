@@ -4,7 +4,7 @@
 #include "../World.h"
 
 BlockSpawnSystem::BlockSpawnSystem(World* _world)
-: Base(ComponentFilter(), _world), m_elapsedTime(0), m_spawnTimer(0)
+: Base(ComponentFilter().Requires<BlockComponent>(), _world), m_elapsedTime(0), m_spawnTimer(0)
 {
 }
 
@@ -26,7 +26,7 @@ void BlockSpawnSystem::Update(float _dt)
 	{
 		SpawnBlock();
 		m_spawnTimer = 0.3f * exp(-m_elapsedTime / 120);
-		printf("Time: %f\n", m_spawnTimer);
+		//printf("Time: %f\n", m_spawnTimer);
 	}
 }
 
@@ -46,6 +46,8 @@ Entity* BlockSpawnSystem::GetBlock(BlockType _block)
 		return 0;
 
 	Entity* block = m_world->CreateEntity();
+	if (!block)
+		return 0;
 
 	b2BodyDef* bodyDef;
 	std::vector<b2FixtureDef*> fixDefs = std::vector<b2FixtureDef*>();

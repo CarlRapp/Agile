@@ -85,6 +85,10 @@ void CollectPowerUpSystem::SpawnMultiBalls()
 	if (!allBalls)
 		return;
 	int tSize = allBalls->size();
+
+	if (tSize > 4)
+		return;
+
 	for (int i = 0; i < tSize; ++i)
 	{
 		Entity* tBall = allBalls->at(i);

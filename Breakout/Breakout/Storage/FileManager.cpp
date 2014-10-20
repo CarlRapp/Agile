@@ -1,4 +1,14 @@
 #include "FileManager.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sys/stat.h>
+#include <sys/types.h>
+
+#ifdef LINUX
+#include <dirent.h>
+#include <unistd.h>
+#endif
 
 FileManager* FileManager::instance = 0;
 
@@ -58,11 +68,12 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 
 	FindClose(dir);
 #else
-	/*DIR *dir;
+	DIR *dir;
 	class dirent *ent;
 	class stat st;
 
-	dir = opendir(directory);
+	dir = opendir(directory.c_str());
+        //printf("Trying to open: %s\n", directory.c_str());
 	while ((ent = readdir(dir)) != NULL) {
 		const string file_name = ent->d_name;
 		const string full_file_name = directory + "/" + file_name;
@@ -78,9 +89,9 @@ void FileManager::GetFilesInDirectory(std::vector<std::string>& out, const std::
 		if (is_directory)
 			continue;
 
-		out.push_back(full_file_name);
+		out.push_back(file_name);
 	}
-	closedir(dir);*/
+	closedir(dir);
 #endif
 }
 
@@ -145,11 +156,11 @@ void FileManager::TryAddHighScore(std::string filePath, std::string name, int sc
 	{
 		m_highScores = LoadHighScores(filePath);
 		/// Make sure that the list is full, even if its with shitty data that won't be saved
-		while (m_highScores.size() != 5)
+		while (m_highScores.size() < 5)
 		{
 			HighScore highScore;
 			highScore.m_name = "";
-			highScore.m_score = FLT_MIN;
+			highScore.m_score = 0;
 			m_highScores.push_back(highScore);
 		}
 	}

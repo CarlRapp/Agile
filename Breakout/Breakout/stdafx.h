@@ -90,7 +90,7 @@ static char    m_cwd[FILENAME_MAX];
 #define SafeDelete(x) { if(x != NULL) { delete x; x = 0; } }
 #define SafeDeleteArray(x) { if(x) { delete[] x; x= 0; } }
 
-#define MAX_ENTITY_COUNT 500
+#define MAX_ENTITY_COUNT 1000
 
 typedef unsigned int        UINT;
 

@@ -84,7 +84,7 @@ Entity* World::CreateEntity()
 {
 	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
 	{
-		if (m_entityPool[i]->GetState() == Entity::DEAD && !m_entityPool[i]->GetInitialized())
+		if (m_entityPool[i]->GetState() == Entity::DEAD)
 		{
 			m_entityPool[i]->SetState(Entity::ALIVE);
 			return m_entityPool[i];
@@ -93,24 +93,32 @@ Entity* World::CreateEntity()
 
 	return 0;
 }
-float hest = 1.6f;
+float hestDown = 1.6f;
+float hestUp = 0.25f;
 void World::Update(float _dt)
 {
 	if (m_bulletTime)
 	{
+		hestUp = 0.25f;
 		if (m_bulletTimer < m_maxBulletTimer)
 		{
 			m_bulletTimer += _dt;
-			hest = hest > 0.25f ? hest - _dt : 0.25f;
-			_dt *= hest;
+			hestDown = hestDown > 0.25f ? hestDown - _dt : 0.25f;
+			_dt *= hestDown;
 		}
 		else
 		{
 			// SPEEDUP
 			m_bulletTimer = 0.f;
 			m_bulletTime = false;
+			hestDown = 1.6f;
 			AudioManager::GetInstance()->PlaySoundEffect("slowdownUp.wav");
 		}
+	}
+	else
+	{
+		hestUp = hestUp < 1.f ? hestUp + _dt : 1.f;
+		_dt *= hestUp;
 	}
 
 	SystemMap::iterator sIT;
