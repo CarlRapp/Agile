@@ -1,4 +1,5 @@
 newmtl lambert2SG
+map_Kd whitePixel.png
 illum 4
 map_Kd whitePixel.png
 Kd 0.50 0.50 0.50

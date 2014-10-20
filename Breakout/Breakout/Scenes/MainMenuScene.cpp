@@ -43,6 +43,7 @@ void MainMenuScene::OnActive()
 {
 	m_world = new World();
 
+        GraphicsManager::GetInstance()->GetICamera()->EnableShake(false);
 	GraphicsManager::GetInstance()->GetICamera()->AddShake(0, 30, 50, 0.2f, -1);
 
 	CreatePlayField();
@@ -138,6 +139,7 @@ void MainMenuScene::OnInactive()
 	}
 }
 float test = 0.0f;
+
 void MainMenuScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
@@ -150,7 +152,7 @@ void MainMenuScene::Update(float _dt)
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
 		return;
 	}
-	
+        
 	float x = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetX();
 	float y = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetY();
 

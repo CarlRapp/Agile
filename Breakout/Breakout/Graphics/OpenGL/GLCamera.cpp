@@ -244,7 +244,7 @@ float randf(float _min, float _max)
 	return _min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (_max - _min)));
 }
 
-void GLCamera::AddShake(int _id, float _minOffset, float _maxOffset, float _frequency, float _time)
+void GLCamera::AddShakeEffect(int _id, float _minOffset, float _maxOffset, float _frequency, float _time)
 {
 
 	CameraShake cs;
@@ -292,7 +292,6 @@ void GLCamera::RemoveShake(int _id)
 void GLCamera::Update(float _dt)
 {
 	glm::vec3 newOffset(0, 0, 0);
-
 
 	for (auto it = m_cameraShakes.begin(); it != m_cameraShakes.end();)
 	{

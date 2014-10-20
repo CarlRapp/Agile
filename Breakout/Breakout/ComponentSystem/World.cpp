@@ -112,7 +112,7 @@ void World::Update(float _dt)
 			m_bulletTimer = 0.f;
 			m_bulletTime = false;
 			hestDown = 1.6f;
-			AudioManager::GetInstance()->PlaySoundEffect("slowdownUp.wav");
+			AudioManager::GetInstance()->PlaySoundEffect("SlowdownUp.wav");
 		}
 	}
 	else

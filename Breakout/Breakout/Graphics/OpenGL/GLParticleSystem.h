@@ -33,6 +33,8 @@ private:
 	GLuint m_startTime[2]; // Start time buffers (A and B)
 	GLuint m_initVelBuf;
 	GLuint m_initPosBuf;
+        
+        GLuint vboHandles[8];
 
 	GLuint m_subRoutineUpdate, m_subRoutineRender;
 

@@ -47,7 +47,7 @@ void main()
             GSOut.texCoord = GSIn[i].texCoord;
             GSOut.worldPos = GSIn[i].worldPos + vec4(faceNormal*GSIn[0].explode,0);//explodeVec;
 
-            GSOut.color = GSIn[i].color;
+            //GSOut.color = GSIn[i].color;
 
             gl_Position = m_matProj*m_matView*GSOut.worldPos;
 
@@ -61,7 +61,7 @@ void main()
             GSOut.normal = GSIn[i].normal;
             GSOut.texCoord = GSIn[i].texCoord;
             GSOut.worldPos = GSIn[i].worldPos;
-            GSOut.color = GSIn[i].color;
+            //GSOut.color = GSIn[i].color;
             gl_Position = m_matProj*m_matView*GSOut.worldPos;
 
             EmitVertex();

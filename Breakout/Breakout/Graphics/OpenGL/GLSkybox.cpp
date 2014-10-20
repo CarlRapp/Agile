@@ -45,7 +45,7 @@ GLSkybox::GLSkybox(std::string mapName)
 	
 	int width, height, channels;
 	for( int i = 0; i < 6; i++ ) {
-		std::string texName = mapName + "_" + suffixes[i] + ".jpg";
+		std::string texName = mapName + "_" + suffixes[i] + ".png";
 
 	
 		// Load texture file and convert to openGL format
