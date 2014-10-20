@@ -62,11 +62,11 @@ static void MacroPrintMatrix(glm::mat4* _m)
     {
         for(int j=0;j< 4;j++)
         {
-            //printf("%f  ",(*_m)[i][j]);
+            printf("%f  ",(*_m)[i][j]);
         }
-        //printf("\n");
+        printf("\n");
     }
-   // printf("\n");
+    printf("\n");
 }
 
 static glm::quat MacroRotateYawPitchRoll(float _yaw, float _pitch, float _roll)

@@ -63,7 +63,7 @@ void GameScene::LoadContent()
 
 void GameScene::Update(float _dt)
 {
-        UpdateFPS(_dt);
+    UpdateFPS(_dt);
     
     if(m_levelUp)
     {
@@ -77,24 +77,24 @@ void GameScene::Update(float _dt)
 		m_isPaused = !m_isPaused;
 		GraphicsManager* GM = GraphicsManager::GetInstance();
 
-		if (m_isPaused)
-        {
+            if (m_isPaused)
+            {
                    
-            if(!m_gameOver)
+                if(!m_gameOver)
+                {
+                    Entity* e = m_world->GetEntity(m_pauseHandle);
+                    auto TC = e->GetComponent<TextComponent>();
+
+                    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+                }
+                    
+            }
+            else
             {
                 Entity* e = m_world->GetEntity(m_pauseHandle);
-                auto TC = e->GetComponent<TextComponent>();
-
-                GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+                GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+                //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
             }
-                    
-		}
-        else
-        {
-            Entity* e = m_world->GetEntity(m_pauseHandle);
-            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-            //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
-        }
 		return;
 	}
     

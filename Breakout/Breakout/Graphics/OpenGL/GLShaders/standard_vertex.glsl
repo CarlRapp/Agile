@@ -3,11 +3,11 @@ layout (location = 0) in vec3   m_position;
 layout (location = 1) in float  pad1;
 layout (location = 2) in vec3   m_normal;
 layout (location = 3) in float  m_explosion;
-layout (location = 4) in vec4   m_color;
-layout (location = 5) in mat4   m_matModel;
+//layout (location = 4) in vec4   m_color;
+layout (location = 4) in mat4   m_matModel;
 
-layout (location = 9) in vec2   m_texCoord;
-layout (location = 10) in vec2   pad2;
+layout (location = 8) in vec2   m_texCoord;
+layout (location = 9) in vec2   pad2;
 
 
 uniform mat4 m_matView;
@@ -38,7 +38,7 @@ void main(void)
 
     gl_Position = m_matProj*m_matView*m_matModel* vec4(m_position, 1.0);
 
-    vertex.color = m_color;
+    //vertex.color = m_color;
     vertex.explode = m_explosion;
     vertex.matModel = m_matModel;
 }

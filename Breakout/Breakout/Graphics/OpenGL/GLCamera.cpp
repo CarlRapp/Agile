@@ -291,8 +291,7 @@ void GLCamera::RemoveShake(int _id)
 
 void GLCamera::Update(float _dt)
 {
-	glm::vec3 newOffset(0, 0, 0);
-
+/*	glm::vec3 newOffset(0, 0, 0);
 
 	for (auto it = m_cameraShakes.begin(); it != m_cameraShakes.end();)
 	{
@@ -328,9 +327,9 @@ void GLCamera::Update(float _dt)
 
 	if (m_offset != newOffset)
 	{
-		m_offset = newOffset;
-		UpdateView();
-	}
+		m_offset = newOffset;*/
+	//	UpdateView();
+	//}
 
 }
 
