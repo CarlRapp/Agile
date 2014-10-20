@@ -58,7 +58,7 @@ static glm::vec3 MacroNormalize(glm::vec3 _v1)
 
 static void MacroPrintMatrix(glm::mat4* _m)
 {
-    for(int i=0;i< 4;i++)
+   /* for(int i=0;i< 4;i++)
     {
         for(int j=0;j< 4;j++)
         {
@@ -66,7 +66,7 @@ static void MacroPrintMatrix(glm::mat4* _m)
         }
         printf("\n");
     }
-    printf("\n");
+    printf("\n");*/
 }
 
 static glm::quat MacroRotateYawPitchRoll(float _yaw, float _pitch, float _roll)
