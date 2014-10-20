@@ -246,7 +246,6 @@ float randf(float _min, float _max)
 
 void GLCamera::AddShakeEffect(int _id, float _minOffset, float _maxOffset, float _frequency, float _time)
 {
-
 	CameraShake cs;
 	cs.time = 0.0f;
 	cs.loop = _time < 0;
