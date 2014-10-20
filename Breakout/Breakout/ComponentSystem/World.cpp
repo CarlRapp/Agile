@@ -83,7 +83,7 @@ Entity* World::CreateEntity()
 {
 	for (int i = 0; i < MAX_ENTITY_COUNT; ++i)
 	{
-		if (m_entityPool[i]->GetState() == Entity::DEAD && !m_entityPool[i]->GetInitialized())
+		if (m_entityPool[i]->GetState() == Entity::DEAD)
 		{
 			m_entityPool[i]->SetState(Entity::ALIVE);
 			return m_entityPool[i];

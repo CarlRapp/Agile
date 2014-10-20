@@ -93,6 +93,8 @@ void EffectSystem::UpdateEffects(float _dt)
 			it->second->GetComponent<ScaleComponent>()->SetScale(warp->m_newScale);
 			if (warp->m_warpState == WarpComponent::DONE)
 			{
+				if(warp->m_type == warp->MAX_TO_MIN)
+					it->second->SetState(Entity::SOON_DEAD);
 				m_effects.erase(it++);
 				continue;
 			}
@@ -164,6 +166,7 @@ void EffectSystem::OnEntityRemoved(Entity* _e)
 		Entity* e = m_world->CreateEntity();
 		EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::SCALE);
 		VECTOR3 pos = _e->GetComponent<PositionComponent>()->GetPosition();
+		e->GetComponent<WarpComponent>()->m_type = WarpComponent::MAX_TO_MIN;
 		e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(pos.x, pos.y, pos.z));
 		e->GetComponent<ModelComponent>()->m_modelPath = _e->GetComponent<ModelComponent>()->m_modelPath;
 		m_effects[e->GetId()] = e;
