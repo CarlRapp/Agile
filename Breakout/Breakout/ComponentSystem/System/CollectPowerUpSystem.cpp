@@ -73,7 +73,10 @@ void CollectPowerUpSystem::TriggerPowerUp(Entity* _powerUp)
 	{
 		auto players = m_world->GetEntities<PlayerComponent>();
 		if (players)
+		{
 			players->at(0)->GetComponent<LifeComponent>()->m_noLifes++;
+			players->at(0)->GetComponent<LifeComponent>()->SetString();
+		}
 	}
 
 	_powerUp->SetState(Entity::SOON_DEAD);
