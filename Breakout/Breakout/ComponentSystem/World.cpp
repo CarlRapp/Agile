@@ -1,5 +1,6 @@
 #include "World.h"
 #include "System/TextSystem.h"
+#include "../Audio/AudioManager.h"
 World::World()
 {
 	Start();
@@ -92,21 +93,32 @@ Entity* World::CreateEntity()
 
 	return 0;
 }
-
+float hestDown = 1.6f;
+float hestUp = 0.25f;
 void World::Update(float _dt)
 {
 	if (m_bulletTime)
 	{
+		hestUp = 0.25f;
 		if (m_bulletTimer < m_maxBulletTimer)
 		{
 			m_bulletTimer += _dt;
-			_dt *= 0.25f;
+			hestDown = hestDown > 0.25f ? hestDown - _dt : 0.25f;
+			_dt *= hestDown;
 		}
 		else
 		{
+			// SPEEDUP
 			m_bulletTimer = 0.f;
 			m_bulletTime = false;
+			hestDown = 1.6f;
+			AudioManager::GetInstance()->PlaySoundEffect("slowdownUp.wav");
 		}
+	}
+	else
+	{
+		hestUp = hestUp < 1.f ? hestUp + _dt : 1.f;
+		_dt *= hestUp;
 	}
 
 	SystemMap::iterator sIT;

@@ -66,10 +66,10 @@ void Load2DTexture(std::string _name, GLenum _textureSlot)
     
         m_TextureMap[_name] = texHandle;
     }
-    else
-    {
-        printf("Texture already loaded: %s \n", _name.c_str());
-    }
+    //else
+    //{
+    //    printf("Texture already loaded: %s \n", _name.c_str());
+    //}
 }
 
 GLuint LoadTexture(std::string _name, GLenum _textureSlot)

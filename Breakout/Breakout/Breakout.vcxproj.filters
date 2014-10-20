@@ -485,6 +485,12 @@
     <ClInclude Include="ComponentSystem\Component\WarpComponent.h">
       <Filter>Source Files\ComponentSystem\Component</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\BulletTimeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentSystem\Component\ExtraLifeComponent.h">
+      <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

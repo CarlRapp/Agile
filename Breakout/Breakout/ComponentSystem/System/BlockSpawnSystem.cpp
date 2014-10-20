@@ -73,8 +73,9 @@ Entity* BlockSpawnSystem::GetBlock(BlockType _block)
 	{
 	case BlockType::BLACK_SMALL:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_Black_Small";
-		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		block->AddComponent<AudioComponent>().m_audioPath = "Bassdrum.wav";
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
+		block->RemoveComponent<HealthComponent>();
 		break;
 
 	case BlockType::BLUE_SMALL:
@@ -97,13 +98,12 @@ Entity* BlockSpawnSystem::GetBlock(BlockType _block)
 
 	case BlockType::TNT_SMALL:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_TNT_Small";
-		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
+		block->AddComponent<AudioComponent>().m_audioPath = "Explosion.wav";
 		block->GetComponent<BlockComponent>()->SetSize(VECTOR2(2, 2));
 		block->AddComponent<TNTComponent>();
 		block->AddComponent<AudioComponent>().m_audioPath = "Explosion.wav";
 		block->GetComponent<EffectComponent>()->m_effects.OnRemoved = EffectFlags::EXPLODE;
 		break;
-
 	case BlockType::RED_MEDIUM:
 		block->AddComponent<ModelComponent>().m_modelPath = "Block_Red_Medium";
 		block->AddComponent<AudioComponent>().m_audioPath = "Wowpulse.wav";
