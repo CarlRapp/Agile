@@ -167,7 +167,6 @@ void GameScene::OnActive()
 {
 	GraphicsManager::GetInstance()->ShowMouseCursor(false);
 	GraphicsManager::GetInstance()->SetSky("space");
-	GraphicsManager::GetInstance()->GetICamera()->AddShake(1, 2, 4, 30, 3);
 	Reset();
 }
 void GameScene::OnInactive()

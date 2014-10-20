@@ -168,33 +168,33 @@ void EntityFactory::CreateEntity(Entity* _entity, EntityType _entityType)
 
 void EntityFactory::CreateBlockField(World* _world)
 {
-	/*	New Implementation	*/
-	Entity* e;
-	int xBlock, yBlock;
-	int	startX, startY;
-
-	startX = -20;
-	xBlock = 2 * -startX;
-	startY = 6;
-	yBlock = 4;
-
-	for (int y = startY; y < startY + yBlock; ++y)
-		for (int x = startX; x < startX + xBlock; ++x)
-		{
-			e = _world->CreateEntity();
-
-			int rnd = (rand() % (3 - 0));
-
-			EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
-			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
-			e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLL(0, 0, 0));
-			BlockComponent* bc = e->GetComponent<BlockComponent>();
-
-
-			_world->AddEntity(e);
-		}
-
-
-
+//	/*	New Implementation	*/
+//	Entity* e;
+//	int xBlock, yBlock;
+//	int	startX, startY;
+//
+//	startX = -20;
+//	xBlock = 2 * -startX;
+//	startY = 6;
+//	yBlock = 4;
+//
+//	for (int y = startY; y < startY + yBlock; ++y)
+//		for (int x = startX; x < startX + xBlock; ++x)
+//		{
+//			e = _world->CreateEntity();
+//
+//			int rnd = (rand() % (3 - 0));
+//
+//			EntityFactory::GetInstance()->CreateEntity(e, (EntityFactory::EntityType)rnd);
+//			e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(x, y, 0));
+//			e->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLL(0, 0, 0));
+//			BlockComponent* bc = e->GetComponent<BlockComponent>();
+//
+//
+//			_world->AddEntity(e);
+//		}
+//
+//
+//
 
 }

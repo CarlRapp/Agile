@@ -43,7 +43,7 @@ void MainMenuScene::OnActive()
 {
 	m_world = new World();
 
-	GraphicsManager::GetInstance()->GetICamera()->AddShake(0, 20, 40, 0.3f, -1);
+	GraphicsManager::GetInstance()->GetICamera()->AddShake(0, 30, 50, 0.2f, -1);
 
 	CreatePlayField();
 
@@ -134,7 +134,7 @@ void MainMenuScene::OnInactive()
 		SafeDelete(m_world);
 	}
 }
-
+float test = 0.0f;
 void MainMenuScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
@@ -188,13 +188,13 @@ void MainMenuScene::Update(float _dt)
 
 
 	m_world->Update(_dt);
-//        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
-//	test += _dt * 0.5f;
-//	pos.y = 20;
-//	pos.x = 0 + 100 * sinf(test);
-//	pos.z = 100 * cosf(test);
-//
-//	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
+        VECTOR3 pos = GraphicsManager::GetInstance()->GetICamera()->GetPosition();
+	test += _dt * 0.15f;
+	pos.y = 20;
+	pos.x = 0 + 100 * sinf(test);
+	pos.z = 100 * cosf(test);
+
+	GraphicsManager::GetInstance()->GetICamera()->SetPosition(pos);
 	GraphicsManager::GetInstance()->GetICamera()->SetLookAt(VECTOR3(0, 0, 0));
 }
 
