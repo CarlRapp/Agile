@@ -257,13 +257,13 @@ void MainMenuScene::CreatePlayField()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 20));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 60));
 	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.4f, 0.2f));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -20));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, -60));
 	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.4f, 0.2f));
 	m_world->AddEntity(e);
 
