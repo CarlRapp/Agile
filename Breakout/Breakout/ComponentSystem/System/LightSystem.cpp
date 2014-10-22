@@ -33,7 +33,6 @@ void LightSystem::Update(float _dt)
 	for (auto entityPair : m_entityMap)
 	{
 		Entity* e = entityPair.second;
-
 	}
 
 }

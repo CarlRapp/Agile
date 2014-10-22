@@ -50,7 +50,8 @@ void SpawnPowerUpSystem::OnEntityRemoved(Entity* _block)
 		_newPowerUp->GetComponent<PositionComponent>()->SetPosition(_block->GetComponent<PositionComponent>()->GetPosition());
 		_newPowerUp->GetComponent<VelocityComponent>()->m_velocity = VECTOR3(rand() % 60 - 30, 15, 0);
 		_newPowerUp->GetComponent<ScaleComponent>()->SetScale(VECTOR3(0.2f, 2.5f, 2.5f));
-		_newPowerUp->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(-PI*0.5f, PI*0.5f, 0)));
+		_newPowerUp->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(PI*0.5f, -PI*0.5f, 0)));
+                //_newPowerUp->GetComponent<RotationComponent>()->SetRotation(ROTATEYAWPITCHROLLFROMVECTOR(VECTOR3(-PI*0.5f, PI*0.5f, 0)));
 		m_world->AddEntity(_newPowerUp);
 		AudioManager::GetInstance()->PlaySoundEffect("PowerUp_Spawn.wav");
 	}

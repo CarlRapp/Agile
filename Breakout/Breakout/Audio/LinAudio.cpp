@@ -67,3 +67,23 @@ bool LinAudio::PlaySoundEffect(const char* _fileName, int _loop)
 	return true;
 
 }
+
+void LinAudio::SetVolume(int _volume)
+{
+    const int max = 100;
+    const int min = 0;
+
+    const int minVol = 0;
+    const int maxVol = 128;
+
+    float roof = (maxVol - minVol) * (_volume - min);
+    float floor = max - min;
+    float scaledVolume = (roof/floor) + minVol;
+
+    Mix_VolumeMusic(scaledVolume);
+}
+
+void LinAudio::StopMusic()
+{
+    Mix_HaltMusic();
+}

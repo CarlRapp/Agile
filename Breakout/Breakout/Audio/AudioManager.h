@@ -36,6 +36,10 @@ public:
 	Returns true on success.
 	*/
 	bool PlaySoundEffect(const char* _fileName, int _loop = 0);
+        
+        void SetMusicVolume(int _volume);
+        
+        void StopMusic();
 
 };
 

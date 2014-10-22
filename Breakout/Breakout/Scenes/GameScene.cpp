@@ -65,51 +65,51 @@ void GameScene::Update(float _dt)
 {
     UpdateFPS(_dt);
     
-    if(m_levelUp)
+    if(m_levelUp && !m_gameOver)
     {
         LevelUpMenu(_dt);
         return;
     }
         
-	GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
-	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
-	{
-		m_isPaused = !m_isPaused;
-		GraphicsManager* GM = GraphicsManager::GetInstance();
+    GraphicsManager::GetInstance()->GetICamera()->Update(_dt);
+    if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
+    {
+            m_isPaused = !m_isPaused;
+            GraphicsManager* GM = GraphicsManager::GetInstance();
 
-            if (m_isPaused)
-            {
-                   
-                if(!m_gameOver)
-                {
-                    Entity* e = m_world->GetEntity(m_pauseHandle);
-                    auto TC = e->GetComponent<TextComponent>();
+        if (m_isPaused)
+        {
 
-                    GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-                }
-                    
-            }
-            else
+            if(!m_gameOver)
             {
                 Entity* e = m_world->GetEntity(m_pauseHandle);
-                GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
-                //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
+                auto TC = e->GetComponent<TextComponent>();
+
+                GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
             }
-		return;
-	}
-    
-	if (m_isPaused)
-	{
-            m_world->UpdateTextOnly(_dt);
 
-            if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
-                    SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
-
+        }
+        else
+        {
+            Entity* e = m_world->GetEntity(m_pauseHandle);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+            //GM->Remove2DTexture(GetMemoryID(m_pauseBackground));
+        }
             return;
-	}
-        
-        
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
+    }
+
+    if (m_isPaused)
+    {
+        m_world->UpdateTextOnly(_dt);
+
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
+                SceneManager::GetInstance()->ChangeScene<MainMenuScene>();
+
+        return;
+    }
+
+
+    InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(0.5f, 0.5f);
 
         
 	//if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('r') == InputState::Pressed)
@@ -128,23 +128,6 @@ void GameScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(-50 * _dt);
     }
-//<<<<<<< HEAD
-//    }
-//	counter += _dt;
-//
-//	if (counter > 1.0f/(m_world->GetEntities<PlayerComponent>()->at(0)->GetComponent<PlayerComponent>()->m_level+1))
-//	{
-//		Entity* e;
-//		e = m_world->CreateEntity();
-//		EntityFactory::GetInstance()->CreateEntity(e, RandomizeType());
-//		e->GetComponent<ScaleComponent>()->SetScale(VECTOR3(2, 2, 2));
-//		m_world->AddEntity(e);
-//		counter = 0;
-//			
-//	}
-//=======
-//
-//>>>>>>> 39feac0627b0005c7f7695fcb9ac773eebe16341
 
 	m_world->Update(_dt);
 
@@ -184,14 +167,18 @@ void GameScene::Render(float _dt)
 
 void GameScene::OnActive()
 {
+        
         GraphicsManager::GetInstance()->GetICamera()->EnableShake(true);
-	GraphicsManager::GetInstance()->ShowMouseCursor(false);
-	GraphicsManager::GetInstance()->SetSky("BackGroundCube");
-	Reset();
+        GraphicsManager::GetInstance()->ShowMouseCursor(false);
+        GraphicsManager::GetInstance()->SetSky("BackGroundCube");
+        Reset();
+        
+        AudioManager::GetInstance()->PlayMusic("InGame_music.mp3", true);
+        AudioManager::GetInstance()->SetMusicVolume(25);
 }
 void GameScene::OnInactive()
 {
-	//GraphicsManager::GetInstance()->GetICamera()->RemoveShake(1);
+    AudioManager::GetInstance()->StopMusic();
 	GraphicsManager::GetInstance()->Remove2DTexture(GetMemoryID(m_pauseBackground));
 	m_isPaused = false;
 	if (m_world)
@@ -211,6 +198,7 @@ void GameScene::OnInactive()
 		
 		SafeDelete(m_world);
 	}
+        
 }
 
 void GameScene::Reset()
@@ -294,8 +282,8 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 100));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 0, 150));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.6f, 0.4f));
 	e->GetComponent<LightComponent>()->SetRange(500);
 	m_world->AddEntity(e);
 
@@ -308,14 +296,14 @@ void GameScene::Reset()
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, 0, 0));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(-50, 0, 50));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.6f, 0.4f));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
 	EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
-	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(50, 0, 0));
-	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.7f, 0.7f));
+	e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(50, 0, 50));
+	e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.7f, 0.6f, 0.4f));
 	m_world->AddEntity(e);
 
 	e = m_world->CreateEntity();
