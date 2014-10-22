@@ -252,13 +252,13 @@ void GLGraphics::LoadModel(std::string _path)
 	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_DRAW);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]); 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*500, NULL, GL_DYNAMIC_READ);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*512, NULL, GL_DYNAMIC_READ);
 
 //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
 //        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float)*500, NULL, GL_DYNAMIC_READ);
+        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float)*512, NULL, GL_DYNAMIC_READ);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]); 
         glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
@@ -829,8 +829,11 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
         //Update matrix buffer//
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[3]);
         glm::mat4* matrices = (glm::mat4*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        int e = glGetError();
+        if(e)
+            printf("%d\n",e);
         int j = 0;
-
+        
         for (std::map < int, ModelInstance*>::const_iterator insIt = m_models[i]->instances.begin(); insIt != m_models[i]->instances.end(); ++insIt)
         {
             if(insIt->second->world)
@@ -846,6 +849,9 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
 
         glBindBuffer(GL_ARRAY_BUFFER,m_models[i]->buffers[2]);
         float* explosion = (float*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+        e = glGetError();
+        if(e)
+            printf("%d\n",e);
 
         j = 0;
 
