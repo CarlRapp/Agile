@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 	SafeDelete(m_InputManager);
 	SafeDelete(m_fileManager);
 	SafeDelete(m_EntityFactory);
-        SafeDelete(m_SceneManager);
+    SafeDelete(m_SceneManager);
         
 	//_CrtDumpMemoryLeaks();
 	return 0;

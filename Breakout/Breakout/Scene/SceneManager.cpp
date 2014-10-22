@@ -70,7 +70,6 @@ void SceneManager::Start()
 
 	InputManager* IM = InputManager::GetInstance();
 	GraphicsManager* GM = GraphicsManager::GetInstance();
-
 	while (m_isRunning)
 	{
 		float dt = GetDeltaTime();
@@ -79,6 +78,5 @@ void SceneManager::Start()
 
 		m_activeScene->Update(dt);
 		m_activeScene->Render(dt);
-
 	}
 }

@@ -256,7 +256,7 @@ void MainMenuScene::CreatePlayField()
 	blockSystem->AddBlockPool(mediumBlocks);
 	BlockPool*	rareBlocks = new BlockPool();
 	rareBlocks->SetPoolChance(10);
-	rareBlocks->AddBlockToPool(BlockType::TNT_SMALL);
+	rareBlocks->AddBlockToPool(BlockType::BLUE_MEDIUM);
 	blockSystem->AddBlockPool(rareBlocks);
 
 	/*	New Implementation	*/
