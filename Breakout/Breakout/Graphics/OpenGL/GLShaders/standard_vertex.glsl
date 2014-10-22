@@ -7,7 +7,7 @@ layout (location = 3) in float  m_explosion;
 layout (location = 4) in mat4   m_matModel;
 
 layout (location = 8) in vec2   m_texCoord;
-layout (location = 9) in vec2   pad2;
+//layout (location = 9) in vec2   pad2;
 
 
 uniform mat4 m_matView;

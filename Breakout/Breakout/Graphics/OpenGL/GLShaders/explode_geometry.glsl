@@ -27,7 +27,7 @@ out GS_FS
     vec3    normal;
     float   pad1;
     vec2    texCoord;
-    vec2    pad2;
+    //vec2    pad2;
 
 } GSOut;
 

@@ -29,8 +29,8 @@ FileManager* m_fileManager;
 SceneManager* m_SceneManager;
 EntityFactory* m_EntityFactory;
 
-#define SCREENWIDTH 1280
-#define SCREENHEIGHT 720
+#define SCREENWIDTH 1600
+#define SCREENHEIGHT 900
 
 int main(int argc, char** argv)
 {
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
 #endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
-	DisplayMode displayMode = DisplayMode::BorderlessWindow;
+	DisplayMode displayMode = DisplayMode::Fullscreen;
 	m_GraphicsManager = GraphicsManager::GetInstance();
 	m_GraphicsManager->InitWindow(0, 0, SCREENWIDTH, SCREENHEIGHT, displayMode);
 	m_GraphicsManager->Init3D(displayMode);

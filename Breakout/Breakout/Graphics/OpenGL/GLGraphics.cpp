@@ -240,25 +240,25 @@ void GLGraphics::LoadModel(std::string _path)
 //        int color           = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_color");
         int matrix          = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_matModel");
         int texCoord        = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "m_texCoord");
-        int pad2            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad2");
+        //int pad2            = glGetAttribLocation(m_standardShaderProgram.GetProgramHandle(), "pad2");
         
 	glGenBuffers(5, m_models[index]->buffers);
  
 	// "Bind" (switch focus to) first buffer
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]); 
-	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_READ);
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), vertexArray, GL_STATIC_DRAW);
         
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_READ);
+	glBufferData(GL_ARRAY_BUFFER, floatCount * sizeof(float), normalArray, GL_STATIC_DRAW);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[2]); 
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float), NULL, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float), NULL, GL_DYNAMIC_READ);
 
 //        glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
 //        glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float), NULL, GL_STATIC_READ);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[3]);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_STATIC_READ);
+        glBufferData(GL_ARRAY_BUFFER, 4 * 4 * sizeof(float), NULL, GL_DYNAMIC_READ);
         
         glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[4]); 
         glBufferData(GL_ARRAY_BUFFER, (*groupIt)->triangles->size() * 3 * 2 * sizeof(float), texCoordArray, GL_STATIC_DRAW);
@@ -280,7 +280,7 @@ void GLGraphics::LoadModel(std::string _path)
         glEnableVertexAttribArray(matrix+3);    //matrix        8
         
         glEnableVertexAttribArray(texCoord);    //matrix        9
-        glEnableVertexAttribArray(texCoord+1);  //pad        10
+        //glEnableVertexAttribArray(texCoord+1);  //pad        10
 
 	// vertex
 	glBindBuffer(GL_ARRAY_BUFFER, m_models[index]->buffers[0]);
@@ -320,7 +320,7 @@ void GLGraphics::LoadModel(std::string _path)
 	glVertexAttribPointer(texCoord, 2, GL_FLOAT, GL_FALSE, 0, (GLubyte *)NULL);
 
 
-        glVertexAttribPointer(texCoord+1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec2)));
+        //glVertexAttribPointer(texCoord+1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void *)(sizeof(glm::vec2)));
         
         glBindVertexArray(0); // disable VAO
         glUseProgram(0); // disable shader programme
@@ -567,7 +567,6 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
     RenderInstanced(_camera);
     
     //Render2D();
-    
     RenderParticles(_dt, _camera);
     
     for(int i=0; i < m_textObjects.size();i++)
@@ -577,6 +576,7 @@ void GLGraphics::Render(float _dt, ICamera* _camera)
         else
             RenderText(&m_textObjects[i].textCopy,&m_textObjects[i].scaleCopy,&m_textObjects[i].colorCopy,&m_textObjects[i].xCopy,&m_textObjects[i].yCopy,&m_textObjects[i].effectCopy,&m_textObjects[i].kill);
     }
+    glViewport(0, 0, m_screenWidth, m_screenHeight);
     
     glUseProgram(0);
     
@@ -809,10 +809,14 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
     
     for(int i=0; i< m_models.size();i++)
     {
+        int instances = m_models[i]->instances.size();
+        
+        if(instances == 0)
+            continue;
+        
         m_standardShaderProgram.SetUniformV("Material.Ks", m_models[i]->MaterialKs);
         m_standardShaderProgram.SetUniformV("Material.Ns", m_models[i]->MaterialNs);
-        MRI = m_models[i];
-        int instances = m_models[i]->instances.size();
+        
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_models[i]->texHandle);
@@ -835,7 +839,7 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
             j++;
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
-        glBindBuffer(GL_ARRAY_BUFFER,0);
+        //glBindBuffer(GL_ARRAY_BUFFER,0);
         //Update matrix buffer//
         
         //Update explosion buffer//
@@ -864,9 +868,9 @@ int GLGraphics::RenderInstanced(ICamera* _camera)
         glBindBuffer(GL_ARRAY_BUFFER,0);
         //Update explosion buffer<//
 
-        glBindVertexArray(MRI->bufferVAOID);
+        glBindVertexArray(m_models[i]->bufferVAOID);
 
-        glDrawArraysInstanced(GL_TRIANGLES,0,MRI->vertices,instances);
+        glDrawArraysInstanced(GL_TRIANGLES,0,m_models[i]->vertices,instances);
 
         glBindVertexArray(0);
         
@@ -946,8 +950,6 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
             newModelID = i;
             int size = 0;
             
-            
-            
             //Resize instance buffers only
             glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]); 
             glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
@@ -1005,33 +1007,60 @@ void GLGraphics::AddObject(int _id, std::string _model, MATRIX4 *_world, MATRIX4
 
 void GLGraphics::RemoveObject(int _id)
 {
+    int k= 0;
+    
     for(int i = m_models.size() - 1; i>= 0; --i)
     {
         if(m_models[i]->instances.find(_id) != m_models[i]->instances.end())
         {
             int size = 0;
             
-            
             //Resize instance buffers only
             glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]); 
             glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
             
-            if(size > (m_models[i]->instances.size()*sizeof(float)*16-1*sizeof(float)))
-                glBufferData(GL_ARRAY_BUFFER, size- sizeof(float), NULL, GL_DYNAMIC_DRAW);
+            if(size > (m_models[i]->instances.size()*sizeof(float)-1*sizeof(float)))
+            {
+                size - sizeof(float) >= 0? size -= sizeof(float): size = 0;
+                glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+            }
             
             glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
             glGetBufferParameteriv(GL_ARRAY_BUFFER,GL_BUFFER_SIZE,&size);
             
             if(size > (m_models[i]->instances.size()*sizeof(float)*16-1*sizeof(float)*16))
-                glBufferData(GL_ARRAY_BUFFER, size- sizeof(float)*16, NULL, GL_DYNAMIC_DRAW);
-
- 
-            glBindBuffer(GL_ARRAY_BUFFER,0);
+            {
+                size - sizeof(float)*16 >= 0? size -= sizeof(float)*16: size = 0;
+                glBufferData(GL_ARRAY_BUFFER, size, NULL, GL_DYNAMIC_DRAW);
+            }
 
             m_models[i]->instances.erase(m_models[i]->instances.find(_id));
-
-             break;
         }
+
+        //to see if all instances are deleted
+        if(k >= 0)
+        {
+            if(m_models[i]->instances.size() == 0)
+            {
+                k++;
+            }
+            else
+                k = -1;
+        }
+    }
+    //if all were deleted, set instanced buffers to 0 size
+    if(k == m_models.size())
+    {
+        for(int i = 0; i < m_models.size();i++)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[2]);
+            glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_DYNAMIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, m_models[i]->buffers[3]);
+            glBufferData(GL_ARRAY_BUFFER, 0, NULL, GL_DYNAMIC_DRAW);
+        }
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+        printf("CLEAR ALL INSTANCED MEMORY FINISH %d\n",k);
     }
 }
 
