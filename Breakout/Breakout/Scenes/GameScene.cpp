@@ -169,7 +169,7 @@ void GameScene::Reset()
         EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
         e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(0, 3, 0));
         e->GetComponent<LightComponent>()->SetColor(VECTOR3(0.9f, 0.9f, 0.9f));
-        e->GetComponent<LightComponent>()->SetRange(10);
+        e->GetComponent<LightComponent>()->SetRange(7);
         m_world->AddEntity(e);
         
         for(int i = 0; i < 9;i++)

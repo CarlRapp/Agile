@@ -91,11 +91,11 @@ Sphere spheres[10]  =   {
 const float widthHalf = 256.0;
 const float heightHalf = 256.0;
 
-const int BOUNCE_LIMIT = 2;
+const int BOUNCE_LIMIT = 4;
 
 //METHODS
 vec4 traceColor(Vertex vertex);
-float intersect(Ray r, Triangle t);
+float intersect(Ray ray,Vertex vx1,Vertex vx2,Vertex vx3);
 vec3 phongModelDiffAndSpec(int index, vec3 lightPos, float strength, Vertex vertex);
 vec4 trace(Ray ray);
 vec4 hitSphere(Sphere s, Ray r);
@@ -153,7 +153,6 @@ vec4 trace(Ray ray)
             {
                 for(uint i=0; i < 132;i +=3)
                 {
-                    Triangle tri;
                     Vertex vx1;
                     vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
                     vx1.normal = Models[0].normal[i];
@@ -176,29 +175,24 @@ vec4 trace(Ray ray)
                         vx3.normal = -vx3.normal;
                     }
 
-                    tri.vx1 = vx1;
-                    tri.vx2 = vx2;
-                    tri.vx3 = vx3;
-
-                    float r = intersect(ray,tri);
+                    float r = intersect(ray,vx1,vx2,vx3);
 
                     if(r > 0.01 && r < saveT)
                     {
                         saveT = r;
-                        saveTri = tri;
 
                         hit.worldPos = vec4(ray.dir*saveT+ray.origin,1);
-                        hit.normal = saveTri.vx1.normal;
+                        hit.normal = vx1.normal;
 
                         //Kör cross på alla för att få ut totala arean, därefter ta fram 3 subtrianglar och jämför deras areor med totala.
                         //Då får man en ratio och vet hur mycket av varje texcoord som ska användas.
                         //http://answers.unity3d.com/questions/383804/calculate-uv-coordinates-of-3d-point-on-plane-of-m.html
-                        float a = 1 / length(cross(saveTri.vx1.worldPos.xyz-saveTri.vx2.worldPos.xyz, saveTri.vx1.worldPos.xyz-saveTri.vx3.worldPos.xyz)); 
-                        float a1 = length(cross(saveTri.vx2.worldPos.xyz-hit.worldPos.xyz, saveTri.vx3.worldPos.xyz-hit.worldPos.xyz)) * a; 
-                        float a2 = length(cross(saveTri.vx3.worldPos.xyz-hit.worldPos.xyz, saveTri.vx1.worldPos.xyz-hit.worldPos.xyz)) * a; 
-                        float a3 = length(cross(saveTri.vx1.worldPos.xyz-hit.worldPos.xyz, saveTri.vx2.worldPos.xyz-hit.worldPos.xyz)) * a; 
+                        float a = 1 / length(cross(vx1.worldPos.xyz-vx2.worldPos.xyz, vx1.worldPos.xyz-vx3.worldPos.xyz)); 
+                        float a1 = length(cross(vx2.worldPos.xyz-hit.worldPos.xyz, vx3.worldPos.xyz-hit.worldPos.xyz)) * a; 
+                        float a2 = length(cross(vx3.worldPos.xyz-hit.worldPos.xyz, vx1.worldPos.xyz-hit.worldPos.xyz)) * a; 
+                        float a3 = length(cross(vx1.worldPos.xyz-hit.worldPos.xyz, vx2.worldPos.xyz-hit.worldPos.xyz)) * a; 
 
-                        hit.texCoord = saveTri.vx1.texCoord * a1 + saveTri.vx2.texCoord * a2 + saveTri.vx3.texCoord * a3;
+                        hit.texCoord = vx1.texCoord * a1 + vx2.texCoord * a2 + vx3.texCoord * a3;
 
                     }
                 }
@@ -217,6 +211,7 @@ vec4 trace(Ray ray)
                 saveT = sData.w;
                 hit.worldPos = vec4(vec3(ray.dir*sData.w+ray.origin),1);
                 hit.normal = sData.xyz;
+                hit.texCoord = vec2(1,0);
             }
         }
 
@@ -312,14 +307,10 @@ vec4 traceColor(Vertex vertex)
     return vec4(diffAndSpec, 1.0) * texColor;
 }
 
-float intersect(Ray ray, Triangle tri)
+float intersect(Ray ray,Vertex vx1,Vertex vx2,Vertex vx3)
 {
-    Vertex vertex1 = tri.vx1;
-    Vertex vertex2 = tri.vx2;
-    Vertex vertex3 = tri.vx3;
-
-    vec3 e1 = vertex2.worldPos.xyz-vertex1.worldPos.xyz;
-    vec3 e2 = vertex3.worldPos.xyz-vertex1.worldPos.xyz;
+    vec3 e1 = vx2.worldPos.xyz-vx1.worldPos.xyz;
+    vec3 e2 = vx3.worldPos.xyz-vx1.worldPos.xyz;
     vec3 q = cross(ray.dir.xyz, e2);
     float a = dot(e1, q);
 
@@ -333,7 +324,7 @@ float intersect(Ray ray, Triangle tri)
     //instead of 3 divide with a, save f to use multiplication
     float f = 1.0 / a;
 
-    vec3 s = ray.origin.xyz - vertex1.worldPos.xyz;
+    vec3 s = ray.origin.xyz - vx1.worldPos.xyz;
     float u = f*(dot(s, q));
 
     //side
@@ -418,7 +409,6 @@ float shadowTrace(Vertex hit)
         {
             for(uint i=0; i < 132;i +=3)
             {
-                Triangle tri;
                 Vertex vx1;
                 vx1.worldPos = modelMatrix[j]*vec4(Models[0].pos[i],1);
 
@@ -428,11 +418,7 @@ float shadowTrace(Vertex hit)
                 Vertex vx3;
                 vx3.worldPos = modelMatrix[j]*vec4(Models[0].pos[i+2],1);
 
-                tri.vx1 = vx1;
-                tri.vx2 = vx2;
-                tri.vx3 = vx3;
-
-                float r = intersect(ray,tri);
+                float r = intersect(ray,vx1,vx2,vx3);
 
                 if(r > 0.1)
                 {
