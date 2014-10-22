@@ -78,6 +78,5 @@ void SceneManager::Start()
 
 		m_activeScene->Update(dt);
 		m_activeScene->Render(dt);
-
 	}
 }

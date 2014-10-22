@@ -10,6 +10,7 @@
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/GameOverScene.h"
+#include "Scenes/PowerPointScene.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -77,8 +78,9 @@ int main(int argc, char** argv)
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
 	m_SceneManager->AddScene<GameOverScene>(false);
+	m_SceneManager->AddScene<PowerPointScene>(false);
         
-	m_SceneManager->ChangeScene<MainMenuScene>();
+	m_SceneManager->ChangeScene<PowerPointScene>();
 
 	/*	Random Seed	*/
 	printf("!!!IMPORTANT INFO!!!\n");
@@ -97,7 +99,7 @@ int main(int argc, char** argv)
 	SafeDelete(m_InputManager);
 	SafeDelete(m_fileManager);
 	SafeDelete(m_EntityFactory);
-        SafeDelete(m_SceneManager);
+    SafeDelete(m_SceneManager);
         
 	//_CrtDumpMemoryLeaks();
 	return 0;

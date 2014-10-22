@@ -183,6 +183,9 @@
     <ClCompile Include="ComponentSystem\System\BlockSpawnSystem.cpp">
       <Filter>Source Files\ComponentSystem\System</Filter>
     </ClCompile>
+    <ClCompile Include="Scenes\PowerPointScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Audio\AudioManager.h">
@@ -490,6 +493,9 @@
     </ClInclude>
     <ClInclude Include="ComponentSystem\Component\ExtraLifeComponent.h">
       <Filter>Source Files\ComponentSystem\Component\Powerups</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\PowerPointScene.h">
+      <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
