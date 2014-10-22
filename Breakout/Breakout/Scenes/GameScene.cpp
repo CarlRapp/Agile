@@ -133,13 +133,30 @@ void GameScene::Update(float _dt)
 
 	if (!m_world->IsAlive() && !m_gameOver)
 	{
-        Entity* e = m_world->GetEntity(m_gameOverHandle);
-        auto TC = e->GetComponent<TextComponent>();
+            Entity* e = m_world->GetEntity(m_gameOverHandle);
+            auto TC = e->GetComponent<TextComponent>();
 
-        GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
-        m_gameOver = true;
+            GraphicsManager::GetInstance()->AddTextObject(GetMemoryID(e), TC->m_text, &TC->m_x, &TC->m_y, &TC->m_scale, &TC->m_color, &TC->m_effect);
+            m_gameOver = true;
       
             AskPlayerName();
+            
+            e = m_world->GetEntity(m_lvlUpHandleMAIN);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+
+            e = m_world->GetEntity(m_lvlUpHandleSPEED);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+
+            e = m_world->GetEntity(m_lvlUpHandleSIZE);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+
+            e = m_world->GetEntity(m_lvlUpHandleDAMAGE);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+
+            e = m_world->GetEntity(m_lvlUpHandleAUTO);
+            GraphicsManager::GetInstance()->RemoveTextObject(GetMemoryID(e));
+            
+            m_levelUp = 0;
 	}
         
     if(m_gameOver && !m_scoreSubmitted)
@@ -439,6 +456,9 @@ void GameScene::Reset()
 
 void GameScene::LevelUp(int _lvlUp, bool _addStrings)
 {
+    if(m_gameOver)
+        return;
+    
 	m_levelUp = _lvlUp;
 
 	int checkMaxLevel = 0;

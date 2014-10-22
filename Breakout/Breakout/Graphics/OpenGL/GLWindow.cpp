@@ -33,7 +33,7 @@ bool GLWindow::InitWnd()
     if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 ) 
     { return false; } 
     //Create Window 
-    if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL | SDL_FULLSCREEN ) == NULL ) 
+    if( SDL_SetVideoMode( m_width, m_height, 32, SDL_OPENGL /*| SDL_FULLSCREEN*/ ) == NULL ) 
     { return false; } 
     //Set caption 
     

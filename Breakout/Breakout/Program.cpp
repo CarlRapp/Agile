@@ -30,8 +30,8 @@ FileManager* m_fileManager;
 SceneManager* m_SceneManager;
 EntityFactory* m_EntityFactory;
 
-#define SCREENWIDTH 1600
-#define SCREENHEIGHT 900
+#define SCREENWIDTH 1280
+#define SCREENHEIGHT 720
 
 int main(int argc, char** argv)
 {

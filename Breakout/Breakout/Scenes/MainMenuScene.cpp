@@ -1,4 +1,5 @@
 #include "MainMenuScene.h"
+#include "PowerPointScene.h"
 #include "../Input/InputManager.h"
 #include "../Graphics/GraphicsManager.h"
 #include "GameScene.h"
@@ -147,6 +148,11 @@ void MainMenuScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(13) == InputState::Pressed)
 	{
 		SceneManager::GetInstance()->ChangeScene<GameScene>();
+		return;
+	}
+        	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('p') == InputState::Pressed)
+	{
+		SceneManager::GetInstance()->ChangeScene<PowerPointScene>();
 		return;
 	}
         
