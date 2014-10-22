@@ -54,3 +54,13 @@ bool AudioManager::PlaySoundEffect(const char* _fileName, int _loop)
 
 	return true;
 }
+
+void AudioManager::SetMusicVolume(int _volume)
+{
+    m_audio->SetVolume(_volume);
+}
+
+void AudioManager::StopMusic()
+{
+    m_audio->StopMusic();
+}

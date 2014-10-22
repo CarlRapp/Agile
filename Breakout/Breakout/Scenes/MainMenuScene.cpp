@@ -40,12 +40,16 @@ void MainMenuScene::LoadContent()
 
 void MainMenuScene::OnActive()
 {
+    
 	m_world = new World();
 
+        
+        
         GraphicsManager::GetInstance()->GetICamera()->EnableShake(false);
 	GraphicsManager::GetInstance()->GetICamera()->AddShake(0, 30, 50, 0.2f, -1);
 
 	CreatePlayField();
+        
 
     GraphicsManager* GM = GraphicsManager::GetInstance();
 	GraphicsManager::GetInstance()->SetSky("BackGroundCube");
@@ -105,11 +109,14 @@ void MainMenuScene::OnActive()
             break;
     }
     
+    AudioManager::GetInstance()->PlayMusic("MainMenu_music.mp3", true);
+    AudioManager::GetInstance()->SetMusicVolume(100);
 	
 }
 void MainMenuScene::OnInactive()
 {
 	GraphicsManager::GetInstance()->GetICamera()->RemoveShake(0);
+        AudioManager::GetInstance()->StopMusic();
 
 	if (m_world)
 	{
@@ -126,6 +133,7 @@ void MainMenuScene::OnInactive()
 		}
 		SafeDelete(m_world);
 	}
+        
 }
 float test = 0.0f;
 

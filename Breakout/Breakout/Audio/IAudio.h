@@ -44,6 +44,10 @@ public:
 	Returns true on success.
 	*/
 	virtual bool PlaySoundEffect(const char* _fileName, int _loop) = 0;
+        
+        virtual void SetVolume(int _volume) = 0;
+        
+        virtual void StopMusic() = 0;
 };
 
 #endif
