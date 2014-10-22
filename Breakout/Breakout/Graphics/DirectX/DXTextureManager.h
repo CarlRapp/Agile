@@ -67,7 +67,12 @@ public:
 
 	ID3D11ShaderResourceView* GetSymbolTexture(char _c);
 
-	int GetSymbolIndex(char _c) { return m_symbolIndices[_c]; }
+	int GetSymbolIndex(char _c) 
+	{ 
+		if (m_symbolIndices.count(_c) > 0)
+			return m_symbolIndices[_c]; 
+		return m_symbolIndices[' '];
+	}
 
 	int GetNumSymbols() { return m_symbolIndices.size(); }
 };
