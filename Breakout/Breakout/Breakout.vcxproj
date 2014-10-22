@@ -152,6 +152,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClCompile Include="Scenes\GameOverScene.cpp" />
     <ClCompile Include="Scenes\GameScene.cpp" />
     <ClCompile Include="Scenes\MainMenuScene.cpp" />
+    <ClCompile Include="Scenes\PowerPointScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Storage\FileManager.cpp" />
     <ClCompile Include="Storage\HighScoreLoader.cpp" />
@@ -257,6 +258,7 @@ xcopy "$(ProjectDir)\Graphics\DirectX\Shaders\ParticleSystems\*.fxo" "$(OutDir)\
     <ClInclude Include="Scenes\GameOverScene.h" />
     <ClInclude Include="Scenes\GameScene.h" />
     <ClInclude Include="Scenes\MainMenuScene.h" />
+    <ClInclude Include="Scenes\PowerPointScene.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="stdafx.h" />

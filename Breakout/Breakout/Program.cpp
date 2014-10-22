@@ -10,6 +10,7 @@
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/GameOverScene.h"
+#include "Scenes/PowerPointScene.h"
 
 #ifdef WINDOWS
 #include <SDL.h>
@@ -41,7 +42,7 @@ int main(int argc, char** argv)
 	SetWindowPos(GetConsoleWindow(), 0, 100, 0, 100, 0, SWP_NOSIZE | SWP_NOZORDER);
 #endif
 	/*	GRAPHICS RELATED SHIT GOES HERE	*/
-	DisplayMode displayMode = DisplayMode::BorderlessWindow;
+	DisplayMode displayMode = DisplayMode::Fullscreen;
 	m_GraphicsManager = GraphicsManager::GetInstance();
 	m_GraphicsManager->InitWindow(0, 0, SCREENWIDTH, SCREENHEIGHT, displayMode);
 	m_GraphicsManager->Init3D(displayMode);
@@ -77,8 +78,9 @@ int main(int argc, char** argv)
 	m_SceneManager->AddScene<MainMenuScene>(false);
 	m_SceneManager->AddScene<GameScene>(false);
 	m_SceneManager->AddScene<GameOverScene>(false);
+	m_SceneManager->AddScene<PowerPointScene>(false);
         
-	m_SceneManager->ChangeScene<MainMenuScene>();
+	m_SceneManager->ChangeScene<PowerPointScene>();
 
 	/*	Random Seed	*/
 	printf("!!!IMPORTANT INFO!!!\n");
