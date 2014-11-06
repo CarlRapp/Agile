@@ -9,11 +9,10 @@ GLCamera::GLCamera(float _fovy, int _width,int _height, float _nearZ, float _far
 {
     //m_ViewPort.MinDepth = 0.0f;
     //m_ViewPort.MaxDepth = 1.0f;
-    
     m_width = _width;
     m_height = _height;
     
-    m_aspectRatio = (float)m_width / (float)m_height;
+    m_aspectRatio = (float)m_height/(float)m_width;
 
     m_FOVy = _fovy;//2 * glm::atan(glm::tan(0.5f * _fovy) * m_aspectRatio);
 

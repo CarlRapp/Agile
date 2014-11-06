@@ -111,8 +111,6 @@ class GLGraphics : public IGraphics
     
 private:
 	GLWindow *m_window;
-        int m_screenWidth;
-        int m_screenHeight;
         
         GLTextureManager m_texManager;
         GLuint m_program; //shaderID
@@ -146,7 +144,8 @@ private:
         float m_textFontSize = 3;
         
         int m_workSizeX,m_workSizeY;
-        
+        int m_imageSizeX = 256;
+        int m_imageSizeY = 256;
         
         int SetUniformV(GLuint shaderProg, const char* variable,float value);
         int SetUniformV(GLuint shaderProg, const char* variable,glm::vec3 value);
@@ -167,7 +166,9 @@ private:
 
         void LoadLetters();
         void RenderText(std::string* _text,float* _scale, unsigned int* _color,int* _x, int* _y);
-
+        
+        float m_bias;
+        float m_power;
 public:
 
 	GLGraphics(void);
@@ -194,8 +195,8 @@ public:
         
         
         void AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y);
-        
 
+        void AddToComputeUniforms(float v1,float v2);
 };
 
 

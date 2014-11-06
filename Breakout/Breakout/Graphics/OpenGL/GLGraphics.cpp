@@ -5,11 +5,11 @@
 //#include <GL/glut.h>
 //#include <GL/glext.h>
 #include <random>
+#include "../../Input/InputManager.h"
 
 void _check_gl_error(const char *file, int line);
 
 #define check_gl_error() _check_gl_error(__FILE__,__LINE__)
-
 
 #define COMPUTE_WORKGROUPS 16
 
@@ -31,7 +31,7 @@ PFNGLDISPATCHCOMPUTEINDIRECTPROC __glewDispatchComputeIndirect = NULL;
 
 PFNGLDISPATCHCOMPUTEGROUPSIZEARBPROC __glewDispatchComputeGroupSizeARB = NULL;
 
-//unsigned char m_pixels[512*512] = {0};
+#define TEXTURE_RESOLUTION 1.0f
 
 static GLboolean _glewInit_GL_ARB_compute_shader(GLEW_CONTEXT_ARG_DEF_INIT) {
     GLboolean r = GL_FALSE;
@@ -209,21 +209,27 @@ bool GLGraphics::Init3D(DisplayMode _displayMode) {
         exit(32);
         return 0;
     }
-    //printf("%d\n",glGetError());
-    //glUniform1i(m_computeTexture, 0);
+
     glUseProgram(m_computeProgram);
 
-    glUniform1i(glGetUniformLocation(m_computeProgram, "destTex[0]"), 0);
-    glUniform1i(glGetUniformLocation(m_computeProgram, "m_objectTex"), 1);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "m_destTex[0]"), 0);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "m_objectTex[0]"), 1);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "m_objectTex[1]"), 2);
+    glUniform1i(glGetUniformLocation(m_computeProgram, "m_objectTex[2]"), 3);
+     
+    SetUniformV(m_computeProgram,"m_width",(float)m_imageSizeX);
+    SetUniformV(m_computeProgram,"m_height",(float)m_imageSizeY);
     
     glUseProgram(0);
 
     //-----------------------------------------------------------------------------------------
     glEnable(GL_BLEND);
 
-    m_workSizeX = (m_screenWidth / COMPUTE_WORKGROUPS);
-    m_workSizeY = (m_screenHeight / COMPUTE_WORKGROUPS);
 
+
+    m_bias = 8;
+    m_power = 2;
+    
     LoadLetters();
     
     glm::mat4 matrix = glm::mat4(1.0f);
@@ -247,11 +253,19 @@ void GLGraphics::GenTexture()
     
     glGenTextures(1, &m_computeTexture);
 
+    m_imageSizeX = m_screenWidth*TEXTURE_RESOLUTION;
+    m_imageSizeY = m_screenHeight*TEXTURE_RESOLUTION;
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_computeTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_screenWidth, m_screenHeight, 0, GL_RGBA, GL_FLOAT, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_imageSizeX, m_imageSizeY, 0, GL_RGBA, GL_FLOAT, NULL);
+    
+    m_workSizeX = (m_imageSizeX / COMPUTE_WORKGROUPS);
+    m_workSizeY = (m_imageSizeY / COMPUTE_WORKGROUPS);
+    
+    printf("Texture size: %dx%d\nWorkGroupSize: %dx%d\n",m_imageSizeX,m_imageSizeY,m_workSizeX,m_workSizeY);
     
     check_gl_error();
 }
@@ -347,27 +361,27 @@ void GLGraphics::LoadModel(std::string _path) {
         glUseProgram(m_computeProgram);
         check_gl_error();
 
-        int location = glGetUniformLocation(m_computeProgram, "Models[0].pos");
+        int location = glGetUniformLocation(m_computeProgram, "m_models[0].pos");
         if (location >= 0)
             glUniform3fv(location, 132, m_models[index]->vertexArray);
         check_gl_error();
         
-        location = glGetUniformLocation(m_computeProgram, "Models[0].normal");
+        location = glGetUniformLocation(m_computeProgram, "m_models[0].normal");
         if (location >= 0)
             glUniform3fv(location, 132, m_models[index]->normalArray);
         check_gl_error();
         
-        location = glGetUniformLocation(m_computeProgram, "Models[0].texCoord");
+        location = glGetUniformLocation(m_computeProgram, "m_models[0].texCoord");
         if (location >= 0)
             glUniform2fv(location, 132, m_models[index]->texCoordArray);
         check_gl_error();
         
-        location = glGetUniformLocation(m_computeProgram, "Models[0].maximum");
+        location = glGetUniformLocation(m_computeProgram, "m_models[0].maximum");
         if (location >= 0)
             glUniform3fv(location, 1, maximum);
         check_gl_error();
         
-        location = glGetUniformLocation(m_computeProgram, "Models[0].minimum");
+        location = glGetUniformLocation(m_computeProgram, "m_models[0].minimum");
         if (location >= 0)
             glUniform3fv(location, 1, minimum);
         check_gl_error();
@@ -472,7 +486,7 @@ void GLGraphics::Update() {
 void GLGraphics::Resize(int _width, int _height) {
     m_screenWidth = _width;
     m_screenHeight = _height;
-    glViewport(0, 0, m_screenWidth, m_screenHeight);
+    glViewport(0, 0, _width, _height);
 }
 
 void GLGraphics::Free() {
@@ -516,8 +530,6 @@ void GLGraphics::Free() {
     printf("Graphics memory cleared\n");
 }
 
-float t;
-
 void GLGraphics::Render(ICamera* _camera) {
     glClearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -525,15 +537,13 @@ void GLGraphics::Render(ICamera* _camera) {
 
     glUseProgram(m_program);
 
-    glViewport(0, 0, m_screenWidth, m_screenHeight-16.0);
+    glViewport(0, 0, m_screenWidth, m_screenHeight-16);
 
     UpdateLights();
 
     CameraToRender(_camera);
 
     RenderCompute();
-
-    //Render2D();
 
     for (int i = 0; i < m_textObjects.size(); i++) 
     {
@@ -575,10 +585,14 @@ void GLGraphics::AddTextObject(std::string* _text, float* _scale, unsigned int* 
     m_textObjects.push_back(textObject);
 }
 
-void GLGraphics::RenderCompute() {
-    t += 0.01f;
-    
+void GLGraphics::RenderCompute() 
+{
     glUseProgram(m_computeProgram);
+
+//    GLint loc = glGetUniformLocation(m_computeProgram, "bias");
+//    glUniform1f(loc,m_bias);
+//    loc = glGetUniformLocation(m_computeProgram, "p");
+//    glUniform1f(loc, m_power);
 
     glBindImageTexture(0, m_computeTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
  
@@ -587,9 +601,15 @@ void GLGraphics::RenderCompute() {
     {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, m_models[0]->texHandle);
+        
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, m_models[0]->texHandle);
+        
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, m_texManager.GetTexture("earth.png"));
     }
     
-    glDispatchCompute(32, 32, 1);
+    glDispatchCompute(m_workSizeX, m_workSizeY, 1);
     glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
     
     glActiveTexture(0);
@@ -599,6 +619,7 @@ void GLGraphics::RenderCompute() {
     glBindVertexArray(m_computeQuad);
     glDrawArrays(GL_QUADS, 0, 4);
 
+    glActiveTexture(GL_TEXTURE0);
     glUseProgram(0);
 
 }
@@ -704,10 +725,10 @@ void GLGraphics::RemovePointLight(int _id) {
     delete(m_lights[_id]);
     m_lights.erase(_id);
 }
-
+float t=0;
 void GLGraphics::UpdateLights() {
     int i = 0;
-    
+    t += 0.01f;
     vec4 rotation = vec4(-sin(t),1,cos(t),1);
     
     for (std::map<int, LightInfo*>::iterator it = m_lights.begin(); it != m_lights.end(); ++it) 
@@ -718,16 +739,16 @@ void GLGraphics::UpdateLights() {
         //-----Send all the lights values------
         const char* indexStr = std::to_string(i).c_str(); //itoa(i, indexStr, 10);
         char positionStr[25], intensityStr[25], colorStr[25], rangeStr[25];
-        strcpy(positionStr, "Lights[");
+        strcpy(positionStr, "m_lights[");
         strcat(positionStr, indexStr);
         strcat(positionStr, "].Position");
-        strcpy(intensityStr, "Lights[");
+        strcpy(intensityStr, "m_lights[");
         strcat(intensityStr, indexStr);
         strcat(intensityStr, "].Intensity");
-        strcpy(colorStr, "Lights[");
+        strcpy(colorStr, "m_lights[");
         strcat(colorStr, indexStr);
         strcat(colorStr, "].Color");
-        strcpy(rangeStr, "Lights[");
+        strcpy(rangeStr, "m_lights[");
         strcat(rangeStr, indexStr);
         strcat(rangeStr, "].Range");
 
@@ -742,6 +763,18 @@ void GLGraphics::UpdateLights() {
 
 void GLGraphics::CameraToRender(ICamera* _camera) 
 {
+    int f = InputManager::GetInstance()->getInputDevices()->GetMouse()->GetButtonState(0);
+    
+    if(f < 3)
+    {
+        SetUniformV(m_computeProgram,"m_mouseClick",true);
+    }
+    else
+        SetUniformV(m_computeProgram,"m_mouseClick",false);
+    
+    SetUniformV(m_computeProgram,"m_camDir",_camera->GetForward());        
+    
+    
     
     glm::mat4* temp1 = _camera->GetProjection();
     GLint projection = glGetUniformLocation(m_computeProgram, "m_matProj");
@@ -751,7 +784,7 @@ void GLGraphics::CameraToRender(ICamera* _camera)
     GLint view = glGetUniformLocation(m_computeProgram, "m_matView");
     glUniformMatrix4fv(view, 1, GL_FALSE, glm::value_ptr(*temp1));
     
-    GLint campos = glGetUniformLocation(m_computeProgram, "camPos");
+    GLint campos = glGetUniformLocation(m_computeProgram, "m_camPos");
     glm::vec3 k = _camera->GetPosition();
     glUniform3f(campos,k.x,k.y,k.z);
 }
@@ -992,3 +1025,11 @@ void _check_gl_error(const char *file, int line) {
     }
 }
 
+void GLGraphics::AddToComputeUniforms(float v1,float v2)
+{
+    m_bias += v1;
+    m_power += v2;
+    
+    printf("bias %f\n",m_bias);
+    printf("power %f\n",m_power);
+}

@@ -31,7 +31,7 @@ GraphicsManager::~GraphicsManager(void)
 bool GraphicsManager::InitWindow(int _x, int _y, int _width, int _height, DisplayMode _displayMode)
 {
 
-	m_ICamera = ICamera::GetICamera(45.0f,_width,_height,0.1f,100.0f);
+	m_ICamera = ICamera::GetICamera(65.0f,_width,_height,0.1f,100.0f);
 	//m_ICamera->SetPosition(VECTOR3(0, 0, 10));
 
 	//m_ICamera->SetLookAt(VECTOR3(0, 0, 0));
@@ -100,4 +100,9 @@ ICamera* GraphicsManager::GetICamera()
 void GraphicsManager::AddTextObject(std::string* _text,float* _scale, unsigned int* _color,int* _x,int* _y)
 {
     m_IGraphics->AddTextObject(_text,_scale,_color,_x,_y);
+}
+
+void GraphicsManager::AddToComputeUniforms(float v1,float v2)
+{
+    m_IGraphics->AddToComputeUniforms(v1,v2);
 }

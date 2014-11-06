@@ -44,11 +44,12 @@ void GameScene::Initialize()
 	m_pauseBackground->m_positionY = 0;
 	m_pauseBackground->m_imageWidth = 1;
 	m_pauseBackground->m_imageHeight = 1;
-	m_pauseBackground->m_textureName = "Pause.png";
+	m_pauseBackground->m_textureName = "earth.png";
 
 	counter = 0;
 
-
+        m_screenWidth = GraphicsManager::GetInstance()->GetIGraphics()->m_screenWidth;
+        m_screenHeight = GraphicsManager::GetInstance()->GetIGraphics()->m_screenHeight;
 //        
 //	m_x = 0;
 //	m_y = 0;
@@ -65,7 +66,6 @@ void GameScene::LoadContent()
 	//GraphicsManager::GetInstance()->GetIGraphics()->LoadModel("sphere");
 }
 
-float asdf = 0;
 void GameScene::Update(float _dt)
 {
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState(27) == InputState::Pressed)
@@ -75,7 +75,7 @@ void GameScene::Update(float _dt)
         }
 		
 
-	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(256, 256);
+	InputManager::GetInstance()->getInputDevices()->GetMouse()->SetMousePosition(m_screenWidth*0.5f, m_screenHeight*0.5f);
         
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('a') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Strafe(-10 *_dt);
@@ -86,12 +86,25 @@ void GameScene::Update(float _dt)
 	if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('s') == InputState::Down)
 		GraphicsManager::GetInstance()->GetICamera()->Move(10 * _dt);
 
-        asdf += _dt*0.01f;
-        
         if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdX())
             GraphicsManager::GetInstance()->GetICamera()->RotateY(InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdX()*_dt*15);
         if (InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdY())
             GraphicsManager::GetInstance()->GetICamera()->Pitch(-InputManager::GetInstance()->getInputDevices()->GetMouse()->GetdY()*_dt*15);
+        
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('p') == InputState::Down &&
+                InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('+') == InputState::Down)
+            GraphicsManager::GetInstance()->AddToComputeUniforms(0,1);
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('p') == InputState::Down &&
+                InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('-') == InputState::Down)
+            GraphicsManager::GetInstance()->AddToComputeUniforms(0,-1);
+        
+        
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('b') == InputState::Down &&
+                InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('+') == InputState::Down)
+            GraphicsManager::GetInstance()->AddToComputeUniforms(1,0);
+        if (InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('b') == InputState::Down &&
+                InputManager::GetInstance()->getInputDevices()->GetKeyboard()->GetKeyState('-') == InputState::Down)
+            GraphicsManager::GetInstance()->AddToComputeUniforms(-1,0);
         
 //	counter += _dt;
 //	if (counter > .5f)
@@ -175,14 +188,14 @@ void GameScene::Reset()
         for(int i = 0; i < 9;i++)
         {
             float r = 0.1f;
-            float g = 0.1f;
-            float b = 0.7f;
+            float g = 0.1f+i*0.1f;
+            float b = 0.9f-i*0.1f;;
             
             e = m_world->CreateEntity();
             EntityFactory::GetInstance()->CreateEntity(e, EntityFactory::POINTLIGHT);
             e->GetComponent<PositionComponent>()->SetPosition(VECTOR3(3*sin(i), i-4, 3*cos(i)));
             e->GetComponent<LightComponent>()->SetColor(VECTOR3(r, g, b));
-            e->GetComponent<LightComponent>()->SetRange(5);
+            e->GetComponent<LightComponent>()->SetRange(3);
             m_world->AddEntity(e);
         }
 //

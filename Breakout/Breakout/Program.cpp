@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 	DisplayMode displayMode = DisplayMode::BorderlessWindow;
 	m_GraphicsManager = GraphicsManager::GetInstance();
 
-	m_GraphicsManager->InitWindow(100, 350, 512, 512, displayMode);
+	m_GraphicsManager->InitWindow(100, 350, 1600, 900, displayMode);
 
 	m_GraphicsManager->Init3D(displayMode);
 

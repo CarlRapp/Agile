@@ -46,7 +46,7 @@ public:
 	MATRIX4* GetProjection();
 
 	glm::vec3 GetPosition()		{ return m_position; }
-	glm::vec3 GetForward()		{ return m_forward; }
+	VECTOR3 GetForward()		{ return m_forward; }
 	glm::vec3 GetRight()		{ return m_right; }
 	glm::vec3 GetUp()		{ return m_up; }
 
@@ -83,7 +83,6 @@ public:
 		//m_ViewPort.Width = (float)Width;
 		//m_ViewPort.Height = (float)Height;
 	}
-
 #pragma endregion
 
 

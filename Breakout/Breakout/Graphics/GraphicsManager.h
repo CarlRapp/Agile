@@ -63,6 +63,8 @@ void RemovePointLight(int _id);
 
 
     bool        Init3D(DisplayMode _displayMode);
+    
+    void AddToComputeUniforms(float v1,float v2);
 };
 
 

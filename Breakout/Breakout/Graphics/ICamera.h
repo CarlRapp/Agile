@@ -58,6 +58,7 @@ public:
 	virtual void Pitch(float angle)= 0;
 	virtual void Roll(float angle)= 0;
 	virtual void RotateY(float angle)= 0;
+        virtual VECTOR3 GetForward()=0;
 #pragma endregion
 
 
